@@ -1,13 +1,13 @@
-panel = component.proxy("868378D7483D82D2DE3C86B47215BDEC")
+local panel = component.proxy("868378D7483D82D2DE3C86B47215BDEC")
 
 print("--Modules--") 
-    loopStationButton = panel:getModule(5, 5)
-    trainSelectButton = panel:getModule(5, 9)
-    stopTrainSwitch = panel:getModule(6, 10)
-    trainSelectPotent = panel:getModule(5, 10)
-    trainNumMicroDisplay = panel:getModule(4, 10)
-    trainSpeedGuage = panel:getModule(0, 10)
-    allTrainStopButton = panel:getModule(10, 10)
+    local loopStationButton = panel:getModule(5, 5)
+    local trainSelectButton = panel:getModule(5, 9)
+    local stopTrainSwitch = panel:getModule(6, 10)
+    local trainSelectPotent = panel:getModule(5, 10)
+    local trainNumMicroDisplay = panel:getModule(4, 10)
+    local trainSpeedGuage = panel:getModule(0, 10)
+    local allTrainStopButton = panel:getModule(10, 10)
 
     print("loopStationButton:", loopStationButton)
     print("stopTrainSwitch:", stopTrainSwitch)
@@ -18,29 +18,29 @@ print("--Modules--")
     print("allTrainStopButton:", allTrainStopButton)
 print("--Modules--")
 
-trainStation = component.proxy("97FEF4D44C22F600A77E2C8B74C52B44")
+local trainStation = component.proxy("97FEF4D44C22F600A77E2C8B74C52B44")
 
 event.listen(loopStationButton)
 event.listen(trainSelectButton)
-addCheck = false
-switchSet = false
-trainSelectPotentValSave = 1
+local addCheck = false
+local switchSet = false
+local trainSelectPotentValSave = 1
 
 trainSelectButton:setColor(0.5, 0.5, 0.5, 0.1)
-tSelectButtonPressed = false
+local tSelectButtonPressed = false
 
 trainSpeedGuage.limit = 200
 trainSpeedGuage.percent = 75
 
 while true do
-    e, s = event:pull()
-    trackGraph = trainStation:getTrackGraph()
-        trains = trackGraph:getTrains()
-        stations = trackGraph:getStations()
+    local e, s = event:pull()
+    local trackGraph = trainStation:getTrackGraph()
+        local trains = trackGraph:getTrains()
+        local stations = trackGraph:getStations()
             for i = 1, #trains do
-                timeTables = {trains[i]:getTimeTable()}
+                TimeTables = {trains[i]:getTimeTable()}
                 if stations[i].name == "Looping Station" then
-                    loopStation = stations[i]
+                    LoopStation = stations[i]
                 end
             end
     
@@ -49,11 +49,11 @@ while true do
         print("buttonPressed")
         for i = 1, #trains do
             if trains[i]:getTimeTable().numStops == 1 and addCheck == false then
-                timeTables[i]:addStop(1, loopStation, 0.1)
+                TimeTables[i]:addStop(1, LoopStation, 0.1)
                 loopStationButton:setColor(0, 1, 0, 0.5)
                 print("added")
                 addCheck = true
-            elseif timeTables.numStops ~= 1 and addCheck == false then
+            elseif TimeTables.numStops ~= 1 and addCheck == false then
                 loopStationButton:setColor(1, 0, 0, 0.5)
                 print("none added")
                 addCheck = true
@@ -64,8 +64,8 @@ while true do
 addCheck = false
 --TrainSelectSystem
 
-    targetedTrainNum = trainSelectPotent.value
-    tragetedTrain =  trains[targetedTrainNum]
+    local targetedTrainNum = trainSelectPotent.value
+    local tragetedTrain =  trains[targetedTrainNum]
 
     if s == trainSelectPotent then
         trainSelectPotent.max = #trains
@@ -74,23 +74,23 @@ addCheck = false
 
     if s == trainSelectButton then
 
-        selectedTrainNum = targetedTrainNum
-        selectedTrain = trains[selectedTrainNum]
-        print("Selected Train:", selectedTrain:getName())
+        local selectedTrainNum = targetedTrainNum
+        SelectedTrain = trains[selectedTrainNum]
+        print("Selected Train:", SelectedTrain:getName())
         trainNumMicroDisplay:setText(selectedTrainNum)
         
-        stopTrainSwitch.state = selectedTrain.isSelfDrivng
+        stopTrainSwitch.state = SelectedTrain.isSelfDrivng
         
         tSelectButtonPressed = true
     end
 
     if tSelectButtonPressed == true then
         if s == stopTrainSwitch then
-            selectedTrain:setSelfDriving(stopTrainSwitch.state)
+            SelectedTrain:setSelfDriving(stopTrainSwitch.state)
             print("Train Stop Switch State =", stopTrainSwitch.state)
         end
 
-        if selectedTrain.isSelfDriving == true then
+        if SelectedTrain.isSelfDriving == true then
             trainSelectButton:setColor(0, 1, 0, 0.5)
         else
             trainSelectButton:setColor(1, 0, 0, 0.5)

@@ -10,14 +10,14 @@ local scWidth, scHeight = gpu:getSize()
 gpu:setBackground(0, 0, 0, 1)
 gpu:setForeground(0.75, 0.1, 0, 1)
 
-trainStation = component.proxy("97FEF4D44C22F600A77E2C8B74C52B44")
-    trackGraph = trainStation:getTrackGraph()
+local trainStation = component.proxy("97FEF4D44C22F600A77E2C8B74C52B44")
+    local trackGraph = trainStation:getTrackGraph()
 
 while true do
-    trains = trackGraph:getTrains()
-    stations = trackGraph:getStations()
+    local trains = trackGraph:getTrains()
+    local stations = trackGraph:getStations()
 
-    trainTimeTable = {}
+    local trainTimeTable = {}
 
     gpu:fill(0,0,scWidth, scHeight, " ")
     --print(trainTimeTable)
@@ -26,11 +26,11 @@ while true do
     gpu:setSize(99, #trains+2) end
 
     for i = 1, #trains do
-        h = i+1
+        local h = i+1
 
         table.insert(trainTimeTable, trains[i]:getName())
         
-        xP = 2
+        local xP = 2
         gpu:setText(xP,0, "Train")
         if trainTimeTable[i] ~= "" then
         gpu:setText(xP,h, trainTimeTable[i])
