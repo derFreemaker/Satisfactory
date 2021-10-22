@@ -3,9 +3,9 @@ if not gpu then
 error("No GPU T1 found!")
 end
 
-screen = component.proxy("33ED1407445A7F31021FCF90C1F79FFA")
+local screen = component.proxy("33ED1407445A7F31021FCF90C1F79FFA")
 gpu:bindScreen(screen)
-scWidth, scHeight = gpu:getSize()
+local scWidth, scHeight = gpu:getSize()
 
 gpu:setBackground(0, 0, 0, 1)
 gpu:setForeground(0.75, 0.1, 0, 1)
