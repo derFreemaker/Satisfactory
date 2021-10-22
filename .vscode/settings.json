@@ -1,0 +1,10 @@
+{
+    "Lua.diagnostics.globals": [
+        "computer",
+        "findClass",
+        "component",
+        "event",
+        "filesystem"
+    ],
+    "lua.targetVersion": "5.3"
+}
