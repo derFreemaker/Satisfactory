@@ -22,6 +22,7 @@ local trainStation = component.proxy("97FEF4D44C22F600A77E2C8B74C52B44")
 
 event.listen(loopStationButton)
 event.listen(trainSelectButton)
+event.listen(allTrainStopButton)
 local addCheck = false
 local switchSet = false
 local trainSelectPotentValSave = 1
@@ -29,8 +30,7 @@ local trainSelectPotentValSave = 1
 trainSelectButton:setColor(0.5, 0.5, 0.5, 0.1)
 local tSelectButtonPressed = false
 
-trainSpeedGuage.limit = 200
-trainSpeedGuage.percent = 75
+trainSpeedGuage.limit = 150
 
 while true do
     local e, s = event:pull()
@@ -38,7 +38,7 @@ while true do
         local trains = trackGraph:getTrains()
         local stations = trackGraph:getStations()
             for i = 1, #trains do
-                TimeTables = {trains[i]:getTimeTable()}
+                TimeTable = trains[i]:getTimeTable()
                 if stations[i].name == "Looping Station" then
                     LoopStation = stations[i]
                 end
@@ -48,20 +48,17 @@ while true do
     if s == loopStationButton then
         print("buttonPressed")
         for i = 1, #trains do
-            if trains[i]:getTimeTable().numStops == 1 and addCheck == false then
-                TimeTables[i]:addStop(1, LoopStation, 0.1)
+            if TimeTable.numStops == 1 then
+                print(TimeTable:addStop(1, LoopStation, 0.1))
                 loopStationButton:setColor(0, 1, 0, 0.5)
                 print("added")
-                addCheck = true
-            elseif TimeTables.numStops ~= 1 and addCheck == false then
+            elseif TimeTable.numStops ~= 1 then
                 loopStationButton:setColor(1, 0, 0, 0.5)
                 print("none added")
-                addCheck = true
             end
          end
     end
 
-addCheck = false
 --TrainSelectSystem
 
     local targetedTrainNum = trainSelectPotent.value
@@ -89,14 +86,22 @@ addCheck = false
             SelectedTrain:setSelfDriving(stopTrainSwitch.state)
             print("Train Stop Switch State =", stopTrainSwitch.state)
         end
-
+        
+        trainSpeedGuage.percent = SelectedTrain:getFirst():getMovement().speed/7500
+    
         if SelectedTrain.isSelfDriving == true then
             trainSelectButton:setColor(0, 1, 0, 0.5)
         else
             trainSelectButton:setColor(1, 0, 0, 0.5)
         end
     end
---Speed
-    
+--StopAll
+
+    if s == allTrainStopButton then
+        for i = 1, #trains do
+            trains[i]:setSelfDriving(not trains[i].isSelfDriving)
+        end
+    end
+
 
 end
