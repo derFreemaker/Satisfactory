@@ -170,8 +170,9 @@ local function Send(SenderName, deviceID, content, content2)
     if string.match(SenderName, "Server") then
         Port = 1874
     else
-        Port = 5647
+        Port = 4535
     end
+
     network.send(network, deviceID, Port, content, content2)
 end
 

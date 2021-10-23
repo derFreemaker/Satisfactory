@@ -90,9 +90,17 @@ end
 
 --#endregion
 
-local function Send()
+local function Send(SenderName)
     data.result = "switched"
-    network.send(network, sender.ID, 4535, action.device, data.result, data.option)
+
+    local Port = 1111;
+    if string.match(SenderName, "Server") then
+        Port = 1874
+    else
+        Port = 4535
+    end
+
+    network.send(network, sender.ID, Port, action.device, data.result, data.option)
 end
 
 local function Create()
@@ -136,5 +144,5 @@ while true do
         computer.reset();
     end
 
-    Send()
+    Send(sender.name)
 end

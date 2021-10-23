@@ -25,7 +25,6 @@ local data = {
     option = "",
     result = ""
 }
-
 --#endregion
 
 --#region Serialize
@@ -98,7 +97,7 @@ end
 
 local function DataRequest(tableName)
     local Sender = {
-        name = "SwitchServer",
+        name = "SenarioServer",
         ID = "None"
     };
 
@@ -114,28 +113,29 @@ local function DataRequest(tableName)
     };
 
     network.send(network, "402BC1854D31D5AAC708E7B94FC04E65", "1465", Serialize(Sender, Action, Data), Sender.name, Action.server)
-    local S, D, s, p, answer = event.pull()
+    local S, D, s, p, table, answer = event.pull()
+    print("got Devices for Table:", tableName)
     return answer
 end
 
 local function switchSwitch(tableName, switchName, state)
-    local Sender = {
+    local Sender2 = {
         name = "SenarioServer",
         ID = "None"
     };
 
-    local Action = {
+    local Action2 = {
         server = "SwitchServer",
-        device = tableName..switchName,
+        device = tableName.."+"..switchName,
         ID = ""
     };
 
-    local Data = {
+    local Data2 = {
         option = state,
         result = ""
     };
-
-    network.send(network, "EAE21CA74C17FEFAB3EA578AB25EEA02", 1325, Serialize(Sender, Action, Data))
+print("switching "..switchName.." ...")
+    network.send(network, "EAE21CA74C17FEFAB3EA578AB25EEA02", 1325, Serialize(Sender2, Action2, Data2))
 
     local S, D, s, p, name, result = event.pull()
     
@@ -150,7 +150,7 @@ local function switchSwitch(tableName, switchName, state)
         if result == "switched" then
             print(name, result)
         else
-            print(name, "failed")
+            print(name, "failed2")
         end
     end
 end
@@ -166,12 +166,20 @@ while true do
 
     Deserialize(Data)
 
+    print(sender.name..":", action.device, data.option)
+
     if action.device == "Productions" then
         local devicesSerialized = DataRequest("Production")
-        local devices = Split(devicesSerialized, "/")
-        for _, d in pairs(devices) do
-            local device = Split(d, "+")
-            switchSwitch("Production", device[1], data.option)
+
+        local Devices = Split(devicesSerialized, "/")
+        local i = 0
+        for _, D in pairs(Devices) do
+            local Device = Split(D, "+")
+            if i == 1 then
+                 switchSwitch("Production", Device[1], data.option)
+            else
+                 i = 1
+            end
         end
     end
 end
