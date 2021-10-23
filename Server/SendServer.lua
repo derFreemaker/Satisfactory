@@ -90,9 +90,19 @@ end
 
 --#endregion
 
-local function Send()
-    network.send(network, action.ID, 5647, Serialize(sender, action, data))
-    network.send(network, sender.ID, 4535, "SendServer", data.result, data.option)
+local function Send(SenderName, ActionDevice)
+    local Port = 1111;
+    if string.match(SenderName, "Server") then
+        Port = 1874
+    else
+        Port = 4535
+    end
+
+    if string.match(ActionDevice, "Switch") then
+        network:send(action.ID, 5647, Serialize(sender, action, data))
+    end
+
+    network:send(sender.ID, Port, "SendServer", data.result, data.option)
 end
 
 print("started")
@@ -101,6 +111,6 @@ while true do
 
     Deserialize(Data)
 
-    print(action.device, "option: >" .. data.option .. "<", " result: >" .. data.result .. "<", sender.name)
-    Send()
+    print(action.device, "option: >" .. data.option .. "<", " result: >" .. data.result .. "<", sender.name..":", sender.ID)
+    Send(sender.name, action.device)
 end

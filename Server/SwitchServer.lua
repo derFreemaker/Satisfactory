@@ -113,6 +113,7 @@ local function DataRequest(tableName, deviceName)
     Data.option = tableName.."+"..deviceName;
 
     network.send(network, "402BC1854D31D5AAC708E7B94FC04E65", "1465", Serialize(Sender, Action, Data), Sender.name, Action.server)
+
     local S, D, s, p, switchID = event.pull()
     return switchID
 end
@@ -125,7 +126,7 @@ local function Send(deviceID, deviceName)
     action.ID = deviceID
     data.result = "working"
     action.device = deviceName
-    network.send(network, "C5E11D73425FFC44DD3B5B954CDA7F9C", 1245, Serialize(sender, action, data))
+    network:send("C5E11D73425FFC44DD3B5B954CDA7F9C", 1245, Serialize(sender, action, data))
 end
 
 print("started")
@@ -136,9 +137,9 @@ while true do
 
     local deviceContent = Split(action.device, "+")
 
-    print(deviceContent[2], "option: >" .. data.option .. "<", "from", sender.name)
-
     local SwitchID = DataRequest(deviceContent[1], deviceContent[2]);
+
+    print(deviceContent[2]..":", SwitchID, "option: >" .. data.option .. "<", "from", sender.name)
 
     Send(SwitchID, deviceContent[2]);
 end

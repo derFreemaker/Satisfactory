@@ -91,8 +91,9 @@ end
 
 --#region Functions
 
-local function Send(deviceID, Port, Data)
-    network.send(network, deviceID, Port, Data, sender.name, action.server)
+local function Send(result)
+    data.result = "Switches failed: "..result
+    network:send("C5E11D73425FFC44DD3B5B954CDA7F9C", 1245, Serialize(sender, action, data))
 end
 
 local function DataRequest(tableName)
@@ -144,14 +145,18 @@ local function switchSwitch(tableName, switchName, state)
         local S, D, s, p, name, result = event.pull()
         if result == "switched" then
             print(name, result)
+            return 0
         else
             print(name, "failed")
+            return 1
         end
     else
         if result == "switched" then
             print(name, result)
+            return 0
         else
             print(name, "failed2")
+            return 1
         end
     end
 end
@@ -174,13 +179,16 @@ while true do
 
         local Devices = Split(devicesSerialized, "/")
         local i = 0
+        Failed = 0;
         for _, D in pairs(Devices) do
             local Device = Split(D, "+")
             if i == 1 then
-                switchSwitch("Production", Device[1], data.option)
+                Failed = Failed + switchSwitch("Production", Device[1], data.option)
             else
                 i = 1
             end
         end
+    else
+        Send(Failed)
     end
 end

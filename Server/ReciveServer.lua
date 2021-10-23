@@ -112,7 +112,7 @@ while true do
         sender.ID = s
     end
 
-    print(action.device, "option: >" .. data.option .. "<", "from", sender.name)
+    print(action.device, "option: >" .. data.option .. "<", "from", sender.name..":", sender.ID)
 
     if action.server == "SwitchServer" then
         Send(SwitchServer)
