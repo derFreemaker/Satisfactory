@@ -139,10 +139,10 @@ local function switchSwitch(tableName, switchName, state)
     print(switchName.." switching".." ...")
     network:send("EAE21CA74C17FEFAB3EA578AB25EEA02", 1325, Serialize(Sender2, Action2, Data2))
 
-    local S, D, s, p, name, result = event.pull()
+    local S, D, s, p, name, result = event.pull(0.25)
     
     if result == "working" then
-        local S, D, s, p, name, result = event.pull()
+        local S, D, s, p, name, result = event.pull(0.25)
         if result == "switched" then
             print(name, result)
             return 0
@@ -188,7 +188,7 @@ while true do
                 i = 1
             end
         end
-    else
-        Send(Failed)
     end
+    
+    Send(Failed)
 end
