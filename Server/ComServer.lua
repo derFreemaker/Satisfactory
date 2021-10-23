@@ -110,14 +110,14 @@ print("started")
 while true do
     local S, D, s, p, Data, ServerSenderName, ServerName = event.pull()
 
-    print(ServerSenderName.." >"..Data.."< />"..ServerName)
-
     Deserialize(Data)
 
     if sender.ID == "None" then
         sender.ID = s
     end
 
+    print(ServerSenderName.." >"..Serialize(sender, action, data).."< />"..ServerName)
+    
     if ServerName == "SwitchServer" then
         Send(SwitchServer, Serialize(sender, action, data))
     end

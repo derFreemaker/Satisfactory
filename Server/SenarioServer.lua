@@ -39,7 +39,6 @@ end
 
 local function inTabelSerialized(f)
     local table = Split(f, "/")
-    print(table[1]..">"..table[2])
     local t = Split(table[2], ",")
     for _,d in pairs(t) do
         local content = Split(d, ":")
@@ -119,7 +118,7 @@ local function DataRequest(tableName)
     return answer
 end
 
-local function switchSwitch(switchName, state)
+local function switchSwitch(tableName, switchName, state)
     local Sender = {
         name = "SenarioServer",
         ID = "None"
@@ -127,7 +126,7 @@ local function switchSwitch(switchName, state)
 
     local Action = {
         server = "SwitchServer",
-        device = switchName,
+        device = tableName..switchName,
         ID = ""
     };
 
@@ -172,7 +171,7 @@ while true do
         local devices = Split(devicesSerialized, "/")
         for _, d in pairs(devices) do
             local device = Split(d, "+")
-            switchSwitch(device[1], data.option)
+            switchSwitch("Production", device[1], data.option)
         end
     end
 end

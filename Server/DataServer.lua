@@ -194,8 +194,8 @@ local function Load()
         local table = Split(t, "/")
         if table[1] == "Production" then
             local Devices = Split(table[2], ",")
+            local i = 0
             for _, value in pairs(Devices) do
-                local i = 0
                 if i == 1 then
                     local Device = Split(value, ":")
                     CreateDevice(Production, "Production", Device[1], Device[2])

@@ -121,11 +121,10 @@ end
 
 --#endregion
 
-local function Send(deviceID)
+local function Send(deviceID, deviceName)
     action.ID = deviceID
     data.result = "working"
-    local deviceName = Split(action.device, "+")
-    action.device = deviceName[2]
+    action.device = deviceName
     network.send(network, "C5E11D73425FFC44DD3B5B954CDA7F9C", 1245, Serialize(sender, action, data))
 end
 
@@ -141,5 +140,5 @@ while true do
 
     local SwitchID = DataRequest(deviceContent[1], deviceContent[2]);
 
-    Send(SwitchID);
+    Send(SwitchID, deviceContent[2]);
 end

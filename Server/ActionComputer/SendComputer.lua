@@ -99,8 +99,13 @@ if result == "working" then
     print(name, result)
 elseif name == "table" then
     local Devices = Split(result, "/")
+    local i = 0
     for _, D in pairs(Devices) do
         local Device = Split(D, "+")
-        print(Device[1]..": "..Device[2])
+        if i == 1 then
+            print(Device[1]..": "..Device[2])
+        else
+            i = 1
+        end
     end
 end
