@@ -1,5 +1,3 @@
-event.pull(2)
-
 --#region initialize
 
 --#region Network Card
@@ -121,14 +119,27 @@ local function Create()
         result = ""
     }
 
-    network.send(network, "EAE21CA74C17FEFAB3EA578AB25EEA02", 1325, Serialize(Sender, Action, Data));
-    print("created")
+    local answer = "adding";
+    while answer == "adding" do
+        event.pull(2)
+
+        network.send(network, "EAE21CA74C17FEFAB3EA578AB25EEA02", 1325, Serialize(Sender, Action, Data));
+
+        local S, D, s, p, result = event.pull()
+        if result == "added" then
+            print("created")
+            answer = result
+        elseif result == "exists" then
+            print("allready exists")
+            answer = result
+        end
+    end
 end
 
 local switch = component.proxy("")
 
 Create()
-
+print("started")
 while true do
     local S, D, s, p, Data = event.pull()
     

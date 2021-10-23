@@ -2,7 +2,7 @@
 
 --#region Network Card
 local network = computer.getPCIDevices(findClass("NetworkCard"))[1]
-network.open(network, 5647)
+network.open(network, 4535)
 event.listen(network)
 --#endregion
 
@@ -13,13 +13,13 @@ local sender = {
 }
 
 local action = {
-    server = "DataServer",
-    device = "get",
+    server = "SwitchServer",
+    device = "Main+SwitchMain",
     ID = ""
 }
 
 local data = {
-    option = "Production+SwitchCopper",
+    option = "true",
     result = ""
 }
 --#endregion
@@ -90,7 +90,7 @@ end
 --#endregion
 
 print("sending...")
-network.send(network, "EAE21CA74C17FEFAB3EA578AB25EEA02", 1325, Serialize(sender, action,data))
+network:send("EAE21CA74C17FEFAB3EA578AB25EEA02", 1325, Serialize(sender, action,data))
 print("sended")
 local S, D, s, p, name, result = event.pull()
 print(name, result)

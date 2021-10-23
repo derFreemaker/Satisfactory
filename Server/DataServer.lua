@@ -123,19 +123,36 @@ local function Save()
     file:close()
 end
 
-local function CreateDevice(table, tableName, name, ID)
+local function CreateDevice(table, tableName, name, ID, File)
+    local result = "adding"
     for _, D in pairs(table) do
-        if (D.name == name) then
-            return
+        if D.name == name then
+            result = "exists"
         end
     end
 
-    local device = {
-        name = name,
-        ID = ID
-    }
-    table[#table+1] = device;
-    print("created Device: "..name..": "..ID.." to "..tableName);
+    if result == "adding" then
+        local device = {
+            name = name,
+            ID = ID
+        }
+
+        table[#table+1] = device;
+        
+        print("created Device: "..name..": "..ID.." to "..tableName);
+        result = "added";
+    end    
+
+    if File == false then
+        local Port = 1111;
+        if string.match(name, "Switch") then
+            Port = 5647
+        else
+            Port = 4535
+        end
+
+        network:send(sender.ID, Port, result)
+    end
 end
 
 local function RemoveDevice(table, name)
@@ -199,7 +216,7 @@ local function Load()
             for _, value in pairs(Devices) do
                 if i == 1 then
                     local Device = Split(value, ":")
-                    CreateDevice(Production, "Production", Device[1], Device[2])
+                    CreateDevice(Production, "Production", Device[1], Device[2], true)
                 else
                     i = 1
                 end
@@ -210,7 +227,7 @@ local function Load()
             for _, value in pairs(Devices) do
                 if i == 1 then
                     local Device = Split(value, ":")
-                    CreateDevice(Main, "Main", Device[1], Device[2])
+                    CreateDevice(Main, "Main", Device[1], Device[2], true)
                 else
                     i = 1
                 end
@@ -221,7 +238,7 @@ local function Load()
             for _, value in pairs(Devices) do
                 if i == 1 then
                     local Device = Split(value, ":")
-                    CreateDevice(Power, "Power", Device[1], Device[2])
+                    CreateDevice(Power, "Power", Device[1], Device[2], true)
                 else
                     i = 1
                 end
@@ -258,15 +275,15 @@ while true do
         end
 
         if content[1] == "Production" then
-           CreateDevice(Production, "Production", content[2], content[3]);
+           CreateDevice(Production, "Production", content[2], content[3], false);
         end
     
         if content[1] == "Main" then
-           CreateDevice(Main, "Main", content[2], content[3]);
+           CreateDevice(Main, "Main", content[2], content[3], false);
         end
 
         if content[1] == Power then
-           CreateDevice(Power, "Power", content[2], content[3]);
+           CreateDevice(Power, "Power", content[2], content[3], false);
         end
     elseif action.device == "get" then
         local content = Split(data.option, "+");

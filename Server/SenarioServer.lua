@@ -134,8 +134,9 @@ local function switchSwitch(tableName, switchName, state)
         option = state,
         result = ""
     };
-print("switching "..switchName.." ...")
-    network.send(network, "EAE21CA74C17FEFAB3EA578AB25EEA02", 1325, Serialize(Sender2, Action2, Data2))
+
+    print(switchName.." switching".." ...")
+    network:send("EAE21CA74C17FEFAB3EA578AB25EEA02", 1325, Serialize(Sender2, Action2, Data2))
 
     local S, D, s, p, name, result = event.pull()
     
@@ -176,9 +177,9 @@ while true do
         for _, D in pairs(Devices) do
             local Device = Split(D, "+")
             if i == 1 then
-                 switchSwitch("Production", Device[1], data.option)
+                switchSwitch("Production", Device[1], data.option)
             else
-                 i = 1
+                i = 1
             end
         end
     end

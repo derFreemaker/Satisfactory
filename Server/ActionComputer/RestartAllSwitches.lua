@@ -88,5 +88,5 @@ end
 --#endregion
 
 print("sending...")
-network.broadcast(network, 5647, Serialize(sender, action,data))
+network:broadcast(5647, Serialize(sender, action,data))
 print("sended")
