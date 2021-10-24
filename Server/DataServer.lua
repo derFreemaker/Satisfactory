@@ -123,11 +123,35 @@ local function Save()
     file:close()
 end
 
+local function RemoveDeviceWithName(tableObject, name)
+    local num = 0;
+    for _, D in pairs(tableObject) do
+        if D.name == name then
+            num = _;
+            break;
+        end
+    end
+    table.remove(tableObject, num);
+end
+
+local function RemoveDeviceWithID(tableObject, ID)
+    local num = 0;
+    for _, D in pairs(tableObject) do
+        if D.ID == ID then
+            num = _;
+            break;
+        end
+    end
+    table.remove(tableObject, num);
+end
+
 local function CreateDevice(table, tableName, name, ID, File)
     local result = "adding"
     for _, D in pairs(table) do
         if D.name == name then
             result = "exists"
+        elseif D.ID == ID then
+            RemoveDeviceWithID(table, name)
         end
     end
 
@@ -153,17 +177,6 @@ local function CreateDevice(table, tableName, name, ID, File)
 
         network:send(sender.ID, Port, result)
     end
-end
-
-local function RemoveDevice(table, name)
-    local num = 0;
-    for _, D in pairs(table) do
-        if D.name == name then
-            num = _;
-            break;
-        end
-    end
-    table.remove(table, num);
 end
 
 local function GetDevice(table, name)
