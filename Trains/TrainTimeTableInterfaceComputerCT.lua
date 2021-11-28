@@ -42,8 +42,8 @@ local defaltLoopStationRules = {
 }
 local success, result
 
-local function addStop(TimeTable, index, Station, RuleSet)
-    TimeTable:addStop(index, Station, RuleSet)
+local function addStop(timeTable, index, station, ruleSet)
+    return timeTable:addStop(index, station, ruleSet)
 end
 
 local function setSelfDriving(train, state)
@@ -59,19 +59,21 @@ local function lsa (trains)
         if TimeTable.numStops == 1 then
             success, result = pcall(addStop, TimeTable, 1, LoopStation, defaltLoopStationRules)
             if success then
-                loopStationButton:setColor(0, 1, 0, 0.5)
+                if result then
+                    print("Added Looping Station to Train: "..trains[i]:getName())
+                end
                 added = added + 1
             else
                 print("failed to add Looping Station to Timetable of Train: "..trains[i]:getName().." with Error: "..result)
             end
-        elseif TimeTable.numStops ~= 1 then
-            loopStationButton:setColor(1, 0, 0, 0.5)
         end
     end
     if added >= 1 then
         print("added: "..added)
+        loopStationButton:setColor(0, 1, 0, 0.5)
     else
         print("none added")
+        loopStationButton:setColor(1, 0, 0, 0.5)
     end
 end
 
