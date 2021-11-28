@@ -32,6 +32,33 @@ local tSelectButtonPressed = false
 
 trainSpeedGuage.limit = 150
 
+local LoopStation
+local SelectedTrain
+local TimeTable
+
+local function lsa (s, trains)
+    if s == loopStationButton then
+        print("buttonPressed")
+        for i = 1, #trains do
+            if TimeTable.numStops == 1 then
+                if pcall(TimeTable:addStop(), 1, LoopStation, 0.1) then
+                    loopStationButton:setColor(0, 1, 0, 0.5)
+                    print("added")
+                else
+                    print("Fail to add Looping Station to Timetable ")
+                end
+            elseif TimeTable.numStops ~= 1 then
+                loopStationButton:setColor(1, 0, 0, 0.5)
+                print("none added")
+            end
+         end
+    end
+end
+
+local function setSelfDriving(train, state)
+    train:setSelfDriving(state)
+end
+
 while true do
     local e, s = event:pull()
     local trackGraph = trainStation:getTrackGraph()
@@ -43,21 +70,12 @@ while true do
                     LoopStation = stations[i]
                 end
             end
-    
 
-    if s == loopStationButton then
-        print("buttonPressed")
-        for i = 1, #trains do
-            if TimeTable.numStops == 1 then
-                print(TimeTable:addStop(1, LoopStation, 0.1))
-                loopStationButton:setColor(0, 1, 0, 0.5)
-                print("added")
-            elseif TimeTable.numStops ~= 1 then
-                loopStationButton:setColor(1, 0, 0, 0.5)
-                print("none added")
-            end
-         end
-    end
+if pcall(lsa, s, trains) then
+ --no action
+else
+ print("LSA Fail")
+end
 
 --TrainSelectSystem
 
@@ -83,8 +101,11 @@ while true do
 
     if tSelectButtonPressed == true then
         if s == stopTrainSwitch then
-            SelectedTrain:setSelfDriving(stopTrainSwitch.state)
-            print("Train Stop Switch State =", stopTrainSwitch.state)
+            if pcall(setSelfDriving, SelectedTrain, stopTrainSwitch.state) then
+                print("Train Stop Switch State =", stopTrainSwitch.state)
+            else
+                print("Fail by setting SelfDriving on Train: " .. SelectedTrain:getName())
+            end
         end
         
         trainSpeedGuage.percent = SelectedTrain:getFirst():getMovement().speed/7500
@@ -99,9 +120,11 @@ while true do
 
     if s == allTrainStopButton then
         for i = 1, #trains do
-            trains[i]:setSelfDriving(not trains[i].isSelfDriving)
+            if pcall(setSelfDriving, trains[i], not trains[i].isSelfDriving) then
+                --no action
+            else
+                print("Swiching failed on Train: ".. trains[i]:getName())
+            end
         end
     end
-
-
 end
