@@ -38,19 +38,24 @@ local TimeTable
 
 local function lsa (s, trains)
     if s == loopStationButton then
-        print("buttonPressed")
+        print("LSA Process started")
+        local added = 0
         for i = 1, #trains do
             if TimeTable.numStops == 1 then
                 if pcall(TimeTable:addStop(), 1, LoopStation, 0.1) then
                     loopStationButton:setColor(0, 1, 0, 0.5)
-                    print("added")
+                    added = added + 1
                 else
                     print("Fail to add Looping Station to Timetable ")
                 end
             elseif TimeTable.numStops ~= 1 then
                 loopStationButton:setColor(1, 0, 0, 0.5)
-                print("none added")
             end
+         end
+         if added >= 1 then
+             print("added: "..added)
+         else
+             print("none added")
          end
     end
 end
@@ -74,7 +79,7 @@ while true do
 if pcall(lsa, s, trains) then
  --no action
 else
- print("LSA Fail")
+ print("LSA failed")
 end
 
 --TrainSelectSystem
@@ -101,7 +106,7 @@ end
 
     if tSelectButtonPressed == true then
         if s == stopTrainSwitch then
-            if pcall(setSelfDriving, SelectedTrain, stopTrainSwitch.state) then
+            if pcall(setSelfDriving(), SelectedTrain, stopTrainSwitch.state) then
                 print("Train Stop Switch State =", stopTrainSwitch.state)
             else
                 print("Fail by setting SelfDriving on Train: " .. SelectedTrain:getName())
@@ -120,7 +125,7 @@ end
 
     if s == allTrainStopButton then
         for i = 1, #trains do
-            if pcall(setSelfDriving, trains[i], not trains[i].isSelfDriving) then
+            if pcall(setSelfDriving(), trains[i], not trains[i].isSelfDriving) then
                 --no action
             else
                 print("Swiching failed on Train: ".. trains[i]:getName())
