@@ -32,36 +32,47 @@ local tSelectButtonPressed = false
 
 trainSpeedGuage.limit = 150
 
-local LoopStation
-local SelectedTrain
-local TimeTable
+local LoopStation, SelectedTrain, TimeTable
+local defaltLoopStationRules = {
+    definition = 0,
+    duration = 0.1,
+    isDurationAndRule = false,
+    loadFilters = {},
+    unloadFilters = {}
+}
+local success, result
 
-local function lsa (s, trains)
-    if s == loopStationButton then
-        print("LSA Process started")
-        local added = 0
-        for i = 1, #trains do
-            if TimeTable.numStops == 1 then
-                if pcall(TimeTable:addStop(), 1, LoopStation, 0.1) then
-                    loopStationButton:setColor(0, 1, 0, 0.5)
-                    added = added + 1
-                else
-                    print("Fail to add Looping Station to Timetable ")
-                end
-            elseif TimeTable.numStops ~= 1 then
-                loopStationButton:setColor(1, 0, 0, 0.5)
-            end
-         end
-         if added >= 1 then
-             print("added: "..added)
-         else
-             print("none added")
-         end
-    end
+local function addStop(TimeTable, index, Station, RuleSet)
+    TimeTable:addStop(index, Station, RuleSet)
 end
 
 local function setSelfDriving(train, state)
     train:setSelfDriving(state)
+end
+
+local function lsa (trains)
+    print("LSA Process started")
+    local added = 0
+    for i = 1, #trains do
+        TimeTable = trains[i]:getTimeTable()
+        print(trains[i]:getName()..":"..TimeTable.numStops)
+        if TimeTable.numStops == 1 then
+            success, result = pcall(addStop, TimeTable, 1, LoopStation, defaltLoopStationRules)
+            if success then
+                loopStationButton:setColor(0, 1, 0, 0.5)
+                added = added + 1
+            else
+                print("failed to add Looping Station to Timetable of Train: "..trains[i]:getName().." with Error: "..result)
+            end
+        elseif TimeTable.numStops ~= 1 then
+            loopStationButton:setColor(1, 0, 0, 0.5)
+        end
+    end
+    if added >= 1 then
+        print("added: "..added)
+    else
+        print("none added")
+    end
 end
 
 while true do
@@ -75,11 +86,9 @@ while true do
                     LoopStation = stations[i]
                 end
             end
-
-if pcall(lsa, s, trains) then
- --no action
-else
- print("LSA failed")
+if s == loopStationButton then
+    success, result = pcall(lsa, trains)
+    if not success then print("LSA failed: "..result) end
 end
 
 --TrainSelectSystem
@@ -89,7 +98,6 @@ end
 
     if s == trainSelectPotent then
         trainSelectPotent.max = #trains
-        --print("trainSelectPotentiometer Max Value:", trainSelectPotent.max)
     end
 
     if s == trainSelectButton then
@@ -106,11 +114,8 @@ end
 
     if tSelectButtonPressed == true then
         if s == stopTrainSwitch then
-            if pcall(setSelfDriving(), SelectedTrain, stopTrainSwitch.state) then
-                print("Train Stop Switch State =", stopTrainSwitch.state)
-            else
-                print("Fail by setting SelfDriving on Train: " .. SelectedTrain:getName())
-            end
+            success, result = pcall(setSelfDriving, SelectedTrain, stopTrainSwitch.state)
+            if not success then print("failed to set SelfDriving on Train: " .. SelectedTrain:getName().." with Error: "..result) end
         end
         
         trainSpeedGuage.percent = SelectedTrain:getFirst():getMovement().speed/7500
@@ -125,11 +130,8 @@ end
 
     if s == allTrainStopButton then
         for i = 1, #trains do
-            if pcall(setSelfDriving(), trains[i], not trains[i].isSelfDriving) then
-                --no action
-            else
-                print("Swiching failed on Train: ".. trains[i]:getName())
-            end
+            success, result = pcall(setSelfDriving, trains[i], not trains[i].isSelfDriving)
+            if not success then print("failed to set Self Driving by Train: "..trains[i]:getName().." with Error: "..result) end
         end
     end
 end
