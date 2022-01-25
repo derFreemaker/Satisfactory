@@ -1,17 +1,3 @@
---#region initialize
-
---#region Network Card
-local network = computer.getPCIDevices(findClass("NetworkCard"))[1]
-network.open(network, 7654)
-event.listen(network)
---#endregion
-
---#region Tables
-
-local Nodes = {}
-
---#endregion
-
 --#region Serialization
 
 local serialize
@@ -60,17 +46,3 @@ local function Deserialize(str)
 end
 
 --#endregion
-
---#endregion
-
-local function Main()
-    local S, D, s, p, Action, Data = event.pull()
-    if Action == "create" then
-        local node = Deserialize(Data)
-        table.insert(Nodes, node)
-    end
-
-    
-end
-
-Main()
