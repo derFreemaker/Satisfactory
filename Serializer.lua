@@ -1,18 +1,4 @@
---#region initialize
-
---#region Network Card
-local network = computer.getPCIDevices(findClass("NetworkCard"))[1]
-network.open(network, 7654)
-event.listen(network)
---#endregion
-
---#region Tables
-
-local Nodes = {}
-
---#endregion
-
---#region Serialization
+local Serialize = {}
 
 local serialize
 
@@ -51,26 +37,16 @@ serialize = function(x, stk)
   return serialize_map[type(x)](x, stk)
 end
 
-local function Serialize(x)
+function Serialize:serialize(x)
   return serialize(x)
 end
 
-local function Deserialize(str)
+function Serialize:deserialize(str)
   return dostring("return " .. str)
 end
 
---#endregion
-
---#endregion
-
-local function Main()
-    local S, D, s, p, Action, Data = event.pull()
-    if Action == "create" then
-        local node = Deserialize(Data)
-        table.insert(Nodes, node)
-    end
-
-    
+function Serialize:run()
+  print("!Test Run!")
 end
 
-Main()
+return Serialize

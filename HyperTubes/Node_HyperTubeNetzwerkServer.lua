@@ -1,9 +1,14 @@
+local Node_HyperTubeNetzwerkServer = {}
+
+function Node_HyperTubeNetzwerkServer:run()
 --#region initialize
 
+local Serialize = filesystem.doFile("Serializer.lua")
+
 --#region Network Card
---local network = computer.getPCIDevices(findClass("NetworkCard"))[1]
---network.open(network, 5984)
---event.listen(network)
+local network = computer.getPCIDevices(findClass("NetworkCard"))[1]
+network.open(network, 5984)
+event.listen(network)
 --#endregion
 
 --#endregion
@@ -38,3 +43,6 @@ local function Initialize()
 end
 
 Initialize()
+
+end
+return Node_HyperTubeNetzwerkServer
