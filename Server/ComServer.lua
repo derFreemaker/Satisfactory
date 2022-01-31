@@ -11,7 +11,7 @@ event.listen(network)
 --#region Functions
 
 local function Send(deviceID, Data)
-    network.send(network, deviceID, 1874, Data)
+    network:send(deviceID, 1874, Data)
 end
 
 --#endregion

@@ -1,73 +1,26 @@
-local Main_HyperTubeNetzwerkServer = {}
+local Size = 20
+local Debug = false
+local Aux_screen = false
 
-function Main_HyperTubeNetzwerkServer:run()
+local fs = filesystem
 
---#region initialize
-
---#region Tables
-
-local Nodes = {}
-
---#endregion
-
---#region File System
-
-local Serialize = filesystem.doFile("Serializer.lua")
-
-local function Save()
-  local data = Serialize:serialize(Nodes)
-  local File = filesystem.open("/HyperTubesNodes.Satis", "w")
-  File:write(data)
-  File:close()
+if fs.initFileSystem("/dev") == false then
+    computer.panic("Cannot initialize /dev")
 end
 
-local function Load()
-  local File = filesystem.open("/HyperTubesNodes.Satis", "r")
-  local str = ""
-    while true do
-        local buf = File:read(265)
-        if not buf then
-            break
-        end
-    str = str .. buf
-    end
-  File:close()
-  Nodes = Serialize:deserialize(str)
+local drives = fs.childs("/dev")
+
+local disk_uuid = ""
+
+for idx, drive in pairs(drives) do
+    if drive == "serial" then table.remove(drives, idx)
+    else disk_uuid = drive end
 end
 
---#endregion
+fs.mount("/dev/"..disk_uuid, "/")
 
---#region Network Card
-local network = computer.getPCIDevices(findClass("NetworkCard"))[1]
-network.open(network, 7654)
-event.listen(network)
---#endregion
+print("Current Disk: "..disk_uuid)
 
---#region Functions
+local File = filesystem.doFile("MainHyperTubeNetzwerkServer.lua")
 
-local function createMap()
- 
-end
-
---#endregion
-
---#endregion
-
-local function Main()
-  Load()
-  while true do
-    local S, D, s, p, Action, Data = event.pull()
-    if Action == "create" then
-      local node = Serialize:deserialize(Data)
-      table.insert(Nodes, node)
-    end
-
-    Save()
-  end
-end
-
-Main()
-
-end
-
-return Main_HyperTubeNetzwerkServer
+File:run(Size, Debug, Aux_screen)
