@@ -24,7 +24,7 @@ fs.makeFileSystem("tmpfs", "tmp")
 fs.mount("/dev/"..disk_uuid,"/")
 
 if fs.exists("GithubLoader.lua") == false then
-    local req = networkCard:request("{GithubLoader}", "GET", "")
+    local req = networkCard:request("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/GithubLoader.lua", "GET", "")
     local _, libdata = req:await()
     local file = fs:open("GithubLoader.lua", "w")
     file:write(libdata)
@@ -33,5 +33,10 @@ end
 
 local GithubLoader = fs.doFile("GithubLoader.lua")
 
-GithubLoader:download(1)
+GithubLoader:initialize()
+
+-- Show Options
+--GithubLoader:showOptions()
+
+GithubLoader:download("Test")
 GithubLoader:run(true)

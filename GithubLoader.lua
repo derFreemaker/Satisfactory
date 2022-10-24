@@ -11,8 +11,15 @@ local setupFile = {}
 local options = {}
 
 function GithubLoader:initialize()
-    options[1] = "https://" --HyperTubeNetworkMainServer
-    options[2] = "https://" --HyperTubeNetworkNodeServer
+    options["Test"] = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Test.lua"
+    --options["HyperTubeNetworkMainServer"] = "https://"
+    --options["HyperTubeNetworkNodeServer"] = "https://"
+end
+
+function GithubLoader:showOptions()
+    for name, url in pairs(options) do
+        print(name.."->"..url)
+    end
 end
 
 local function internalDownload(url)
@@ -28,6 +35,9 @@ end
 
 function GithubLoader:download(option)
     local url = options[option]
+    if url == nil then
+        computer.panic("could not find option")
+    end
     internalDownload(url)
 end
 
