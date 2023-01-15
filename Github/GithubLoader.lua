@@ -49,6 +49,13 @@ GithubLoader.options = {}
 function GithubLoader:loadOptions()
     internalDownload("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Github/Options.lua", "options.lua")
     self.options = filesystem.doFile("options.lua")
+
+    local formatedOptions = {}
+    for name, url in pairs(self.options) do
+        formatedOptions[name:gsub("_", "/")] = url
+    end
+    self.options = formatedOptions
+
     print("INFO! loaded options")
 end
 
