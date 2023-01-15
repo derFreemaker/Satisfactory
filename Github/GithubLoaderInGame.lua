@@ -32,17 +32,21 @@ filesystem.mount("/dev/" .. drive, "/")
 print("INFO! Loaded filesystem on drive: " .. drive)
 
 if filesystem.exists("GithubLoader.lua") == false then
+	print("INFO! downloading Github loader...")
     local req = InternetCard:request("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Github/GithubLoader.lua", "GET", "")
     local _, libdata = req:await()
     local file = filesystem.open("GithubLoader.lua", "w")
     file:write(libdata)
     file:close()
+	print("INFO! downloaded Github loader")
+else
+	print("INFO! Github loader found")
 end
 
 local GithubLoader = filesystem.doFile("GithubLoader.lua")
 
 -- Show Options
-GithubLoader:showOptions()
+GithubLoader:ShowOptions()
 
 -- Example
 --GithubLoader:download("Test")

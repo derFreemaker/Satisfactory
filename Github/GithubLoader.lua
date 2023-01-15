@@ -9,7 +9,7 @@ GithubLoader.__index = GithubLoader
 local function internalDownload(url, name)
     local req = InternetCard:request(url, "GET", "")
     local _, libdata = req:await()
-    local file = filesystem:open(name, "w")
+    local file = filesystem.open(name, "w")
     file:write(libdata)
     file:close()
 end
@@ -65,11 +65,12 @@ end
 
 function GithubLoader:Download(option)
     if checkVersion(option) then return end
-    print("INFO! downloading files...")
+    print("INFO! downloading info files...")
     self:loadOptionFiles(option)
-    print("INFO! downloaded metadata files")
+    print("INFO! downloaded info files")
+    print("INFO! downloading setup files...")
     downloadSetupFiles()
-    print("INFO! downloaded files!")
+    print("INFO! downloaded setup files!")
 end
 
 function GithubLoader:Run(debug)
