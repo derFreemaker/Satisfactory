@@ -40,8 +40,8 @@ local function loadSetupFiles(newVersion)
     loadGithubFileLoader()
     local fileLoader = filesystem.doFile("GithubFileLoader.lua").new()
     local setupFiles = filesystem.doFile("SetupFiles.lua")
-    fileLoader.DownloadFileTree(setupFiles.Tree, newVersion)
-    print("INFO! loaded setup files!")
+    fileLoader:DownloadFileTree(setupFiles.Tree, newVersion)
+    print("INFO! loaded setup files")
 end
 
 GithubLoader.options = {}
@@ -56,23 +56,24 @@ function GithubLoader:checkOption(option)
     self:loadOptions()
     local url = self.options[option]
     if url == nil then
-        computer.print("ERROR! Could not find option: " .. option)
+        print("ERROR! Could not find option: " .. option)
         return false
     end
     return true
 end
 
 function GithubLoader:loadOptionFiles(option)
-    self:loadOptions()
+    if self:checkOption(option) == false then return false end
     local url = self.options[option]
     internalDownload(url.."/SetupFiles.lua", "SetupFiles.lua")
     internalDownload(url.."/Main.lua", "Main.lua")
-    print("INFO! loaded info files from "..option.." -> "..url)
+    return true
 end
 
 function GithubLoader:ShowOptions()
     self:loadOptions()
     print()
+    print("Options:")
     for name, url in pairs(self.options) do
         if name ~= "__index" then
             print(name.." -> "..url)
@@ -80,16 +81,21 @@ function GithubLoader:ShowOptions()
     end
 end
 
-function GithubLoader:Download(option)
+function GithubLoader:Download(option, force)
     if checkVersion(option) then return end
-    self:loadOptionFiles(option)
-    loadSetupFiles(true)
+    if self:loadOptionFiles(option) == false then return end
+    loadSetupFiles(force)
 end
 
 function GithubLoader:Run(debug)
-    print("INFO! running program...")
+    if debug then
+        print("INFO! running program in debug...")
+    else
+        print("INFO! running program...")
+    end
     print()
     print()
+
     local main = filesystem.doFile("Main.lua")
     main:Run(debug)
 end

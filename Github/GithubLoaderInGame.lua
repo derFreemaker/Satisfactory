@@ -45,7 +45,5 @@ local GithubLoader = filesystem.doFile("GithubLoader.lua")
 GithubLoader:ShowOptions()
 
 -- Example
---GithubLoader:Download("Test")
-
--- Run
---GithubLoader:Run(false)
+--GithubLoader:Download("Test", false)
+--GithubLoader:Run(true)

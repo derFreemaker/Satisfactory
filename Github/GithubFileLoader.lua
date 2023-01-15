@@ -14,12 +14,10 @@ end
 FileLoader.requests = {}
 
 function FileLoader:requestFile(url, path)
-	print("Requests file '" .. path .. "' from '" .. url .. "'")
 	local request = InternetCard:request(url, "GET", "")
 	table.insert(self.requests, {
 		request = request,
 		func = function(req)
-			print("Write file '" .. path .. "'")
 			local file = filesystem.open(path, "w")
 			local code, data = req:get()
 			if code ~= 200 or not data then
@@ -43,7 +41,7 @@ end
 
 function FileLoader:doFile(parentPath, file, force)
 	local path = filesystem.path(parentPath, file[1])
-	if not filesystem.exists(path) and force == false then
+	if not filesystem.exists(path) or force then
 		self:requestFile("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main" .. path, path)
 	end
 end
@@ -58,6 +56,9 @@ function FileLoader:doFolder(parentPath, folder, force)
 end
 
 function FileLoader:loadFiles()
+	if #self.requests ~= 0 then
+		print("INFO! downloading setup files...")
+	end
     while #self.requests > 0 do
         local i = 1
         while i <= #self.requests do
@@ -80,7 +81,6 @@ function FileLoader:requestFileTree(tree, force)
 end
 
 function FileLoader:DownloadFileTree(tree, force)
-	print(tree)
 	if tree == nil then return end
 	self:requestFileTree(tree, force)
 	self:loadFiles()
