@@ -1,3 +1,8 @@
+---
+--- Created by Freemaker
+--- DateTime: 15/01/2023
+---
+
 FileLoader = {}
 FileLoader.__index = FileLoader
 
@@ -38,7 +43,7 @@ end
 
 function FileLoader:doFile(parentPath, file)
 	local path = filesystem.path(parentPath, file[1])
-	self:requestFile("https://raw.githubusercontent.com/Panakotta00/FicsIt-OS/main/" .. path, path)
+	self:requestFile("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main" .. path, path)
 end
 
 function FileLoader:doFolder(parentPath, folder)
@@ -74,7 +79,7 @@ function FileLoader:requestFileTree(tree)
     self:doFolder("", tree)
 end
 
-function FileLoader:Run(tree)
+function FileLoader:downloadFileTree(tree)
 	if tree == nil then return end
 	self:requestFileTree(tree)
 	self:loadFiles()

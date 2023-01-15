@@ -1,19 +1,33 @@
 ---
 --- Created by Freemaker
---- DateTime: 24/10/2022
+--- DateTime: 15/01/2023
 ---
 
+computer.beep(5.0)
+print("Load internet...")
 InternetCard = computer.getPCIDevices(findClass("FINInternetCard"))[1]
-
-if filesystem:initFileSystem("/dev") == false then
-    computer.panic("Cannot initialize /dev")
+if not InternetCard then
+	print("ERROR! No internet-card found! Please install a internet card!")
+	computer.beep(0.2)
+	return
 end
 
-local disk_uuid = filesystem:childs("/dev")[1]
-
+print("Load filesystem...")
 filesystem.initFileSystem("/dev")
-filesystem.makeFileSystem("tmpFs", "tmp")
-filesystem.mount("/dev/"..disk_uuid,"/")
+
+local drive = ""
+for _,f in pairs(filesystem.childs("/dev")) do
+	if not (f == "serial") then
+		drive = f
+		break
+	end
+end
+if drive:len() < 1 then
+	print("ERROR! Unable to find filesystem to install on! Please insert a drive or floppy!")
+	computer.beep(0.2)
+	return
+end
+filesystem.mount("/dev/" .. drive, "/")
 
 if filesystem.exists("GithubLoader.lua") == false then
     local req = InternetCard:request("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Github/GithubLoader.lua", "GET", "")

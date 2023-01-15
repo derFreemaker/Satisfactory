@@ -6,6 +6,12 @@
 SetupFiles = {}
 SetupFiles.__index = SetupFiles
 
-SetupFiles.Tree = nil
+SetupFiles.Tree = {
+    "/",
+    {
+        "libs",
+        {"Serializer.lua"}
+    }
+}
 
 return SetupFiles
