@@ -7,6 +7,6 @@ Info = {}
 Info.__index = Info
 
 Info.Name = "Test"
-Info.Version = 1.0
+Info.Version = "1.0"
 
 return Info

@@ -14,30 +14,39 @@ local function internalDownload(url, name)
     file:close()
 end
 
+local function loadGithubFileLoader()
+    if not filesystem.exists("GithubFileLoader.lua") then
+        print("INFO! downloading Github file loader...")
+        internalDownload("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Github/GithubFileLoader.lua", "GithubFileLoader.lua")
+        print("INFO! downloaded Github file loader")
+    end
+end
+
 local function checkVersion(option)
     if not filesystem.exists("Info.lua") then return false end
+    loadGithubFileLoader()
 
     local currentInfo = filesystem.doFile("Info.lua")
     internalDownload("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/" .. option .. "/Info.lua", "Info.lua")
     local newInfo = filesystem.doFile("Info.lua")
 
     if not currentInfo.Name == newInfo.Name then return false end
-    if currentInfo.Version < newInfo.Version then return false end
+    if currentInfo.Version == newInfo.Version then return false end
 
     return true
 end
 
-local function downloadSetupFiles()
-    internalDownload("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Github/GithubFileLoader.lua", "GithubFileLoader.lua")
+local function loadSetupFiles(newVersion)
+    loadGithubFileLoader()
     local fileLoader = filesystem.doFile("GithubFileLoader.lua").new()
     local setupFiles = filesystem.doFile("SetupFiles.lua")
-    fileLoader.downloadFileTree(setupFiles.Tree)
+    fileLoader.DownloadFileTree(setupFiles.Tree, newVersion)
+    print("INFO! loaded setup files!")
 end
 
 GithubLoader.options = {}
 
 function GithubLoader:loadOptions()
-    print("INFO! loading options...")
     internalDownload("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Github/Options.lua", "options.lua")
     self.options = filesystem.doFile("options.lua")
     print("INFO! loaded options")
@@ -56,10 +65,12 @@ end
 function GithubLoader:loadOptionFiles(option)
     internalDownload("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/" .. option .. "/SetupFiles.lua", "SetupFiles.lua")
     internalDownload("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/" .. option .. "/Main.lua", "Main.lua")
+    print("INFO! loaded info files")
 end
 
 function GithubLoader:ShowOptions()
     self:loadOptions()
+    print()
     for name, url in pairs(self.options) do
         if name ~= "__index" then
             print(name.." -> "..url)
@@ -69,12 +80,8 @@ end
 
 function GithubLoader:Download(option)
     if checkVersion(option) then return end
-    print("INFO! downloading info files...")
     self:loadOptionFiles(option)
-    print("INFO! downloaded info files")
-    print("INFO! downloading setup files...")
-    downloadSetupFiles()
-    print("INFO! downloaded setup files!")
+    loadSetupFiles(true)
 end
 
 function GithubLoader:Run(debug)

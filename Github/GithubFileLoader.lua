@@ -33,30 +33,31 @@ function FileLoader:requestFile(url, path)
 	})
 end
 
-function FileLoader:doEntry(parentPath, entry)
+function FileLoader:doEntry(parentPath, entry, force)
 	if #entry == 1 then
-		self:doFile(parentPath, entry)
+		self:doFile(parentPath, entry, force)
 	else
-		self:doFolder(parentPath, entry)
+		self:doFolder(parentPath, entry, force)
 	end
 end
 
-function FileLoader:doFile(parentPath, file)
+function FileLoader:doFile(parentPath, file, force)
 	local path = filesystem.path(parentPath, file[1])
-	self:requestFile("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main" .. path, path)
+	if not filesystem.exists(path) and force == false then
+		self:requestFile("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main" .. path, path)
+	end
 end
 
-function FileLoader:doFolder(parentPath, folder)
+function FileLoader:doFolder(parentPath, folder, force)
 	local path = filesystem.path(parentPath, folder[1])
 	table.remove(folder, 1)
 	filesystem.createDir(path)
 	for _, child in pairs(folder) do
-		self:doEntry(path, child)
+		self:doEntry(path, child, force)
 	end
 end
 
 function FileLoader:loadFiles()
-    print("Loading files...")
     while #self.requests > 0 do
         local i = 1
         while i <= #self.requests do
@@ -72,16 +73,16 @@ function FileLoader:loadFiles()
             i = i + 1
         end
     end
-    print("loaded files...")
 end
 
-function FileLoader:requestFileTree(tree)
-    self:doFolder("", tree)
+function FileLoader:requestFileTree(tree, force)
+    self:doFolder("", tree, force)
 end
 
-function FileLoader:downloadFileTree(tree)
+function FileLoader:DownloadFileTree(tree, force)
+	print(tree)
 	if tree == nil then return end
-	self:requestFileTree(tree)
+	self:requestFileTree(tree, force)
 	self:loadFiles()
 end
 

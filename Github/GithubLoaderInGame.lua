@@ -4,16 +4,14 @@
 ---
 
 computer.beep(5.0)
-print("INFO! Load internet...")
 InternetCard = computer.getPCIDevices(findClass("FINInternetCard"))[1]
 if not InternetCard then
 	print("ERROR! No internet-card found! Please install a internet card!")
 	computer.beep(0.2)
 	return
 end
-print("INFO! Loaded internet")
+print("INFO! loaded internet")
 
-print("INFO! Load filesystem...")
 filesystem.initFileSystem("/dev")
 
 local drive = ""
@@ -29,7 +27,7 @@ if drive:len() < 1 then
 	return
 end
 filesystem.mount("/dev/" .. drive, "/")
-print("INFO! Loaded filesystem on drive: " .. drive)
+print("INFO! loaded filesystem on drive: " .. drive)
 
 if filesystem.exists("GithubLoader.lua") == false then
 	print("INFO! downloading Github loader...")
@@ -39,8 +37,6 @@ if filesystem.exists("GithubLoader.lua") == false then
     file:write(libdata)
     file:close()
 	print("INFO! downloaded Github loader")
-else
-	print("INFO! Github loader found")
 end
 
 local GithubLoader = filesystem.doFile("GithubLoader.lua")
