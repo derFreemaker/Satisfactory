@@ -79,5 +79,4 @@ function GithubLoader:Run(debug)
     main:Run(debug)
 end
 
-
 return GithubLoader
