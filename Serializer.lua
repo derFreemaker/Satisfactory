@@ -46,8 +46,4 @@ function Serializer:deserialize(str)
   return dostring("return " .. str)
 end
 
-function Serializer:run()
-  print("!Test Run!")
-end
-
 return Serializer
