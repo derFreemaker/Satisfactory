@@ -6,12 +6,14 @@
 GithubLoader = {}
 GithubLoader.__index = GithubLoader
 
-local function internalDownload(url, name)
+local function internalDownload(url, path)
     local req = InternetCard:request(url, "GET", "")
-    local _, libdata = req:await()
-    local file = filesystem.open(name, "w")
-    file:write(libdata)
+    local code, data = req:await()
+    if code ~= 200 or not data then return false end
+    local file = filesystem.open(path, "w")
+    file:write(data)
     file:close()
+    return true
 end
 
 local function loadGithubFileLoader()
@@ -63,7 +65,7 @@ function GithubLoader:checkOption(option)
     self:loadOptions()
     local url = self.options[option]
     if url == nil then
-        print("ERROR! Could not find option: " .. option)
+        print("ERROR! Unable not find option: " .. option)
         return false
     end
     return true
@@ -72,8 +74,14 @@ end
 function GithubLoader:loadOptionFiles(option)
     if self:checkOption(option) == false then return false end
     local url = self.options[option]
-    internalDownload(url.."/SetupFiles.lua", "SetupFiles.lua")
-    internalDownload(url.."/Main.lua", "Main.lua")
+    if not internalDownload(url.."/SetupFiles.lua", "SetupFiles.lua") then
+        print("ERROR! Unable to download setup files data")
+        return false
+    end
+    if not internalDownload(url.."/Main.lua", "Main.lua") then
+        print("ERROR! Unable to download main program file")
+        return false
+    end
     return true
 end
 
@@ -90,7 +98,10 @@ end
 
 function GithubLoader:Download(option, force)
     if checkVersion(option) then return end
-    if self:loadOptionFiles(option) == false then return end
+    if self:loadOptionFiles(option) == false then
+        print("ERROR! Unable to load option files")
+        return
+    end
     loadSetupFiles(force)
 end
 
