@@ -41,13 +41,6 @@ function GithubLoader:loadOptions()
     self.options = dofile("options.lua")
 end
 
-function GithubLoader:showOptions()
-    self:loadOptions()
-    for name, url in pairs(self.options) do
-        print(name.."->"..url)
-    end
-end
-
 function GithubLoader:checkOption(option)
     self:loadOptions()
     local url = self.options[option]
@@ -61,6 +54,13 @@ end
 function GithubLoader:loadOptionFiles(option)
     internalDownload("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/" .. option .. "SetupFiles.lua", "SetupFiles.lua")
     internalDownload("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/" .. option .. "Main.lua", "Main.lua")
+end
+
+function GithubLoader:ShowOptions()
+    self:loadOptions()
+    for name, url in pairs(self.options) do
+        print(name.."->"..url)
+    end
 end
 
 function GithubLoader:Download(option)
@@ -77,3 +77,5 @@ function GithubLoader:Run(debug)
     local main = filesystem.doFile("Main.lua")
     main:Run(debug)
 end
+
+return GithubLoader

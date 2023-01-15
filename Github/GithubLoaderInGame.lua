@@ -11,6 +11,7 @@ if not InternetCard then
 	computer.beep(0.2)
 	return
 end
+print("INFO! Loaded internet")
 
 print("INFO! Load filesystem...")
 filesystem.initFileSystem("/dev")
@@ -28,11 +29,12 @@ if drive:len() < 1 then
 	return
 end
 filesystem.mount("/dev/" .. drive, "/")
+print("INFO! Loaded filesystem on drive: " .. drive)
 
 if filesystem.exists("GithubLoader.lua") == false then
     local req = InternetCard:request("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Github/GithubLoader.lua", "GET", "")
     local _, libdata = req:await()
-    local file = filesystem:open("GithubLoader.lua", "w")
+    local file = filesystem.open("GithubLoader.lua", "w")
     file:write(libdata)
     file:close()
 end
@@ -40,9 +42,10 @@ end
 local GithubLoader = filesystem.doFile("GithubLoader.lua")
 
 -- Show Options
---GithubLoader:showOptions()
+GithubLoader:showOptions()
 
 -- Example
 --GithubLoader:download("Test")
 
-GithubLoader:run(false)
+-- Run
+--GithubLoader:run(false)
