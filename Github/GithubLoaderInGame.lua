@@ -49,7 +49,7 @@ local GithubLoader = filesystem.doFile("GithubLoader.lua")
 GithubLoader:ShowOptions()
 
 -- Example
---GithubLoader:download("Test")
+--GithubLoader:Download("Test")
 
 -- Run
---GithubLoader:run(false)
+--GithubLoader:Run(false)

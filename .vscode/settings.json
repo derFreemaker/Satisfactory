@@ -4,6 +4,7 @@
         "findClass",
         "component",
         "event",
-        "filesystem"
+        "filesystem",
+        "InternetCard"
     ]
 }

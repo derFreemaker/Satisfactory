@@ -30,15 +30,17 @@ end
 local function downloadSetupFiles()
     internalDownload("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Github/GithubFileLoader.lua", "GithubFileLoader.lua")
     local fileLoader = filesystem.doFile("GithubFileLoader.lua").new()
-    local fileTree = filesystem.doFile("SetupFiles.lua").Tree
-    fileLoader.downloadFileTree(fileTree)
+    local setupFiles = filesystem.doFile("SetupFiles.lua")
+    fileLoader.downloadFileTree(setupFiles.Tree)
 end
 
 GithubLoader.options = {}
 
 function GithubLoader:loadOptions()
+    print("INFO! loading options...")
     internalDownload("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Github/Options.lua", "options.lua")
-    self.options = filesystem.dofile("options.lua")
+    self.options = filesystem.doFile("options.lua")
+    print("INFO! loaded options")
 end
 
 function GithubLoader:checkOption(option)
@@ -52,14 +54,16 @@ function GithubLoader:checkOption(option)
 end
 
 function GithubLoader:loadOptionFiles(option)
-    internalDownload("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/" .. option .. "SetupFiles.lua", "SetupFiles.lua")
-    internalDownload("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/" .. option .. "Main.lua", "Main.lua")
+    internalDownload("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/" .. option .. "/SetupFiles.lua", "SetupFiles.lua")
+    internalDownload("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/" .. option .. "/Main.lua", "Main.lua")
 end
 
 function GithubLoader:ShowOptions()
     self:loadOptions()
     for name, url in pairs(self.options) do
-        print(name.."->"..url)
+        if name ~= "__index" then
+            print(name.." -> "..url)
+        end
     end
 end
 
@@ -75,6 +79,8 @@ end
 
 function GithubLoader:Run(debug)
     print("INFO! running program...")
+    print()
+    print()
     local main = filesystem.doFile("Main.lua")
     main:Run(debug)
 end
