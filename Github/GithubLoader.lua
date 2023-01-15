@@ -63,9 +63,11 @@ function GithubLoader:checkOption(option)
 end
 
 function GithubLoader:loadOptionFiles(option)
-    internalDownload("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/" .. option .. "/SetupFiles.lua", "SetupFiles.lua")
-    internalDownload("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/" .. option .. "/Main.lua", "Main.lua")
-    print("INFO! loaded info files")
+    self:loadOptions()
+    local url = self.options[option]
+    internalDownload(url.."/SetupFiles.lua", "SetupFiles.lua")
+    internalDownload(url.."/Main.lua", "Main.lua")
+    print("INFO! loaded info files from "..option.." -> "..url)
 end
 
 function GithubLoader:ShowOptions()

@@ -6,6 +6,6 @@
 Options = {}
 Options.__index = {}
 
-Options.Test = "https://github.com/derFreemaker/Satisfactory/blob/main/Test"
+Options.Test = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Test"
 
 return Options
