@@ -1,10 +1,8 @@
 {
     "Lua.diagnostics.globals": [
-        "computer",
-        "findClass",
-        "component",
         "event",
         "filesystem",
-        "InternetCard"
+        "computer",
+        "findClass"
     ]
 }
