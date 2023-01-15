@@ -5,6 +5,5 @@
         "component",
         "event",
         "filesystem"
-    ],
-    "lua.targetVersion": "5.3"
+    ]
 }

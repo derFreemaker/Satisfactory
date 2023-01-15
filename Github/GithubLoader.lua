@@ -8,13 +8,9 @@ GithubLoader.__index = GithubLoader
 
 local setupFile = {}
 
-local options = {}
-
-function GithubLoader:initialize()
-    options["Test"] = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Test.lua"
-    --options["HyperTubeNetworkMainServer"] = "https://"
-    --options["HyperTubeNetworkNodeServer"] = "https://"
-end
+local options = {
+    Test = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Test"
+}
 
 function GithubLoader:showOptions()
     for name, url in pairs(options) do
@@ -23,24 +19,25 @@ function GithubLoader:showOptions()
 end
 
 local function internalDownload(url)
-    if fs.exists("SetupFile.lua") == false then
-        local req = networkCard:request(url, "GET", "")
+    if filesystem.exists("SetupFile.lua") == false then
+        local req = InternetCard:request(url, "GET", "")
         local _, libdata = req:await()
-        local file = fs:open("SetupFile.lua", "w")
+        local file = filesystem:open("SetupFile.lua", "w")
         file:write(libdata)
         file:close()
     end
-    setupFile = fs:doFile("SetupFile.lua")
 end
 
 function GithubLoader:download(option)
     local url = options[option]
     if url == nil then
-        computer.panic("could not find option")
+        computer.print("ERROR! Could not find option: " .. option)
+        return
     end
     internalDownload(url)
 end
 
 function GithubLoader:run(debug)
+    setupFile = filesystem:doFile("SetupFile.lua")
     setupFile:run(debug)
 end
