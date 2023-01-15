@@ -1,25 +1,25 @@
+---
+--- Created by Freemaker
+--- DateTime: 15/01/2023
+---
+
 Event = {}
 Event.__index = Event
 
 Event.Funcs = {}
 Event.OnceFuncs = {}
 
----@return table
 function Event.new()
     local instance = setmetatable({}, Event)
     return instance
 end
 
----@param listener function
----@return table
 function Event:addListener(listener)
     table.insert(self.Funcs, listener)
     return self
 end
 Event.on = Event.addListener
 
----@param listener function
----@return table
 function Event:addListenerOnce(listener)
     table.insert(self.OnceFuncs, listener)
     return self
