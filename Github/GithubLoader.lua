@@ -38,7 +38,7 @@ GithubLoader.options = {}
 
 function GithubLoader:loadOptions()
     internalDownload("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Github/Options.lua", "options.lua")
-    self.options = dofile("options.lua")
+    self.options = filesystem.dofile("options.lua")
 end
 
 function GithubLoader:checkOption(option)
