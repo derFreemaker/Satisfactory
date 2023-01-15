@@ -1,3 +1,8 @@
+---
+--- Created by Freemaker
+--- DateTime: 15/01/2023
+---
+
 Serializer = {}
 Serializer.__index = Serializer
 
@@ -38,11 +43,11 @@ serialize = function(x, stk)
   return serialize_map[type(x)](x, stk)
 end
 
-function Serializer:serialize(x)
+function Serializer:Serialize(x)
   return serialize(x)
 end
 
-function Serializer:deserialize(str)
+function Serializer:Deserialize(str)
   return dostring("return " .. str)
 end
 
