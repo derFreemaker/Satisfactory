@@ -4,7 +4,7 @@
 ---
 
 computer.beep(5.0)
-print("Load internet...")
+print("INFO! Load internet...")
 InternetCard = computer.getPCIDevices(findClass("FINInternetCard"))[1]
 if not InternetCard then
 	print("ERROR! No internet-card found! Please install a internet card!")
@@ -12,7 +12,7 @@ if not InternetCard then
 	return
 end
 
-print("Load filesystem...")
+print("INFO! Load filesystem...")
 filesystem.initFileSystem("/dev")
 
 local drive = ""

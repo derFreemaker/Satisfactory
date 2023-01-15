@@ -73,7 +73,7 @@ function GithubLoader:Download(option)
 end
 
 function GithubLoader:Run(debug)
-    print("running...")
+    print("INFO! running program...")
     local main = filesystem.doFile("Main.lua")
     main:Run(debug)
 end
