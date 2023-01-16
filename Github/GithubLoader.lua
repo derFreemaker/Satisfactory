@@ -21,7 +21,7 @@ GithubLoader.mainProgramModule = {}
 
 function GithubLoader:internalDownload(url, path, forceDownload)
     if forceDownload == nil then forceDownload = false end
-    if not filesystem.exists(path) and not forceDownload then
+    if not filesystem.exists(path) or forceDownload then
         if self.debug then
             print("DEBUG! downloading "..path.." from: "..url)
         end
@@ -38,8 +38,8 @@ function GithubLoader:internalDownload(url, path, forceDownload)
     return true
 end
 
-function GithubLoader:loadGithubFileLoader(forceDownload)
-    if not self:internalDownload(GithubFileLoaderUrl, "GithubFileLoader.lua", forceDownload) then
+function GithubLoader:loadGithubFileLoader()
+    if not self:internalDownload(GithubFileLoaderUrl, "GithubFileLoader.lua", self.forceDownloadLoaderFiles) then
         print("ERROR! Unable to load Github file loader")
         return false
     end
@@ -132,7 +132,7 @@ function GithubLoader:loadSetupFiles(isNewVersion)
     if self.debug then
         print("DEBUG! loading github file loader...")
     end
-    if not self:loadGithubFileLoader(self.forceDownloadLoaderFiles) then
+    if not self:loadGithubFileLoader() then
         return false
     end
     local fileLoader = filesystem.doFile("GithubFileLoader.lua").new()
