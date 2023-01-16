@@ -193,14 +193,20 @@ function GithubLoader:Run(option, debug, forceDownload)
         print("ERROR! Unable to download "..option.." program")
         return "error"
     end
+
     if debug then
         print("INFO! in DEBUG mode")
     end
 
+    if self.debug then
+        print("DEBUG! configuring program...")
+    end
     print()
     self.mainProgramModule:Configure()
     print()
-    print("INFO! configured program")
+    if self.debug then
+        print("DEBUG! configured program")
+    end
 
     print("\n\n")
     return self.mainProgramModule:Run(debug)
