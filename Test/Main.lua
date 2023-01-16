@@ -15,16 +15,14 @@ Main.SetupFilesTree = {
 }
 
 function Main:Configure()
-    ModuleLoader:Load("Serializer", "Serializer.lua")
-
     print("INFO! called configure function")
 end
 
 function Main:Run(debug)
-    local serializer = ModuleLoader:GetModule("Serializer")
+    local serializer = filesystem.doFile("libs/Serializer.lua")
 
     if not serializer then
-        print("module loader loded 'Serializer'")
+        print("loded 'Serializer'")
     end
 end
 

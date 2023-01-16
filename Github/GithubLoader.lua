@@ -9,7 +9,6 @@ GithubLoader.__index = GithubLoader
 local BasePath = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/"
 local OptionsUrl = BasePath.."Github/Options.lua"
 local GithubLoaderUrl = BasePath.."Github/GithubFileLoader.lua"
-local ModuleLoaderUrl = BasePath.."Github/ModuleLoader.lua"
 
 GithubLoader.options = {}
 GithubLoader.currentOption = {}
@@ -36,20 +35,7 @@ function GithubLoader:loadGithubFileLoader()
         print("INFO! downloaded Github file loader")
         return true
     end
-end
-
-function GithubLoader:loadModuleLoader()
-    if not filesystem.exists("ModuleLoader.lua") then
-        print("INFO! downloading Module loader...")
-        if not self:internalDownload(ModuleLoaderUrl, "ModuleLoader.lua") then
-            print("ERROR! Unable to download Module loader")
-            return false
-        end
-        print("INFO! downloaded Module loader")
-        return true
-    end
-
-    ModuleLoader = filesystem.doFile("ModuleLoader.lua")
+    return true
 end
 
 function GithubLoader:loadOptions(force)
@@ -124,6 +110,19 @@ function GithubLoader:loadOptionFiles(option)
     return true
 end
 
+function GithubLoader:download(option, force)
+    if self:isVersionTheSame(option) then return false end
+    if not self:loadOptionFiles(option) then
+        print("ERROR! Unable to load option files")
+        return false
+    end
+    if not self:loadSetupFiles(force) then
+       print("ERROR! Unable to load setup files")
+       return false
+    end
+    return true
+end
+
 function GithubLoader:ShowOptions(extended, force)
     if not self:loadOptions(force) then
         print("ERROR! Unable to load options")
@@ -141,22 +140,10 @@ function GithubLoader:ShowOptions(extended, force)
     end
 end
 
-function GithubLoader:Download(option, force)
-    if self:isVersionTheSame(option) then return false end
-    if not self:loadOptionFiles(option) then
-        print("ERROR! Unable to load option files")
-        return false
-    end
-    if not self:loadSetupFiles(force) then
-       print("ERROR! Unable to load setup files")
-       return true
-    end
-end
-
-function GithubLoader:Run(debug)
-    if not self:loadModuleLoader() then
-        print("ERROR! Unable to load Module loader")
-        return
+function GithubLoader:Run(option, forceDownload, debug)
+    if not self:download(option, forceDownload) then
+        print("ERROR! Unable to download option program")
+        return "error"
     end
     if debug then
         print("INFO! in DEBUG mode")
@@ -168,7 +155,7 @@ function GithubLoader:Run(debug)
     print("INFO! configured program")
 
     print("\n\n")
-    self.mainProgramModule:Run(debug)
+    return self.mainProgramModule:Run(debug)
 end
 
 return GithubLoader

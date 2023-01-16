@@ -57,9 +57,6 @@ function FileLoader:doFolder(parentPath, folder, force)
 end
 
 function FileLoader:loadFiles()
-	if #self.requests ~= 0 then
-		print("INFO! downloading setup files...")
-	end
     while #self.requests > 0 do
         local i = 1
         while i <= #self.requests do
@@ -75,6 +72,9 @@ function FileLoader:loadFiles()
             i = i + 1
         end
     end
+	if #self.requests ~= 0 then
+		print("INFO! downloaded program files")
+	end
 	return true
 end
 
@@ -84,7 +84,7 @@ end
 
 function FileLoader:DownloadFileTree(basePath, tree, force)
 	if basePath == nil then return false end
-	if tree == nil then return end
+	if tree == nil then return false end
 	if force == nil then force = false end
 
 	self.basePath = basePath

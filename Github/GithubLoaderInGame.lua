@@ -45,8 +45,5 @@ local GithubLoader = filesystem.doFile("GithubLoader.lua")
 -- GithubLoader:ShowOptions([extended:boolean], [force:boolean])
 GithubLoader:ShowOptions(true, false)
 
--- GithubLoader:Download([option:string], [force:boolean])
---GithubLoader:Download("None", false)
-
--- GithubLoader:Run([debug:boolean])
+-- GithubLoader:Run([option:string], [forceDownload:boolean], [debug:boolean])
 --GithubLoader:Run(false)
