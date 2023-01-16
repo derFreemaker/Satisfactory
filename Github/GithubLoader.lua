@@ -136,11 +136,11 @@ function GithubLoader:loadSetupFiles(isNewVersion)
         return false
     end
     local fileLoader = filesystem.doFile("GithubFileLoader.lua").new()
-    if not fileLoader:DownloadFileTree(BasePath, self.mainProgramModule.SetupFilesTree, isNewVersion, self.debug) then
-        return false
-    end
     if self.debug then
         print("DEBUG! loaded github file loader")
+    end
+    if not fileLoader:DownloadFileTree(BasePath, self.mainProgramModule.SetupFilesTree, isNewVersion, self.debug) then
+        return false
     end
     return true
 end
