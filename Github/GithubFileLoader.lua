@@ -3,7 +3,7 @@
 --- LastChange: 16/01/2023
 ---
 
-print("\nINFO! Github File Loader Version: 1.0.1\n")
+local version = "1.0.2"
 
 local FileLoader = {}
 FileLoader.__index = FileLoader
@@ -103,6 +103,10 @@ function FileLoader:DownloadFileTree(basePath, tree, force, debug)
 	if tree == nil then return false end
 	if force == nil then force = false end
 	if debug == false or debug == true then self.debug = debug end
+
+	if self.debug then
+		print("INFO! Github File Loader Version: "..version)
+	end
 
 	self.basePath = basePath
 	self:requestFileTree(tree, force)

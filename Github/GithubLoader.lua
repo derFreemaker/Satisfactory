@@ -3,7 +3,7 @@
 --- LastChange: 16/01/2023
 ---
 
-print("\nINFO! Github Loader Version: 1.0.3\n")
+local version = "1.0.4"
 
 local GithubLoader = {}
 GithubLoader.__index = GithubLoader
@@ -176,6 +176,9 @@ function GithubLoader:Initialize(debug, forceDownload)
     if debug == false or debug == true then self.debug = debug end
     if forceDownload == false or forceDownload == true then self.debug = debug end
     self.forceDownloadLoaderFiles = forceDownload
+    if self.debug then
+        print("INFO! Github Loader Version: "..version)
+    end
     return self
 end
 
