@@ -188,7 +188,7 @@ function GithubLoader:ShowOptions(extended, forceDownload)
     end
 end
 
-function GithubLoader:Run(option, forceDownload, debug)
+function GithubLoader:Run(option, debug, forceDownload)
     if not self:download(option, forceDownload) then
         print("ERROR! Unable to download "..option.." program")
         return "error"

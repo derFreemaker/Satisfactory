@@ -39,7 +39,8 @@ if filesystem.exists("GithubLoader.lua") == false then
 	print("INFO! downloaded Github loader")
 end
 
-local GithubLoader = filesystem.doFile("GithubLoader.lua"):Initialize()
+-- Initialize([debug:boolean], [forceDownloadLoaderFiles:boolean])
+local GithubLoader = filesystem.doFile("GithubLoader.lua"):Initialize(true, true)
 
 -- Show Options
 -- GithubLoader:ShowOptions([extended:boolean], [force:boolean])
