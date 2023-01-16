@@ -32,10 +32,10 @@ end
 
 function GithubLoader:loadGithubFileLoader(forceDownload)
     if not self:internalDownload(GithubLoaderUrl, "GithubFileLoader.lua", forceDownload) then
-        print("ERROR! Unable to download Github file loader")
+        print("ERROR! Unable to load Github file loader")
         return false
     end
-    print("INFO! downloaded Github file loader")
+    print("INFO! loaded Github file loader")
     return true
 end
 
@@ -122,6 +122,11 @@ function GithubLoader:download(option, forceDownload)
        return false
     end
     return true
+end
+
+function GithubLoader:Initialize(forceDownload)
+    self:loadGithubFileLoader(forceDownload)
+    return self
 end
 
 function GithubLoader:ShowOptions(extended, forceDownload)

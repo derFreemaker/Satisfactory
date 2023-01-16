@@ -40,7 +40,7 @@ if filesystem.exists("GithubLoader.lua") == false then
 end
 print()
 
-local GithubLoader = filesystem.doFile("GithubLoader.lua")
+local GithubLoader = filesystem.doFile("GithubLoader.lua"):Initialize()
 
 -- Show Options
 -- GithubLoader:ShowOptions([extended:boolean], [force:boolean])
