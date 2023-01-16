@@ -3,6 +3,8 @@
 --- LastChange: 16/01/2023
 ---
 
+print("INFO! Github File Loader Version: 1.0")
+
 local FileLoader = {}
 FileLoader.__index = FileLoader
 
@@ -57,6 +59,7 @@ function FileLoader:doFolder(parentPath, folder, force)
 end
 
 function FileLoader:loadFiles()
+	local downloadedFiles = false
     while #self.requests > 0 do
         local i = 1
         while i <= #self.requests do
@@ -68,11 +71,12 @@ function FileLoader:loadFiles()
                     computer.beep(0.2)
                     return false
                 end
+				downloadedFiles = true
             end
             i = i + 1
         end
     end
-	if #self.requests ~= 0 then
+	if downloadedFiles then
 		print("INFO! downloaded program files")
 	end
 	return true
