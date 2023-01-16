@@ -3,7 +3,7 @@
 --- LastChange: 16/01/2023
 ---
 
-print("\nINFO! Github File Loader Version: 1.0\n")
+print("\nINFO! Github File Loader Version: 1.0.1\n")
 
 local FileLoader = {}
 FileLoader.__index = FileLoader
@@ -13,14 +13,21 @@ function FileLoader.new()
 	return instace
 end
 
+FileLoader.debug = false
 FileLoader.requests = {}
 FileLoader.basePath = ""
 
 function FileLoader:requestFile(url, path)
+	if self.debug then
+		print("DEBUG! Requests file '" .. path .. "' from '" .. url .. "'")
+	end
 	local request = InternetCard:request(url, "GET", "")
 	table.insert(self.requests, {
 		request = request,
 		func = function(req)
+			if self.debug then
+				print("DEBUG! Write file '" .. path .. "'")
+			end
 			local file = filesystem.open(path, "w")
 			local code, data = req:get()
 			if code ~= 200 or not data then
@@ -59,6 +66,11 @@ function FileLoader:doFolder(parentPath, folder, force)
 end
 
 function FileLoader:loadFiles()
+	if self.debug then
+		if #self.requests > 0 then
+			print("DEBUG! downloading program files...")
+		end
+	end
 	local downloadedFiles = false
     while #self.requests > 0 do
         local i = 1
@@ -86,10 +98,11 @@ function FileLoader:requestFileTree(tree, force)
     self:doFolder("", tree, force)
 end
 
-function FileLoader:DownloadFileTree(basePath, tree, force)
+function FileLoader:DownloadFileTree(basePath, tree, force, debug)
 	if basePath == nil then return false end
 	if tree == nil then return false end
 	if force == nil then force = false end
+	if debug == false or debug == true then self.debug = debug end
 
 	self.basePath = basePath
 	self:requestFileTree(tree, force)
