@@ -103,8 +103,10 @@ function GithubLoader:isVersionTheSame(option, forceDownload)
         print("DEBUG! loaded info data")
     end
 
-    if not self.currentProgramInfo.Name == newProgramInfo.Name then return false end
-    if self.currentProgramInfo.Version == newProgramInfo.Version then return false end
+    if not self.currentProgramInfo.Name == newProgramInfo.Name
+    or self.currentProgramInfo.Version == newProgramInfo.Version then
+        return false
+    end
 
     return true
 end
@@ -149,7 +151,13 @@ function GithubLoader:download(option, forceDownload)
     if self.debug then
         print("DEBGU! downloading program data...")
     end
-    if self:isVersionTheSame(option, forceDownload) then return false end
+    if self:isVersionTheSame(option, forceDownload) then
+        return false
+    else
+        if self.debug then
+            print("DEBUG! new Version of '"..option.."' found or diffrent program")
+        end
+    end
     if not self:loadOptionFiles(option) then
         print("ERROR! Unable to load option files")
         return false
@@ -190,7 +198,7 @@ end
 
 function GithubLoader:Run(option, debug, forceDownload)
     if not self:download(option, forceDownload) then
-        print("ERROR! Unable to download "..option.." program")
+        print("ERROR! Unable to download '"..option.."' program")
         return "error"
     end
 
