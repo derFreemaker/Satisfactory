@@ -38,7 +38,6 @@ if filesystem.exists("GithubLoader.lua") == false then
     file:close()
 	print("INFO! downloaded Github loader")
 end
-print()
 
 local GithubLoader = filesystem.doFile("GithubLoader.lua"):Initialize()
 

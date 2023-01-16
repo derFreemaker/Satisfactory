@@ -3,7 +3,7 @@
 --- LastChange: 16/01/2023
 ---
 
-print("INFO! Github File Loader Version: 1.0")
+print("\nINFO! Github File Loader Version: 1.0\n")
 
 local FileLoader = {}
 FileLoader.__index = FileLoader
