@@ -1,9 +1,9 @@
 ---
 --- Created by Freemaker
---- DateTime: 15/01/2023
+--- LastChange: 16/01/2023
 ---
 
-Options = {}
+local Options = {}
 Options.__index = {}
 
 Options.Test = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Test"

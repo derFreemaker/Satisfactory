@@ -1,9 +1,9 @@
 ---
 --- Created by Freemaker
---- DateTime: 15/01/2023
+--- LastChange: 16/01/2023
 ---
 
-FileLoader = {}
+local FileLoader = {}
 FileLoader.__index = FileLoader
 
 function FileLoader.new()
@@ -12,6 +12,7 @@ function FileLoader.new()
 end
 
 FileLoader.requests = {}
+FileLoader.basePath = ""
 
 function FileLoader:requestFile(url, path)
 	local request = InternetCard:request(url, "GET", "")
@@ -42,7 +43,7 @@ end
 function FileLoader:doFile(parentPath, file, force)
 	local path = filesystem.path(parentPath, file[1])
 	if not filesystem.exists(path) or force then
-		self:requestFile("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main" .. path, path)
+		self:requestFile(self.basePath .. path, path)
 	end
 end
 
@@ -68,22 +69,27 @@ function FileLoader:loadFiles()
                 local done = request.func(request.request)
                 if not done then
                     computer.beep(0.2)
-                    return
+                    return false
                 end
             end
             i = i + 1
         end
     end
+	return true
 end
 
 function FileLoader:requestFileTree(tree, force)
     self:doFolder("", tree, force)
 end
 
-function FileLoader:DownloadFileTree(tree, force)
+function FileLoader:DownloadFileTree(basePath, tree, force)
+	if basePath == nil then return false end
 	if tree == nil then return end
+	if force == nil then force = false end
+
+	self.basePath = basePath
 	self:requestFileTree(tree, force)
-	self:loadFiles()
+	return self:loadFiles()
 end
 
 return FileLoader

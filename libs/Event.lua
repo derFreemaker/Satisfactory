@@ -1,9 +1,9 @@
 ---
 --- Created by Freemaker
---- DateTime: 15/01/2023
+--- LastChange: 16/01/2023
 ---
 
-Event = {}
+local Event = {}
 Event.__index = Event
 
 Event.Funcs = {}

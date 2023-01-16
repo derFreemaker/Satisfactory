@@ -1,6 +1,6 @@
 ---
 --- Created by Freemaker
---- DateTime: 15/01/2023
+--- LastChange: 16/01/2023
 ---
 
 computer.beep(5.0)
@@ -42,8 +42,11 @@ end
 local GithubLoader = filesystem.doFile("GithubLoader.lua")
 
 -- Show Options
-GithubLoader:ShowOptions()
+-- GithubLoader:ShowOptions([extended:boolean], [force:boolean])
+GithubLoader:ShowOptions(true, false)
 
--- Example
---GithubLoader:Download("Test", false)
---GithubLoader:Run(true)
+-- GithubLoader:Download([option:string], [force:boolean])
+--GithubLoader:Download("None", false)
+
+-- GithubLoader:Run([debug:boolean])
+--GithubLoader:Run(false)
