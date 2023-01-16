@@ -130,13 +130,11 @@ function GithubLoader:ShowOptions(extended, force)
     print()
     print("Options:")
     for name, url in pairs(self.options) do
-        if name ~= "__index" then
-            local output = name
-            if extended ~= true then
-                output = output .. " -> " .. url
-            end
-            print(output)
+        local output = name
+        if extended ~= true then
+            output = output .. " -> " .. url
         end
+        print(output)
     end
 end
 
