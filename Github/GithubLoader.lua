@@ -3,6 +3,8 @@
 --- LastChange: 16/01/2023
 ---
 
+print("INFO! Github Loader Version: 1.0")
+
 local GithubLoader = {}
 GithubLoader.__index = GithubLoader
 
