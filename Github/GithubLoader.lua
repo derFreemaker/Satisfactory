@@ -131,7 +131,7 @@ function GithubLoader:ShowOptions(extended, force)
     print("Options:")
     for name, url in pairs(self.options) do
         local output = name
-        if extended ~= true then
+        if extended == true then
             output = output .. " -> " .. url
         end
         print(output)
