@@ -3,7 +3,7 @@
 --- LastChange: 16/01/2023
 ---
 
-print("INFO! Github Loader Version: 1.0")
+print("INFO! Github Loader Version: 1.0.1")
 
 local GithubLoader = {}
 GithubLoader.__index = GithubLoader
@@ -17,33 +17,32 @@ GithubLoader.currentOption = {}
 GithubLoader.currentProgramInfo = {}
 GithubLoader.mainProgramModule = {}
 
-function GithubLoader:internalDownload(url, path)
-    local req = InternetCard:request(url, "GET", "")
-    local code, data = req:await()
-    if code ~= 200 or not data then return false end
-    local file = filesystem.open(path, "w")
-    file:write(data)
-    file:close()
-    return true
-end
-
-function GithubLoader:loadGithubFileLoader()
-    if not filesystem.exists("GithubFileLoader.lua") then
-        print("INFO! downloading Github file loader...")
-        if not self:internalDownload(GithubLoaderUrl, "GithubFileLoader.lua") then
-            print("ERROR! Unable to download Github file loader")
-            return false
-        end
-        print("INFO! downloaded Github file loader")
-        return true
+function GithubLoader:internalDownload(url, path, forceDownload)
+    if forceDownload == nil then forceDownload = false end
+    if not filesystem.exists(path) and not forceDownload then
+        local req = InternetCard:request(url, "GET", "")
+        local code, data = req:await()
+        if code ~= 200 or not data then return false end
+        local file = filesystem.open(path, "w")
+        file:write(data)
+        file:close()
     end
     return true
 end
 
-function GithubLoader:loadOptions(force)
-    if force == nil then force = false end
-    if not self.options == nil and not force then return true end
-    if not self:internalDownload(OptionsUrl, "Options.lua") then return false end
+function GithubLoader:loadGithubFileLoader(forceDownload)
+    if not self:internalDownload(GithubLoaderUrl, "GithubFileLoader.lua", forceDownload) then
+        print("ERROR! Unable to download Github file loader")
+        return false
+    end
+    print("INFO! downloaded Github file loader")
+    return true
+end
+
+function GithubLoader:loadOptions(forceDownload)
+    if forceDownload == nil then forceDownload = false end
+    if not self.options == nil and not forceDownload then return true end
+    if not self:internalDownload(OptionsUrl, "Options.lua", forceDownload) then return false end
     self.options = filesystem.doFile("Options.lua")
 
     local formatedOptions = {}
@@ -56,8 +55,8 @@ function GithubLoader:loadOptions(force)
     return true
 end
 
-function GithubLoader:loadOption(option, force)
-    if not self:loadOptions(force) then return false end
+function GithubLoader:loadOption(option, forceDownload)
+    if not self:loadOptions(forceDownload) then return false end
 
     for name, url in pairs(self.options) do
         if name == option then
@@ -83,13 +82,13 @@ function GithubLoader:loadSetupFiles(isNewVersion)
     return true
 end
 
-function GithubLoader:isVersionTheSame(option)
+function GithubLoader:isVersionTheSame(option, forceDownload)
     if not filesystem.exists("Info.lua") then return false end
     if not self:loadGithubFileLoader() then return false end
     if not self:loadOptions(option) then return false end
 
     self.currentProgramInfo = filesystem.doFile("Info.lua")
-    if not self:internalDownload(self.currentOption.Url .. "/Info.lua", "Info.lua") then return false end
+    if not self:internalDownload(self.currentOption.Url .. "/Info.lua", "Info.lua", forceDownload) then return false end
 
     local newProgramInfo = filesystem.doFile("Info.lua")
 
@@ -99,12 +98,12 @@ function GithubLoader:isVersionTheSame(option)
     return true
 end
 
-function GithubLoader:loadOptionFiles(option)
+function GithubLoader:loadOptionFiles(option, forceDownload)
     if self:loadOption(option) == false then
         print("ERROR! Unable not find option: " .. option)
         return false
     end
-    if not self:internalDownload(self.currentOption.Url .. "/Main.lua", "Main.lua") then
+    if not self:internalDownload(self.currentOption.Url .. "/Main.lua", "Main.lua", forceDownload) then
         print("ERROR! Unable to download main program file")
         return false
     end
@@ -112,21 +111,21 @@ function GithubLoader:loadOptionFiles(option)
     return true
 end
 
-function GithubLoader:download(option, force)
-    if self:isVersionTheSame(option) then return false end
+function GithubLoader:download(option, forceDownload)
+    if self:isVersionTheSame(option, forceDownload) then return false end
     if not self:loadOptionFiles(option) then
         print("ERROR! Unable to load option files")
         return false
     end
-    if not self:loadSetupFiles(force) then
+    if not self:loadSetupFiles(forceDownload) then
        print("ERROR! Unable to load setup files")
        return false
     end
     return true
 end
 
-function GithubLoader:ShowOptions(extended, force)
-    if not self:loadOptions(force) then
+function GithubLoader:ShowOptions(extended, forceDownload)
+    if not self:loadOptions(forceDownload) then
         print("ERROR! Unable to load options")
     end
     print()

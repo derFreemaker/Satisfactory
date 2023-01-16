@@ -22,7 +22,7 @@ function Main:Run(debug)
     local serializer = filesystem.doFile("libs/Serializer.lua")
 
     if serializer then
-        print("loded 'Serializer'")
+        print("loaded 'Serializer'")
     end
 end
 
