@@ -21,7 +21,7 @@ end
 function Main:Run(debug)
     local serializer = filesystem.doFile("libs/Serializer.lua")
 
-    if not serializer then
+    if serializer then
         print("loded 'Serializer'")
     end
 end
