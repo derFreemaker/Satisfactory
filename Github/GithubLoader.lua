@@ -3,10 +3,18 @@ local version = "1.0.5"
 local GithubLoader = {}
 GithubLoader.__index = GithubLoader
 
-local BasePath = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/"
-local OptionsUrl = BasePath.."Github/Options.lua"
-local GithubFileLoaderUrl = BasePath.."Github/GithubFileLoader.lua"
-local ModuleFileLoader = BasePath.."Github/ModuleLoader.lua"
+local GithubFilesLoaderPath = "GithubLoaderFiles"
+local BaseUrl = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/"
+local OptionsUrl = BaseUrl.."Github/Options.lua"
+local OptionsPath = filesystem.path(GithubFilesLoaderPath, "Options.lua")
+local GithubFileLoaderUrl = BaseUrl.."Github/GithubFileLoader.lua"
+local GithubFileLoaderPath = filesystem.path(GithubFilesLoaderPath, "GithubFileLoader.lua")
+local ModuleFileLoaderUrl = BaseUrl.."Github/ModuleLoader.lua"
+local ModuleFileLoaderPath = filesystem.path(GithubFilesLoaderPath, "ModuleLoader.lua")
+
+local InfoFilePath = "Info.lua"
+local MainFilePath = "Main.lua"
+
 
 GithubLoader.debug = false
 GithubLoader.forceDownloadLoaderFiles = false
@@ -35,7 +43,7 @@ function GithubLoader:internalDownload(url, path, forceDownload)
 end
 
 function GithubLoader:loadGithubFileLoader()
-    if not self:internalDownload(GithubFileLoaderUrl, "ModuleLoader.lua", self.forceDownloadLoaderFiles) then
+    if not self:internalDownload(GithubFileLoaderUrl, GithubFileLoaderPath, self.forceDownloadLoaderFiles) then
         print("ERROR! Unable to load Github file loader")
         return false
     end
@@ -43,22 +51,22 @@ function GithubLoader:loadGithubFileLoader()
 end
 
 function GithubLoader:loadModuleLoader()
-    if not self:internalDownload(ModuleFileLoader, "ModuleLoader.lua", self.forceDownloadLoaderFiles) then
+    if not self:internalDownload(ModuleFileLoaderUrl, ModuleFileLoaderPath, self.forceDownloadLoaderFiles) then
         print("ERROR! Unable to load Module loader")
         return false
     end
-    filesystem.doFile("ModuleLoader.lua")
+    filesystem.doFile(ModuleFileLoaderPath)
     return true
 end
 
 function GithubLoader:loadOptions(forceDownload)
     if forceDownload == nil then forceDownload = false end
     if not self.options == nil and not forceDownload then return true end
-    if not self:internalDownload(OptionsUrl, "GitubLoaderFiles/Options.lua", forceDownload) then return false end
+    if not self:internalDownload(OptionsUrl, OptionsPath, forceDownload) then return false end
     if self.debug then
         print("DEBUG! loading options...")
     end
-    self.options = filesystem.doFile("GitubLoaderFiles/Options.lua")
+    self.options = filesystem.doFile(OptionsPath)
 
     local formatedOptions = {}
     for name, url in pairs(self.options) do
@@ -94,16 +102,16 @@ function GithubLoader:loadOption(option, forceDownload)
 end
 
 function GithubLoader:isVersionTheSame(option, forceDownload)
-    if not filesystem.exists("Info.lua") then return false end
+    if not filesystem.exists(InfoFilePath) then return false end
     if not self:loadOptions(option) then return false end
 
     if self.debug then
         print("DEBUG! loading info data...")
     end
-    self.currentProgramInfo = filesystem.doFile("Info.lua")
-    if not self:internalDownload(self.currentOption.Url .. "/Info.lua", "Info.lua", forceDownload) then return false end
+    self.currentProgramInfo = filesystem.doFile(InfoFilePath)
+    if not self:internalDownload(self.currentOption.Url .. "/Info.lua", InfoFilePath, forceDownload) then return false end
 
-    local newProgramInfo = filesystem.doFile("Info.lua")
+    local newProgramInfo = filesystem.doFile(InfoFilePath)
     if self.debug then
         print("DEBUG! loaded info data")
     end
@@ -124,11 +132,13 @@ function GithubLoader:loadOptionFiles(option, forceDownload)
     if self.debug then
         print("DEBUG! loading main program file...")
     end
-    if not self:internalDownload(self.currentOption.Url .. "/Main.lua", "Main.lua", forceDownload) then
-        print("ERROR! Unable to download main program file")
-        return false
+    if not filesystem.exists(MainFilePath) then
+        if not self:internalDownload(self.currentOption.Url .. "/Main.lua", MainFilePath, forceDownload) then
+            print("ERROR! Unable to download main program file")
+            return false
+        end
     end
-    self.mainProgramModule = filesystem.doFile("Main.lua")
+    self.mainProgramModule = filesystem.doFile(MainFilePath)
     if self.debug then
         print("DEBUG! loaded main program file")
     end
@@ -142,11 +152,11 @@ function GithubLoader:loadSetupFiles(isNewVersion)
     if not self:loadGithubFileLoader() then
         return false
     end
-    local fileLoader = filesystem.doFile("GitubLoaderFiles/GithubFileLoader.lua").new()
+    local fileLoader = filesystem.doFile(GithubFileLoaderPath).new()
     if self.debug then
         print("DEBUG! loaded github file loader")
     end
-    if not fileLoader:DownloadFileTree(BasePath, self.mainProgramModule.SetupFilesTree, isNewVersion, self.debug) then
+    if not fileLoader:DownloadFileTree(BaseUrl, self.mainProgramModule.SetupFilesTree, isNewVersion, self.debug) then
         return false
     end
     return true

@@ -1,3 +1,7 @@
+local GithubLoaderFilesFolder = "GithubLoaderFiles"
+local GithubLoaderPath = filesystem.path(GithubLoaderFilesFolder, "GithubLoader.lua")
+local GithubLoaderUrl = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Github/GithubLoader.lua"
+
 computer.beep(5.0)
 InternetCard = computer.getPCIDevices(findClass("FINInternetCard"))[1]
 if not InternetCard then
@@ -24,22 +28,22 @@ end
 filesystem.mount("/dev/" .. drive, "/")
 print("INFO! loaded filesystem on drive: " .. drive)
 
-if not filesystem.exists("GithubLoaderFiles") then
-	filesystem.createDir("GithubLoaderFiles")
+if not filesystem.exists(GithubLoaderFilesFolder) then
+	filesystem.createDir(GithubLoaderFilesFolder)
 end
 
-if filesystem.exists("GithubLoader.lua") == false then
+if filesystem.exists(GithubLoaderPath) == false then
 	print("INFO! downloading Github loader...")
-    local req = InternetCard:request("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Github/GithubLoader.lua", "GET", "")
+    local req = InternetCard:request(GithubLoaderUrl, "GET", "")
     local _, libdata = req:await()
-    local file = filesystem.open("GitubLoaderFiles/GithubLoader.lua", "w")
+    local file = filesystem.open(GithubLoaderPath, "w")
     file:write(libdata)
     file:close()
 	print("INFO! downloaded Github loader")
 end
 
 -- Initialize([debug:boolean], [forceDownloadLoaderFiles:boolean])
-local GithubLoader = filesystem.doFile("GitubLoaderFiles/GithubLoader.lua"):Initialize(false, false)
+local GithubLoader = filesystem.doFile(GithubLoaderPath):Initialize(false, false)
 
 -- Show Options
 -- GithubLoader:ShowOptions([extended:boolean], [forceDownload:boolean])
