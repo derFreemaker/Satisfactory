@@ -1,8 +1,3 @@
----
---- Created by Freemaker
---- LastChange: 16/01/2023
----
-
 computer.beep(5.0)
 InternetCard = computer.getPCIDevices(findClass("FINInternetCard"))[1]
 if not InternetCard then
@@ -29,21 +24,25 @@ end
 filesystem.mount("/dev/" .. drive, "/")
 print("INFO! loaded filesystem on drive: " .. drive)
 
+if not filesystem.exists("GithubLoaderFiles") then
+	filesystem.createDir("GithubLoaderFiles")
+end
+
 if filesystem.exists("GithubLoader.lua") == false then
 	print("INFO! downloading Github loader...")
     local req = InternetCard:request("https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Github/GithubLoader.lua", "GET", "")
     local _, libdata = req:await()
-    local file = filesystem.open("GithubLoader.lua", "w")
+    local file = filesystem.open("GitubLoaderFiles/GithubLoader.lua", "w")
     file:write(libdata)
     file:close()
 	print("INFO! downloaded Github loader")
 end
 
 -- Initialize([debug:boolean], [forceDownloadLoaderFiles:boolean])
-local GithubLoader = filesystem.doFile("GithubLoader.lua"):Initialize(true, true)
+local GithubLoader = filesystem.doFile("GitubLoaderFiles/GithubLoader.lua"):Initialize(false, false)
 
 -- Show Options
--- GithubLoader:ShowOptions([extended:boolean], [force:boolean])
+-- GithubLoader:ShowOptions([extended:boolean], [forceDownload:boolean])
 GithubLoader:ShowOptions(true, false)
 
 -- GithubLoader:Run([option:string], [forceDownload:boolean], [debug:boolean])

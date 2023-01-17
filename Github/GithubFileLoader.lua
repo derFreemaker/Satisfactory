@@ -1,8 +1,3 @@
----
---- Created by Freemaker
---- LastChange: 16/01/2023
----
-
 local version = "1.0.2"
 
 local FileLoader = {}

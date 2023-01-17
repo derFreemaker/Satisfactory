@@ -1,9 +1,4 @@
----
---- Created by Freemaker
---- LastChange: 16/01/2023
----
-
-local version = "1.0.4"
+local version = "1.0.5"
 
 local GithubLoader = {}
 GithubLoader.__index = GithubLoader
@@ -11,6 +6,7 @@ GithubLoader.__index = GithubLoader
 local BasePath = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/"
 local OptionsUrl = BasePath.."Github/Options.lua"
 local GithubFileLoaderUrl = BasePath.."Github/GithubFileLoader.lua"
+local ModuleFileLoader = BasePath.."Github/ModuleLoader.lua"
 
 GithubLoader.debug = false
 GithubLoader.forceDownloadLoaderFiles = false
@@ -39,21 +35,30 @@ function GithubLoader:internalDownload(url, path, forceDownload)
 end
 
 function GithubLoader:loadGithubFileLoader()
-    if not self:internalDownload(GithubFileLoaderUrl, "GithubFileLoader.lua", self.forceDownloadLoaderFiles) then
+    if not self:internalDownload(GithubFileLoaderUrl, "ModuleLoader.lua", self.forceDownloadLoaderFiles) then
         print("ERROR! Unable to load Github file loader")
         return false
     end
     return true
 end
 
+function GithubLoader:loadModuleLoader()
+    if not self:internalDownload(ModuleFileLoader, "ModuleLoader.lua", self.forceDownloadLoaderFiles) then
+        print("ERROR! Unable to load Module loader")
+        return false
+    end
+    filesystem.doFile("ModuleLoader.lua")
+    return true
+end
+
 function GithubLoader:loadOptions(forceDownload)
     if forceDownload == nil then forceDownload = false end
     if not self.options == nil and not forceDownload then return true end
-    if not self:internalDownload(OptionsUrl, "Options.lua", forceDownload) then return false end
+    if not self:internalDownload(OptionsUrl, "GitubLoaderFiles/Options.lua", forceDownload) then return false end
     if self.debug then
         print("DEBUG! loading options...")
     end
-    self.options = filesystem.doFile("Options.lua")
+    self.options = filesystem.doFile("GitubLoaderFiles/Options.lua")
 
     local formatedOptions = {}
     for name, url in pairs(self.options) do
@@ -137,7 +142,7 @@ function GithubLoader:loadSetupFiles(isNewVersion)
     if not self:loadGithubFileLoader() then
         return false
     end
-    local fileLoader = filesystem.doFile("GithubFileLoader.lua").new()
+    local fileLoader = filesystem.doFile("GitubLoaderFiles/GithubFileLoader.lua").new()
     if self.debug then
         print("DEBUG! loaded github file loader")
     end
@@ -209,17 +214,15 @@ function GithubLoader:Run(option, debug, forceDownload)
         print("INFO! in DEBUG mode")
     end
 
+    print()
     if self.debug then
         print("DEBUG! configuring program...")
     end
-    print()
+    self:loadModuleLoader()
     self.mainProgramModule:Configure()
-    print()
     if self.debug then
         print("DEBUG! configured program")
     end
-
-    print("\n\n")
     return self.mainProgramModule:Run(debug)
 end
 
