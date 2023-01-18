@@ -161,18 +161,16 @@ function GithubLoader:download(option, forceDownload)
         return false
     end
     local newProgram = self:isVersionTheSame(forceDownload)
-    if not newProgram then
-        return true
-    else
+    if newProgram then
         self.logger:LogDebug("new Version of '"..option.."' found or diffrent program")
+        if not self.fileLoader:DownloadFileTree(BaseUrl, self.mainProgramModule.SetupFilesTree, newProgram, self.logger) then
+            self.logger:LogError("Unable to load setup files")
+           return false
+        end
     end
     if not self:loadOptionFiles(forceDownload) then
         self.logger:LogError("Unable to load option files")
         return false
-    end
-    if not self.fileLoader:DownloadFileTree(BaseUrl, self.mainProgramModule.SetupFilesTree, newProgram, self.logger) then
-        self.logger:LogError("Unable to load setup files")
-       return false
     end
     return true
 end
