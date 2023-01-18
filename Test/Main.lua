@@ -10,20 +10,21 @@ Main.SetupFilesTree = {
     "/",
     {
         "libs",
+        IsFolder = true,
         {"Serializer.lua"}
     }
 }
 
-function Main:Configure()
-    print("INFO! called configure function")
+function Main:Configure(debug)
+    ModuleLoader.LoadModules(self.SetupFilesTree, debug)
+
+    if debug then
+        print("DEBUG! loaded modules")
+    end
 end
 
 function Main:Run(debug)
-    local serializer = filesystem.doFile("libs/Serializer.lua")
-
-    if serializer then
-        print("loaded 'Serializer'")
-    end
+    local serializer = ModuleLoader.GetModule("Serializer")
 end
 
 return Main

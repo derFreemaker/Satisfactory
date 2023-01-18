@@ -102,13 +102,17 @@ function GithubLoader:loadOption(option, forceDownload)
 end
 
 function GithubLoader:isVersionTheSame(option, forceDownload)
-    if not filesystem.exists(InfoFilePath) then return false end
     if not self:loadOptions(option) then return false end
 
     if self.debug then
         print("DEBUG! loading info data...")
     end
-    self.currentProgramInfo = filesystem.doFile(InfoFilePath)
+    if not filesystem.exists(InfoFilePath) then
+        self.currentProgramInfo = {Name = "None", Version = ""}
+    else
+        self.currentProgramInfo = filesystem.doFile(InfoFilePath)
+    end
+
     if not self:internalDownload(self.currentOption.Url .. "/Info.lua", InfoFilePath, forceDownload) then return false end
 
     local newProgramInfo = filesystem.doFile(InfoFilePath)
@@ -229,7 +233,7 @@ function GithubLoader:Run(option, debug, forceDownload)
         print("DEBUG! configuring program...")
     end
     self:loadModuleLoader()
-    self.mainProgramModule:Configure()
+    self.mainProgramModule:Configure(debug)
     if self.debug then
         print("DEBUG! configured program")
     end

@@ -36,27 +36,48 @@ function FileLoader:requestFile(url, path)
 	})
 end
 
+local function checkEntry(entry)
+	if entry.Name == nil then
+		entry.Name = entry[1]
+	end
+	if entry.FullName == nil then
+		entry.FullName = entry.Name
+	end
+
+	local nameLength = entry.Name:len()
+    if entry.FullName:sub(nameLength - 4, nameLength) ~= ".lua" then
+        entry.FullName = entry.FullName..".lua"
+    end
+	if entry.Name:sub(nameLength - 4, nameLength) == ".lua" then
+		entry.Name = entry.Name:sub(0, nameLength)
+	end
+	return entry
+end
+
 function FileLoader:doEntry(parentPath, entry, force)
-	if #entry == 1 then
-		self:doFile(parentPath, entry, force)
-	else
+	entry = checkEntry(entry)
+	if entry.IsFolder == true then
 		self:doFolder(parentPath, entry, force)
+	else
+		self:doFile(parentPath, entry, force)
 	end
 end
 
 function FileLoader:doFile(parentPath, file, force)
-	local path = filesystem.path(parentPath, file[1])
+	local path = filesystem.path(parentPath, file.FullName)
 	if not filesystem.exists(path) or force then
 		self:requestFile(self.basePath .. path, path)
 	end
 end
 
 function FileLoader:doFolder(parentPath, folder, force)
-	local path = filesystem.path(parentPath, folder[1])
+	local path = filesystem.path(parentPath, folder.FullName)
 	table.remove(folder, 1)
 	filesystem.createDir(path)
 	for _, child in pairs(folder) do
-		self:doEntry(path, child, force)
+		if type(child) == "table" then
+			self:doEntry(path, child, force)
+		end
 	end
 end
 
@@ -90,6 +111,7 @@ function FileLoader:loadFiles()
 end
 
 function FileLoader:requestFileTree(tree, force)
+	tree = self:checkEntry(tree)
     self:doFolder("", tree, force)
 end
 
