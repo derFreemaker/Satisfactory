@@ -4,9 +4,9 @@ local FileLoader = {}
 FileLoader.__index = FileLoader
 
 function FileLoader.new(logger)
-    local instace = setmetatable({}, FileLoader)
-	instace.logger = logger
-	return instace
+    local instance = setmetatable({}, FileLoader)
+	instance.logger = logger
+	return instance
 end
 
 FileLoader.logger = {}
@@ -148,12 +148,13 @@ function FileLoader:requestFileTree(tree, force)
 end
 
 function FileLoader:DownloadFileTree(basePath, tree, force)
+	self.logger:LogDebug("Github File Loader Version: "..version)	
 	if basePath == nil then return false end
-	if tree == nil then return false end
+	if tree == nil then
+		self.logger:LogDebug("download tree was empty")
+		return true
+	end
 	if force == nil then force = false end
-
-	self.logger:LogDebug("Github File Loader Version: "..version)
-
 	self.basePath = basePath
 	self:requestFileTree(tree, force)
 	return self:loadFiles()

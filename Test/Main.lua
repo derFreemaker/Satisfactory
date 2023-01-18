@@ -23,9 +23,9 @@ end
 function Main:Run(logger)
     local serializer = ModuleLoader.GetModule("Serializer")
     if serializer ~= nil then
-        print("INFO! loaded Serializer")
+        logger:LogInfo("loaded Serializer")
     else
-        print("INFO! Unable to load Serializer")
+        logger:LogInfo("Unable to load Serializer")
     end
 end
 

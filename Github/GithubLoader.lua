@@ -68,6 +68,9 @@ function GithubLoader:loadLogger(debug)
     if not self:internalDownload(LoggerUrl, LoggerPath, self.forceDownloadLoaderFiles) then return false end
     Logger = filesystem.doFile(LoggerPath)
     self.logger = Logger.new("Loader", debug)
+    if self.logger == nil then
+        return false
+    end
     self.logger:ClearLog()
     return true
 end
@@ -77,6 +80,9 @@ function GithubLoader:loadGithubFileLoader(debug)
     if not self:internalDownload(GithubFileLoaderUrl, GithubFileLoaderPath, self.forceDownloadLoaderFiles) then return false end
     FileLoader = filesystem.doFile(GithubFileLoaderPath)
     self.fileLoader = FileLoader.new(Logger.new("File Loader", debug))
+    if self.fileLoader == nil then
+        return false
+    end
     self.logger:LogDebug("loaded github file loader")
     return true
 end
@@ -122,7 +128,7 @@ function GithubLoader:loadOption(option)
 end
 
 function GithubLoader:isVersionTheSame(forceDownload)
-    self.logger:LogDebug("loading infa data...")
+    self.logger:LogDebug("loading info data...")
     if filesystem.exists(VersionFilePath) then
         self.currentProgramInfo = filesystem.doFile(VersionFilePath)
     end
@@ -160,23 +166,28 @@ function GithubLoader:download(option, forceDownload)
         self.logger:LogError("Unable not find option: " .. option)
         return false
     end
-    local newProgram = self:isVersionTheSame(forceDownload)
-    if newProgram then
+    local loadProgramFiles = self:isVersionTheSame(forceDownload)
+    if loadProgramFiles then
         self.logger:LogDebug("new Version of '"..option.."' found or diffrent program")
-        if not self.fileLoader:DownloadFileTree(BaseUrl, self.mainProgramModule.SetupFilesTree, newProgram, self.logger) then
-            self.logger:LogError("Unable to load setup files")
-           return false
-        end
+    else
+        self.logger:LogDebug("no new Version available")
     end
     if not self:loadOptionFiles(forceDownload) then
         self.logger:LogError("Unable to load option files")
+        return false
+    end
+    if forceDownload then
+        loadProgramFiles = true
+    end
+    if not self.fileLoader:DownloadFileTree(BaseUrl, self.mainProgramModule.SetupFilesTree, loadProgramFiles) then
+        self.logger:LogError("Unable to load setup files")
         return false
     end
     return true
 end
 
 function GithubLoader:Initialize(debug, forceDownload)
-    if forceDownload == false or forceDownload == true then self.forceDownloadLoaderFiles = debug end
+    if forceDownload == false or forceDownload == true then self.forceDownloadLoaderFiles = forceDownload end
     self:createLoaderFilesFolders()
     if not self:loadLogger(debug) then
         computer.panic("Unable to load logger")
@@ -216,10 +227,10 @@ end
 function GithubLoader:Run(option, debug, forceDownload)
     self.logger:LogDebug("downloading program data...")
     if not self:download(option, forceDownload) then
-        computer.panic("Unable to download '"..option.."' program")
+        computer.panic("Unable to download '"..option.."'")
     end
     self.logger:LogDebug("downloaded program data")
-    local logger = filesystem.doFile(LoggerPath).new("Program", debug)
+    local logger = Logger.new("Program", debug)
     print()
     ModuleLoader.LoadModules(self.mainProgramModule.SetupFilesTree)
     self.logger:LogDebug("configuring program...")
