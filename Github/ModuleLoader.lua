@@ -37,18 +37,21 @@ local function checkTree(entry)
         Name = "",
         FullName = "",
         IsFolder = false,
-        Childs = {}
     }
 
     checkedEntry.Name = entry.Name
     checkedEntry.FullName = entry.FullName
     checkedEntry.IsFolder = entry.IsFolder
 
-    for _, child in pairs(entry) do
-        if type(child) == "table" then
-            table.insert(checkedEntry.Childs, checkTree(child))
-        end
-    end
+	if entry.IsFolder then
+		local childs = {}
+		for _, child in pairs(entry) do
+			if type(child) == "table" then
+				table.insert(childs, checkTree(child))
+			end
+		end
+		checkedEntry.Childs = childs
+	end
 
 	return checkedEntry
 end
@@ -74,7 +77,7 @@ function ModuleLoader.doFolder(parentPath, folder, debug)
 	local path = filesystem.path(parentPath, folder.Name)
 	table.remove(folder, 1)
 	filesystem.createDir(path)
-	for _, child in pairs(folder) do
+	for _, child in pairs(folder.Childs) do
 		if type(child) == "table" then
 			ModuleLoader.doEntry(path, child, debug)
 		end

@@ -7,12 +7,12 @@ local Main = {}
 Main.__index = Main
 
 Main.SetupFilesTree = {
-    FullName = "/",
+    Name = "/",
     IsFolder = true,
     {
-        FullName = "libs",
+        Name = "libs",
         IsFolder = true,
-        {FullName = "Serializer.lua"}
+        {Name = "Serializer.lua"}
     }
 }
 

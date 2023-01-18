@@ -12,30 +12,6 @@ FileLoader.debug = false
 FileLoader.requests = {}
 FileLoader.basePath = ""
 
-function FileLoader:requestFile(url, path)
-	if self.debug then
-		print("DEBUG! Requests file '" .. path .. "' from '" .. url .. "'")
-	end
-	local request = InternetCard:request(url, "GET", "")
-	table.insert(self.requests, {
-		request = request,
-		func = function(req)
-			if self.debug then
-				print("DEBUG! Write file '" .. path .. "'")
-			end
-			local file = filesystem.open(path, "w")
-			local code, data = req:get()
-			if code ~= 200 or not data then
-				print("ERROR! Unable to request file '" .. path .. "' from '" .. url .. "'")
-				return false
-			end
-			file:write(data)
-			file:close()
-			return true
-		end
-	})
-end
-
 local function checkTree(entry)
     if entry.Name == nil and entry.FullName ~= nil then
         entry.Name = entry.FullName
@@ -70,20 +46,47 @@ local function checkTree(entry)
         Name = "",
         FullName = "",
         IsFolder = false,
-        Childs = {}
     }
 
     checkedEntry.Name = entry.Name
     checkedEntry.FullName = entry.FullName
     checkedEntry.IsFolder = entry.IsFolder
 
-    for _, child in pairs(entry) do
-        if type(child) == "table" then
-            table.insert(checkedEntry.Childs, checkTree(child))
-        end
-    end
+	if entry.IsFolder then
+		local childs = {}
+		for _, child in pairs(entry) do
+			if type(child) == "table" then
+				table.insert(childs, checkTree(child))
+			end
+		end
+		checkedEntry.Childs = childs
+	end
 
 	return checkedEntry
+end
+
+function FileLoader:requestFile(url, path)
+	if self.debug then
+		print("DEBUG! Requests file '" .. path .. "' from '" .. url .. "'")
+	end
+	local request = InternetCard:request(url, "GET", "")
+	table.insert(self.requests, {
+		request = request,
+		func = function(req)
+			if self.debug then
+				print("DEBUG! Write file '" .. path .. "'")
+			end
+			local file = filesystem.open(path, "w")
+			local code, data = req:get()
+			if code ~= 200 or not data then
+				print("ERROR! Unable to request file '" .. path .. "' from '" .. url .. "'")
+				return false
+			end
+			file:write(data)
+			file:close()
+			return true
+		end
+	})
 end
 
 function FileLoader:doEntry(parentPath, entry, force)
@@ -105,7 +108,7 @@ function FileLoader:doFolder(parentPath, folder, force)
 	local path = filesystem.path(parentPath, folder.FullName)
 	table.remove(folder, 1)
 	filesystem.createDir(path)
-	for _, child in pairs(folder) do
+	for _, child in pairs(folder.Childs) do
 		if type(child) == "table" then
 			self:doEntry(path, child, force)
 		end
