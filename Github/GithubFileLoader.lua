@@ -111,7 +111,7 @@ function FileLoader:loadFiles()
 end
 
 function FileLoader:requestFileTree(tree, force)
-	tree = self:checkEntry(tree)
+	tree = checkEntry(tree)
     self:doFolder("", tree, force)
 end
 
