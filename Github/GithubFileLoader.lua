@@ -68,6 +68,10 @@ end
 
 function FileLoader:requestFile(url, path)
 	self.logger:LogDebug("Requests file '" .. path .. "' from '" .. url .. "'")
+	if filesystem.exists(path) then
+		self.logger:LogDebug("Found requested file '"..path.."'")
+		return
+	end
 	local request = InternetCard:request(url, "GET", "")
 	table.insert(self.requests, {
 		request = request,
