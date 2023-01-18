@@ -87,10 +87,9 @@ function GithubLoader:loadModuleLoader(debug)
     return true
 end
 
-function GithubLoader:loadOptions(forceDownload)
-    if forceDownload == nil then forceDownload = false end
-    if not self.options == nil and not forceDownload then return true end
-    if not self:internalDownload(OptionsUrl, OptionsPath, forceDownload) then return false end
+function GithubLoader:loadOptions()
+    if not self.options == nil then return true end
+    if not self:internalDownload(OptionsUrl, OptionsPath, true) then return false end
     self.logger:LogDebug("loading options...")
     self.options = filesystem.doFile(OptionsPath)
 
@@ -103,8 +102,8 @@ function GithubLoader:loadOptions(forceDownload)
     return true
 end
 
-function GithubLoader:loadOption(option, forceDownload)
-    if not self:loadOptions(forceDownload) then return false end
+function GithubLoader:loadOption(option)
+    if not self:loadOptions() then return false end
     self.logger:LogDebug("loading option: "..option)
     for name, url in pairs(self.options) do
         if name == option then
@@ -194,8 +193,8 @@ function GithubLoader:Initialize(debug, forceDownload)
     return self
 end
 
-function GithubLoader:ShowOptions(extended, forceDownload)
-    if not self:loadOptions(forceDownload) then
+function GithubLoader:ShowOptions(extended)
+    if not self:loadOptions() then
         print("ERROR! Unable to load options")
     end
     print()
