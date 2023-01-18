@@ -175,12 +175,12 @@ end
 
 function GithubLoader:Initialize(debug, forceDownload)
     if forceDownload == false or forceDownload == true then self.forceDownloadLoaderFiles = debug end
-    if debug == true then
-        self.logger:LogInfo("Github Loader Version: "..version)
-    end
     self:createLoaderFilesFolders()
     if not self:loadLogger(debug) then
         computer.panic("Unable to load logger")
+    end
+    if debug == true then
+        self.logger:LogInfo("Github Loader Version: "..version)
     end
     if not self:loadGithubFileLoader(debug) then
         computer.panic("Unable to load github file loader")
