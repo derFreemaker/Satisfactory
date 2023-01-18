@@ -1,5 +1,8 @@
 local version = "1.0.5"
 
+local FileLoader = nil
+local Logger = nil
+
 local GithubLoader = {}
 GithubLoader.__index = GithubLoader
 
@@ -28,6 +31,7 @@ GithubLoader.currentOption = {}
 GithubLoader.currentProgramInfo = {}
 GithubLoader.mainProgramModule = {}
 GithubLoader.logger = nil
+GithubLoader.fileLoader = nil
 
 function GithubLoader:internalDownload(url, path, forceDownload)
     if forceDownload == nil then forceDownload = false end
@@ -62,19 +66,24 @@ function GithubLoader:loadLogger(debug)
         filesystem.createDir("log")
     end
     if not self:internalDownload(LoggerUrl, LoggerPath, self.forceDownloadLoaderFiles) then return false end
-    self.logger = filesystem.doFile(LoggerPath).new("Loader", debug)
+    Logger = filesystem.doFile(LoggerPath)
+    self.logger = Logger.new("Loader", debug)
     return true
 end
 
-function GithubLoader:loadGithubFileLoader()
+function GithubLoader:loadGithubFileLoader(debug)
+    self.logger:LogDebug("loading github file loader...")
     if not self:internalDownload(GithubFileLoaderUrl, GithubFileLoaderPath, self.forceDownloadLoaderFiles) then return false end
+    FileLoader = filesystem.doFile(GithubFileLoaderPath)
+    self.fileLoader = FileLoader.new(Logger.new("File Loader", debug))
+    self.logger:LogDebug("loaded github file loader")
     return true
 end
 
-function GithubLoader:loadModuleLoader()
+function GithubLoader:loadModuleLoader(debug)
     if not self:internalDownload(ModuleFileLoaderUrl, ModuleFileLoaderPath, self.forceDownloadLoaderFiles) then return false end
     filesystem.doFile(ModuleFileLoaderPath)
-    ModuleLoader.Initialize(self.logger)
+    ModuleLoader.Initialize(Logger.new("ModuleLoader", debug))
     return true
 end
 
@@ -82,7 +91,6 @@ function GithubLoader:loadOptions(forceDownload)
     if forceDownload == nil then forceDownload = false end
     if not self.options == nil and not forceDownload then return true end
     if not self:internalDownload(OptionsUrl, OptionsPath, forceDownload) then return false end
-
     self.logger:LogDebug("loading options...")
     self.options = filesystem.doFile(OptionsPath)
 
@@ -91,16 +99,13 @@ function GithubLoader:loadOptions(forceDownload)
         formatedOptions[name:gsub("_", "/")] = url
     end
     self.options = formatedOptions
-
     self.logger:LogInfo("loaded options")
     return true
 end
 
 function GithubLoader:loadOption(option, forceDownload)
     if not self:loadOptions(forceDownload) then return false end
-
     self.logger:LogDebug("loading option: "..option)
-
     for name, url in pairs(self.options) do
         if name == option then
             self.currentOption = {
@@ -111,29 +116,23 @@ function GithubLoader:loadOption(option, forceDownload)
             return true
         end
     end
-
     return false
 end
 
 function GithubLoader:isVersionTheSame(forceDownload)
     self.logger:LogDebug("loading infa data...")
-
     if not filesystem.exists(InfoFilePath) then
         self.currentProgramInfo = {Name = "None", Version = ""}
     else
         self.currentProgramInfo = filesystem.doFile(InfoFilePath)
     end
-
     if not self:internalDownload(self.currentOption.Url .. "/Info.lua", InfoFilePath, forceDownload) then return false end
-
     local newProgramInfo = filesystem.doFile(InfoFilePath)
     self.logger:LogDebug("loaded info data")
-
     if not self.currentProgramInfo.Name == newProgramInfo.Name
     or self.currentProgramInfo.Version == newProgramInfo.Version then
         return false
     end
-
     return true
 end
 
@@ -150,23 +149,14 @@ function GithubLoader:loadOptionFiles(forceDownload)
     return true
 end
 
-function GithubLoader:loadSetupFiles(isNewVersion)
-    self.logger:LogDebug("loading github file loader...")
-    local fileLoader = filesystem.doFile(GithubFileLoaderPath).new(self.logger)
-    self.logger:LogDebug("loaded github file loader")
-    if not fileLoader:DownloadFileTree(BaseUrl, self.mainProgramModule.SetupFilesTree, isNewVersion, self.logger) then
-        return false
-    end
-    return true
-end
-
 function GithubLoader:download(option, forceDownload)
     if self:loadOption(option) == false then
         print("ERROR! Unable not find option: " .. option)
         return false
     end
     self.logger:LogDebug("downloading program data...")
-    if self:isVersionTheSame(forceDownload) then
+    local newProgram = self:isVersionTheSame(forceDownload)
+    if not newProgram then
         return false
     else
         self.logger:LogDebug("new Version of '"..option.."' found or diffrent program")
@@ -175,7 +165,7 @@ function GithubLoader:download(option, forceDownload)
         print("ERROR! Unable to load option files")
         return false
     end
-    if not self:loadSetupFiles(forceDownload) then
+    if not self.fileLoader:DownloadFileTree(BaseUrl, self.mainProgramModule.SetupFilesTree, newProgram, self.logger) then
        print("ERROR! Unable to load setup files")
        return false
     end
@@ -185,7 +175,6 @@ end
 
 function GithubLoader:Initialize(debug, forceDownload)
     if forceDownload == false or forceDownload == true then self.forceDownloadLoaderFiles = debug end
-
     if debug == true then
         print("INFO! Github Loader Version: "..version)
     end
@@ -193,10 +182,10 @@ function GithubLoader:Initialize(debug, forceDownload)
     if not self:loadLogger(debug) then
         computer.panic("Unable to load logger")
     end
-    if not self:loadGithubFileLoader() then
+    if not self:loadGithubFileLoader(debug) then
         computer.panic("Unable to load github file loader")
     end
-    if not self:loadModuleLoader() then
+    if not self:loadModuleLoader(debug) then
         computer.panic("Unable to load module loader")
     end
     if self.forceDownloadLoaderFiles then
@@ -226,16 +215,12 @@ function GithubLoader:Run(option, debug, forceDownload)
     if not self:download(option, forceDownload) then
         computer.panic("Unable to download '"..option.."' program")
     end
-
     local logger = filesystem.doFile(LoggerPath).new("Program", debug)
-
     print()
     ModuleLoader.LoadModules(self.mainProgramModule.SetupFilesTree)
-
     self.logger:LogDebug("configuring program...")
     self.mainProgramModule:Configure(logger)
     self.logger:LogDebug("configured program")
-
     self.logger:LogDebug("running program...")
     local result = self.mainProgramModule:Run(logger)
     self.logger:LogDebug("program stoped running: "..tostring(result))
