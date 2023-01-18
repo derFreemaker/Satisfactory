@@ -82,9 +82,11 @@ function GithubLoader:loadGithubFileLoader(debug)
 end
 
 function GithubLoader:loadModuleLoader(debug)
+    self.logger:LogDebug("loading module loader...")
     if not self:internalDownload(ModuleFileLoaderUrl, ModuleFileLoaderPath, self.forceDownloadLoaderFiles) then return false end
     filesystem.doFile(ModuleFileLoaderPath)
     ModuleLoader.Initialize(Logger.new("ModuleLoader", debug))
+    self.logger:LogDebug("loaded module loader")
     return true
 end
 
