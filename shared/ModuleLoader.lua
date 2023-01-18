@@ -65,6 +65,7 @@ local function checkTree(entry)
 end
 
 function ModuleLoader.doEntry(parentPath, entry)
+	if entry.IgnoreLoad == true then return end
 	if entry.IsFolder == true then
 		ModuleLoader.doFolder(parentPath, entry)
 	else
@@ -73,6 +74,7 @@ function ModuleLoader.doEntry(parentPath, entry)
 end
 
 function ModuleLoader.doFile(parentPath, file)
+	if file.IgnoreLoad == true then return end
 	local path = filesystem.path(parentPath, file.FullName)
 	if filesystem.exists(path) then
 		ModuleLoader.LoadModule(file, path)
