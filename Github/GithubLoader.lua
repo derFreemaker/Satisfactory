@@ -27,7 +27,7 @@ GithubLoader.options = {}
 GithubLoader.currentOption = {}
 GithubLoader.currentProgramInfo = {}
 GithubLoader.mainProgramModule = {}
-GithubLoader.logger = {}
+GithubLoader.logger = nil
 
 function GithubLoader:internalDownload(url, path, forceDownload)
     if forceDownload == nil then forceDownload = false end
@@ -236,7 +236,7 @@ function GithubLoader:Run(option, debug, forceDownload)
 
     self.logger:LogDebug("running program...")
     local result = self.mainProgramModule:Run(logger)
-    self.logger:LogDebug("program stoped running: "..result)
+    self.logger:LogDebug("program stoped running: "..tostring(result))
 end
 
 return GithubLoader
