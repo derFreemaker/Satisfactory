@@ -18,9 +18,6 @@ Main.SetupFilesTree = {
 
 function Main:Configure(debug)
     ModuleLoader.LoadModules(self.SetupFilesTree, debug)
-    if debug then
-        print("DEBUG! loaded modules")
-    end
 end
 
 function Main:Run(debug)

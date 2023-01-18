@@ -36,28 +36,57 @@ function FileLoader:requestFile(url, path)
 	})
 end
 
-local function checkEntry(entry)
-	if entry.Name == nil then
-		entry.Name = entry[1]
-	end
-	if entry.FullName == nil then
-		entry.FullName = entry.Name
+local function checkTree(entry)
+    if entry.Name == nil and entry.FullName ~= nil then
+        entry.Name = entry.FullName
+    else
+        entry.Name = entry.Name
 	end
 
-	if entry.IsFolder ~= true then
+	if entry.FullName == nil then
+		entry.FullName = entry.Name
+	else
+        entry.FullName = entry.FullName
+    end
+
+    if entry.IsFolder == true then
+        entry.IsFolder = true
+    else
+        entry.IsFolder = false
+    end
+
+    if entry.IsFolder ~= true then
 		local nameLength = entry.Name:len()
-    	if entry.FullName:sub(nameLength - 3, nameLength) ~= ".lua" then
-       		entry.FullName = entry.FullName..".lua"
-    	end
-		if entry.Name:sub(nameLength - 3, nameLength) == ".lua" then
-			entry.Name = entry.Name:sub(0, nameLength)
+    	if entry.Name:sub(nameLength - 3, nameLength) == ".lua" then
+			entry.Name = entry.Name:sub(0, nameLength - 4)
 		end
+		nameLength = entry.FullName:len()
+		if entry.FullName:sub(nameLength - 3, nameLength) ~= ".lua" then
+			entry.FullName = entry.FullName..".lua"
+	 	end
 	end
-	return entry
+
+    local checkedEntry = {
+        Name = "",
+        FullName = "",
+        IsFolder = false,
+        Childs = {}
+    }
+
+    checkedEntry.Name = entry.Name
+    checkedEntry.FullName = entry.FullName
+    checkedEntry.IsFolder = entry.IsFolder
+
+    for _, child in pairs(entry) do
+        if type(child) == "table" then
+            table.insert(checkedEntry.Childs, checkTree(child))
+        end
+    end
+
+	return checkedEntry
 end
 
 function FileLoader:doEntry(parentPath, entry, force)
-	entry = checkEntry(entry)
 	if entry.IsFolder == true then
 		self:doFolder(parentPath, entry, force)
 	else
@@ -113,8 +142,7 @@ function FileLoader:loadFiles()
 end
 
 function FileLoader:requestFileTree(tree, force)
-	tree = checkEntry(tree)
-    self:doFolder("", tree, force)
+    self:doFolder("", checkTree(tree), force)
 end
 
 function FileLoader:DownloadFileTree(basePath, tree, force, debug)

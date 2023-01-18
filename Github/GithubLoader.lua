@@ -101,9 +101,7 @@ function GithubLoader:loadOption(option, forceDownload)
     return false
 end
 
-function GithubLoader:isVersionTheSame(option, forceDownload)
-    if not self:loadOption(option) then return false end
-
+function GithubLoader:isVersionTheSame(forceDownload)
     if self.debug then
         print("DEBUG! loading info data...")
     end
@@ -128,11 +126,7 @@ function GithubLoader:isVersionTheSame(option, forceDownload)
     return true
 end
 
-function GithubLoader:loadOptionFiles(option, forceDownload)
-    if self:loadOption(option) == false then
-        print("ERROR! Unable not find option: " .. option)
-        return false
-    end
+function GithubLoader:loadOptionFiles(forceDownload)
     if self.debug then
         print("DEBUG! loading main program file...")
     end
@@ -164,17 +158,21 @@ function GithubLoader:loadSetupFiles(isNewVersion)
 end
 
 function GithubLoader:download(option, forceDownload)
+    if self:loadOption(option) == false then
+        print("ERROR! Unable not find option: " .. option)
+        return false
+    end
     if self.debug then
         print("DEBGU! downloading program data...")
     end
-    if self:isVersionTheSame(option, forceDownload) then
+    if self:isVersionTheSame(forceDownload) then
         return false
     else
         if self.debug then
             print("DEBUG! new Version of '"..option.."' found or diffrent program")
         end
     end
-    if not self:loadOptionFiles(option) then
+    if not self:loadOptionFiles(forceDownload) then
         print("ERROR! Unable to load option files")
         return false
     end
