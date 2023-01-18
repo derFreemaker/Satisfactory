@@ -17,7 +17,7 @@ Main.SetupFilesTree = {
 }
 
 function Main:Configure(logger)
-    ModuleLoader.LoadModules(self.SetupFilesTree)
+    logger:LogInfo("called configure function")
 end
 
 function Main:Run(logger)

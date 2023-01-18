@@ -49,9 +49,6 @@ function GithubLoader:internalDownload(url, path, forceDownload)
 end
 
 function GithubLoader:createLoaderFilesFolders()
-    if not filesystem.exists("log") then
-        filesystem.createDir("log")
-    end
     if not filesystem.exists(GithubLoaderFilesPath) then
         filesystem.createDir(GithubLoaderFilesPath)
     end
@@ -61,8 +58,11 @@ function GithubLoader:createLoaderFilesFolders()
 end
 
 function GithubLoader:loadLogger(debug)
+    if not filesystem.exists("log") then
+        filesystem.createDir("log")
+    end
     if not self:internalDownload(LoggerUrl, LoggerPath, self.forceDownloadLoaderFiles) then return false end
-    self.logger = filesystem.doFile(LoggerPath).new("log\\Loader.log", debug)
+    self.logger = filesystem.doFile(LoggerPath).new("Loader", debug)
     return true
 end
 
@@ -227,9 +227,11 @@ function GithubLoader:Run(option, debug, forceDownload)
         computer.panic("Unable to download '"..option.."' program")
     end
 
-    local logger = filesystem.doFile(LoggerPath).new("log\\Program.log", debug)
+    local logger = filesystem.doFile(LoggerPath).new("Program", debug)
 
     print()
+    ModuleLoader.LoadModules(self.mainProgramModule.SetupFilesTree)
+
     self.logger:LogDebug("configuring program...")
     self.mainProgramModule:Configure(logger)
     self.logger:LogDebug("configured program")
