@@ -7,14 +7,18 @@ function Logger.new(name, debug)
         instace.debug = debug
     end
     instace.Name = name
+    instace.file = filesystem.open("log\\Log.txt", "+a")
     return instace
 end
 
 Logger.debug = false
 Logger.Name = ""
+Logger.file = {}
 
 function Logger:Log(message)
-    print("["..self.Name.."] "..message)
+    message = "["..self.Name.."] "..message
+    self.file:write(message.."\n")
+    print(message)
 end
 
 function Logger:LogDebug(message)

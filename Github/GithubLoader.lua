@@ -68,6 +68,7 @@ function GithubLoader:loadLogger(debug)
     if not self:internalDownload(LoggerUrl, LoggerPath, self.forceDownloadLoaderFiles) then return false end
     Logger = filesystem.doFile(LoggerPath)
     self.logger = Logger.new("Loader", debug)
+    self.logger:LogInfo("\nstarted logging\n")
     return true
 end
 
