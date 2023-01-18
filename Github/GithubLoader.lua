@@ -107,7 +107,7 @@ function GithubLoader:loadOptions()
         formatedOptions[name:gsub("_", "/")] = url
     end
     self.options = formatedOptions
-    self.logger:LogInfo("loaded options")
+    self.logger:LogDebug("loaded options")
     return true
 end
 

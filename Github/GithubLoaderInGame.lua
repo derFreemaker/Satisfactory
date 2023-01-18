@@ -42,12 +42,12 @@ if filesystem.exists(GithubLoaderPath) == false then
 	print("[Computer] INFO! downloaded Github loader")
 end
 
--- Initialize([debug:boolean])
-local GithubLoader = filesystem.doFile(GithubLoaderPath):Initialize(false)
+-- Initialize([debug:boolean], [forceDownload:boolean])
+local GithubLoader = filesystem.doFile(GithubLoaderPath):Initialize(false, false)
 
 -- Show Options
--- GithubLoader:ShowOptions([extended:boolean], [forceDownload:boolean])
-GithubLoader:ShowOptions(true, false)
+-- GithubLoader:ShowOptions([extended:boolean])
+GithubLoader:ShowOptions(true)
 
 -- GithubLoader:Run([option:string], [debug:boolean], [forceDownload:boolean])
 --GithubLoader:Run("Test", false, false)
