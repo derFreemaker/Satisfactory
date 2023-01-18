@@ -8,6 +8,7 @@ function Logger.new(name, debug)
     end
     instace.Name = name
     instace.file = filesystem.open("log\\Log.txt", "+a")
+    instace.file:write("\n["..name.."] STARTED LOGGING\n")
     return instace
 end
 
