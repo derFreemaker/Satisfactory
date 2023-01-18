@@ -103,7 +103,6 @@ function ModuleLoader.LoadModule(file, path, debug)
 end
 
 function ModuleLoader.GetModule(moduleNameToLoad)
-	print(libs)
     for moduleName, module in pairs(libs) do
         if moduleName == moduleNameToLoad then
             return module
