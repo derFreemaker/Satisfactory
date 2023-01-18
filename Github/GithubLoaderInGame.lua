@@ -49,5 +49,5 @@ local GithubLoader = filesystem.doFile(GithubLoaderPath):Initialize(false, false
 -- GithubLoader:ShowOptions([extended:boolean], [forceDownload:boolean])
 GithubLoader:ShowOptions(true, false)
 
--- GithubLoader:Run([option:string], [forceDownload:boolean], [debug:boolean])
+-- GithubLoader:Run([option:string], [debug:boolean], [forceDownload:boolean])
 --GithubLoader:Run("Test", false, false)

@@ -153,9 +153,6 @@ function GithubLoader:loadSetupFiles(isNewVersion)
     if self.debug then
         print("DEBUG! loading github file loader...")
     end
-    if not self:loadGithubFileLoader() then
-        return false
-    end
     local fileLoader = filesystem.doFile(GithubFileLoaderPath).new()
     if self.debug then
         print("DEBUG! loaded github file loader")
@@ -198,6 +195,15 @@ function GithubLoader:Initialize(debug, forceDownload)
     if self.debug then
         print("INFO! Github Loader Version: "..version)
     end
+    if not self:loadGithubFileLoader() then
+        computer.panic("Unable to load github file loader")
+    end
+    if not self:loadModuleLoader() then
+        computer.panic("Unable to load module loader")
+    end
+    if self.forceDownloadLoaderFiles then
+        print("INFO! loaded loader files")
+    end
     return self
 end
 
@@ -232,7 +238,6 @@ function GithubLoader:Run(option, debug, forceDownload)
     if self.debug then
         print("DEBUG! configuring program...")
     end
-    self:loadModuleLoader()
     self.mainProgramModule:Configure(debug)
     if self.debug then
         print("DEBUG! configured program")
