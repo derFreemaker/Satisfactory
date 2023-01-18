@@ -11,12 +11,14 @@ local function checkEntry(entry)
 		entry.FullName = entry.Name
 	end
 
-	local nameLength = entry.Name:len()
-    if entry.FullName:sub(nameLength - 4, nameLength) ~= ".lua" then
-        entry.FullName = entry.FullName..".lua"
-    end
-	if entry.Name:sub(nameLength - 4, nameLength) == ".lua" then
-		entry.Name = entry.Name:sub(0, nameLength)
+	if entry.IsFolder ~= true then
+		local nameLength = entry.Name:len()
+    	if entry.FullName:sub(nameLength - 3, nameLength) ~= ".lua" then
+       		entry.FullName = entry.FullName..".lua"
+    	end
+		if entry.Name:sub(nameLength - 3, nameLength) == ".lua" then
+			entry.Name = entry.Name:sub(0, nameLength)
+		end
 	end
 	return entry
 end

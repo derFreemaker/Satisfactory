@@ -8,6 +8,7 @@ Main.__index = Main
 
 Main.SetupFilesTree = {
     "/",
+    IsFolder = true,
     {
         "libs",
         IsFolder = true,
