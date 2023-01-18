@@ -8,7 +8,6 @@ function Logger.new(name, debug)
     end
     instace.Name = name
     instace.file = filesystem.open("log\\Log.txt", "+a")
-    instace.file:write("\n["..name.."] STARTED LOGGING\n")
     return instace
 end
 
@@ -34,6 +33,12 @@ end
 
 function Logger:LogError(message)
     self:Log("ERROR! "..message)
+end
+
+function Logger:ClearLog()
+    local file = filesystem.open("log\\Log.txt", "w")
+    file:write("")
+    file:close()
 end
 
 return Logger

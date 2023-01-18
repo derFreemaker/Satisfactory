@@ -68,6 +68,7 @@ function GithubLoader:loadLogger(debug)
     if not self:internalDownload(LoggerUrl, LoggerPath, self.forceDownloadLoaderFiles) then return false end
     Logger = filesystem.doFile(LoggerPath)
     self.logger = Logger.new("Loader", debug)
+    self.logger:ClearLog()
     return true
 end
 
@@ -120,10 +121,11 @@ end
 
 function GithubLoader:isVersionTheSame(forceDownload)
     self.logger:LogDebug("loading infa data...")
-    if not filesystem.exists(VersionFilePath) then
-        self.currentProgramInfo = {Name = "None", Version = ""}
-    else
+    if filesystem.exists(VersionFilePath) then
         self.currentProgramInfo = filesystem.doFile(VersionFilePath)
+    end
+    if self.currentProgramInfo == nil then
+        self.currentProgramInfo = {Name = "None", Version = ""}
     end
     if not self:internalDownload(self.currentOption.Url .. "/Version.lua", VersionFilePath, forceDownload) then return false end
     local newProgramInfo = filesystem.doFile(VersionFilePath)
@@ -140,9 +142,9 @@ end
 
 function GithubLoader:loadOptionFiles(forceDownload)
     self.logger:LogDebug("loading main program file...")
-    if not filesystem.exists(MainFilePath) then
+    if not filesystem.exists(MainFilePath) or forceDownload then
         if not self:internalDownload(self.currentOption.Url .. "/Main.lua", MainFilePath, forceDownload) then
-            print("ERROR! Unable to download main program file")
+            self.logger:LogError("Unable to download main program file")
             return false
         end
     end
@@ -153,25 +155,23 @@ end
 
 function GithubLoader:download(option, forceDownload)
     if self:loadOption(option) == false then
-        print("ERROR! Unable not find option: " .. option)
+        self.logger:LogError("Unable not find option: " .. option)
         return false
     end
-    self.logger:LogDebug("downloading program data...")
     local newProgram = self:isVersionTheSame(forceDownload)
     if not newProgram then
-        return false
+        return true
     else
         self.logger:LogDebug("new Version of '"..option.."' found or diffrent program")
     end
     if not self:loadOptionFiles(forceDownload) then
-        print("ERROR! Unable to load option files")
+        self.logger:LogError("Unable to load option files")
         return false
     end
     if not self.fileLoader:DownloadFileTree(BaseUrl, self.mainProgramModule.SetupFilesTree, newProgram, self.logger) then
-       print("ERROR! Unable to load setup files")
+        self.logger:LogError("Unable to load setup files")
        return false
     end
-    self.logger:LogDebug("downloaded program data")
     return true
 end
 
@@ -198,7 +198,7 @@ end
 
 function GithubLoader:ShowOptions(extended)
     if not self:loadOptions() then
-        print("ERROR! Unable to load options")
+        self.logger:LogError("Unable to load options")
     end
     print()
     print("Options:")
@@ -214,9 +214,11 @@ function GithubLoader:ShowOptions(extended)
 end
 
 function GithubLoader:Run(option, debug, forceDownload)
+    self.logger:LogDebug("downloading program data...")
     if not self:download(option, forceDownload) then
         computer.panic("Unable to download '"..option.."' program")
     end
+    self.logger:LogDebug("downloaded program data")
     local logger = filesystem.doFile(LoggerPath).new("Program", debug)
     print()
     ModuleLoader.LoadModules(self.mainProgramModule.SetupFilesTree)
