@@ -18,7 +18,9 @@ function Logger:Log(message)
 end
 
 function Logger:LogDebug(message)
-    self:Log("DEBUG! "..message)
+    if self.debug then
+        self:Log("DEBUG! "..message)
+    end
 end
 
 function Logger:LogInfo(message)
