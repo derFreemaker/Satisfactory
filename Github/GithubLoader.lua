@@ -102,7 +102,7 @@ function GithubLoader:loadOption(option, forceDownload)
 end
 
 function GithubLoader:isVersionTheSame(option, forceDownload)
-    if not self:loadOptions(option) then return false end
+    if not self:loadOption(option) then return false end
 
     if self.debug then
         print("DEBUG! loading info data...")
