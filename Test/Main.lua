@@ -16,11 +16,11 @@ Main.SetupFilesTree = {
     }
 }
 
-function Main:Configure(debug)
-    ModuleLoader.LoadModules(self.SetupFilesTree, debug)
+function Main:Configure(logger)
+    ModuleLoader.LoadModules(self.SetupFilesTree)
 end
 
-function Main:Run(debug)
+function Main:Run(logger)
     local serializer = ModuleLoader.GetModule("Serializer")
     if serializer ~= nil then
         print("INFO! loaded Serializer")

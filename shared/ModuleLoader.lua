@@ -2,6 +2,7 @@ ModuleLoader = {}
 ModuleLoader.__index = {}
 
 local libs = {}
+local logger = {}
 
 local function checkTree(entry)
     if entry.Name == nil and entry.FullName ~= nil then
@@ -56,50 +57,48 @@ local function checkTree(entry)
 	return checkedEntry
 end
 
-function ModuleLoader.doEntry(parentPath, entry, debug)
+function ModuleLoader.doEntry(parentPath, entry)
 	if entry.IsFolder == true then
-		ModuleLoader.doFolder(parentPath, entry, debug)
+		ModuleLoader.doFolder(parentPath, entry)
 	else
-		ModuleLoader.doFile(parentPath, entry, debug)
+		ModuleLoader.doFile(parentPath, entry)
 	end
 end
 
-function ModuleLoader.doFile(parentPath, file, debug)
+function ModuleLoader.doFile(parentPath, file)
 	local path = filesystem.path(parentPath, file.FullName)
 	if filesystem.exists(path) then
-		ModuleLoader.LoadModule(file, path, debug)
+		ModuleLoader.LoadModule(file, path)
     else
         print("DEBUG! Unable to find module: "..path)
 	end
 end
 
-function ModuleLoader.doFolder(parentPath, folder, debug)
+function ModuleLoader.doFolder(parentPath, folder)
 	local path = filesystem.path(parentPath, folder.Name)
 	table.remove(folder, 1)
 	filesystem.createDir(path)
 	for _, child in pairs(folder.Childs) do
 		if type(child) == "table" then
-			ModuleLoader.doEntry(path, child, debug)
+			ModuleLoader.doEntry(path, child)
 		end
 	end
 end
 
-function ModuleLoader.LoadModules(modulesTree, debug)
-    if debug then
-        print("DEBUG! loading modules")
-    end
-    ModuleLoader.doFolder("", checkTree(modulesTree), debug)
-    if debug then
-        print("DEBUG! loaded modules")
-    end
+function ModuleLoader.Initialize(newLogger)
+    logger = newLogger
 end
 
-function ModuleLoader.LoadModule(file, path, debug)
+function ModuleLoader.LoadModules(modulesTree)
+    logger:LogDebug("loading modules...")
+    ModuleLoader.doFolder("", checkTree(modulesTree))
+    logger:LogDebug("loaded modules")
+end
+
+function ModuleLoader.LoadModule(file, path)
     if file.IgnoreLoad == true then return end
     libs[file.Name] = filesystem.doFile(path)
-    if debug then
-        print("DEBUG! loaded module: "..file.Name)
-    end
+    logger:LogDebug("loaded module: "..file.Name)
 end
 
 function ModuleLoader.GetModule(moduleNameToLoad)
