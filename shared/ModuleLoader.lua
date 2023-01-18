@@ -98,6 +98,10 @@ end
 
 function ModuleLoader.LoadModules(modulesTree)
     logger:LogDebug("loading modules...")
+	if modulesTree == nil then
+		logger:LogDebug("modules tree was empty")
+		return
+	end
     ModuleLoader.doFolder("", checkTree(modulesTree))
     logger:LogDebug("loaded modules")
 end
