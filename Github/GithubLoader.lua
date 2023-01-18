@@ -22,7 +22,7 @@ local ModuleFileLoaderPath = filesystem.path(SharedFolderPath, "ModuleLoader.lua
 local LoggerUrl = SharedFolderUrl.."Logger.lua"
 local LoggerPath = filesystem.path(SharedFolderPath, "Logger.lua")
 
-local InfoFilePath = "Info.lua"
+local VersionFilePath = "Version.lua"
 local MainFilePath = "Main.lua"
 
 GithubLoader.forceDownloadLoaderFiles = false
@@ -121,13 +121,13 @@ end
 
 function GithubLoader:isVersionTheSame(forceDownload)
     self.logger:LogDebug("loading infa data...")
-    if not filesystem.exists(InfoFilePath) then
+    if not filesystem.exists(VersionFilePath) then
         self.currentProgramInfo = {Name = "None", Version = ""}
     else
-        self.currentProgramInfo = filesystem.doFile(InfoFilePath)
+        self.currentProgramInfo = filesystem.doFile(VersionFilePath)
     end
-    if not self:internalDownload(self.currentOption.Url .. "/Info.lua", InfoFilePath, forceDownload) then return false end
-    local newProgramInfo = filesystem.doFile(InfoFilePath)
+    if not self:internalDownload(self.currentOption.Url .. "/Version.lua", VersionFilePath, forceDownload) then return false end
+    local newProgramInfo = filesystem.doFile(VersionFilePath)
     self.logger:LogDebug("loaded info data")
     if not self.currentProgramInfo.Name == newProgramInfo.Name
     or self.currentProgramInfo.Version == newProgramInfo.Version then
@@ -176,7 +176,7 @@ end
 function GithubLoader:Initialize(debug, forceDownload)
     if forceDownload == false or forceDownload == true then self.forceDownloadLoaderFiles = debug end
     if debug == true then
-        print("INFO! Github Loader Version: "..version)
+        self.logger:LogInfo("Github Loader Version: "..version)
     end
     self:createLoaderFilesFolders()
     if not self:loadLogger(debug) then
@@ -189,7 +189,7 @@ function GithubLoader:Initialize(debug, forceDownload)
         computer.panic("Unable to load module loader")
     end
     if self.forceDownloadLoaderFiles then
-        print("INFO! loaded loader files")
+        self.logger:LogInfo("loaded loader files")
     end
     return self
 end
