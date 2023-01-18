@@ -23,6 +23,12 @@ local function checkTree(entry)
         entry.IsFolder = false
     end
 
+	if entry.IgnoreLoad == true then
+		entry.IgnoreLoad = true
+	else
+		entry.IgnoreLoad = false
+	end
+
     if entry.IsFolder ~= true then
 		local nameLength = entry.Name:len()
     	if entry.Name:sub(nameLength - 3, nameLength) == ".lua" then
@@ -43,8 +49,9 @@ local function checkTree(entry)
     checkedEntry.Name = entry.Name
     checkedEntry.FullName = entry.FullName
     checkedEntry.IsFolder = entry.IsFolder
+	checkedEntry.IgnoreLoad = entry.IgnoreLoad
 
-	if entry.IsFolder then
+	if entry.IsFolder and not entry.IgnoreLoad then
 		local childs = {}
 		for _, child in pairs(entry) do
 			if type(child) == "table" then
