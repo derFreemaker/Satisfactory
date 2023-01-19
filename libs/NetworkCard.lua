@@ -12,6 +12,9 @@ NetworkCard.__index = NetworkCard
 function NetworkCard.new(networkCard)
     if networkCard == nil then
         networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
+        if networkCard == nil then
+            error("no networkCard was found")
+        end
     end
     local instance = setmetatable({}, NetworkCard)
     instance.networkCard = networkCard

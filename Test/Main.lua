@@ -31,8 +31,7 @@ function Main:Test(signalName, signalSender, data)
 end
 
 function Main:Run()
-    local networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
-    local netClient = ModuleLoader.GetModule("NetworkCard").new(networkCard)
+    local netClient = ModuleLoader.GetModule("NetworkCard").new()
     netClient:OpenPort(42)
 
     local eventPullAdapter = ModuleLoader.GetModule("EventPullAdapter")
