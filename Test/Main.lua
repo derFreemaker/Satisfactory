@@ -1,8 +1,3 @@
----
---- Created by Freemaker
---- DateTime: 15/01/2023
----
-
 local Main = {}
 Main.__index = Main
 

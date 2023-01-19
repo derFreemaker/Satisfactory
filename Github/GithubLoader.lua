@@ -1,4 +1,4 @@
-local version = "1.0.6"
+local version = "1.0.7"
 
 local FileLoader = nil
 local Logger = nil

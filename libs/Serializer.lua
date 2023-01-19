@@ -1,8 +1,3 @@
----
---- Created by Freemaker
---- LastChange: 16/01/2023
----
-
 local Serializer = {}
 Serializer.__index = Serializer
 

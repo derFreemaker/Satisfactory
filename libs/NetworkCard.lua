@@ -1,8 +1,3 @@
----
---- Created by Freemaker
---- LastChange: 16/01/2023
----
-
 local Event = ModuleLoader.LoadModule("Event")
 local EventPullAdapter = ModuleLoader.LoadModule("EventPullAdapter")
 local Serializer = ModuleLoader.LoadModule("Serializer")
