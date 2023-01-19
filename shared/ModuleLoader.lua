@@ -101,8 +101,7 @@ function ModuleLoader.doFile(parentPath, file)
 	if file.IgnoreLoad == true then return end
 	local path = filesystem.path(parentPath, file.FullName)
 	if filesystem.exists(path) then
-		local success, error = pcall(ModuleLoader.InstallModule, file, path)
-		logger:LogDebug(tostring(success).." -> "..tostring(error))
+		local success, error = pcall(ModuleLoader.LoadModule, file, path)
     else
         print("DEBUG! Unable to find module: "..path)
 	end
@@ -135,20 +134,20 @@ function ModuleLoader.Initialize(newLogger)
     logger = newLogger
 end
 
-function ModuleLoader.InstallModule(file, path)
+function ModuleLoader.LoadModule(file, path)
     if file.IgnoreLoad == true then return end
     libs[file.Name] = filesystem.doFile(path)
     logger:LogDebug("loaded module: "..file.Name)
 	for moduleName, waiters in pairs(waitingForLoad) do
 		if moduleName == file.Name then
 			for _, waiter in pairs(waiters) do
-				ModuleLoader.InstallModule(waiter.File, waiter.Path)
+				ModuleLoader.LoadModule(waiter.File, waiter.Path)
 			end
 		end
 	end
 end
 
-function ModuleLoader.InstallModules(modulesTree)
+function ModuleLoader.LoadModules(modulesTree)
     logger:LogDebug("loading modules...")
 	if modulesTree == nil then
 		logger:LogDebug("modules tree was empty")
@@ -166,7 +165,7 @@ function ModuleLoader.InstallModules(modulesTree)
     logger:LogDebug("loaded modules")
 end
 
-function ModuleLoader.LoadModule(moduleNameToLoad)
+function ModuleLoader.PreLoadModule(moduleNameToLoad)
 	for moduleName, module in pairs(libs) do
         if moduleName == moduleNameToLoad then
             return module

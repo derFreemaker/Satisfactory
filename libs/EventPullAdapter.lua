@@ -1,4 +1,4 @@
-local Event = ModuleLoader.LoadModule("Event")
+local Event = ModuleLoader.PreLoadModule("Event")
 
 --[[
     If you use NetworkCard client you can not use any other event pull.
