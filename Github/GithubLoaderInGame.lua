@@ -32,7 +32,7 @@ if not filesystem.exists(GithubLoaderFilesFolder) then
 	filesystem.createDir(GithubLoaderFilesFolder)
 end
 
-if filesystem.exists(GithubLoaderPath) == false then
+if not filesystem.exists(GithubLoaderPath) then
 	print("[Computer] INFO! downloading Github loader...")
     local req = InternetCard:request(GithubLoaderUrl, "GET", "")
     local _, libdata = req:await()
@@ -47,7 +47,7 @@ local GithubLoader = filesystem.doFile(GithubLoaderPath):Initialize(false, false
 
 -- Show Options
 -- GithubLoader:ShowOptions([extended:boolean])
-GithubLoader:ShowOptions(true)
+GithubLoader:ShowOptions(false)
 
 -- GithubLoader:Run([option:string], [debug:boolean], [forceDownload:boolean])
 --GithubLoader:Run("Test", false, false)

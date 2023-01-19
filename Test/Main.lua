@@ -4,7 +4,7 @@ Main.__index = Main
 Main.Logger = {}
 
 Main.SetupFilesTree = {
-    "/",
+    "",
     IsFolder = true,
     {
         "shared",
