@@ -31,6 +31,7 @@ function Main:Test(signalName, signalSender, data)
 end
 
 function Main:Run()
+    ModuleLoader.ShowModules()
     local netClient = ModuleLoader.GetModule("NetworkCard").new()
     netClient:OpenPort(42)
 
