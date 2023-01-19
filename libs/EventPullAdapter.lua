@@ -16,12 +16,12 @@ EventPullAdapter.events = {}
 function EventPullAdapter:AddListener(signalName, func)
     for name, event in pairs(self.events) do
         if name == signalName then
-            event:addListener(func)
+            event:AddListener(func)
             return
         end
     end
     local event = Event.new()
-    event:addListener(func)
+    event:AddListener(func)
     self.events[signalName] = event
 end
 
@@ -31,7 +31,7 @@ function EventPullAdapter:Wait()
         return signalName, signalSender, {...}
     end)(table.unpack(eventPull))
 
-    self.onEventPull:trigger(signalName, signalSender, data)
+    self.onEventPull:Trigger(signalName, signalSender, data)
 end
 
 function EventPullAdapter:Run()

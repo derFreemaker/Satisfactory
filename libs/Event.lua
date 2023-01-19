@@ -9,19 +9,19 @@ function Event.new()
     return instance
 end
 
-function Event:addListener(listener)
+function Event:AddListener(listener)
     table.insert(self.Funcs, listener)
     return self
 end
-Event.on = Event.addListener
+Event.On = Event.AddListener
 
-function Event:addListenerOnce(listener)
+function Event:AddListenerOnce(listener)
     table.insert(self.OnceFuncs, listener)
     return self
 end
-Event.once = Event.addListenerOnce
+Event.Once = Event.AddListenerOnce
 
-function Event:trigger(...)
+function Event:Trigger(...)
     for _, lsn in ipairs(self.Funcs) do
         local status, error = pcall(lsn, ...)
         if not (status) then print("trigger error: " .. tostring(error)) end
@@ -36,7 +36,7 @@ function Event:trigger(...)
     return self
 end
 
-function Event:listeners()
+function Event:Listeners()
     local clone = {}
 
     for _, lsn in ipairs(self.Funcs) do
