@@ -19,7 +19,7 @@ function NetworkCard.new(networkCard)
     local instance = setmetatable({}, NetworkCard)
     instance.networkCard = networkCard
     event.listen(networkCard)
-    EventPullAdapter:addListener("NetworkMessage", instance.onEventPull)
+    EventPullAdapter:AddListener("NetworkMessage", instance.onEventPull)
     return instance
 end
 
