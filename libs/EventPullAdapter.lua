@@ -31,7 +31,7 @@ function EventPullAdapter:Wait()
         return signalName, signalSender, {...}
     end)(table.unpack(eventPull))
 
-    self.onEventPull:Trigger(signalName, signalSender, data)
+    self.OnEventPull:Trigger(signalName, signalSender, data)
 end
 
 function EventPullAdapter:Run()
