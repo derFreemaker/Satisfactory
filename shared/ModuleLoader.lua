@@ -101,7 +101,7 @@ function ModuleLoader.doFile(parentPath, file)
 	if file.IgnoreLoad == true then return end
 	local path = filesystem.path(parentPath, file.FullName)
 	if filesystem.exists(path) then
-		local success, error = pcall(ModuleLoader.LoadModule, file, path)
+		local success, error = pcall(ModuleLoader.InstallModule, file, path)
 		logger:LogDebug(tostring(success).." -> "..tostring(error))
     else
         print("DEBUG! Unable to find module: "..path)
