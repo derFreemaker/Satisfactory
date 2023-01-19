@@ -102,6 +102,7 @@ function FileLoader:doFile(parentPath, file, force)
 end
 
 function FileLoader:doFolder(parentPath, folder, force)
+	if folder.IgnoreDownload == true then return end
 	local path = filesystem.path(parentPath, folder.FullName)
 	table.remove(folder, 1)
 	filesystem.createDir(path)
