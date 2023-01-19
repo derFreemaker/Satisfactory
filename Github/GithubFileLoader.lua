@@ -14,46 +14,39 @@ FileLoader.requests = {}
 FileLoader.basePath = ""
 
 local function checkEntry(entry)
-    if entry.Name == nil and entry.FullName ~= nil then
-        entry.Name = entry.FullName
-    else
-        entry.Name = entry.Name
+    if entry.Name == nil then
+		if entry.FullName ~= nil then
+        	entry.Name = entry.FullName
+		else
+			entry.Name = entry[1]
+		end
 	end
-
 	if entry.FullName == nil then
 		entry.FullName = entry.Name
-	else
-        entry.FullName = entry.FullName
-    end
-
+	end
     if entry.IsFolder == true then
         entry.IsFolder = true
     else
         entry.IsFolder = false
     end
-
 	if entry.IgnoreDownload == true then
 		entry.IgnoreDownload = true
 	else
 		entry.IgnoreDownload = false
 	end
-
 	if entry.IgnoreLoad == true then
 		entry.IgnoreLoad = true
 	else
 		entry.IgnoreLoad = false
 	end
 
-    if entry.IsFolder ~= true then
-		local nameLength = entry.Name:len()
-    	if entry.Name:sub(nameLength - 3, nameLength) == ".lua" then
-			entry.Name = entry.Name:sub(0, nameLength - 4)
-		end
-		nameLength = entry.FullName:len()
-		if entry.FullName:sub(nameLength - 3, nameLength) ~= ".lua" then
-			entry.FullName = entry.FullName..".lua"
-	 	end
-	end
+	local checkedEntry = {
+		Name = entry.Name,
+		FullName = entry.FullName,
+		IsFolder = entry.IsFolder,
+		IgnoreDownload = entry.IgnoreDownload,
+		IgnoreLoad = entry.IgnoreLoad
+	}
 
 	if entry.IsFolder and not entry.IgnoreLoad then
 		local childs = {}
@@ -62,17 +55,19 @@ local function checkEntry(entry)
 				table.insert(childs, checkEntry(child))
 			end
 		end
-		entry.Childs = childs
+		checkedEntry.Childs = childs
+	else
+		local nameLength = entry.Name:len()
+    	if entry.Name:sub(nameLength - 3, nameLength) == ".lua" then
+			checkedEntry.Name = entry.Name:sub(0, nameLength - 4)
+		end
+		nameLength = entry.FullName:len()
+		if entry.FullName:sub(nameLength - 3, nameLength) ~= ".lua" then
+			checkedEntry.FullName = entry.FullName..".lua"
+	 	end
 	end
 
-	return {
-		Name = entry.Name,
-		FullName = entry.FullName,
-		IsFolder = entry.IsFolder,
-		IgnoreDownload = entry.IgnoreDownload,
-		IgnoreLoad = entry.IgnoreLoad,
-		Childs = entry.Childs
-	}
+	return checkedEntry
 end
 
 function FileLoader:requestFile(url, path)
@@ -159,7 +154,7 @@ function FileLoader:requestFileTree(tree, force)
 end
 
 function FileLoader:DownloadFileTree(basePath, tree, force)
-	self.logger:LogDebug("Github File Loader Version: "..version)	
+	self.logger:LogDebug("Github File Loader Version: "..version)
 	if basePath == nil then return false end
 	if tree == nil then
 		self.logger:LogDebug("download tree was empty")

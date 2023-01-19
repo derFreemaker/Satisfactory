@@ -15,46 +15,39 @@ local function split(str, sep)
 end
 
 local function checkEntry(entry)
-    if entry.Name == nil and entry.FullName ~= nil then
-        entry.Name = entry.FullName
-    else
-        entry.Name = entry.Name
+    if entry.Name == nil then
+		if entry.FullName ~= nil then
+        	entry.Name = entry.FullName
+		else
+			entry.Name = entry[1]
+		end
 	end
-
 	if entry.FullName == nil then
 		entry.FullName = entry.Name
-	else
-        entry.FullName = entry.FullName
-    end
-
+	end
     if entry.IsFolder == true then
         entry.IsFolder = true
     else
         entry.IsFolder = false
     end
-
 	if entry.IgnoreDownload == true then
 		entry.IgnoreDownload = true
 	else
 		entry.IgnoreDownload = false
 	end
-
 	if entry.IgnoreLoad == true then
 		entry.IgnoreLoad = true
 	else
 		entry.IgnoreLoad = false
 	end
 
-    if entry.IsFolder ~= true then
-		local nameLength = entry.Name:len()
-    	if entry.Name:sub(nameLength - 3, nameLength) == ".lua" then
-			entry.Name = entry.Name:sub(0, nameLength - 4)
-		end
-		nameLength = entry.FullName:len()
-		if entry.FullName:sub(nameLength - 3, nameLength) ~= ".lua" then
-			entry.FullName = entry.FullName..".lua"
-	 	end
-	end
+	local checkedEntry = {
+		Name = entry.Name,
+		FullName = entry.FullName,
+		IsFolder = entry.IsFolder,
+		IgnoreDownload = entry.IgnoreDownload,
+		IgnoreLoad = entry.IgnoreLoad
+	}
 
 	if entry.IsFolder and not entry.IgnoreLoad then
 		local childs = {}
@@ -63,17 +56,19 @@ local function checkEntry(entry)
 				table.insert(childs, checkEntry(child))
 			end
 		end
-		entry.Childs = childs
+		checkedEntry.Childs = childs
+	else
+		local nameLength = entry.Name:len()
+    	if entry.Name:sub(nameLength - 3, nameLength) == ".lua" then
+			checkedEntry.Name = entry.Name:sub(0, nameLength - 4)
+		end
+		nameLength = entry.FullName:len()
+		if entry.FullName:sub(nameLength - 3, nameLength) ~= ".lua" then
+			checkedEntry.FullName = entry.FullName..".lua"
+	 	end
 	end
 
-	return {
-		Name = entry.Name,
-		FullName = entry.FullName,
-		IsFolder = entry.IsFolder,
-		IgnoreDownload = entry.IgnoreDownload,
-		IgnoreLoad = entry.IgnoreLoad,
-		Childs = entry.Childs
-	}
+	return checkedEntry
 end
 
 local function extractCallerInfo(short_src)
@@ -81,19 +76,20 @@ local function extractCallerInfo(short_src)
 		Path = short_src,
 		File = {
 			IgnoreLoad = false,
+			IgnoreDownload = false,
 			IsFolder = false,
-			Name = "",
-			FullName = ""
+			Name = nil,
+			FullName = nil
 		}
 	}
 
 	local splitedName = split(callerData.Path, "\\")
 	callerData.File.FullName = splitedName[#splitedName]
 	callerData.File = checkEntry(callerData.File)
+	return callerData
 end
 
 function ModuleLoader.doEntry(parentPath, entry)
-	if entry.IgnoreLoad == true then return end
 	if entry.IsFolder == true then
 		ModuleLoader.doFolder(parentPath, entry)
 	else
@@ -105,7 +101,8 @@ function ModuleLoader.doFile(parentPath, file)
 	if file.IgnoreLoad == true then return end
 	local path = filesystem.path(parentPath, file.FullName)
 	if filesystem.exists(path) then
-		ModuleLoader.LoadModule(file, path)
+		local success, error = pcall(ModuleLoader.LoadModule, file, path)
+		logger:LogDebug(tostring(success).." -> "..tostring(error))
     else
         print("DEBUG! Unable to find module: "..path)
 	end
@@ -138,7 +135,7 @@ function ModuleLoader.Initialize(newLogger)
     logger = newLogger
 end
 
-function ModuleLoader.LoadModule(file, path)
+function ModuleLoader.InstallModule(file, path)
     if file.IgnoreLoad == true then return end
     libs[file.Name] = filesystem.doFile(path)
     logger:LogDebug("loaded module: "..file.Name)
@@ -151,13 +148,15 @@ function ModuleLoader.LoadModule(file, path)
 	end
 end
 
-function ModuleLoader.LoadModules(modulesTree)
+function ModuleLoader.InstallModules(modulesTree)
     logger:LogDebug("loading modules...")
 	if modulesTree == nil then
 		logger:LogDebug("modules tree was empty")
 		return
 	end
-    ModuleLoader.doFolder("", checkEntry(modulesTree))
+	local checkedTree = checkEntry(modulesTree)
+	logger:LogDebug("checked modules tree")
+    ModuleLoader.doFolder("", checkedTree)
 	if #waitingForLoad > 0 then
 		for moduleName, waiters in pairs(waitingForLoad) do
 			logger:LogError("Unable to load: "..moduleName.." for "..#waiters.." modules")
@@ -167,12 +166,20 @@ function ModuleLoader.LoadModules(modulesTree)
     logger:LogDebug("loaded modules")
 end
 
+function ModuleLoader.LoadModule(moduleNameToLoad)
+	for moduleName, module in pairs(libs) do
+        if moduleName == moduleNameToLoad then
+            return module
+        end
+    end
+	ModuleLoader.handleCouldNotLoadModule(moduleNameToLoad)
+	error("Unable to load module: .."..moduleNameToLoad, 1)
+end
+
 function ModuleLoader.GetModule(moduleNameToLoad)
     for moduleName, module in pairs(libs) do
         if moduleName == moduleNameToLoad then
             return module
         end
     end
-	ModuleLoader.handleCouldNotLoadModule(moduleNameToLoad)
-	error("Unable to load module: "..moduleNameToLoad)
 end

@@ -7,21 +7,21 @@ local Main = {}
 Main.__index = Main
 
 Main.SetupFilesTree = {
-    Name = "/",
+    "/",
     IsFolder = true,
     {
-        Name = "libs",
-        IsFolder = true,
-        {Name = "Serializer.lua"},
-        {Name = "Event.lua"},
-        {Name = "EventPullAdapter.lua"},
-        {Name = "NetworkCard.lua"}
-    },
-    {
-        Name = "shared",
+        "shared",
         IsFolder = true,
         IgnoreDownload = true,
-        {Name="Logger.lua"}
+        {"Logger.lua"}
+    },
+    {
+        "libs",
+        IsFolder = true,
+        {"Event.lua"},
+        {"EventPullAdapter.lua"},
+        {"NetworkCard.lua"},
+        {"Serializer.lua"}
     }
 }
 

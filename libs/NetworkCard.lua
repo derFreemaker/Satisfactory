@@ -3,9 +3,9 @@
 --- LastChange: 16/01/2023
 ---
 
-local Event = ModuleLoader.GetModule("Event")
-local EventPullAdapter = ModuleLoader.GetModule("EventPullAdapter")
-local Serializer = ModuleLoader.GetModule("Serializer")
+local Event = ModuleLoader.LoadModule("Event")
+local EventPullAdapter = ModuleLoader.LoadModule("EventPullAdapter")
+local Serializer = ModuleLoader.LoadModule("Serializer")
 
 --[[
     You can use the addListener method. Will call like this:
