@@ -2,6 +2,6 @@ local Version = {}
 Version.__index = Version
 
 Version.Name = "Test"
-Version.Version = "1.0.5"
+Version.Version = "0.0.7"
 
 return Version
