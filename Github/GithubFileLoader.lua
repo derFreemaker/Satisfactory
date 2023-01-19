@@ -87,6 +87,7 @@ function FileLoader:requestFile(url, path)
 end
 
 function FileLoader:doEntry(parentPath, entry, force)
+	if entry.IgnoreDownload == true then return end
 	if entry.IsFolder == true then
 		self:doFolder(parentPath, entry, force)
 	else
@@ -102,7 +103,7 @@ function FileLoader:doFile(parentPath, file, force)
 end
 
 function FileLoader:doFolder(parentPath, folder, force)
-	if folder.IgnoreDownload == true then return end
+
 	local path = filesystem.path(parentPath, folder.FullName)
 	table.remove(folder, 1)
 	filesystem.createDir(path)

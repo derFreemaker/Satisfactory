@@ -99,7 +99,6 @@ function ModuleLoader.doFile(parentPath, file)
 end
 
 function ModuleLoader.doFolder(parentPath, folder)
-	if folder.IgnoreLoad == true then return end
 	local path = filesystem.path(parentPath, folder.Name)
 	table.remove(folder, 1)
 	for _, child in pairs(folder.Childs) do
