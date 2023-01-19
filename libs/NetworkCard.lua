@@ -31,27 +31,24 @@ function NetworkCard:onEventPull(signalName, signalSender, data)
     if data.EventName == nil then return end
     for eventName, event in pairs(self.Events) do
         if eventName == data.EventName then
-            event:trigger(signalName, signalSender, data)
+            event:Trigger(signalName, signalSender, data)
         end
     end
 end
 
-function NetworkCard:AddListener(onRecivedEventName, func)
+function NetworkCard:AddListener(onRecivedEventName, func, debug)
     for eventName, event in pairs(self.Events) do
         if eventName == onRecivedEventName then
-            event.addListener(func)
+            event.AddListener(func)
             return
         end
     end
 
-    local event = Event.new()
-    event.addListener(func)
+    local event = Event.new(onRecivedEventName, debug)
+    event.AddListener(func)
     self.Events[onRecivedEventName] = event
 end
 
-function NetworkCard:SendMessage(ipAddress, port, data)
-    self.networkCard:send(ipAddress, port, data)
-end
 function NetworkCard:OpenPort(port)
     self.networkCard:open(port)
 end
@@ -61,8 +58,11 @@ end
 function NetworkCard:CloseAllPorts()
     self.networkCard:closeAll()
 end
-function NetworkCard:BroadCastMessage(port, data)
-    self.networkCard:broadcast(port, data)
+function NetworkCard:SendMessage(ipAddress, port, eventName, data)
+    self.networkCard:send(ipAddress, port, eventName, data)
+end
+function NetworkCard:BroadCastMessage(port, eventName, data)
+    self.networkCard:broadcast(port, eventName, data)
 end
 
 return NetworkCard

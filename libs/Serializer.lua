@@ -39,10 +39,12 @@ serialize = function(x, stk)
 end
 
 function Serializer:Serialize(x)
+  if x == nil then return nil end
   return serialize(x)
 end
 
 function Serializer:Deserialize(str)
+  if str == nil then return nil end
   return dostring("return " .. str)
 end
 

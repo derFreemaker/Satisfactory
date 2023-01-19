@@ -1,11 +1,21 @@
+local Logger = ModuleLoader.PreLoadModule("Logger")
+
 local Event = {}
 Event.__index = Event
 
 Event.Funcs = {}
 Event.OnceFuncs = {}
+Event.logger = {}
 
-function Event.new()
+function Event.new(name, debug)
+    if name == nil then
+        name = "Event"
+    end
+    if debug == nil then
+        debug = false
+    end
     local instance = setmetatable({}, Event)
+    instance.logger = Logger.new(name, debug)
     return instance
 end
 
@@ -24,12 +34,12 @@ Event.Once = Event.AddListenerOnce
 function Event:Trigger(...)
     for _, lsn in ipairs(self.Funcs) do
         local status, error = pcall(lsn, ...)
-        if not (status) then print("trigger error: " .. tostring(error)) end
+        if not (status) then self.logger:LogError("trigger error: " .. tostring(error)) end
     end
 
     for _, lsn in ipairs(self.OnceFuncs) do
         local status, error = pcall(lsn, ...)
-        if not (status) then print("trigger error: " .. tostring(error)) end
+        if not (status) then self.logger:LogError("trigger error: " .. tostring(error)) end
     end
     self.OnceFuncs = {}
 
