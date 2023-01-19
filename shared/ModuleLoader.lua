@@ -83,7 +83,7 @@ local function extractCallerInfo(short_src)
 		}
 	}
 
-	local splitedName = split(callerData.Path, "\\")
+	local splitedName = split(callerData.Path, "/")
 	callerData.File.FullName = splitedName[#splitedName]
 	callerData.File = checkEntry(callerData.File)
 	return callerData
