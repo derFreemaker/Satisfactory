@@ -13,7 +13,7 @@ FileLoader.logger = {}
 FileLoader.requests = {}
 FileLoader.basePath = ""
 
-local function checkTree(entry)
+local function checkEntry(entry)
     if entry.Name == nil and entry.FullName ~= nil then
         entry.Name = entry.FullName
     else
@@ -38,6 +38,12 @@ local function checkTree(entry)
 		entry.IgnoreDownload = false
 	end
 
+	if entry.IgnoreLoad == true then
+		entry.IgnoreLoad = true
+	else
+		entry.IgnoreLoad = false
+	end
+
     if entry.IsFolder ~= true then
 		local nameLength = entry.Name:len()
     	if entry.Name:sub(nameLength - 3, nameLength) == ".lua" then
@@ -49,17 +55,24 @@ local function checkTree(entry)
 	 	end
 	end
 
-	if entry.IsFolder and not entry.IgnoreDownload then
+	if entry.IsFolder and not entry.IgnoreLoad then
 		local childs = {}
 		for _, child in pairs(entry) do
 			if type(child) == "table" then
-				table.insert(childs, checkTree(child))
+				table.insert(childs, checkEntry(child))
 			end
 		end
 		entry.Childs = childs
 	end
 
-	return entry
+	return {
+		Name = entry.Name,
+		FullName = entry.FullName,
+		IsFolder = entry.IsFolder,
+		IgnoreDownload = entry.IgnoreDownload,
+		IgnoreLoad = entry.IgnoreLoad,
+		Childs = entry.Childs
+	}
 end
 
 function FileLoader:requestFile(url, path)
@@ -142,7 +155,7 @@ function FileLoader:loadFiles()
 end
 
 function FileLoader:requestFileTree(tree, force)
-    self:doFolder("", checkTree(tree), force)
+    self:doFolder("", checkEntry(tree), force)
 end
 
 function FileLoader:DownloadFileTree(basePath, tree, force)

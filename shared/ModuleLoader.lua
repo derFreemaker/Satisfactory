@@ -33,6 +33,12 @@ local function checkEntry(entry)
         entry.IsFolder = false
     end
 
+	if entry.IgnoreDownload == true then
+		entry.IgnoreDownload = true
+	else
+		entry.IgnoreDownload = false
+	end
+
 	if entry.IgnoreLoad == true then
 		entry.IgnoreLoad = true
 	else
@@ -60,7 +66,14 @@ local function checkEntry(entry)
 		entry.Childs = childs
 	end
 
-	return entry
+	return {
+		Name = entry.Name,
+		FullName = entry.FullName,
+		IsFolder = entry.IsFolder,
+		IgnoreDownload = entry.IgnoreDownload,
+		IgnoreLoad = entry.IgnoreLoad,
+		Childs = entry.Childs
+	}
 end
 
 local function extractCallerInfo(short_src)
