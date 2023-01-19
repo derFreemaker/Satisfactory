@@ -3,8 +3,18 @@ ModuleLoader.__index = {}
 
 local libs = {}
 local logger = {}
+local waitingForLoad = {}
 
-local function checkTree(entry)
+local function split(str, sep)
+    local result = {}
+    local regex = ("([^%s]+)"):format(sep)
+    for each in str:gmatch(regex) do
+       table.insert(result, each)
+    end
+    return result
+end
+
+local function checkEntry(entry)
     if entry.Name == nil and entry.FullName ~= nil then
         entry.Name = entry.FullName
     else
@@ -40,28 +50,33 @@ local function checkTree(entry)
 	 	end
 	end
 
-    local checkedEntry = {
-        Name = "",
-        FullName = "",
-        IsFolder = false,
-    }
-
-    checkedEntry.Name = entry.Name
-    checkedEntry.FullName = entry.FullName
-    checkedEntry.IsFolder = entry.IsFolder
-	checkedEntry.IgnoreLoad = entry.IgnoreLoad
-
 	if entry.IsFolder and not entry.IgnoreLoad then
 		local childs = {}
 		for _, child in pairs(entry) do
 			if type(child) == "table" then
-				table.insert(childs, checkTree(child))
+				table.insert(childs, checkEntry(child))
 			end
 		end
-		checkedEntry.Childs = childs
+		entry.Childs = childs
 	end
 
-	return checkedEntry
+	return entry
+end
+
+local function extractCallerInfo(short_src)
+	local callerData = {
+		Path = short_src,
+		File = {
+			IgnoreLoad = false,
+			IsFolder = false,
+			Name = "",
+			FullName = ""
+		}
+	}
+
+	local splitedName = split(callerData.Path, "\\")
+	callerData.File.FullName = splitedName[#splitedName]
+	callerData.File = checkEntry(callerData.File)
 end
 
 function ModuleLoader.doEntry(parentPath, entry)
@@ -94,8 +109,34 @@ function ModuleLoader.doFolder(parentPath, folder)
 	end
 end
 
+function ModuleLoader.handleCouldNotLoadModule(moduleNameToLoad)
+	local caller = extractCallerInfo(debug.getinfo(3).short_src)
+	if caller == nil then logger:LogError("caller was nil") return end
+	for moduleName, waiters in pairs(waitingForLoad) do
+		if moduleName == moduleNameToLoad then
+			table.insert(waiters, caller)
+			return
+		end
+	end
+	waitingForLoad[moduleNameToLoad] = {caller}
+	logger:LogDebug("Added: "..caller.File.Name.." to load after "..moduleNameToLoad.." was loaded")
+end
+
 function ModuleLoader.Initialize(newLogger)
     logger = newLogger
+end
+
+function ModuleLoader.LoadModule(file, path)
+    if file.IgnoreLoad == true then return end
+    libs[file.Name] = filesystem.doFile(path)
+    logger:LogDebug("loaded module: "..file.Name)
+	for moduleName, waiters in pairs(waitingForLoad) do
+		if moduleName == file.Name then
+			for _, waiter in pairs(waiters) do
+				ModuleLoader.LoadModule(waiter.File, waiter.Path)
+			end
+		end
+	end
 end
 
 function ModuleLoader.LoadModules(modulesTree)
@@ -104,14 +145,14 @@ function ModuleLoader.LoadModules(modulesTree)
 		logger:LogDebug("modules tree was empty")
 		return
 	end
-    ModuleLoader.doFolder("", checkTree(modulesTree))
+    ModuleLoader.doFolder("", checkEntry(modulesTree))
+	if #waitingForLoad > 0 then
+		for moduleName, waiters in pairs(waitingForLoad) do
+			logger:LogError("Unable to load: "..moduleName.." for "..#waiters.." modules")
+		end
+		computer.panic("Unable to load modules")
+	end
     logger:LogDebug("loaded modules")
-end
-
-function ModuleLoader.LoadModule(file, path)
-    if file.IgnoreLoad == true then return end
-    libs[file.Name] = filesystem.doFile(path)
-    logger:LogDebug("loaded module: "..file.Name)
 end
 
 function ModuleLoader.GetModule(moduleNameToLoad)
@@ -120,5 +161,6 @@ function ModuleLoader.GetModule(moduleNameToLoad)
             return module
         end
     end
-    computer.panic("FATAL! Unable to load: "..moduleNameToLoad)
+	ModuleLoader.handleCouldNotLoadModule(moduleNameToLoad)
+	error("Unable to load module: "..moduleNameToLoad)
 end

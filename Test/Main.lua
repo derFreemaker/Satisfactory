@@ -12,7 +12,16 @@ Main.SetupFilesTree = {
     {
         Name = "libs",
         IsFolder = true,
-        {Name = "Serializer.lua"}
+        {Name = "Serializer.lua"},
+        {Name = "Event.lua"},
+        {Name = "EventPullAdapter.lua"},
+        {Name = "NetworkCard.lua"}
+    },
+    {
+        Name = "shared",
+        IsFolder = true,
+        IgnoreDownload = true,
+        {Name="Logger.lua"}
     }
 }
 

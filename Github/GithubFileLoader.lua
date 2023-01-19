@@ -32,6 +32,12 @@ local function checkTree(entry)
         entry.IsFolder = false
     end
 
+	if entry.IgnoreDownload == true then
+		entry.IgnoreDownload = true
+	else
+		entry.IgnoreDownload = false
+	end
+
     if entry.IsFolder ~= true then
 		local nameLength = entry.Name:len()
     	if entry.Name:sub(nameLength - 3, nameLength) == ".lua" then
@@ -43,27 +49,17 @@ local function checkTree(entry)
 	 	end
 	end
 
-    local checkedEntry = {
-        Name = "",
-        FullName = "",
-        IsFolder = false,
-    }
-
-    checkedEntry.Name = entry.Name
-    checkedEntry.FullName = entry.FullName
-    checkedEntry.IsFolder = entry.IsFolder
-
-	if entry.IsFolder then
+	if entry.IsFolder and not entry.IgnoreDownload then
 		local childs = {}
 		for _, child in pairs(entry) do
 			if type(child) == "table" then
 				table.insert(childs, checkTree(child))
 			end
 		end
-		checkedEntry.Childs = childs
+		entry.Childs = childs
 	end
 
-	return checkedEntry
+	return entry
 end
 
 function FileLoader:requestFile(url, path)

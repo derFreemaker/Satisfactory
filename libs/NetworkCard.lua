@@ -3,34 +3,34 @@
 --- LastChange: 16/01/2023
 ---
 
-local Event = filesystem.doFile("Event.lua")
+local Event = ModuleLoader.GetModule("Event")
+local EventPullAdapter = ModuleLoader.GetModule("EventPullAdapter")
+local Serializer = ModuleLoader.GetModule("Serializer")
+
 --[[
-    If you use NetworkCard client you can not use any other event pull.
-    And you can only use this to send data properly. 
-
-    You can use the addListener under [object].OnEventPull will call like this.
-    -> "func(signalName, signalSender, recivedEventName, data)" <-
-
-    Or you can add add listner directly with the an event name so its only called when the event name was recieved.
-    Will call like this.
-    -> "func(signalName, signalSender, data)"
+    You can use the addListener method. Will call like this:
+    -> "func(signalName, signalSender, data)" <-
 ]]
 local NetworkCard = {}
 NetworkCard.__index = NetworkCard
 
-function NetworkCard.new()
+function NetworkCard.new(networkCard)
+    if networkCard == nil then error("networkCard was nil") end
     local instance = setmetatable({}, NetworkCard)
-    instance.OnEventPull = Event.new()
-    instance.OnEventPull.addListener(instance.onEventPull)
+    instance.networkCard = networkCard
+    event.listen(networkCard)
+    EventPullAdapter:addListener("NetworkMessage", instance.onEventPull)
     return instance
 end
 
-NetworkCard.OnEventPull = {}
 NetworkCard.Events = {}
+NetworkCard.networkCard = {}
 
-function NetworkCard:onEventPull(signalName, signalSender, recivedEventName, data)
+function NetworkCard:onEventPull(signalName, signalSender, data)
+    data = Serializer:Deserialize(data)
+    if data.EventName == nil then return end
     for eventName, event in pairs(self.Events) do
-        if eventName == recivedEventName then
+        if eventName == data.EventName then
             event:trigger(signalName, signalSender, data)
         end
     end
@@ -49,19 +49,20 @@ function NetworkCard:AddListener(onRecivedEventName, func)
     self.Events[onRecivedEventName] = event
 end
 
-function NetworkCard:Wait()
-    local eventPull = {event.pull()}
-    local signalName, signalSender, recivedEventName, data = (function(signalName, signalSender, recivedEventName, ...)
-        return signalName, signalSender, recivedEventName, {...}
-    end)(table.unpack(eventPull))
-
-    self.Events.OnEventPull:trigger(signalName, signalSender, recivedEventName, data)
+function NetworkCard:SendMessage(ipAddress, port, data)
+    self.networkCard:send(ipAddress, port, data)
 end
-
-function NetworkCard:Run()
-    while true do
-        self:Wait()
-    end
+function NetworkCard:OpenPort(port)
+    self.networkCard:open(port)
+end
+function NetworkCard:ClosePort(port)
+    self.networkCard:close(port)
+end
+function NetworkCard:CloseAllPorts()
+    self.networkCard:closeAll()
+end
+function NetworkCard:BroadCastMessage(port, data)
+    self.networkCard:broadcast(port, data)
 end
 
 return NetworkCard
