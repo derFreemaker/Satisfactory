@@ -14,9 +14,9 @@ Main.SetupFilesTree = {
         "libs",
         IsFolder = true,
         {"Event.lua"},
+        {"Serializer.lua"},
         {"EventPullAdapter.lua"},
-        {"NetworkCard.lua"},
-        {"Serializer.lua"}
+        {"NetworkCard.lua"}
     }
 }
 
