@@ -142,7 +142,7 @@ function ModuleLoader.InstallModule(file, path)
 	for moduleName, waiters in pairs(waitingForLoad) do
 		if moduleName == file.Name then
 			for _, waiter in pairs(waiters) do
-				ModuleLoader.LoadModule(waiter.File, waiter.Path)
+				ModuleLoader.InstallModule(waiter.File, waiter.Path)
 			end
 		end
 	end
