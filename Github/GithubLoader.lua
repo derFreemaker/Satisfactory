@@ -230,14 +230,14 @@ function GithubLoader:Run(option, debug, forceDownload)
         computer.panic("Unable to download '"..option.."'")
     end
     self.logger:LogDebug("downloaded program data")
-    local logger = Logger.new("Program", debug)
     print()
     ModuleLoader.LoadModules(self.mainProgramModule.SetupFilesTree)
     self.logger:LogDebug("configuring program...")
-    self.mainProgramModule:Configure(logger)
+    self.mainProgramModule.Logger = Logger.new("Program", debug)
+    self.mainProgramModule:Configure()
     self.logger:LogDebug("configured program")
     self.logger:LogDebug("running program...")
-    local result = self.mainProgramModule:Run(logger)
+    local result = self.mainProgramModule:Run()
     self.logger:LogDebug("program stoped running: "..tostring(result))
 end
 

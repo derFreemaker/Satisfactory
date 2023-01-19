@@ -1,6 +1,8 @@
 local Main = {}
 Main.__index = Main
 
+Main.Logger = {}
+
 Main.SetupFilesTree = {
     "/",
     IsFolder = true,
@@ -20,17 +22,22 @@ Main.SetupFilesTree = {
     }
 }
 
-function Main:Configure(logger)
-    logger:LogInfo("called configure function")
+function Main:Configure()
+    self.Logger:LogInfo("called configure function")
 end
 
-function Main:Run(logger)
-    local serializer = ModuleLoader.GetModule("Serializer")
-    if serializer ~= nil then
-        logger:LogInfo("loaded Serializer")
-    else
-        logger:LogInfo("Unable to load Serializer")
-    end
+function Main:Test(signalName, signalSender, data)
+    self.Logger:LogInfo("Got Message to: "..tostring(signalSender))
+end
+
+function Main:Run()
+    local networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
+    local netClient = ModuleLoader.GetModule("NetworkCard").new(networkCard)
+    netClient:OpenPort(42)
+
+    local eventPullAdapter = ModuleLoader.GetModule("EventPullAdapter")
+    eventPullAdapter:AddListener("NetworkMessage", self.Test)
+    eventPullAdapter:Run()
 end
 
 return Main

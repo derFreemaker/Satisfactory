@@ -10,7 +10,9 @@ local NetworkCard = {}
 NetworkCard.__index = NetworkCard
 
 function NetworkCard.new(networkCard)
-    if networkCard == nil then error("networkCard was nil") end
+    if networkCard == nil then
+        networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
+    end
     local instance = setmetatable({}, NetworkCard)
     instance.networkCard = networkCard
     event.listen(networkCard)
