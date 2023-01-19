@@ -1,6 +1,6 @@
+local Serializer = ModuleLoader.PreLoadModule("Serializer")
 local Event = ModuleLoader.PreLoadModule("Event")
 local EventPullAdapter = ModuleLoader.PreLoadModule("EventPullAdapter")
-local Serializer = ModuleLoader.PreLoadModule("Serializer")
 
 --[[
     You can use the addListener method. Will call like this:
