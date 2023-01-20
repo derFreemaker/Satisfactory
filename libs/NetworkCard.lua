@@ -9,7 +9,7 @@ local EventPullAdapter = ModuleLoader.PreLoadModule("EventPullAdapter")
 local NetworkCard = {}
 NetworkCard.__index = NetworkCard
 
-function NetworkCard.new(networkCard)
+function NetworkCard.new(networkCard, debug)
     if networkCard == nil then
         networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
         if networkCard == nil then
@@ -19,7 +19,7 @@ function NetworkCard.new(networkCard)
     local instance = setmetatable({}, NetworkCard)
     instance.networkCard = networkCard
     event.listen(networkCard)
-    EventPullAdapter:AddListener("NetworkMessage", instance.onEventPull)
+    EventPullAdapter:AddListener("NetworkMessage", instance.onEventPull, debug)
     return instance
 end
 

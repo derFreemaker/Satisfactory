@@ -10,17 +10,21 @@ local Event = ModuleLoader.PreLoadModule("Event")
 local EventPullAdapter = {}
 EventPullAdapter.__index = EventPullAdapter
 
-EventPullAdapter.OnEventPull = Event.new()
+EventPullAdapter.OnEventPull = {}
 EventPullAdapter.events = {}
 
-function EventPullAdapter:AddListener(signalName, func)
+function EventPullAdapter:Initilize(debug)
+    self.OnEventPull = Event.new("OnEventPull", debug)
+end
+
+function EventPullAdapter:AddListener(signalName, func, debug)
     for name, event in pairs(self.events) do
         if name == signalName then
             event:AddListener(func)
             return
         end
     end
-    local event = Event.new()
+    local event = Event.new(signalName.."Event", debug)
     event:AddListener(func)
     self.events[signalName] = event
 end
