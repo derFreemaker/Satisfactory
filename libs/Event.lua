@@ -7,6 +7,16 @@ Event.Funcs = {}
 Event.OnceFuncs = {}
 Event.logger = {}
 
+local function excuteCallback(listener, ...)
+    local status, error
+    if listener.Object ~= nil then
+        status, error = pcall(listener.Func, listener.Object, ...)
+    else
+        status, error = pcall(listener.Func, ...)
+    end
+    return status, error
+end
+
 function Event.new(name, debug)
     if name == nil then
         name = "Event"
@@ -19,14 +29,14 @@ function Event.new(name, debug)
     return instance
 end
 
-function Event:AddListener(listener)
-    table.insert(self.Funcs, listener)
+function Event:AddListener(listener, object)
+    table.insert(self.Funcs, {Func = listener, Object = object})
     return self
 end
 Event.On = Event.AddListener
 
-function Event:AddListenerOnce(listener)
-    table.insert(self.OnceFuncs, listener)
+function Event:AddListenerOnce(listener, object)
+    table.insert(self.OnceFuncs, {Func = listener, Object = object})
     return self
 end
 Event.Once = Event.AddListenerOnce
@@ -34,12 +44,12 @@ Event.Once = Event.AddListenerOnce
 function Event:Trigger(...)
     self.logger:LogDebug("got triggered")
     for _, listener in ipairs(self.Funcs) do
-        local status, error = pcall(listener, ...)
+        local status, error = excuteCallback(listener, ...)
         if not (status) then self.logger:LogError("trigger error: " .. tostring(error)) end
     end
 
     for _, listener in ipairs(self.OnceFuncs) do
-        local status, error = pcall(listener, ...)
+        local status, error = excuteCallback(listener, ...)
         if not (status) then self.logger:LogError("trigger error: " .. tostring(error)) end
     end
     self.OnceFuncs = {}

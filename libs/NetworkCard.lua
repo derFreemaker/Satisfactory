@@ -50,16 +50,16 @@ function NetworkCard:onEventPull(signalName, signalSender, data)
     end
 end
 
-function NetworkCard:AddListener(onRecivedEventName, func, debug)
+function NetworkCard:AddListener(onRecivedEventName, listener, debug)
     for eventName, event in pairs(self.Events) do
         if eventName == onRecivedEventName then
-            event.AddListener(func)
+            event.AddListener(listener.Func, listener.Object)
             return
         end
     end
 
     local event = Event.new(onRecivedEventName, debug)
-    event:AddListener(func)
+    event:AddListener(listener.Func, listener.Object)
     self.Events[onRecivedEventName] = event
 end
 
