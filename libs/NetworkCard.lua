@@ -64,7 +64,7 @@ function NetworkCard:SendMessage(ipAddress, port, eventName, data)
     self.networkCard:send(ipAddress, port, eventName, data)
 end
 function NetworkCard:BroadCastMessage(port, eventName, data)
-    self.networkCard:broadcast(port, {EventName = eventName, Data = data})
+    self.networkCard:broadcast(port, Serializer:Serialize({EventName = eventName, Body = data}))
 end
 
 return NetworkCard
