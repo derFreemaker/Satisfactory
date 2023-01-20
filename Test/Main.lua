@@ -26,17 +26,18 @@ function Main:Configure()
     self.Logger:LogInfo("called configure function")
 end
 
-local function Test(signalName, signalSender, data)
-    print("Got Message to: "..tostring(signalSender))
+function Main:Test(signalName, signalSender, data)
+    print("Got Message to: "..tostring(signalName))
 end
 
 function Main:Run()
     ModuleLoader.GetModule("EventPullAdapter"):Initialize(true)
-    local netClient = ModuleLoader.GetModule("NetworkCard").new(true)
+    local networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
+    local netClient = ModuleLoader.GetModule("NetworkCard").new(true, networkCard)
     netClient:OpenPort(42)
 
+    netClient:AddListener("Test", self.Test, true)
     local eventPullAdapter = ModuleLoader.GetModule("EventPullAdapter")
-    eventPullAdapter:AddListener("NetworkMessage", Test)
     eventPullAdapter:Run()
 end
 

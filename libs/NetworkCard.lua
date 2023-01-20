@@ -9,7 +9,7 @@ local EventPullAdapter = ModuleLoader.PreLoadModule("EventPullAdapter")
 local NetworkCard = {}
 NetworkCard.__index = NetworkCard
 
-function NetworkCard.new(networkCard, debug)
+function NetworkCard.new(debug, networkCard)
     if networkCard == nil then
         networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
         if networkCard == nil then
@@ -17,9 +17,9 @@ function NetworkCard.new(networkCard, debug)
             return
         end
     end
+    event.listen(networkCard)
     local instance = setmetatable({}, NetworkCard)
     instance.networkCard = networkCard
-    event.listen(networkCard)
     EventPullAdapter:AddListener("NetworkMessage", instance.onEventPull, debug)
     return instance
 end
@@ -28,6 +28,7 @@ NetworkCard.Events = {}
 NetworkCard.networkCard = {}
 
 function NetworkCard:onEventPull(signalName, signalSender, data)
+    if data == nil then return end
     data = Serializer:Deserialize(data)
     if data.EventName == nil then return end
     for eventName, event in pairs(self.Events) do
@@ -46,7 +47,7 @@ function NetworkCard:AddListener(onRecivedEventName, func, debug)
     end
 
     local event = Event.new(onRecivedEventName, debug)
-    event.AddListener(func)
+    event:AddListener(func)
     self.Events[onRecivedEventName] = event
 end
 

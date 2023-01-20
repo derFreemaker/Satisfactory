@@ -172,6 +172,7 @@ end
 function ModuleLoader.PreLoadModule(moduleNameToLoad)
 	for moduleName, module in pairs(libs) do
         if moduleName == moduleNameToLoad then
+			logger:LogDebug("pre loaded module: "..moduleNameToLoad)
             return module
         end
     end
@@ -180,7 +181,6 @@ function ModuleLoader.PreLoadModule(moduleNameToLoad)
 end
 
 function ModuleLoader.GetModule(moduleNameToLoad)
-	logger:LogDebug("getting module: "..moduleNameToLoad)
     for moduleName, module in pairs(libs) do
         if moduleName == moduleNameToLoad then
 			logger:LogDebug("geted module: "..moduleNameToLoad)
