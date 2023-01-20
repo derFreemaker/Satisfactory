@@ -14,6 +14,7 @@ function NetworkCard.new(networkCard, debug)
         networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
         if networkCard == nil then
             error("no networkCard was found")
+            return
         end
     end
     local instance = setmetatable({}, NetworkCard)

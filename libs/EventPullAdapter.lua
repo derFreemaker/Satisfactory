@@ -13,7 +13,7 @@ EventPullAdapter.__index = EventPullAdapter
 EventPullAdapter.OnEventPull = {}
 EventPullAdapter.events = {}
 
-function EventPullAdapter:Initilize(debug)
+function EventPullAdapter:Initialize(debug)
     self.OnEventPull = Event.new("OnEventPull", debug)
 end
 
