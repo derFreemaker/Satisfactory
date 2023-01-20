@@ -32,13 +32,14 @@ end
 Event.Once = Event.AddListenerOnce
 
 function Event:Trigger(...)
-    for _, lsn in ipairs(self.Funcs) do
-        local status, error = pcall(lsn, ...)
+    self.logger:LogDebug("got triggered")
+    for _, listener in ipairs(self.Funcs) do
+        local status, error = pcall(listener, ...)
         if not (status) then self.logger:LogError("trigger error: " .. tostring(error)) end
     end
 
-    for _, lsn in ipairs(self.OnceFuncs) do
-        local status, error = pcall(lsn, ...)
+    for _, listener in ipairs(self.OnceFuncs) do
+        local status, error = pcall(listener, ...)
         if not (status) then self.logger:LogError("trigger error: " .. tostring(error)) end
     end
     self.OnceFuncs = {}
@@ -49,11 +50,11 @@ end
 function Event:Listeners()
     local clone = {}
 
-    for _, lsn in ipairs(self.Funcs) do
-        table.insert(clone, lsn)
+    for _, listener in ipairs(self.Funcs) do
+        table.insert(clone, listener)
     end
-    for _, lsn in ipairs(self.OnceFuncs) do
-        table.insert(clone, lsn)
+    for _, listener in ipairs(self.OnceFuncs) do
+        table.insert(clone, listener)
     end
 
     return clone

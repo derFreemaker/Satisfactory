@@ -30,7 +30,7 @@ function Main:Run()
     ModuleLoader.GetModule("EventPullAdapter"):Initialize(true)
     local networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
     local netClient = ModuleLoader.GetModule("NetworkCard").new(true, networkCard)
-    netClient:BroadCastMessage(42, "Test", nil)
+    netClient:BroadCastMessage(42, "Test", {Test="Test"})
 end
 
 return Main

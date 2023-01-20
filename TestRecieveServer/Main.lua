@@ -27,7 +27,7 @@ function Main:Configure()
 end
 
 function Main:Test(signalName, signalSender, data)
-    print("Got Message to: "..tostring(signalName))
+    print("Got Message to: "..tostring(data.Test))
 end
 
 function Main:Run()
@@ -35,8 +35,8 @@ function Main:Run()
     local networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
     local netClient = ModuleLoader.GetModule("NetworkCard").new(true, networkCard)
     netClient:OpenPort(42)
-
     netClient:AddListener("Test", self.Test, true)
+
     local eventPullAdapter = ModuleLoader.GetModule("EventPullAdapter")
     eventPullAdapter:Run()
 end
