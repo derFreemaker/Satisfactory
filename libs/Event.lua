@@ -17,15 +17,12 @@ local function excuteCallback(listener, ...)
     return status, error
 end
 
-function Event.new(name, debug)
+function Event.new(name, logger)
     if name == nil then
         name = "Event"
     end
-    if debug == nil then
-        debug = false
-    end
     local instance = setmetatable({}, Event)
-    instance.logger = Logger.new(name, debug)
+    instance.logger = logger:create(name)
     return instance
 end
 
@@ -61,10 +58,10 @@ function Event:Listeners()
     local clone = {}
 
     for _, listener in ipairs(self.Funcs) do
-        table.insert(clone, listener)
+        table.insert(clone, {Mode = "Permanent", Listener = listener})
     end
     for _, listener in ipairs(self.OnceFuncs) do
-        table.insert(clone, listener)
+        table.insert(clone, {Mode = "Once", Listener = listener})
     end
 
     return clone

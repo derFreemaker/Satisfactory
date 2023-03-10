@@ -13,18 +13,18 @@ EventPullAdapter.__index = EventPullAdapter
 EventPullAdapter.OnEventPull = {}
 EventPullAdapter.events = {}
 
-function EventPullAdapter:Initialize(debug)
-    self.OnEventPull = Event.new("OnEventPull", debug)
+function EventPullAdapter:Initialize(logger)
+    self.OnEventPull = Event.new("OnEventPull", logger)
 end
 
-function EventPullAdapter:AddListener(signalName, listener, debug)
+function EventPullAdapter:AddListener(signalName, listener, logger)
     for name, event in pairs(self.events) do
         if name == signalName then
             event:AddListener(listener.Func, listener.Object)
             return
         end
     end
-    local event = Event.new(signalName.."Event", debug)
+    local event = Event.new(signalName.."Event", logger)
     event:AddListener(listener.Func, listener.Object)
     self.events[signalName] = event
 end

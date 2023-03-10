@@ -1,4 +1,4 @@
-local version = "1.0.5"
+local version = "1.0.6"
 
 local FileLoader = {}
 FileLoader.__index = FileLoader
@@ -21,19 +21,32 @@ local function checkEntry(entry)
 			entry.Name = entry[1]
 		end
 	end
+
 	if entry.FullName == nil then
 		entry.FullName = entry.Name
 	end
+
     if entry.IsFolder == true then
         entry.IsFolder = true
     else
-        entry.IsFolder = false
+		local childs = 0
+		for _, child in pairs(entry) do
+			if type(child) == "table" then
+				childs = childs + 1
+			end
+		end
+		if childs == 0 then
+			entry.IsFolder = false
+		end
+		entry.IsFolder = true
     end
+
 	if entry.IgnoreDownload == true then
 		entry.IgnoreDownload = true
 	else
 		entry.IgnoreDownload = false
 	end
+
 	if entry.IgnoreLoad == true then
 		entry.IgnoreLoad = true
 	else

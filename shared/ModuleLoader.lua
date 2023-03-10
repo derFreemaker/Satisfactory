@@ -22,19 +22,32 @@ local function checkEntry(entry)
 			entry.Name = entry[1]
 		end
 	end
+
 	if entry.FullName == nil then
 		entry.FullName = entry.Name
 	end
+
     if entry.IsFolder == true then
         entry.IsFolder = true
     else
-        entry.IsFolder = false
+		local childs = 0
+		for _, child in pairs(entry) do
+			if type(child) == "table" then
+				childs = childs + 1
+			end
+		end
+		if childs == 0 then
+			entry.IsFolder = false
+		end
+		entry.IsFolder = true
     end
+
 	if entry.IgnoreDownload == true then
 		entry.IgnoreDownload = true
 	else
 		entry.IgnoreDownload = false
 	end
+
 	if entry.IgnoreLoad == true then
 		entry.IgnoreLoad = true
 	else
@@ -135,7 +148,7 @@ function ModuleLoader.Initialize(newLogger)
 end
 
 function ModuleLoader.ShowModules()
-	for moduleName, module in pairs(libs) do
+	for moduleName, _ in pairs(libs) do
 		print("Name: "..moduleName)
 	end
 end
@@ -155,7 +168,7 @@ function ModuleLoader.LoadModules(modulesTree)
     logger:LogDebug("loading modules...")
 	if modulesTree == nil then
 		logger:LogDebug("modules tree was empty")
-		return
+		return false
 	end
 	local checkedTree = checkEntry(modulesTree)
 	logger:LogDebug("checked modules tree")
@@ -164,9 +177,11 @@ function ModuleLoader.LoadModules(modulesTree)
 		for moduleName, waiters in pairs(waitingForLoad) do
 			logger:LogError("Unable to load: "..moduleName.." for "..#waiters.." modules")
 		end
-		computer.panic("Unable to load modules")
+		logger:LogError("Unable to load modules")
+		return false
 	end
     logger:LogDebug("loaded modules")
+	return true
 end
 
 function ModuleLoader.PreLoadModule(moduleNameToLoad)

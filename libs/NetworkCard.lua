@@ -10,7 +10,7 @@ local Logger = ModuleLoader.PreLoadModule("Logger")
 local NetworkCard = {}
 NetworkCard.__index = NetworkCard
 
-function NetworkCard.new(debug, networkCard)
+function NetworkCard.new(logger, networkCard)
     if networkCard == nil then
         networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
         if networkCard == nil then
@@ -20,9 +20,9 @@ function NetworkCard.new(debug, networkCard)
     end
     event.listen(networkCard)
     local instance = setmetatable({}, NetworkCard)
-    instance.logger = Logger.new("NetworkCard", debug)
+    instance.logger = logger:create("NetworkCard")
     instance.networkCard = networkCard
-    EventPullAdapter:AddListener("NetworkMessage", {Func = instance.onEventPull, Object = instance}, debug)
+    EventPullAdapter:AddListener("NetworkMessage", {Func = instance.onEventPull, Object = instance}, instance.logger)
     return instance
 end
 
@@ -50,7 +50,7 @@ function NetworkCard:onEventPull(signalName, signalSender, data)
     end
 end
 
-function NetworkCard:AddListener(onRecivedEventName, listener, debug)
+function NetworkCard:AddListener(onRecivedEventName, listener, logger)
     for eventName, event in pairs(self.Events) do
         if eventName == onRecivedEventName then
             event.AddListener(listener.Func, listener.Object)
@@ -58,7 +58,7 @@ function NetworkCard:AddListener(onRecivedEventName, listener, debug)
         end
     end
 
-    local event = Event.new(onRecivedEventName, debug)
+    local event = Event.new(onRecivedEventName, logger)
     event:AddListener(listener.Func, listener.Object)
     self.Events[onRecivedEventName] = event
 end

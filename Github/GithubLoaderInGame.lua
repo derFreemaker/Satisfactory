@@ -9,7 +9,7 @@ if not InternetCard then
 	computer.beep(0.2)
 	return
 end
-print("[Computer] INFO! loaded internet")
+print("[Computer] INFO! found internet-card")
 
 filesystem.initFileSystem("/dev")
 
@@ -26,7 +26,7 @@ if drive:len() < 1 then
 	return
 end
 filesystem.mount("/dev/" .. drive, "/")
-print("[Computer] INFO! loaded filesystem on drive: " .. drive)
+print("[Computer] INFO! mounted filesystem on drive: " .. drive)
 
 if not filesystem.exists(GithubLoaderFilesFolder) then
 	filesystem.createDir(GithubLoaderFilesFolder)
@@ -42,12 +42,15 @@ if not filesystem.exists(GithubLoaderPath) then
 	print("[Computer] INFO! downloaded Github loader")
 end
 
--- Initialize([debug:boolean], [forceDownload:boolean])
-local GithubLoader = filesystem.doFile(GithubLoaderPath):Initialize(false, false)
+-- logLevel
+-- 0 = Debug / 1 = Info / 2 = Error
+
+-- Initialize([logLevel:int], [forceDownload:boolean])
+local GithubLoader = filesystem.doFile(GithubLoaderPath):Initialize(1, false)
 
 -- Show Options
 -- GithubLoader:ShowOptions([extended:boolean])
 GithubLoader:ShowOptions(false)
 
--- GithubLoader:Run([option:string], [debug:boolean], [forceDownload:boolean])
---GithubLoader:Run("Test", false, false)
+-- GithubLoader:Run([option:string], [logLevel:int], [forceDownload:boolean])
+--GithubLoader:Run("Test", 1, false)

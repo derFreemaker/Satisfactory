@@ -1,7 +1,4 @@
-local version = "1.0.7"
-
-local FileLoader = nil
-local Logger = nil
+local version = "1.0.8"
 
 local GithubLoader = {}
 GithubLoader.__index = GithubLoader
@@ -35,19 +32,20 @@ GithubLoader.fileLoader = nil
 
 function GithubLoader:internalDownload(url, path, forceDownload)
     if forceDownload == nil then forceDownload = false end
-    if not filesystem.exists(path) or forceDownload then
-        if self.logger ~= nil then
-            self.logger:LogDebug("downloading "..path.." from: "..url)
-        end
-        local req = InternetCard:request(url, "GET", "")
-        local code, data = req:await()
-        if code ~= 200 or not data then return false end
-        local file = filesystem.open(path, "w")
-        file:write(data)
-        file:close()
-        if self.logger ~= nil then
-            self.logger:LogDebug("downloaded "..path.." from: "..url)
-        end
+    if filesystem.exists(path) and not forceDownload then
+        return true
+    end
+    if self.logger ~= nil then
+        self.logger:LogDebug("downloading "..path.." from: "..url)
+    end
+    local req = InternetCard:request(url, "GET", "")
+    local code, data = req:await()
+    if code ~= 200 or not data then return false end
+    local file = filesystem.open(path, "w")
+    file:write(data)
+    file:close()
+    if self.logger ~= nil then
+        self.logger:LogDebug("downloaded "..path.." from: "..url)
     end
     return true
 end
@@ -61,13 +59,12 @@ function GithubLoader:createLoaderFilesFolders()
     end
 end
 
-function GithubLoader:loadLogger(debug)
+function GithubLoader:loadLogger(logLevel)
     if not filesystem.exists("log") then
         filesystem.createDir("log")
     end
     if not self:internalDownload(LoggerUrl, LoggerPath, self.forceDownloadLoaderFiles) then return false end
-    Logger = filesystem.doFile(LoggerPath)
-    self.logger = Logger.new("Loader", debug)
+    self.logger = filesystem.doFile(LoggerPath).new("Loader", logLevel)
     if self.logger == nil then
         return false
     end
@@ -75,11 +72,10 @@ function GithubLoader:loadLogger(debug)
     return true
 end
 
-function GithubLoader:loadGithubFileLoader(debug)
+function GithubLoader:loadGithubFileLoader()
     self.logger:LogDebug("loading github file loader...")
     if not self:internalDownload(GithubFileLoaderUrl, GithubFileLoaderPath, self.forceDownloadLoaderFiles) then return false end
-    FileLoader = filesystem.doFile(GithubFileLoaderPath)
-    self.fileLoader = FileLoader.new(Logger.new("File Loader", debug))
+    self.fileLoader = filesystem.doFile(GithubFileLoaderPath).new(self.logger:create("File Loader"))
     if self.fileLoader == nil then
         return false
     end
@@ -87,11 +83,11 @@ function GithubLoader:loadGithubFileLoader(debug)
     return true
 end
 
-function GithubLoader:loadModuleLoader(debug)
+function GithubLoader:loadModuleLoader()
     self.logger:LogDebug("loading module loader...")
     if not self:internalDownload(ModuleFileLoaderUrl, ModuleFileLoaderPath, self.forceDownloadLoaderFiles) then return false end
     filesystem.doFile(ModuleFileLoaderPath)
-    ModuleLoader.Initialize(Logger.new("ModuleLoader", debug))
+    ModuleLoader.Initialize(self.logger:create("ModuleLoader"))
     self.logger:LogDebug("loaded module loader")
     return true
 end
@@ -186,19 +182,17 @@ function GithubLoader:download(option, forceDownload)
     return true
 end
 
-function GithubLoader:Initialize(debug, forceDownload)
+function GithubLoader:Initialize(logLevel, forceDownload)
     if forceDownload == false or forceDownload == true then self.forceDownloadLoaderFiles = forceDownload end
     self:createLoaderFilesFolders()
-    if not self:loadLogger(debug) then
+    if not self:loadLogger(logLevel) then
         computer.panic("Unable to load logger")
     end
-    if debug == true then
-        self.logger:LogInfo("Github Loader Version: "..version)
-    end
-    if not self:loadGithubFileLoader(debug) then
+    self.logger:LogDebug("Github Loader Version: "..version)
+    if not self:loadGithubFileLoader() then
         computer.panic("Unable to load github file loader")
     end
-    if not self:loadModuleLoader(debug) then
+    if not self:loadModuleLoader() then
         computer.panic("Unable to load module loader")
     end
     if self.forceDownloadLoaderFiles then
@@ -227,18 +221,37 @@ end
 function GithubLoader:Run(option, debug, forceDownload)
     self.logger:LogDebug("downloading program data...")
     if not self:download(option, forceDownload) then
-        computer.panic("Unable to download '"..option.."'")
+        self.logger:LogError("Unable to download '"..option.."'")
+        return false
     end
     self.logger:LogDebug("downloaded program data")
     print()
-    ModuleLoader.LoadModules(self.mainProgramModule.SetupFilesTree)
+
+    local loadedModules = ModuleLoader.LoadModules(self.mainProgramModule.SetupFilesTree)
+    if not loadedModules then return false end
+
     self.logger:LogDebug("configuring program...")
-    self.mainProgramModule.Logger = Logger.new("Program", debug)
-    self.mainProgramModule:Configure()
-    self.logger:LogDebug("configured program")
+    self.mainProgramModule.Logger = self.logger.new("Program", debug)
+    if self.mainProgramModule.Configure ~= nil then
+        local success = pcall(self.mainProgramModule:Configure())
+        if success then
+            self.logger:LogDebug("configured program")
+        else
+            self.logger:LogError("configuration failed")
+            return false
+        end
+    else
+        self.logger:logDebug("no configure function found")
+    end
+
     self.logger:LogDebug("running program...")
+    if self.mainProgramModule.Run == nil then
+        self.logger:LogError("no main run function found")
+        return false
+    end
     local result = self.mainProgramModule:Run()
     self.logger:LogDebug("program stoped running: "..tostring(result))
+    return true
 end
 
 return GithubLoader

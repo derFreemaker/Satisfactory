@@ -1,25 +1,31 @@
 local Logger = {}
 Logger.__index = Logger
 
-function Logger.new(name, debug, path)
-    local instace = setmetatable({}, Logger)
-    if debug == true then
-        instace.debug = debug
-    end
-    instace.Name = name
-    instace.path = path
-    return instace
+function Logger.new(name, logLevel, path)
+    local instance = setmetatable({}, Logger)
+    instance.LogLevel = logLevel
+    instance.Name = name
+    instance.Path = path
+    return instance
 end
 
-Logger.debug = false
+Logger.LogLevel = 0
 Logger.Name = ""
-Logger.path = nil
+Logger.Path = nil
+
+function Logger:create(name, path)
+    local instance = setmetatable({}, Logger)
+    instance.LogLevel = self.LogLevel
+    instance.Name = self.Name.."."..name
+    instance.Path = path
+    return instance
+end
 
 function Logger:Log(message)
     message = "["..self.Name.."] "..message
 
-    if self.path ~= nil then
-       local ownFile = filesystem.open(self.path, "+a")
+    if self.Path ~= nil then
+       local ownFile = filesystem.open(self.Path, "+a")
        ownFile:write(message.."\n")
        ownFile:close()
     end
@@ -31,29 +37,29 @@ function Logger:Log(message)
 end
 
 function Logger:LogDebug(message)
-    if self.debug then
+    if self.LogLevel == 0 then
         self:Log("DEBUG! "..message)
     end
 end
 
 function Logger:LogInfo(message)
-    self:Log("INFO! "..message)
+    if self.LogLevel <= 1 then
+        self:Log("INFO! "..message)
+    end
 end
 
 function Logger:LogError(message)
-    self:Log("ERROR! "..message)
+    if self.LogLevel <= 2 then
+        self:Log("ERROR! "..message)
+    end
 end
 
 function Logger:ClearLog()
-    if self.path ~= nil then
-        local ownFile = filesystem.open(self.path, "w")
+    if self.Path ~= nil then
+        local ownFile = filesystem.open(self.Path, "w")
         ownFile:write("")
         ownFile:close()
     end
-
-    local file = filesystem.open("log\\Log.txt", "w")
-    file:write("")
-    file:close()
 end
 
 return Logger
