@@ -14,7 +14,8 @@ EventPullAdapter.OnEventPull = {}
 EventPullAdapter.events = {}
 
 function EventPullAdapter:Initialize(logger)
-    self.OnEventPull = Event.new("OnEventPull", logger)
+    self.OnEventPull = Event.new("OnEventPull", logger:create("OnEventPull"))
+    return self
 end
 
 function EventPullAdapter:AddListener(signalName, listener, logger)

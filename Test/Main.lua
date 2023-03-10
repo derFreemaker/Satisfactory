@@ -8,13 +8,11 @@ Main.SetupFilesTree = {
     IsFolder = true,
     {
         "shared",
-        IsFolder = true,
         IgnoreDownload = true,
         {"Logger.lua"}
     },
     {
         "libs",
-        IsFolder = true,
         {"Event.lua"},
         {"Serializer.lua"},
         {"EventPullAdapter.lua"},
@@ -23,7 +21,12 @@ Main.SetupFilesTree = {
 }
 
 function Main:Configure()
-    self.Logger:LogInfo("called configure function")
+    ModuleLoader.GetModule("EventPullAdapter"):Initialize(self.Logger)
+
+    local networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
+    local netClient = ModuleLoader.GetModule("NetworkCard").new(self.Logger, networkCard)
+    netClient:OpenPort(42)
+    netClient:AddListener("Test", self.Test, true)
 end
 
 function Main:Test(signalName, signalSender, data)
@@ -31,14 +34,7 @@ function Main:Test(signalName, signalSender, data)
 end
 
 function Main:Run()
-    ModuleLoader.GetModule("EventPullAdapter"):Initialize(true)
-    local networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
-    local netClient = ModuleLoader.GetModule("NetworkCard").new(true, networkCard)
-    netClient:OpenPort(42)
-
-    netClient:AddListener("Test", self.Test, true)
-    local eventPullAdapter = ModuleLoader.GetModule("EventPullAdapter")
-    eventPullAdapter:Run()
+    ModuleLoader.GetModule("EventPullAdapter"):Run()
 end
 
 return Main
