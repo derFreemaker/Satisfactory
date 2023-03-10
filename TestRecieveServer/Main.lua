@@ -24,7 +24,7 @@ function Main:Configure()
     ModuleLoader.GetModule("EventPullAdapter"):Initialize(self.Logger)
 
     local networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
-    local netClient = ModuleLoader.GetModule("NetworkCard").new(true, networkCard)
+    local netClient = ModuleLoader.GetModule("NetworkCard").new(self.Logger, networkCard)
     netClient:OpenPort(42)
     netClient:AddListener("Test", {Func = self.Test, Object = self}, true)
 end

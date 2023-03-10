@@ -27,7 +27,7 @@ Main.NetClient = {}
 function Main:Configure()
     ModuleLoader.GetModule("EventPullAdapter"):Initialize(self.Logger)
     local networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
-    self.NetClient = ModuleLoader.GetModule("NetworkCard").new(true, networkCard)
+    self.NetClient = ModuleLoader.GetModule("NetworkCard").new(self.Logger, networkCard)
 end
 
 function Main:Run()
