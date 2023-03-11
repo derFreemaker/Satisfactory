@@ -27,9 +27,7 @@ local function checkEntry(entry)
 		entry.FullName = entry.Name
 	end
 
-    if entry.IsFolder == true then
-        entry.IsFolder = true
-    else
+    if entry.IsFolder ~= nil then
 		local childs = 0
 		for _, child in pairs(entry) do
 			if type(child) == "table" then
@@ -38,8 +36,9 @@ local function checkEntry(entry)
 		end
 		if childs == 0 then
 			entry.IsFolder = false
+		else
+			entry.IsFolder = true
 		end
-		entry.IsFolder = true
     end
 
 	if entry.IgnoreDownload == true then
@@ -84,9 +83,9 @@ local function checkEntry(entry)
 	return checkedEntry
 end
 
-local function extractCallerInfo(short_src)
+local function extractCallerInfo(path)
 	local callerData = {
-		Path = short_src,
+		Path = path,
 		File = {
 			IgnoreLoad = false,
 			IgnoreDownload = false,

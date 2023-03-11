@@ -37,18 +37,21 @@ function Logger:Log(message)
 end
 
 function Logger:LogDebug(message)
+    if message == nil then return end
     if self.LogLevel == 0 then
         self:Log("DEBUG! "..message)
     end
 end
 
 function Logger:LogInfo(message)
+    if message == nil then return end
     if self.LogLevel <= 1 then
         self:Log("INFO! "..message)
     end
 end
 
 function Logger:LogError(message)
+    if message == nil then return end
     if self.LogLevel <= 2 then
         self:Log("ERROR! "..message)
     end
