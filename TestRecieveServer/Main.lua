@@ -5,7 +5,6 @@ Main.Logger = {}
 
 Main.SetupFilesTree = {
     "",
-    IsFolder = true,
     {
         "shared",
         IgnoreDownload = true,

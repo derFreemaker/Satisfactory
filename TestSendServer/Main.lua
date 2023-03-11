@@ -5,16 +5,13 @@ Main.Logger = {}
 
 Main.SetupFilesTree = {
     "",
-    IsFolder = true,
     {
         "shared",
-        IsFolder = true,
         IgnoreDownload = true,
         {"Logger.lua"}
     },
     {
         "libs",
-        IsFolder = true,
         {"Event.lua"},
         {"Serializer.lua"},
         {"EventPullAdapter.lua"},
