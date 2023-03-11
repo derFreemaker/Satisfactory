@@ -7,7 +7,6 @@ Main.SetupFilesTree = {
     "",
     {
         "shared",
-        IgnoreDownload = true,
         {"Logger.lua"}
     },
     {

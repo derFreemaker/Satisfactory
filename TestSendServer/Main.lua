@@ -8,6 +8,10 @@ Main.NetClient = {}
 Main.SetupFilesTree = {
     "",
     {
+        "shared",
+        {"Logger.lua"}
+    },
+    {
         "libs",
         {"Event.lua"},
         {"Serializer.lua"},

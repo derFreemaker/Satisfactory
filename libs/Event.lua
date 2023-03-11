@@ -1,5 +1,3 @@
-local Logger = ModuleLoader.PreLoadModule("Logger")
-
 local Event = {}
 Event.__index = Event
 
