@@ -24,11 +24,11 @@ function Main:Configure()
 end
 
 function Main:Test(signalName, signalSender, data)
-    self.logger:LogInfo("Got Message")
+    self.Logger:LogInfo("Got Message")
 end
 
 function Main:Run()
-    self.logger:LogInfo("waiting for message")
+    self.Logger:LogInfo("waiting for message")
     ModuleLoader.GetModule("EventPullAdapter"):Run()
 end
 
