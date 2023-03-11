@@ -28,7 +28,9 @@ function Main:Configure()
 end
 
 function Main:Run()
+    self.Logger:LogInfo("sending message")
     self.NetClient:BroadCastMessage(42, "Test", {Test="Test"})
+    self.Logger:LogInfo("sended message")
 end
 
 return Main
