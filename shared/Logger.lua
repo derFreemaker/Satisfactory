@@ -40,6 +40,7 @@ function Logger:Log(message, logLevel)
 end
 
 function Logger:LogTable(table, indent, logLevelString, logLevel)
+    if logLevelString == nil then return end
     if not indent then indent = 0 end
     for k, v in pairs(table) do
         local formatting = string.rep("  ", indent) .. k .. ": "
