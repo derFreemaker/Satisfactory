@@ -3,13 +3,10 @@ Main.__index = Main
 
 Main.Logger = {}
 
+Main.NetClient = {}
+
 Main.SetupFilesTree = {
     "",
-    {
-        "shared",
-        IgnoreDownload = true,
-        {"Logger.lua"}
-    },
     {
         "libs",
         {"Event.lua"},

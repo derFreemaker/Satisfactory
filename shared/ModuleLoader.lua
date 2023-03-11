@@ -148,7 +148,7 @@ end
 
 function ModuleLoader.LoadModule(file, path)
     if file.IgnoreLoad == true then return end
-    logger:LogDebug("loading module: "..file.Name.." from path: "..path)
+    logger:LogTrace("loading module: "..file.Name.." from path: "..path)
     libs[file.Name] = filesystem.doFile(path)
     logger:LogDebug("loaded module: "..file.Name)
     if waitingForLoad[file.Name] ~= nil then

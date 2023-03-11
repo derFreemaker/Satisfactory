@@ -72,10 +72,10 @@ function NetworkCard:CloseAllPorts()
     self.networkCard:closeAll()
 end
 function NetworkCard:SendMessage(ipAddress, port, eventName, data)
-    self.networkCard:send(ipAddress, port, eventName, data)
+    self.networkCard:send(ipAddress, port, eventName, Serializer:Serialize(data))
 end
 function NetworkCard:BroadCastMessage(port, eventName, data)
-    self.networkCard:broadcast(port, eventName, data)
+    self.networkCard:broadcast(port, eventName, Serializer:Serialize(data))
 end
 
 return NetworkCard
