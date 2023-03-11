@@ -26,7 +26,7 @@ local function checkEntry(entry)
 		entry.FullName = entry.Name
 	end
 
-    if entry.IsFolder ~= nil then
+    if entry.IsFolder == nil then
 		local childs = 0
 		for _, child in pairs(entry) do
 			if type(child) == "table" then
@@ -123,9 +123,7 @@ function FileLoader:doFile(parentPath, file, force)
 end
 
 function FileLoader:doFolder(parentPath, folder, force)
-
 	local path = filesystem.path(parentPath, folder.FullName)
-	table.remove(folder, 1)
 	filesystem.createDir(path)
 	for _, child in pairs(folder.Childs) do
 		if type(child) == "table" then
