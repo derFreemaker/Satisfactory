@@ -1,3 +1,5 @@
+local version = "1.0.3"
+
 ModuleLoader = {}
 ModuleLoader.__index = {}
 
@@ -135,6 +137,7 @@ end
 
 function ModuleLoader.Initialize(newLogger)
     logger = newLogger
+	logger:LogDebug("Module Loader Version: "..version)
 end
 
 function ModuleLoader.ShowModules()
@@ -145,7 +148,7 @@ end
 
 function ModuleLoader.LoadModule(file, path)
     if file.IgnoreLoad == true then return end
-    logger:LogDebug("loading module: "..file.Name)
+    logger:LogDebug("loading module: "..file.Name.." from path: "..path)
     libs[file.Name] = filesystem.doFile(path)
     logger:LogDebug("loaded module: "..file.Name)
     if waitingForLoad[file.Name] ~= nil then

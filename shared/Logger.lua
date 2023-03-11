@@ -1,6 +1,10 @@
 local Logger = {}
 Logger.__index = Logger
 
+Logger.LogLevel = 0
+Logger.Name = ""
+Logger.Path = nil
+
 function Logger.new(name, logLevel, path)
     local instance = setmetatable({}, Logger)
     instance.LogLevel = logLevel
@@ -8,10 +12,6 @@ function Logger.new(name, logLevel, path)
     instance.Path = path
     return instance
 end
-
-Logger.LogLevel = 0
-Logger.Name = ""
-Logger.Path = nil
 
 function Logger:create(name, path)
     local instance = setmetatable({}, Logger)
@@ -36,10 +36,30 @@ function Logger:Log(message)
     print(message)
 end
 
+function Logger:LogTable(table, indent, logLevel)
+    if not indent then indent = 0 end
+    for k, v in pairs(table) do
+        local formatting = string.rep("  ", indent) .. k .. ": "
+        if type(v) == "table" then
+            self:Log(logLevel..formatting)
+            self:LogTable(v, indent+1)
+        else
+            self:Log(logLevel .. formatting .. tostring(v))
+        end
+    end
+end
+
 function Logger:LogDebug(message)
     if message == nil then return end
     if self.LogLevel == 0 then
         self:Log("DEBUG! "..message)
+    end
+end
+
+function Logger:LogTableDebug(table)
+    if table == nil or type(table) ~= "table" then return end
+    if self.LogLevel == 0 then
+        self:LogTable(table, 0, "DEBUG! ")
     end
 end
 
@@ -50,10 +70,24 @@ function Logger:LogInfo(message)
     end
 end
 
+function Logger:LogTableInfo(table)
+    if table == nil or type(table) ~= "table" then return end
+    if self.LogLevel <= 1 then
+        self:LogTable(table, 0, "INFO! ")
+    end
+end
+
 function Logger:LogError(message)
     if message == nil then return end
     if self.LogLevel <= 2 then
         self:Log("ERROR! "..message)
+    end
+end
+
+function Logger:LogTableError(table)
+    if table == nil or type(table) ~= "table" then return end
+    if self.LogLevel <= 2 then
+        self:LogTable(table, 0, "ERROR! ")
     end
 end
 

@@ -160,7 +160,8 @@ function FileLoader:loadFiles()
 end
 
 function FileLoader:requestFileTree(tree, force)
-    self:doFolder("", checkEntry(tree), force)
+	local checkedTree = checkEntry(tree)
+    self:doFolder("", checkedTree, force)
 end
 
 function FileLoader:DownloadFileTree(basePath, tree, force)
