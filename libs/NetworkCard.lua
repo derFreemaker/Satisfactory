@@ -21,7 +21,7 @@ function NetworkCard.new(logger, networkCard)
     local instance = setmetatable({}, NetworkCard)
     instance.logger = logger:create("NetworkCard")
     instance.networkCard = networkCard
-    EventPullAdapter:AddListener("NetworkMessage", {Func = instance.onEventPull, Object = instance}, instance.logger)
+    EventPullAdapter:AddListener("NetworkMessage", {Func = instance.networkMessageRecieved, Object = instance}, instance.logger)
     return instance
 end
 
@@ -31,20 +31,31 @@ NetworkCard.logger = {}
 
 local function extractMessageData(data)
     return {
-        IPAddress = data[1],
+        SenderIPAddress = data[1],
         Port = data[2],
-        Body = data[3]
+        EventName = data[3],
+        Body = data[4]
     }
 end
 
-function NetworkCard:onEventPull(signalName, signalSender, data)
+local function createDataTable(signalName, signalSender, extractedData)
+    return {
+        SignalName = signalName,
+        SignalSender = signalSender,
+        SenderIPAddress = extractedData.SenderIPAddress,
+        Port = extractedData.Port,
+        EventName = extractedData.EventName,
+        Body = Serializer:Deserialize(extractedData.Body)
+    }
+end
+
+function NetworkCard:networkMessageRecieved(signalName, signalSender, data)
     if data == nil then return end
-    data = extractMessageData(data)
-    data.Body = Serializer:Deserialize(data.Body)
-    if data.EventName == nil then return end
+    local extractedData = extractMessageData(data)
+    if extractedData.EventName == nil then return end
     for eventName, event in pairs(self.Events) do
         if eventName == data.EventName then
-            event:Trigger(signalName, signalSender, data)
+            event:Trigger(createDataTable(signalName, signalSender, extractedData))
         end
     end
 end
@@ -52,7 +63,7 @@ end
 function NetworkCard:AddListener(onRecivedEventName, listener, logger)
     for eventName, event in pairs(self.Events) do
         if eventName == onRecivedEventName then
-            event.AddListener(listener.Func, listener.Object)
+            event:AddListener(listener.Func, listener.Object)
             return
         end
     end

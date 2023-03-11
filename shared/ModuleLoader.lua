@@ -180,7 +180,7 @@ end
 function ModuleLoader.PreLoadModule(moduleNameToLoad)
     for moduleName, module in pairs(libs) do
         if moduleName == moduleNameToLoad then
-            logger:LogDebug("pre loaded module: "..moduleName)
+            logger:LogTrace("pre loaded module: "..moduleName)
             return module
         end
     end

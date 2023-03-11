@@ -6,11 +6,6 @@ Main.Logger = {}
 Main.SetupFilesTree = {
     "",
     {
-        "shared",
-        IgnoreDownload = true,
-        {"Logger.lua"}
-    },
-    {
         "libs",
         {"Event.lua"},
         {"Serializer.lua"},

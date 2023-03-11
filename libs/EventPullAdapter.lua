@@ -12,9 +12,11 @@ EventPullAdapter.__index = EventPullAdapter
 
 EventPullAdapter.OnEventPull = {}
 EventPullAdapter.events = {}
+EventPullAdapter.logger = {}
 
 function EventPullAdapter:Initialize(logger)
     self.OnEventPull = Event.new("EventPull", logger)
+    self.logger = logger:create("EventPullAdapter")
     return self
 end
 

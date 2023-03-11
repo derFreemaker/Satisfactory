@@ -44,9 +44,9 @@ function Logger:LogTable(table, indent, logLevelString, logLevel)
     if not indent then indent = 0 end
     for k, v in pairs(table) do
         local formatting = string.rep("  ", indent) .. k .. ": "
-        if type(v) == "table" then
+        if type(v) == "table" and k ~= "__index" then
             self:Log(logLevelString..formatting, logLevel)
-            self:LogTable(v, indent+1)
+            self:LogTable(v, indent+1, logLevelString, logLevel)
         else
             self:Log(logLevelString .. formatting .. tostring(v), logLevel)
         end
