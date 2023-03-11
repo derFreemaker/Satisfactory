@@ -28,6 +28,7 @@ function Main:Test(signalName, signalSender, data)
 end
 
 function Main:Run()
+    self.logger:LogInfo("waiting for message")
     ModuleLoader.GetModule("EventPullAdapter"):Run()
 end
 
