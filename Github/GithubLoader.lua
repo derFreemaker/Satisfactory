@@ -36,7 +36,7 @@ function GithubLoader:internalDownload(url, path, forceDownload)
         return true
     end
     if self.logger ~= nil then
-        self.logger:LogDebug("downloading "..path.." from: "..url)
+        self.logger:LogTrace("downloading "..path.." from: "..url)
     end
     local req = InternetCard:request(url, "GET", "")
     local code, data = req:await()
@@ -45,7 +45,7 @@ function GithubLoader:internalDownload(url, path, forceDownload)
     file:write(data)
     file:close()
     if self.logger ~= nil then
-        self.logger:LogDebug("downloaded "..path.." from: "..url)
+        self.logger:LogTrace("downloaded "..path.." from: "..url)
     end
     return true
 end
@@ -68,7 +68,7 @@ function GithubLoader:loadLogger(logLevel)
     if self.logger == nil then
         return false
     end
-    self.logger:ClearLog()
+    self.logger:ClearLog(true)
     return true
 end
 
@@ -250,7 +250,7 @@ function GithubLoader:Run(option, debug, forceDownload)
         return false
     end
     local result = self.mainProgramModule:Run()
-    self.logger:LogDebug("program stoped running: "..tostring(result))
+    self.logger:LogInfo("program stoped running: "..tostring(result))
     return true
 end
 

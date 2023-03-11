@@ -3,15 +3,15 @@ local version = "1.0.6"
 local FileLoader = {}
 FileLoader.__index = FileLoader
 
+FileLoader.logger = {}
+FileLoader.requests = {}
+FileLoader.basePath = ""
+
 function FileLoader.new(logger)
     local instance = setmetatable({}, FileLoader)
 	instance.logger = logger
 	return instance
 end
-
-FileLoader.logger = {}
-FileLoader.requests = {}
-FileLoader.basePath = ""
 
 local function checkEntry(entry)
     if entry.Name == nil then
@@ -83,16 +83,16 @@ local function checkEntry(entry)
 end
 
 function FileLoader:requestFile(url, path)
-	self.logger:LogDebug("Requests file '" .. path .. "' from '" .. url .. "'")
+	self.logger:LogTrace("Requests file '" .. path .. "' from '" .. url .. "'")
 	if filesystem.exists(path) then
-		self.logger:LogDebug("Found requested file '"..path.."'")
+		self.logger:LogTrace("Found requested file '"..path.."'")
 		return
 	end
 	local request = InternetCard:request(url, "GET", "")
 	table.insert(self.requests, {
 		request = request,
 		func = function(req)
-			self.logger:LogDebug("Write file '" .. path .. "'")
+			self.logger:LogTrace("Write file '" .. path .. "'")
 			local file = filesystem.open(path, "w")
 			local code, data = req:get()
 			if code ~= 200 or not data then
@@ -161,6 +161,7 @@ end
 
 function FileLoader:requestFileTree(tree, force)
 	local checkedTree = checkEntry(tree)
+	self.logger:LogTableDebug(checkedTree)
     self:doFolder("", checkedTree, force)
 end
 

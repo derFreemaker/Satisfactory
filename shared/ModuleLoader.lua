@@ -132,7 +132,7 @@ function ModuleLoader.handleCouldNotLoadModule(moduleNameToLoad)
         end
     end
     waitingForLoad[moduleNameToLoad] = {caller}
-    logger:LogDebug("Added: "..caller.File.Name.."to load after "..moduleNameToLoad.." was loaded")
+    logger:LogDebug("Added: "..caller.File.Name.." to load after "..moduleNameToLoad.." was loaded")
 end
 
 function ModuleLoader.Initialize(newLogger)
@@ -165,7 +165,6 @@ function ModuleLoader.LoadModules(modulesTree)
         return false
     end
     local checkedTree = checkEntry(modulesTree)
-    logger:LogDebug("checked modules tree")
     ModuleLoader.doFolder("", checkedTree)
     if #waitingForLoad > 0 then
         for moduleName, waiters in pairs(waitingForLoad) do

@@ -43,7 +43,7 @@ if not filesystem.exists(GithubLoaderPath) then
 end
 
 -- logLevel
--- 0 = Debug / 1 = Info / 2 = Error
+-- 0 = Trace / 1 = Debug / 2 = Info / 3 = Error
 
 -- Initialize([logLevel:int], [forceDownload:boolean])
 local GithubLoader = filesystem.doFile(GithubLoaderPath):Initialize(1, false)

@@ -25,7 +25,7 @@ function Main:Configure()
     local networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
     local netClient = ModuleLoader.GetModule("NetworkCard").new(self.Logger, networkCard)
     netClient:OpenPort(42)
-    netClient:AddListener("Test", self.Test, true)
+    netClient:AddListener("Test", self.Test, self.Logger)
 end
 
 function Main:Test(signalName, signalSender, data)
