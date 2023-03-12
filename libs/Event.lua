@@ -28,7 +28,6 @@ end
 
 function Event:AddListener(listener, object)
     table.insert(self.Funcs, {Func = listener, Object = object})
-    self.logger:LogTrace(#self.Funcs)
     return self
 end
 Event.On = Event.AddListener
