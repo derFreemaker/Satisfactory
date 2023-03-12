@@ -13,26 +13,14 @@ Main.SetupFilesTree = {
         "libs",
         {"Event.lua"},
         {"Serializer.lua"},
-        {"EventPullAdapter.lua"},
-        {"NetworkCard.lua"}
     }
 }
 
-function Main:Configure()
-    ModuleLoader.GetModule("EventPullAdapter"):Initialize(self.Logger)
-
-    local networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
-    local netClient = ModuleLoader.GetModule("NetworkCard").new(self.Logger, networkCard)
-    netClient:OpenPort(42)
-    netClient:AddListener("Test", self.Test, self.Logger)
-end
-
-function Main:Test(signalName, signalSender, data)
-    print("Got Message to: "..tostring(signalName))
-end
-
 function Main:Run()
-    ModuleLoader.GetModule("EventPullAdapter"):Run()
+    local event = ModuleLoader.GetModule("Event").new("Test", self.Logger)
+    local event1 = event:create("Event1")
+    local event2 = event:create("Event2")
+    local event3 = event:create("Event3")
 end
 
 return Main

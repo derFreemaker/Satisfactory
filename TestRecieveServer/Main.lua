@@ -27,8 +27,9 @@ function Main:Configure()
     netClient:AddListener("Test", {Func = self.Test, Object = self}, self.Logger)
 end
 
-function Main:Test(signalName, signalSender, data)
+function Main:Test(data)
     self.Logger:LogInfo("Got Message")
+    self.Logger:LogTableTrace(data)
 end
 
 function Main:Run()

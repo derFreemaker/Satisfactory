@@ -46,7 +46,7 @@ end
 -- 0 = Trace / 1 = Debug / 2 = Info / 3 = Error
 
 -- Initialize([logLevel:int], [forceDownload:boolean])
-local GithubLoader = filesystem.doFile(GithubLoaderPath):Initialize(1, false)
+local GithubLoader = filesystem.doFile(GithubLoaderPath):Initialize(2, false)
 
 -- Show Options
 -- GithubLoader:ShowOptions([extended:boolean])

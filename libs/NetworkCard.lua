@@ -9,6 +9,10 @@ local EventPullAdapter = ModuleLoader.PreLoadModule("EventPullAdapter")
 local NetworkCard = {}
 NetworkCard.__index = NetworkCard
 
+NetworkCard.Events = {}
+NetworkCard.networkCard = {}
+NetworkCard.logger = {}
+
 function NetworkCard.new(logger, networkCard)
     if networkCard == nil then
         networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
@@ -25,37 +29,25 @@ function NetworkCard.new(logger, networkCard)
     return instance
 end
 
-NetworkCard.Events = {}
-NetworkCard.networkCard = {}
-NetworkCard.logger = {}
-
-local function extractMessageData(data)
-    return {
+function NetworkCard:networkMessageRecieved(signalName, signalSender, data)
+    if data == nil then return end
+    local extractedData = {
         SenderIPAddress = data[1],
         Port = data[2],
         EventName = data[3],
         Body = data[4]
     }
-end
-
-local function createDataTable(signalName, signalSender, extractedData)
-    return {
-        SignalName = signalName,
-        SignalSender = signalSender,
-        SenderIPAddress = extractedData.SenderIPAddress,
-        Port = extractedData.Port,
-        EventName = extractedData.EventName,
-        Body = Serializer:Deserialize(extractedData.Body)
-    }
-end
-
-function NetworkCard:networkMessageRecieved(signalName, signalSender, data)
-    if data == nil then return end
-    local extractedData = extractMessageData(data)
-    if extractedData.EventName == nil then return end
+    if extractedData.EventName == nil or type(extractedData.EventName) ~= "string" then return end
     for eventName, event in pairs(self.Events) do
-        if eventName == data.EventName then
-            event:Trigger(createDataTable(signalName, signalSender, extractedData))
+        if eventName == extractedData.EventName then
+            event:Trigger({
+                SignalName = signalName,
+                SignalSender = signalSender,
+                SenderIPAddress = extractedData.SenderIPAddress,
+                Port = extractedData.Port,
+                EventName = extractedData.EventName,
+                Body = Serializer:Deserialize(extractedData.Body)
+            })
         end
     end
 end
