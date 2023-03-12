@@ -2,16 +2,8 @@ local Serializer = ModuleLoader.PreLoadModule("Serializer")
 local Event = ModuleLoader.PreLoadModule("Event")
 local EventPullAdapter = ModuleLoader.PreLoadModule("EventPullAdapter")
 
---[[
-    You can use the addListener method. Will call like this:
-    -> "func(signalName, signalSender, data)" <-
-]]
 local NetworkCard = {}
 NetworkCard.__index = NetworkCard
-
-NetworkCard.Events = {}
-NetworkCard.networkCard = {}
-NetworkCard.logger = {}
 
 function NetworkCard.new(logger, networkCard)
     if networkCard == nil then
@@ -21,19 +13,19 @@ function NetworkCard.new(logger, networkCard)
             return
         end
     end
-    event.listen(networkCard)
-    local instance = setmetatable({
+    local instance = {
         Events = {},
-        networkCard = {},
-        logger = {}
-    }, NetworkCard)
-    instance.logger = logger:create("NetworkCard")
-    instance.networkCard = networkCard
+        networkCard = networkCard,
+        logger = logger:create("NetworkCard")
+    }
+    instance = setmetatable(instance, NetworkCard)
+    event.listen(instance.networkCard)
     EventPullAdapter:AddListener("NetworkMessage", {Func = instance.networkMessageRecieved, Object = instance}, instance.logger)
     return instance
 end
 
 function NetworkCard:networkMessageRecieved(signalName, signalSender, data)
+    self.logger:LogTrace("got network message")
     if data == nil then return end
     local extractedData = {
         SenderIPAddress = data[1],

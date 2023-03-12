@@ -34,7 +34,7 @@ function Main:Run()
         self.Logger:LogInfo("sending message")
         self.NetClient:BroadCastMessage(42, "Test", {Test="Test"})
         self.Logger:LogInfo("sended message")
-        Utils.Sleep(3000)
+        Utils.Sleep(10 * 1000)
     end
 end
 

@@ -1,12 +1,5 @@
 local Event = ModuleLoader.PreLoadModule("Event")
 
---[[
-    If you use NetworkCard client you can not use any other event pull.
-    And you can only use this to send data properly. 
-
-    You can use the addListener method or directly under '[object].OnEventPull'. Will call like this:
-    -> "func(signalName, signalSender, data)" <-
-]]
 local EventPullAdapter = {}
 EventPullAdapter.__index = EventPullAdapter
 
@@ -27,7 +20,7 @@ function EventPullAdapter:AddListener(signalName, listener, logger)
             return
         end
     end
-    local event = Event.new(signalName.."Event", logger)
+    local event = Event.new(signalName, logger)
     event:AddListener(listener.Func, listener.Object)
     self.events[signalName] = event
 end

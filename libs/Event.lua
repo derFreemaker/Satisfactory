@@ -1,9 +1,20 @@
 local Event = {}
 Event.__index = Event
 
-Event.Funcs = {}
-Event.OnceFuncs = {}
-Event.logger = {}
+function Event.new(name, logger)
+    if name == nil then
+        name = "Event"
+    else
+        name = name.."Event"
+    end
+    local instance = {
+        Funcs = {},
+        OnceFuncs = {},
+        logger = logger:create(name)
+    }
+    instance = setmetatable(instance, Event)
+    return instance
+end
 
 local function excuteCallback(listener, ...)
     local status, error
@@ -15,21 +26,9 @@ local function excuteCallback(listener, ...)
     return status, error
 end
 
-function Event.new(name, logger)
-    if name == nil then
-        name = "Event"
-    end
-    local instance = setmetatable({
-        Funcs = {},
-        OnceFuncs = {},
-        logger = {}
-    }, Event)
-    instance.logger = logger:create(name)
-    return instance
-end
-
 function Event:AddListener(listener, object)
     table.insert(self.Funcs, {Func = listener, Object = object})
+    self.logger:LogTrace(#self.Funcs)
     return self
 end
 Event.On = Event.AddListener
