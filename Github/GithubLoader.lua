@@ -247,7 +247,7 @@ function GithubLoader:Run(option, debug, forceDownload)
             return false
         end
     else
-        self.logger:logDebug("no configure function found")
+        self.logger:LogDebug("no configure function found")
     end
 
     self.logger:LogDebug("running program...")
