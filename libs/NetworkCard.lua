@@ -22,7 +22,11 @@ function NetworkCard.new(logger, networkCard)
         end
     end
     event.listen(networkCard)
-    local instance = setmetatable({}, NetworkCard)
+    local instance = setmetatable({
+        Events = {},
+        networkCard = {},
+        logger = {}
+    }, NetworkCard)
     instance.logger = logger:create("NetworkCard")
     instance.networkCard = networkCard
     EventPullAdapter:AddListener("NetworkMessage", {Func = instance.networkMessageRecieved, Object = instance}, instance.logger)

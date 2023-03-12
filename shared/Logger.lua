@@ -7,7 +7,11 @@ Logger.Path = nil
 
 function Logger.new(name, logLevel, path)
     if not filesystem.exists("log") then filesystem.createDir("log") end
-    local instance = setmetatable({}, Logger)
+    local instance = setmetatable({
+        LogLevel = 0,
+        Name = "",
+        Path = nil
+    }, Logger)
     instance.LogLevel = logLevel
     instance.Name = name
     instance.Path = path
@@ -15,11 +19,7 @@ function Logger.new(name, logLevel, path)
 end
 
 function Logger:create(name, path)
-    local instance = setmetatable({}, Logger)
-    instance.LogLevel = self.LogLevel
-    instance.Name = self.Name.."."..name
-    instance.Path = path
-    return instance
+    return Logger.new(self.Name.."."..name, self.LogLevel, path)
 end
 
 function Logger:Log(message, logLevel)

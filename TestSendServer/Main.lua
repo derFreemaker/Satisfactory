@@ -9,7 +9,8 @@ Main.SetupFilesTree = {
     "",
     {
         "shared",
-        {"Logger.lua"}
+        {"Logger.lua"},
+        {"Utils.lua"}
     },
     {
         "libs",
@@ -29,9 +30,12 @@ function Main:Configure()
 end
 
 function Main:Run()
-    self.Logger:LogInfo("sending message")
-    self.NetClient:BroadCastMessage(42, "Test", {Test="Test"})
-    self.Logger:LogInfo("sended message")
+    while true do
+        self.Logger:LogInfo("sending message")
+        self.NetClient:BroadCastMessage(42, "Test", {Test="Test"})
+        self.Logger:LogInfo("sended message")
+        Utils.Sleep(3000)
+    end
 end
 
 return Main

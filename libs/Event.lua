@@ -19,7 +19,11 @@ function Event.new(name, logger)
     if name == nil then
         name = "Event"
     end
-    local instance = setmetatable({}, Event)
+    local instance = setmetatable({
+        Funcs = {},
+        OnceFuncs = {},
+        logger = {}
+    }, Event)
     instance.logger = logger:create(name)
     return instance
 end
