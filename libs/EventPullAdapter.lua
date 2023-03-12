@@ -7,9 +7,18 @@ EventPullAdapter.OnEventPull = {}
 EventPullAdapter.events = {}
 EventPullAdapter.logger = {}
 
+function EventPullAdapter:onEventPull(signalName, signalSender, data)
+    for eventName, event in pairs(self.events) do
+        if eventName == signalName then
+            event:Trigger(signalName, signalSender, data)
+        end
+    end
+end
+
 function EventPullAdapter:Initialize(logger)
-    self.OnEventPull = Event.new("EventPull", logger)
     self.logger = logger:create("EventPullAdapter")
+    self.OnEventPull = Event.new("EventPull", logger)
+    self.OnEventPull:AddListener(self.onEventPull, self)
     return self
 end
 
