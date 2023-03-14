@@ -14,7 +14,7 @@ Main.SetupFilesTree = {
         {
             "NetworkClient",
             {"NetworkClient.lua"},
-            {"NetworkClientPort.lua"}
+            {"NetworkPort.lua"}
         },
         {
             "Api",
@@ -49,7 +49,10 @@ Main.SetupFilesTree = {
 }
 
 function Main:Configure()
+    self.Logger:LogTrace("initialize 'EventPullAdapater' and 'DatabaseAccessLayer'...")
     ModuleLoader.GetModule("EventPullAdapter"):Initialize(self.Logger)
+    ModuleLoader.GetModule("DatabaseAccessLayer"):Initialize(self.Logger)
+    self.Logger:LogTrace("initialized 'EventPullAdapater' and 'DatabaseAccessLayer'")
 
     self.Logger:LogTrace("creating net client...")
     local netClient = ModuleLoader.GetModule("NetworkClient").new(self.Logger)

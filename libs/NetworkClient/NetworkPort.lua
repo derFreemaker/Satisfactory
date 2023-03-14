@@ -1,4 +1,4 @@
-local Event = ModuleLoader.GetModule("Event")
+local Event = ModuleLoader.PreLoadModule("Event")
 
 local NetworkPort = {}
 NetworkPort.__index = NetworkPort

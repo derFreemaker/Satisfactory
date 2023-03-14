@@ -3,9 +3,10 @@ local version = "1.0.3"
 ModuleLoader = {}
 ModuleLoader.__index = {}
 
-local libs = {}
-local logger = {}
-local waitingForLoad = {}
+local _libs = {}
+local _logger = {}
+local _waitingForLoad = {}
+local _loadingPhase = false
 
 local function checkEntry(entry)
     if entry.Name == nil then
@@ -103,9 +104,9 @@ function ModuleLoader.doFile(parentPath, file)
 	if file.IgnoreLoad == true then return end
 	local path = filesystem.path(parentPath, file.FullName)
 	if filesystem.exists(path) then
-		ModuleLoader.LoadModule(file, path)
+		pcall(ModuleLoader.LoadModule, file, path)
     else
-        logger:LogDebug("Unable to find module: "..path)
+        _logger:LogDebug("Unable to find module: "..path)
 	end
 end
 
@@ -122,65 +123,67 @@ end
 function ModuleLoader.handleCouldNotLoadModule(moduleNameToLoad)
     local caller = extractCallerInfo(debug.getinfo(3).short_src)
     if caller == nil then
-        logger:LogError("caller was nil")
+        _logger:LogError("caller was nil")
         return
     end
-    for moduleName, waiters in pairs(waitingForLoad) do
+    for moduleName, waiters in pairs(_waitingForLoad) do
         if moduleName == moduleNameToLoad then
             table.insert(waiters, caller)
             return
         end
     end
-    waitingForLoad[moduleNameToLoad] = {caller}
-    logger:LogDebug("Added: "..caller.File.Name.." to load after "..moduleNameToLoad.." was loaded")
+    _waitingForLoad[moduleNameToLoad] = {caller}
+    _logger:LogDebug("Added: "..caller.File.Name.." to load after "..moduleNameToLoad.." was loaded")
 end
 
 function ModuleLoader.Initialize(newLogger)
-    logger = newLogger
-	logger:LogDebug("Module Loader Version: "..version)
+    _logger = newLogger
+	_logger:LogDebug("Module Loader Version: "..version)
 end
 
 function ModuleLoader.ShowModules()
-	for moduleName, _ in pairs(libs) do
+	for moduleName, _ in pairs(_libs) do
 		print("Name: "..moduleName)
 	end
 end
 
 function ModuleLoader.LoadModule(file, path)
     if file.IgnoreLoad == true then return end
-    logger:LogTrace("loading module: "..file.Name.." from path: "..path)
-    libs[file.Name] = filesystem.doFile(path)
-    logger:LogDebug("loaded module: "..file.Name)
-    if waitingForLoad[file.Name] ~= nil then
-        for _, waiter in pairs(waitingForLoad[file.Name]) do
+    _logger:LogTrace("loading module: "..file.Name.." from path: "..path)
+    _libs[file.Name] = filesystem.doFile(path)
+    _logger:LogDebug("loaded module: "..file.Name)
+    if _waitingForLoad[file.Name] ~= nil then
+        for _, waiter in pairs(_waitingForLoad[file.Name]) do
             ModuleLoader.LoadModule(waiter.File, waiter.Path)
         end
     end
 end
 
-function ModuleLoader.LoadModules(modulesTree)
-    logger:LogDebug("loading modules...")
+function ModuleLoader.LoadModules(modulesTree, loadingPhase)
+	_loadingPhase = loadingPhase
+    _logger:LogDebug("loading modules...")
     if modulesTree == nil then
-        logger:LogDebug("modules tree was empty")
+        _logger:LogDebug("modules tree was empty")
         return false
     end
     local checkedTree = checkEntry(modulesTree)
     ModuleLoader.doFolder("", checkedTree)
-    if #waitingForLoad > 0 then
-        for moduleName, waiters in pairs(waitingForLoad) do
-            logger:LogError("Unable to load: "..moduleName.." for "..#waiters.." modules")
+    if #_waitingForLoad > 0 then
+        for moduleName, waiters in pairs(_waitingForLoad) do
+            _logger:LogError("Unable to load: "..moduleName.." for "..#waiters.." modules")
         end
-        logger:LogError("Unable to load modules")
+        _logger:LogError("Unable to load modules")
         return false
     end
-    logger:LogDebug("loaded modules")
+    _logger:LogDebug("loaded modules")
+	_loadingPhase = false
     return true
 end
 
 function ModuleLoader.PreLoadModule(moduleNameToLoad)
-    for moduleName, module in pairs(libs) do
+    for moduleName, module in pairs(_libs) do
         if moduleName == moduleNameToLoad then
-            logger:LogTrace("pre loaded module: "..moduleName)
+            _logger:LogTrace("pre loaded module: "..moduleName)
             return module
         end
     end
@@ -189,9 +192,12 @@ function ModuleLoader.PreLoadModule(moduleNameToLoad)
 end
 
 function ModuleLoader.GetModule(moduleNameToLoad)
-    for moduleName, module in pairs(libs) do
+	if _loadingPhase then
+		error("Cann't get module while being in loading Phase!")
+	end
+    for moduleName, module in pairs(_libs) do
         if moduleName == moduleNameToLoad then
-            logger:LogDebug("geted module: "..moduleName)
+            _logger:LogDebug("geted module: "..moduleName)
             return module
         end
     end

@@ -1,6 +1,6 @@
 local Serializer = ModuleLoader.PreLoadModule("Serializer")
 local EventPullAdapter = ModuleLoader.PreLoadModule("EventPullAdapter")
-local NetworkPort = ModuleLoader.GetModule("NetworkClientPort")
+local NetworkPort = ModuleLoader.PreLoadModule("NetworkPort")
 
 local NetworkCard = {}
 NetworkCard.__index = NetworkCard
