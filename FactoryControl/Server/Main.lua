@@ -18,7 +18,8 @@ Main.SetupFilesTree = {
         },
         {
             "Api",
-            {"ApiController.lua"}
+            {"ApiController.lua"},
+            {"ApiClient.lua"}
         },
         {"Event.lua"},
         {"EventPullAdapter.lua"},

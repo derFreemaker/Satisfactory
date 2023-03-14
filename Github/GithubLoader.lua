@@ -130,15 +130,21 @@ function GithubLoader:isVersionTheSame(forceDownload)
     end
     if self.currentProgramInfo == nil then
         self.currentProgramInfo = {Name = "None", Version = ""}
+        return false
     end
+
     if not self:internalDownload(self.currentOption.Url .. "/Version.lua", VersionFilePath, forceDownload) then return false end
+
     local newProgramInfo = filesystem.doFile(VersionFilePath)
+
     if newProgramInfo == nil then
         newProgramInfo = {Name = "None", Version = ""}
+        return false
     end
+
     self.logger:LogDebug("loaded info data")
-    if not self.currentProgramInfo.Name == newProgramInfo.Name
-    or self.currentProgramInfo.Version == newProgramInfo.Version then
+    if self.currentProgramInfo.Name ~= newProgramInfo.Name
+    or self.currentProgramInfo.Version ~= newProgramInfo.Version then
         return false
     end
     return true

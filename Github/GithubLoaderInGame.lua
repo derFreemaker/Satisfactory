@@ -49,12 +49,12 @@ end
 -- Initialize([logLevel:int], [forceDownload:boolean])
 local GithubLoader = filesystem.doFile(GithubLoaderPath):Initialize(2, false)
 
--- Show Options
 -- GithubLoader:ShowOptions([extended:boolean])
-GithubLoader:ShowOptions(false)
+--GithubLoader:ShowOptions(false)
 
+-- Config --
 -- to define any config variables
 --Config = {}
 
 -- GithubLoader:Run([option:string], [logLevel:int], [forceDownload:boolean])
---GithubLoader:Run("Test", 1, false)
+GithubLoader:Run("Test", 0, false)

@@ -1,12 +1,18 @@
 local Controller = {}
 Controller.__index = Controller
 
-function Controller.new(ipAddress, name, category)
-    local instance = setmetatable({
+function Controller.new(ipAddress, name, category, factoryControlApiClient)
+    return setmetatable({
         IPAddress = ipAddress,
         Name = name,
-        Category = category
+        Category = category,
+        FactoryControlApiClient = factoryControlApiClient
     }, Controller)
+end
+
+function Controller.newWithExtractedData(extractData, factoryControlApiClient)
+    local instance = setmetatable(extractData, Controller)
+    instance.FactoryControlApiClient = factoryControlApiClient
     return instance
 end
 
