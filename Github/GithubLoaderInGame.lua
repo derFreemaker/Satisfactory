@@ -53,5 +53,8 @@ local GithubLoader = filesystem.doFile(GithubLoaderPath):Initialize(2, false)
 -- GithubLoader:ShowOptions([extended:boolean])
 GithubLoader:ShowOptions(false)
 
+-- to define any config variables
+--Config = {}
+
 -- GithubLoader:Run([option:string], [logLevel:int], [forceDownload:boolean])
 --GithubLoader:Run("Test", 1, false)

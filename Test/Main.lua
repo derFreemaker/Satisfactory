@@ -16,6 +16,10 @@ Main.SetupFilesTree = {
     }
 }
 
+function Main:Configure()
+    self.Logger:LogTrace("configure function called")
+end
+
 function Main:Run()
     local event = ModuleLoader.GetModule("Event").new("Test", self.Logger)
     local event1 = event:create("Event1")

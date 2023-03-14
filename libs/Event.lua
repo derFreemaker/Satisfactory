@@ -39,7 +39,7 @@ end
 Event.Once = Event.AddListenerOnce
 
 function Event:Trigger(...)
-    self.logger:LogTrace("event got triggered")
+    self.logger:LogTrace("got triggered")
     for _, listener in ipairs(self.Funcs) do
         local status, error = excuteCallback(listener, ...)
         if not (status) then self.logger:LogError("trigger error: " .. tostring(error)) end
@@ -50,8 +50,6 @@ function Event:Trigger(...)
         if not (status) then self.logger:LogError("trigger error: " .. tostring(error)) end
     end
     self.OnceFuncs = {}
-
-    return self
 end
 
 function Event:Listeners()
