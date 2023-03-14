@@ -193,7 +193,7 @@ end
 
 function ModuleLoader.GetModule(moduleNameToLoad)
 	if _loadingPhase then
-		error("Cann't get module while being in loading Phase!")
+		computer.panic("Cann't get module while being in loading Phase!")
 	end
     for moduleName, module in pairs(_libs) do
         if moduleName == moduleNameToLoad then

@@ -93,7 +93,11 @@ end
 function NetworkCard:CreateNetworkPort(port)
     port = (port or "all")
 
-    return (self:GetNetworkPort(port) or NetworkPort.new(port, self.logger))
+    local netPort = self:GetNetworkPort(port)
+    if netPort ~= nil then return netPort end
+    netPort = NetworkPort.new(port, self.logger, self)
+    table.insert(self.Ports, netPort)
+    return netPort
 end
 
 function NetworkCard:GetNetworkPort(port)
@@ -102,6 +106,7 @@ function NetworkCard:GetNetworkPort(port)
             return networkPort
         end
     end
+    return nil
 end
 
 function NetworkCard:WaitForEvent(eventName, port)
