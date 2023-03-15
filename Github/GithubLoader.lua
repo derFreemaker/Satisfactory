@@ -209,6 +209,7 @@ function GithubLoader:runConfigureFunction(logLevel)
     else
         self._logger:LogDebug("no configure function found")
     end
+    return true
 end
 
 function GithubLoader:runMainFunction()
@@ -220,10 +221,13 @@ function GithubLoader:runMainFunction()
     local thread = coroutine.create(self._mainProgramModule.Run)
     local success, result = coroutine.resume(thread, self._mainProgramModule)
     if not success then
-        self._logger:LogInfo("program stoped running with error: "..debug.traceback(thread) .. debug.traceback():sub(17))
+        self._logger:LogError("program stoped running")
+        self._logger:LogError(debug.traceback(thread) .. debug.traceback():sub(17))
+        return false
     else
         self._logger:LogInfo("program stoped running: "..tostring(result))
     end
+    return true
 end
 
 function GithubLoader:Initialize(logLevel, forceDownload)
@@ -274,8 +278,8 @@ function GithubLoader:Run(option, logLevel, forceDownload)
     local loadedModules = self:loadModules()
     if not loadedModules then return false end
 
-    self:runConfigureFunction(logLevel)
-    self:runMainFunction()
+    if not self:runConfigureFunction(logLevel) then return false end
+    if not self:runMainFunction() then return false end
     return true
 end
 
