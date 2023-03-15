@@ -229,7 +229,7 @@ function GithubLoader:ShowOptions(extended)
     end
 end
 
-function GithubLoader:Run(option, debug, forceDownload)
+function GithubLoader:Run(option, logLevel, forceDownload)
     self.logger:LogDebug("downloading program data...")
     if not self:download(option, forceDownload) then
         self.logger:LogError("Unable to download '"..option.."'")
@@ -242,7 +242,7 @@ function GithubLoader:Run(option, debug, forceDownload)
     if not loadedModules then return false end
 
     self.logger:LogDebug("configuring program...")
-    self.mainProgramModule._logger = self.logger.new("Program", debug)
+    self.mainProgramModule._logger = self.logger.new("Program", logLevel)
     if self.mainProgramModule.Configure ~= nil then
         local success = pcall(self.mainProgramModule.Configure, self.mainProgramModule)
         if success then

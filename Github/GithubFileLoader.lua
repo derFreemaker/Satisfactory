@@ -94,7 +94,6 @@ function FileLoader:requestFile(url, path)
 		func = function(req)
 			self.logger:LogTrace("downloading file '"..path.."'")
 			local code, data = req:get()
-			self.logger:LogTrace("Write file '" .. path .. "'")
 			local file = filesystem.open(path, "w")
 			if code ~= 200 or not data then
 				self.logger:LogError("Unable to request file '" .. path .. "' from '" .. url .. "'")
@@ -102,7 +101,7 @@ function FileLoader:requestFile(url, path)
 			end
 			file:write(data)
 			file:close()
-			self.logger:LogTrace("downloaded file '"..path.."'")
+			self.logger:LogTrace("downloaded file")
 			return true
 		end
 	})
