@@ -242,7 +242,7 @@ function GithubLoader:Run(option, debug, forceDownload)
     if not loadedModules then return false end
 
     self.logger:LogDebug("configuring program...")
-    self.mainProgramModule.Logger = self.logger.new("Program", debug)
+    self.mainProgramModule._logger = self.logger.new("Program", debug)
     if self.mainProgramModule.Configure ~= nil then
         local success, error = pcall(self.mainProgramModule.Configure, self.mainProgramModule)
         if success then

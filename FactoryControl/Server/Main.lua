@@ -1,7 +1,7 @@
 local Main = {}
 Main.__index = Main
 
-Main.Logger = {}
+Main._logger = {}
 
 Main.SetupFilesTree = {
     "",

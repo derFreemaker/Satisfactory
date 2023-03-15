@@ -2,10 +2,10 @@ local Serializer = ModuleLoader.PreLoadModule("Serializer")
 local EventPullAdapter = ModuleLoader.PreLoadModule("EventPullAdapter")
 local NetworkPort = ModuleLoader.PreLoadModule("NetworkPort")
 
-local NetworkCard = {}
-NetworkCard.__index = NetworkCard
+local NetworkClient = {}
+NetworkClient.__index = NetworkClient
 
-function NetworkCard.new(logger, networkCard)
+function NetworkClient.new(logger, networkCard)
     if networkCard == nil then
         networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
         if networkCard == nil then
@@ -18,7 +18,7 @@ function NetworkCard.new(logger, networkCard)
         networkCard = networkCard,
         logger = logger:create("NetworkCard")
     }
-    instance = setmetatable(instance, NetworkCard)
+    instance = setmetatable(instance, NetworkClient)
     event.listen(instance.networkCard)
     EventPullAdapter:AddListener("NetworkMessage", {Func = instance.networkMessageRecieved, Object = instance})
     return instance
@@ -36,7 +36,7 @@ local function createContext(signalName, signalSender, extractedData)
     }
 end
 
-function NetworkCard:networkMessageRecieved(signalName, signalSender, data)
+function NetworkClient:networkMessageRecieved(signalName, signalSender, data)
     self.logger:LogTrace("got network message")
     if data == nil then return end
     local extractedData = {
@@ -62,7 +62,7 @@ function NetworkCard:networkMessageRecieved(signalName, signalSender, data)
     end
 end
 
-function NetworkCard:AddListener(onRecivedEventName, onRecivedPort, listener)
+function NetworkClient:AddListener(onRecivedEventName, onRecivedPort, listener)
     onRecivedPort = (onRecivedPort or "all")
 
     for _, port in pairs(self.Ports) do
@@ -76,7 +76,7 @@ function NetworkCard:AddListener(onRecivedEventName, onRecivedPort, listener)
     table.insert(self.Ports, networkClientPort)
 end
 
-function NetworkCard:AddListenerOnce(onRecivedEventName, onRecivedPort, listener)
+function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listener)
     onRecivedPort = (onRecivedPort or "all")
 
     for _, port in pairs(self.Ports) do
@@ -90,7 +90,7 @@ function NetworkCard:AddListenerOnce(onRecivedEventName, onRecivedPort, listener
     table.insert(self.Ports, networkClientPort)
 end
 
-function NetworkCard:CreateNetworkPort(port)
+function NetworkClient:CreateNetworkPort(port)
     port = (port or "all")
 
     local netPort = self:GetNetworkPort(port)
@@ -100,7 +100,7 @@ function NetworkCard:CreateNetworkPort(port)
     return netPort
 end
 
-function NetworkCard:GetNetworkPort(port)
+function NetworkClient:GetNetworkPort(port)
     for _, networkPort in pairs(self.Ports) do
         if networkPort.Port == port then
             return networkPort
@@ -109,7 +109,7 @@ function NetworkCard:GetNetworkPort(port)
     return nil
 end
 
-function NetworkCard:WaitForEvent(eventName, port)
+function NetworkClient:WaitForEvent(eventName, port)
     local gotCalled = false
     local result = nil
     local function set(context)
@@ -123,20 +123,20 @@ function NetworkCard:WaitForEvent(eventName, port)
     return result
 end
 
-function NetworkCard:OpenPort(port)
+function NetworkClient:OpenPort(port)
     self.networkCard:open(port)
 end
-function NetworkCard:ClosePort(port)
+function NetworkClient:ClosePort(port)
     self.networkCard:close(port)
 end
-function NetworkCard:CloseAllPorts()
+function NetworkClient:CloseAllPorts()
     self.networkCard:closeAll()
 end
-function NetworkCard:SendMessage(ipAddress, port, eventName, data, header)
+function NetworkClient:SendMessage(ipAddress, port, eventName, data, header)
     self.networkCard:send(ipAddress, port, eventName, Serializer:Serialize(header or {}), Serializer:Serialize(data or {}))
 end
-function NetworkCard:BroadCastMessage(port, eventName, data)
+function NetworkClient:BroadCastMessage(port, eventName, data)
     self.networkCard:broadcast(port, eventName, Serializer:Serialize(data))
 end
 
-return NetworkCard
+return NetworkClient
