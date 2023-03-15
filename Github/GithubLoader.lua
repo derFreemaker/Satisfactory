@@ -193,6 +193,39 @@ function GithubLoader:loadModules()
     return ModuleLoader.LoadModules(self._mainProgramModule.SetupFilesTree, true)
 end
 
+function GithubLoader:runConfigureFunction(logLevel)
+    self._logger:LogDebug("configuring program...")
+    self._mainProgramModule._logger = self._logger.new("Program", logLevel)
+    if self._mainProgramModule.Configure ~= nil then
+        local thread = coroutine.create(self._mainProgramModule.Configure)
+        local success = coroutine.resume(thread, self._mainProgramModule)
+        if success then
+            self._logger:LogDebug("configured program")
+        else
+            self._logger:LogError("configuration failed")
+            self._logger:LogError(debug.traceback(thread) .. debug.traceback():sub(17))
+            return false
+        end
+    else
+        self._logger:LogDebug("no configure function found")
+    end
+end
+
+function GithubLoader:runMainFunction()
+    self._logger:LogDebug("running program...")
+    if self._mainProgramModule.Run == nil then
+        self._logger:LogError("no main run function found")
+        return false
+    end
+    local thread = coroutine.create(self._mainProgramModule.Run)
+    local success, result = coroutine.resume(thread, self._mainProgramModule)
+    if not success then
+        self._logger:LogInfo("program stoped running with error: "..debug.traceback(thread) .. debug.traceback():sub(17))
+    else
+        self._logger:LogInfo("program stoped running: "..tostring(result))
+    end
+end
+
 function GithubLoader:Initialize(logLevel, forceDownload)
     if forceDownload == false or forceDownload == true then self._forceDownloadLoaderFiles = forceDownload end
     self:createLoaderFilesFolders()
@@ -241,28 +274,8 @@ function GithubLoader:Run(option, logLevel, forceDownload)
     local loadedModules = self:loadModules()
     if not loadedModules then return false end
 
-    self._logger:LogDebug("configuring program...")
-    self._mainProgramModule._logger = self._logger.new("Program", logLevel)
-    if self._mainProgramModule.Configure ~= nil then
-        local success = pcall(self._mainProgramModule.Configure, self._mainProgramModule)
-        if success then
-            self._logger:LogDebug("configured program")
-        else
-            self._logger:LogError("configuration failed")
-            self._logger:LogError(debug.traceback())
-            return false
-        end
-    else
-        self._logger:LogDebug("no configure function found")
-    end
-
-    self._logger:LogDebug("running program...")
-    if self._mainProgramModule.Run == nil then
-        self._logger:LogError("no main run function found")
-        return false
-    end
-    local result = self._mainProgramModule:Run()
-    self._logger:LogInfo("program stoped running: "..tostring(result))
+    self:runConfigureFunction(logLevel)
+    self:runMainFunction()
     return true
 end
 
