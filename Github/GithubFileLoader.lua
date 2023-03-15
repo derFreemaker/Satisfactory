@@ -4,8 +4,8 @@ local FileLoader = {}
 FileLoader.__index = FileLoader
 
 FileLoader._logger = {}
-FileLoader.requests = {}
-FileLoader.basePath = ""
+FileLoader._requests = {}
+FileLoader._basePath = ""
 
 function FileLoader.new(logger)
     local instance = setmetatable({}, FileLoader)
@@ -83,27 +83,16 @@ local function checkEntry(entry)
 end
 
 function FileLoader:requestFile(url, path)
-	self._logger:LogTrace("Requests file '" .. path .. "' from '" .. url .. "'")
+	self._logger:LogTrace("request file '"..path.."' from '"..url.."'")
 	if filesystem.exists(path) then
-		self._logger:LogTrace("Found requested file '"..path.."'")
+		self._logger:LogTrace("found requested file '"..path.."'")
 		return
 	end
 	local request = InternetCard:request(url, "GET", "")
-	table.insert(self.requests, {
-		request = request,
-		func = function(req)
-			self._logger:LogTrace("downloading file '"..path.."'")
-			local code, data = req:get()
-			local file = filesystem.open(path, "w")
-			if code ~= 200 or not data then
-				self._logger:LogError("Unable to request file '" .. path .. "' from '" .. url .. "'")
-				return false
-			end
-			file:write(data)
-			file:close()
-			self._logger:LogTrace("downloaded file")
-			return true
-		end
+	table.insert(self._requests, {
+		Request = request,
+		Path = path,
+		Url = url
 	})
 end
 
@@ -119,7 +108,7 @@ end
 function FileLoader:doFile(parentPath, file, force)
 	local path = filesystem.path(parentPath, file.FullName)
 	if not filesystem.exists(path) or force then
-		self:requestFile(self.basePath .. path, path)
+		self:requestFile(self._basePath .. path, path)
 	end
 end
 
@@ -133,30 +122,37 @@ function FileLoader:doFolder(parentPath, folder, force)
 	end
 end
 
-function FileLoader:loadFiles()
-	if #self.requests > 0 then
-		self._logger:LogDebug("downloading program files...")
+function  FileLoader:loadFile(req)
+	self._logger:LogTrace("downloading file '"..req.Path.."'")
+	local code, data = req:get()
+	local file = filesystem.open(req.Path, "w")
+	if code ~= 200 or not data then
+		self._logger:LogError("Unable to request file '" .. req.Path .. "' from '" .. req.Url .. "'")
+		return false
 	end
-	local downloadedFiles = false
-    while #self.requests > 0 do
+	file:write(data)
+	file:close()
+	self._logger:LogTrace("downloaded file")
+	return true
+end
+
+function FileLoader:loadFiles()
+	self._logger:LogDebug("loading program files...")
+    while #self._requests > 0 do
         local i = 1
-        while i <= #self.requests do
-            local request = self.requests[i]
-            if request.request:canGet() then
-                table.remove(self.requests, i)
-                local done = request.func(request.request)
-                if not done then
-                    computer.beep(0.2)
-                    return false
-                end
-				downloadedFiles = true
+        while i <= #self._requests do
+			local done = false
+            local request = self._requests[i]
+            if request:canGet() then
+                done = self:loadFile(request)
             end
+			if done then
+				table.remove(self._requests, i)
+			end
             i = i + 1
         end
     end
-	if downloadedFiles then
-		self._logger:LogInfo("downloaded program files")
-	end
+	self._logger:LogInfo("loaded program files")
 	return true
 end
 
@@ -172,7 +168,7 @@ function FileLoader:DownloadFileTree(basePath, tree, force)
 		return true
 	end
 	if force == nil then force = false end
-	self.basePath = basePath
+	self._basePath = basePath
 	self:requestFileTree(tree, force)
 	return self:loadFiles()
 end
