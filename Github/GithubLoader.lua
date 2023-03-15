@@ -40,7 +40,7 @@ function GithubLoader:internalDownload(url, path, forceDownload)
     end
     local req = InternetCard:request(url, "GET", "")
     local code, data = req:await()
-    if code ~= 200 or not data then return false end
+    if code ~= 200 or data == nil then return false end
     local file = filesystem.open(path, "w")
     file:write(data)
     file:close()
@@ -75,7 +75,7 @@ end
 function GithubLoader:loadGithubFileLoader()
     self.logger:LogDebug("loading github file loader...")
     if not self:internalDownload(GithubFileLoaderUrl, GithubFileLoaderPath, self.forceDownloadLoaderFiles) then return false end
-    self.fileLoader = filesystem.doFile(GithubFileLoaderPath).new(self.logger:create("File Loader"))
+    self.fileLoader = filesystem.doFile(GithubFileLoaderPath).new(self.logger:create("FileLoader"))
     if self.fileLoader == nil then
         return false
     end
@@ -123,17 +123,18 @@ function GithubLoader:loadOption(option)
     return false
 end
 
-function GithubLoader:isVersionTheSame(forceDownload)
+function GithubLoader:isVersionTheSame()
     self.logger:LogDebug("loading info data...")
     if filesystem.exists(VersionFilePath) then
         self.currentProgramInfo = filesystem.doFile(VersionFilePath)
     end
     if self.currentProgramInfo == nil then
+        self.logger:LogTrace("no version file found")
         self.currentProgramInfo = {Name = "None", Version = ""}
         return false
     end
 
-    if not self:internalDownload(self.currentOption.Url .. "/Version.lua", VersionFilePath, forceDownload) then return false end
+    if not self:internalDownload(self.currentOption.Url .. "/Version.lua", VersionFilePath, true) then return false end
 
     local newProgramInfo = filesystem.doFile(VersionFilePath)
 
@@ -168,7 +169,7 @@ function GithubLoader:download(option, forceDownload)
         self.logger:LogError("Unable not find option: " .. option)
         return false
     end
-    local loadProgramFiles = self:isVersionTheSame(forceDownload)
+    local loadProgramFiles = self:isVersionTheSame()
     if loadProgramFiles then
         self.logger:LogInfo("new Version of '"..option.."' found or diffrent program")
     else

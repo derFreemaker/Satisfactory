@@ -5,7 +5,7 @@ function Logger.new(name, logLevel, path)
     if not filesystem.exists("log") then filesystem.createDir("log") end
     local instance = {
         LogLevel = (logLevel or 0),
-        Name = (name or ""),
+        Name = (string.gsub(name, " ", "_") or ""),
         Path = (path or nil)
     }
     instance = setmetatable(instance, Logger)
