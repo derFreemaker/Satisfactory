@@ -48,9 +48,11 @@ function Main:Configure()
 end
 
 function Main:Run()
+    self._logger:LogInfo("getting controllers...")
     local result = self.FactoryControlApiClient:GetControllers()
-    self.Logger:LogInfo(result.Body.Success)
-    self.Logger:LogInfo(#result.Body.Result)
+    self._logger:LogInfo("geted controllers")
+    self._logger:LogInfo(result.Body.Success)
+    self._logger:LogInfo(#result.Body.Result)
 end
 
 return Main

@@ -37,7 +37,6 @@ local function createContext(signalName, signalSender, extractedData)
 end
 
 function NetworkClient:networkMessageRecieved(signalName, signalSender, data)
-    self._logger:LogTrace("got network message")
     if data == nil then return end
     local extractedData = {
         SenderIPAddress = data[1],
@@ -46,10 +45,11 @@ function NetworkClient:networkMessageRecieved(signalName, signalSender, data)
         Header = data[4],
         Body = data[5]
     }
-    if extractedData.EventName == nil or type(extractedData.EventName) ~= "string" then return end
+    self._logger:LogTrace("got network message with event: '"..extractedData.EventName.."'' on port: '"..extractedData.Port.."'")
+    if extractedData.EventName == nil then return end
     local removePorts = {}
     for i, port in pairs(self.Ports) do
-        if port.Port == data.Port or data.Port == "all" then
+        if port.Port == extractedData.Port or port.Port == "all" then
             port:executeCallback(createContext(signalName, signalSender, extractedData))
         end
         if #port.Events == 0 then
@@ -71,9 +71,9 @@ function NetworkClient:AddListener(onRecivedEventName, onRecivedPort, listener)
         end
     end
 
-    local networkClientPort = NetworkPort.new(onRecivedPort, self._logger)
-    networkClientPort:AddListener(onRecivedEventName, listener)
-    table.insert(self.Ports, networkClientPort)
+    local networkPort = NetworkPort.new(onRecivedPort, self._logger)
+    networkPort:AddListener(onRecivedEventName, listener)
+    table.insert(self.Ports, networkPort)
 end
 
 function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listener)
@@ -85,19 +85,19 @@ function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listen
         end
     end
 
-    local networkClientPort = NetworkPort.new(onRecivedPort, self._logger)
-    networkClientPort:AddListenerOnce(onRecivedEventName, listener)
-    table.insert(self.Ports, networkClientPort)
+    local networkPort = NetworkPort.new(onRecivedPort, self._logger)
+    networkPort:AddListenerOnce(onRecivedEventName, listener)
+    table.insert(self.Ports, networkPort)
 end
 
 function NetworkClient:CreateNetworkPort(port)
     port = (port or "all")
 
-    local netPort = self:GetNetworkPort(port)
-    if netPort ~= nil then return netPort end
-    netPort = NetworkPort.new(port, self._logger, self)
-    table.insert(self.Ports, netPort)
-    return netPort
+    local networkPort = self:GetNetworkPort(port)
+    if networkPort ~= nil then return networkPort end
+    networkPort = NetworkPort.new(port, self._logger, self)
+    table.insert(self.Ports, networkPort)
+    return networkPort
 end
 
 function NetworkClient:GetNetworkPort(port)

@@ -53,7 +53,7 @@ function Main:Configure()
 
     self._logger:LogTrace("initialize 'EventPullAdapater' and 'DatabaseAccessLayer'...")
     ModuleLoader.GetModule("EventPullAdapter"):Initialize(self._logger)
-    ModuleLoader.GetModule("DatabaseAccessLayer"):Initialize(self._logger)
+    ModuleLoader.GetModule("DatabaseAccessLayer"):Initialize(self._logger):load()
     self._logger:LogTrace("initialized 'EventPullAdapater' and 'DatabaseAccessLayer'")
 
     self._logger:LogTrace("creating net client...")

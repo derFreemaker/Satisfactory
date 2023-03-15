@@ -11,7 +11,6 @@ ControllersEndpoint.NetClient = {}
 function ControllersEndpoint:Configure(netPort, logger)
     self._logger = logger:create("ControllersEndpoint")
     self.DatabaseAccessLayer = DatabaseAccessLayer
-    self.DatabaseAccessLayer:load()
     self.ApiController = ApiController.new(netPort)
         :AddEndpoint("CreateController", {Func=self.CreateController, Object=self})
         :AddEndpoint("DeleteController", {Func=self.DeleteController, Object=self})

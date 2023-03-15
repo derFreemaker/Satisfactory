@@ -16,14 +16,17 @@ function Event.new(name, logger)
     return instance
 end
 
-local function excuteCallback(listener, ...)
+function Event:excuteCallback(listener, ...)
     local status, error
+    local thread = coroutine.create(listener.Func)
     if listener.Object ~= nil then
-        status, error = pcall(listener.Func, listener.Object, ...)
+        status, error = coroutine.resume(thread, listener.Object, ...)
     else
-        status, error = pcall(listener.Func, ...)
+        status, error = coroutine.resume(thread, ...)
     end
-    return status, error
+    if not status then
+        self._logger:LogError("trigger error: \n"..debug.traceback(thread, error) .. debug.traceback():sub(17))
+    end
 end
 
 function Event:AddListener(listener, object)
@@ -41,13 +44,11 @@ Event.Once = Event.AddListenerOnce
 function Event:Trigger(...)
     self._logger:LogTrace("got triggered")
     for _, listener in ipairs(self.Funcs) do
-        local status, error = excuteCallback(listener, ...)
-        if not (status) then self._logger:LogError("trigger error: " .. tostring(error)) end
+        self:excuteCallback(listener, ...)
     end
 
     for _, listener in ipairs(self.OnceFuncs) do
-        local status, error = excuteCallback(listener, ...)
-        if not (status) then self._logger:LogError("trigger error: " .. tostring(error)) end
+        self:excuteCallback(listener, ...)
     end
     self.OnceFuncs = {}
 end

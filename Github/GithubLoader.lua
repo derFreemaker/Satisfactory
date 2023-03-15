@@ -198,12 +198,12 @@ function GithubLoader:runConfigureFunction(logLevel)
     self._mainProgramModule._logger = self._logger.new("Program", logLevel)
     if self._mainProgramModule.Configure ~= nil then
         local thread = coroutine.create(self._mainProgramModule.Configure)
-        local success = coroutine.resume(thread, self._mainProgramModule)
+        local success, error = coroutine.resume(thread, self._mainProgramModule)
         if success then
             self._logger:LogDebug("configured program")
         else
             self._logger:LogError("configuration failed")
-            self._logger:LogError(debug.traceback(thread) .. debug.traceback():sub(17))
+            self._logger:LogError(debug.traceback(thread, error) .. debug.traceback():sub(17))
             return false
         end
     else
@@ -222,7 +222,7 @@ function GithubLoader:runMainFunction()
     local success, result = coroutine.resume(thread, self._mainProgramModule)
     if not success then
         self._logger:LogError("program stoped running")
-        self._logger:LogError(debug.traceback(thread) .. debug.traceback():sub(17))
+        self._logger:LogError(debug.traceback(thread, result) .. debug.traceback():sub(17))
         return false
     else
         self._logger:LogInfo("program stoped running: "..tostring(result))

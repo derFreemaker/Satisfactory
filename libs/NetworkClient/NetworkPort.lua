@@ -14,12 +14,13 @@ function NetworkPort.new(port, logger, netClient)
 end
 
 function NetworkPort:executeCallback(context)
+    self._logger:LogTrace("got triggerd with event: "..context.EventName)
     local removeEvent = {}
     for i, event in pairs(self.Events) do
         if event.EventName == context.EventName or event.EventName == "all" then
             event.Event:Trigger(context)
         end
-        if #event:Listeners() == 0 then
+        if #event.Event:Listeners() == 0 then
             table.insert(removeEvent, {Pos = i, Event = event})
         end
     end
@@ -39,8 +40,7 @@ function NetworkPort:AddListener(onRecivedEventName, listener)
 
     local event = Event.new(onRecivedEventName, self._logger)
     event:AddListener(listener.Func, listener.Object)
-    self.Events = {EventName = onRecivedEventName, Event = event}
-    return self
+    table.insert(self.Events, {EventName = onRecivedEventName, Event = event})
 end
 
 function NetworkPort:AddListenerOnce(onRecivedEventName, listener)
@@ -53,8 +53,7 @@ function NetworkPort:AddListenerOnce(onRecivedEventName, listener)
 
     local event = Event.new(onRecivedEventName, self._logger)
     event:AddListenerOnce(listener.Func, listener.Object)
-    self.Events = {EventName = onRecivedEventName, Event = event}
-    return self
+    table.insert(self.Events, {EventName = onRecivedEventName, Event = event})
 end
 
 function NetworkPort:OpenPort()
