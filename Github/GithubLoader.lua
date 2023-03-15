@@ -170,9 +170,9 @@ function GithubLoader:download(option, forceDownload)
     end
     local loadProgramFiles = self:isVersionTheSame(forceDownload)
     if loadProgramFiles then
-        self.logger:LogDebug("new Version of '"..option.."' found or diffrent program")
+        self.logger:LogInfo("new Version of '"..option.."' found or diffrent program")
     else
-        self.logger:LogDebug("no new Version available")
+        self.logger:LogInfo("no new Version available")
     end
     if not self:loadOptionFiles(forceDownload) then
         self.logger:LogError("Unable to load option files")
