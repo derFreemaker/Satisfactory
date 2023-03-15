@@ -49,6 +49,8 @@ Main.SetupFilesTree = {
 }
 
 function Main:Configure()
+    self.Logger:LogInfo("starting server...")
+
     self.Logger:LogTrace("initialize 'EventPullAdapater' and 'DatabaseAccessLayer'...")
     ModuleLoader.GetModule("EventPullAdapter"):Initialize(self.Logger)
     ModuleLoader.GetModule("DatabaseAccessLayer"):Initialize(self.Logger)
@@ -70,6 +72,7 @@ function Main:Configure()
 end
 
 function Main:Run()
+    self.Logger:LogInfo("started server")
     ModuleLoader.GetModule("EventPullAdapter"):Run()
 end
 
