@@ -75,7 +75,7 @@ end
 function GithubLoader:loadGithubFileLoader()
     self._logger:LogDebug("loading github file loader...")
     if not self:internalDownload(GithubFileLoaderUrl, GithubFileLoaderPath, self._forceDownloadLoaderFiles) then return false end
-    self._fileLoader = filesystem.doFile(GithubFileLoaderPath).new(self._logger:create("FileLoader"))
+    self._fileLoader = filesystem.doFile(GithubFileLoaderPath).new(self._logger)
     if self._fileLoader == nil then
         return false
     end
@@ -87,7 +87,7 @@ function GithubLoader:loadModuleLoader()
     self._logger:LogDebug("loading module loader...")
     if not self:internalDownload(ModuleFileLoaderUrl, ModuleFileLoaderPath, self._forceDownloadLoaderFiles) then return false end
     filesystem.doFile(ModuleFileLoaderPath)
-    ModuleLoader.Initialize(self._logger:create("ModuleLoader"))
+    ModuleLoader.Initialize(self._logger)
     self._logger:LogDebug("loaded module loader")
     return true
 end

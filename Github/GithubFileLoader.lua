@@ -9,7 +9,7 @@ FileLoader._basePath = ""
 
 function FileLoader.new(logger)
     local instance = setmetatable({}, FileLoader)
-	instance._logger = logger
+	instance._logger = logger:create("FileDownloader")
 	return instance
 end
 

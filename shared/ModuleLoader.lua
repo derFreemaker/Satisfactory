@@ -135,8 +135,8 @@ function ModuleLoader.handleCouldNotLoadModule(moduleNameToLoad)
     _logger:LogDebug("Added: "..caller.File.Name.." to load after "..moduleNameToLoad.." was loaded")
 end
 
-function ModuleLoader.Initialize(newLogger)
-    _logger = newLogger
+function ModuleLoader.Initialize(logger)
+    _logger = logger:create("ModuleLoader")
 	_logger:LogDebug("Module Loader Version: "..version)
 end
 
