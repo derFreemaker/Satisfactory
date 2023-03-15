@@ -244,12 +244,12 @@ function GithubLoader:Run(option, debug, forceDownload)
     self.logger:LogDebug("configuring program...")
     self.mainProgramModule._logger = self.logger.new("Program", debug)
     if self.mainProgramModule.Configure ~= nil then
-        local success, error = pcall(self.mainProgramModule.Configure, self.mainProgramModule)
+        local success = pcall(self.mainProgramModule.Configure, self.mainProgramModule)
         if success then
             self.logger:LogDebug("configured program")
         else
             self.logger:LogError("configuration failed")
-            self.logger:LogError(error)
+            self.logger:LogError(debug.traceback())
             return false
         end
     else

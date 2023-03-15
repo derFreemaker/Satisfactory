@@ -49,26 +49,26 @@ Main.SetupFilesTree = {
 }
 
 function Main:Configure()
-    self.Logger:LogInfo("starting server...")
+    self._logger:LogInfo("starting server...")
 
-    self.Logger:LogTrace("initialize 'EventPullAdapater' and 'DatabaseAccessLayer'...")
-    ModuleLoader.GetModule("EventPullAdapter"):Initialize(self.Logger)
-    ModuleLoader.GetModule("DatabaseAccessLayer"):Initialize(self.Logger)
-    self.Logger:LogTrace("initialized 'EventPullAdapater' and 'DatabaseAccessLayer'")
+    self._logger:LogTrace("initialize 'EventPullAdapater' and 'DatabaseAccessLayer'...")
+    ModuleLoader.GetModule("EventPullAdapter"):Initialize(self._logger)
+    ModuleLoader.GetModule("DatabaseAccessLayer"):Initialize(self._logger)
+    self._logger:LogTrace("initialized 'EventPullAdapater' and 'DatabaseAccessLayer'")
 
-    self.Logger:LogTrace("creating net client...")
-    local netClient = ModuleLoader.GetModule("NetworkClient").new(self.Logger)
-    self.Logger:LogTrace("creating net ports...")
+    self._logger:LogTrace("creating net client...")
+    local netClient = ModuleLoader.GetModule("NetworkClient").new(self._logger)
+    self._logger:LogTrace("creating net ports...")
     local controllerNetPort = netClient:CreateNetworkPort(443)
-    self.Logger:LogDebug("created net client and net ports")
+    self._logger:LogDebug("created net client and net ports")
 
-    self.Logger:LogTrace("configuring Endpoints...")
-    ModuleLoader.GetModule("ControllersEndpoint"):Configure(controllerNetPort, self.Logger)
-    self.Logger:LogTrace("configured Endpoints")
+    self._logger:LogTrace("configuring Endpoints...")
+    ModuleLoader.GetModule("ControllersEndpoint"):Configure(controllerNetPort, self._logger)
+    self._logger:LogTrace("configured Endpoints")
 
-    self.Logger:LogTrace("opening Ports...")
+    self._logger:LogTrace("opening Ports...")
     controllerNetPort:OpenPort()
-    self.Logger:LogTrace("opened Ports")
+    self._logger:LogTrace("opened Ports")
 end
 
 function Main:Run()
