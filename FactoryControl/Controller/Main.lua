@@ -48,9 +48,9 @@ function Main:Configure()
 end
 
 function Main:Run()
-    self._logger:LogInfo("getting controllers...")
-    local result = self.FactoryControlApiClient:GetControllers()
-    self._logger:LogInfo("geted controllers")
+    self._logger:LogInfo("adding controller...")
+    local result = self.FactoryControlApiClient:AddController("TestIPAddress", "Test", "Test")
+    self._logger:LogInfo("added controllers")
     self._logger:LogInfo(result.Body.Success)
     self._logger:LogInfo(#result.Body.Result)
 end
