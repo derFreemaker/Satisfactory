@@ -72,7 +72,7 @@ function Main:Configure()
 end
 
 function Main:Run()
-    self.Logger:LogInfo("started server")
+    self._logger:LogInfo("started server")
     ModuleLoader.GetModule("EventPullAdapter"):Run()
 end
 
