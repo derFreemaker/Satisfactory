@@ -4,12 +4,12 @@ local ApiController = ModuleLoader.PreLoadModule("ApiController")
 local ControllersEndpoint = {}
 ControllersEndpoint.__index = ControllersEndpoint
 
-ControllersEndpoint.logger = {}
+ControllersEndpoint._logger = {}
 ControllersEndpoint.DatabaseAccessLayer = {}
 ControllersEndpoint.NetClient = {}
 
 function ControllersEndpoint:Configure(netPort, logger)
-    self.logger = logger:create("ControllersEndpoint")
+    self._logger = logger:create("ControllersEndpoint")
     self.DatabaseAccessLayer = DatabaseAccessLayer
     self.DatabaseAccessLayer:load()
     self.ApiController = ApiController.new(netPort)

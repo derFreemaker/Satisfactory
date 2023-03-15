@@ -4,7 +4,7 @@ ApiController.__index = ApiController
 function ApiController.new(netPort)
     local instance = setmetatable({
         NetPort = netPort,
-        logger = netPort.logger:create("ApiController"),
+        _logger = netPort._logger:create("ApiController"),
         Endpoints = {}
     }, ApiController)
     netPort:AddListener("all", {Listener = instance.onMessageRecieved, Object = instance})

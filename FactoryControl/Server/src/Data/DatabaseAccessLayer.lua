@@ -4,12 +4,12 @@ local DatabaseAccessLayer = {}
 DatabaseAccessLayer.__index = DatabaseAccessLayer
 
 function DatabaseAccessLayer:Initialize(logger)
-    self.logger = logger:create("DatabaseAccessLayer")
+    self._logger = logger:create("DatabaseAccessLayer")
     return self
 end
 
 function DatabaseAccessLayer:load()
-    self.logger:LogDebug("loading Database...")
+    self._logger:LogDebug("loading Database...")
     if not filesystem.exists("Database") then
         filesystem.createDir("Database")
     end
@@ -21,15 +21,15 @@ function DatabaseAccessLayer:load()
     else
         self.Controllers = {}
     end
-    self.logger:LogDebug("loaded Database")
+    self._logger:LogDebug("loaded Database")
 end
 
 function DatabaseAccessLayer:saveChanges()
-    self.logger:LogDebug("saving Database...")
+    self._logger:LogDebug("saving Database...")
     local controllerFile = filesystem.open("Database/Controllers.db", "w")
     controllerFile:write(Serializer:Serialize(self.Controllers))
     controllerFile:close()
-    self.logger:LogDebug("saved Database")
+    self._logger:LogDebug("saved Database")
 end
 -- Core
 

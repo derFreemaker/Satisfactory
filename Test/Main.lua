@@ -17,7 +17,7 @@ Main.SetupFilesTree = {
 }
 
 function Main:Configure()
-    self.Logger:LogTrace("configure function called")
+    self._logger:LogTrace("configure function called")
 end
 
 function Main:Run()

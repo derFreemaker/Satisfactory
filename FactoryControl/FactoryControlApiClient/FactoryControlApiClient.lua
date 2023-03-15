@@ -4,7 +4,7 @@ FactoryControlApiClient.__index = FactoryControlApiClient
 function FactoryControlApiClient.new(apiClient)
     return setmetatable({
         ApiClient = apiClient,
-        logger = apiClient.logger:create("FactoryControlApiClient")
+        logger = apiClient._logger:create("FactoryControlApiClient")
     }, FactoryControlApiClient)
 end
 

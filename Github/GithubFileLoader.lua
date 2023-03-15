@@ -3,13 +3,13 @@ local version = "1.0.6"
 local FileLoader = {}
 FileLoader.__index = FileLoader
 
-FileLoader.logger = {}
+FileLoader._logger = {}
 FileLoader.requests = {}
 FileLoader.basePath = ""
 
 function FileLoader.new(logger)
     local instance = setmetatable({}, FileLoader)
-	instance.logger = logger
+	instance._logger = logger
 	return instance
 end
 
@@ -83,25 +83,25 @@ local function checkEntry(entry)
 end
 
 function FileLoader:requestFile(url, path)
-	self.logger:LogTrace("Requests file '" .. path .. "' from '" .. url .. "'")
+	self._logger:LogTrace("Requests file '" .. path .. "' from '" .. url .. "'")
 	if filesystem.exists(path) then
-		self.logger:LogTrace("Found requested file '"..path.."'")
+		self._logger:LogTrace("Found requested file '"..path.."'")
 		return
 	end
 	local request = InternetCard:request(url, "GET", "")
 	table.insert(self.requests, {
 		request = request,
 		func = function(req)
-			self.logger:LogTrace("downloading file '"..path.."'")
+			self._logger:LogTrace("downloading file '"..path.."'")
 			local code, data = req:get()
 			local file = filesystem.open(path, "w")
 			if code ~= 200 or not data then
-				self.logger:LogError("Unable to request file '" .. path .. "' from '" .. url .. "'")
+				self._logger:LogError("Unable to request file '" .. path .. "' from '" .. url .. "'")
 				return false
 			end
 			file:write(data)
 			file:close()
-			self.logger:LogTrace("downloaded file")
+			self._logger:LogTrace("downloaded file")
 			return true
 		end
 	})
@@ -135,7 +135,7 @@ end
 
 function FileLoader:loadFiles()
 	if #self.requests > 0 then
-		self.logger:LogDebug("downloading program files...")
+		self._logger:LogDebug("downloading program files...")
 	end
 	local downloadedFiles = false
     while #self.requests > 0 do
@@ -155,7 +155,7 @@ function FileLoader:loadFiles()
         end
     end
 	if downloadedFiles then
-		self.logger:LogInfo("downloaded program files")
+		self._logger:LogInfo("downloaded program files")
 	end
 	return true
 end
@@ -165,10 +165,10 @@ function FileLoader:requestFileTree(tree, force)
 end
 
 function FileLoader:DownloadFileTree(basePath, tree, force)
-	self.logger:LogDebug("Github File Loader Version: "..version)
+	self._logger:LogDebug("Github File Loader Version: "..version)
 	if basePath == nil then return false end
 	if tree == nil then
-		self.logger:LogDebug("download tree was empty")
+		self._logger:LogDebug("download tree was empty")
 		return true
 	end
 	if force == nil then force = false end

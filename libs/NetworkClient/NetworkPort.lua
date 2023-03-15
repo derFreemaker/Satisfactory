@@ -7,7 +7,7 @@ function NetworkPort.new(port, logger, netClient)
     local instance = setmetatable({
         Port = port,
         Events = {},
-        logger = logger:create("Port:'"..port.."'"),
+        _logger = logger:create("Port:'"..port.."'"),
         NetClient = netClient
     }, NetworkPort)
     return instance
@@ -37,7 +37,7 @@ function NetworkPort:AddListener(onRecivedEventName, listener)
         end
     end
 
-    local event = Event.new(onRecivedEventName, self.logger)
+    local event = Event.new(onRecivedEventName, self._logger)
     event:AddListener(listener.Func, listener.Object)
     self.Events = {EventName = onRecivedEventName, Event = event}
     return self
@@ -51,7 +51,7 @@ function NetworkPort:AddListenerOnce(onRecivedEventName, listener)
         end
     end
 
-    local event = Event.new(onRecivedEventName, self.logger)
+    local event = Event.new(onRecivedEventName, self._logger)
     event:AddListenerOnce(listener.Func, listener.Object)
     self.Events = {EventName = onRecivedEventName, Event = event}
     return self

@@ -1,7 +1,6 @@
 local version = "1.0.3"
 
 ModuleLoader = {}
-ModuleLoader.__index = {}
 
 local _libs = {}
 local _logger = {}

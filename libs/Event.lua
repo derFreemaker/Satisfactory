@@ -10,7 +10,7 @@ function Event.new(name, logger)
     local instance = {
         Funcs = {},
         OnceFuncs = {},
-        logger = logger:create(name)
+        _logger = logger:create(name)
     }
     instance = setmetatable(instance, Event)
     return instance
@@ -39,15 +39,15 @@ end
 Event.Once = Event.AddListenerOnce
 
 function Event:Trigger(...)
-    self.logger:LogTrace("got triggered")
+    self._logger:LogTrace("got triggered")
     for _, listener in ipairs(self.Funcs) do
         local status, error = excuteCallback(listener, ...)
-        if not (status) then self.logger:LogError("trigger error: " .. tostring(error)) end
+        if not (status) then self._logger:LogError("trigger error: " .. tostring(error)) end
     end
 
     for _, listener in ipairs(self.OnceFuncs) do
         local status, error = excuteCallback(listener, ...)
-        if not (status) then self.logger:LogError("trigger error: " .. tostring(error)) end
+        if not (status) then self._logger:LogError("trigger error: " .. tostring(error)) end
     end
     self.OnceFuncs = {}
 end

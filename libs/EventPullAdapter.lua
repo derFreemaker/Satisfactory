@@ -5,7 +5,7 @@ EventPullAdapter.__index = EventPullAdapter
 
 EventPullAdapter.OnEventPull = {}
 EventPullAdapter.events = {}
-EventPullAdapter.logger = {}
+EventPullAdapter._logger = {}
 
 function EventPullAdapter:onEventPull(signalName, signalSender, data)
     for eventName, event in pairs(self.events) do
@@ -16,7 +16,7 @@ function EventPullAdapter:onEventPull(signalName, signalSender, data)
 end
 
 function EventPullAdapter:Initialize(logger)
-    self.logger = logger:create("EventPullAdapter")
+    self._logger = logger:create("EventPullAdapter")
     self.OnEventPull = Event.new("EventPull", logger)
     self.OnEventPull:AddListener(self.onEventPull, self)
     return self
@@ -29,7 +29,7 @@ function EventPullAdapter:AddListener(signalName, listener)
             return
         end
     end
-    local event = Event.new(signalName, self.logger)
+    local event = Event.new(signalName, self._logger)
     event:AddListener(listener.Func, listener.Object)
     self.events[signalName] = event
 end

@@ -4,7 +4,7 @@ ApiClient.__index = ApiClient
 function ApiClient.new(netClient, serverIPAddress, serverPort, returnPort)
     local instance = setmetatable({
         NetClient = netClient,
-        logger = netClient.logger:create("ApiClient"),
+        _logger = netClient._logger:create("ApiClient"),
         ServerIPAddress = serverIPAddress,
         ServerPort = serverPort,
         ReturnPort = returnPort

@@ -16,7 +16,7 @@ function NetworkClient.new(logger, networkCard)
     local instance = {
         Ports = {},
         networkCard = networkCard,
-        logger = logger:create("NetworkCard")
+        _logger = logger:create("NetworkCard")
     }
     instance = setmetatable(instance, NetworkClient)
     event.listen(instance.networkCard)
@@ -37,7 +37,7 @@ local function createContext(signalName, signalSender, extractedData)
 end
 
 function NetworkClient:networkMessageRecieved(signalName, signalSender, data)
-    self.logger:LogTrace("got network message")
+    self._logger:LogTrace("got network message")
     if data == nil then return end
     local extractedData = {
         SenderIPAddress = data[1],
@@ -71,7 +71,7 @@ function NetworkClient:AddListener(onRecivedEventName, onRecivedPort, listener)
         end
     end
 
-    local networkClientPort = NetworkPort.new(onRecivedPort, self.logger)
+    local networkClientPort = NetworkPort.new(onRecivedPort, self._logger)
     networkClientPort:AddListener(onRecivedEventName, listener)
     table.insert(self.Ports, networkClientPort)
 end
@@ -85,7 +85,7 @@ function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listen
         end
     end
 
-    local networkClientPort = NetworkPort.new(onRecivedPort, self.logger)
+    local networkClientPort = NetworkPort.new(onRecivedPort, self._logger)
     networkClientPort:AddListenerOnce(onRecivedEventName, listener)
     table.insert(self.Ports, networkClientPort)
 end
@@ -95,7 +95,7 @@ function NetworkClient:CreateNetworkPort(port)
 
     local netPort = self:GetNetworkPort(port)
     if netPort ~= nil then return netPort end
-    netPort = NetworkPort.new(port, self.logger, self)
+    netPort = NetworkPort.new(port, self._logger, self)
     table.insert(self.Ports, netPort)
     return netPort
 end
