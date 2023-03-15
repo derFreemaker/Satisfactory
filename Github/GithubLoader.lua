@@ -189,9 +189,7 @@ function GithubLoader:download(option, forceDownload)
 end
 
 function GithubLoader:loadModules()
-    
-    
-    return ModuleLoader.LoadModules(self.mainProgramModule.SetupFilesTree)
+    return ModuleLoader.LoadModules(self.mainProgramModule.SetupFilesTree, true)
 end
 
 function GithubLoader:Initialize(logLevel, forceDownload)

@@ -22,14 +22,14 @@ function EventPullAdapter:Initialize(logger)
     return self
 end
 
-function EventPullAdapter:AddListener(signalName, listener, logger)
+function EventPullAdapter:AddListener(signalName, listener)
     for name, event in pairs(self.events) do
         if name == signalName then
             event:AddListener(listener.Func, listener.Object)
             return
         end
     end
-    local event = Event.new(signalName, logger)
+    local event = Event.new(signalName, self.logger)
     event:AddListener(listener.Func, listener.Object)
     self.events[signalName] = event
 end
