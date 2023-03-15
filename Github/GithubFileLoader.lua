@@ -92,15 +92,17 @@ function FileLoader:requestFile(url, path)
 	table.insert(self.requests, {
 		request = request,
 		func = function(req)
+			self.logger:LogTrace("downloading file '"..path.."'")
+			local code, data = req:get()
 			self.logger:LogTrace("Write file '" .. path .. "'")
 			local file = filesystem.open(path, "w")
-			local code, data = req:get()
 			if code ~= 200 or not data then
 				self.logger:LogError("Unable to request file '" .. path .. "' from '" .. url .. "'")
 				return false
 			end
 			file:write(data)
 			file:close()
+			self.logger:LogTrace("downloaded file '"..path.."'")
 			return true
 		end
 	})
