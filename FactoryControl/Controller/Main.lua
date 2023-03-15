@@ -41,7 +41,7 @@ Main.SetupFilesTree = {
 Main.FactoryControlApiClient = {}
 
 function Main:Configure()
-    local netClient = ModuleLoader.GetModule("NetClient").new(self.Logger)
+    local netClient = ModuleLoader.GetModule("NetworkClient").new(self.Logger)
     local apiClient = ModuleLoader.GetModule("ApiClient").new(netClient, Config.ServerIPAddress, Config.ServerPort, Config.ReturnPort)
     self.FactoryControlApiClient = ModuleLoader.GetModule("FactoryControlApiClient").new(apiClient)
 end
