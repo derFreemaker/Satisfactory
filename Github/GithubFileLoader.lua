@@ -124,7 +124,7 @@ end
 
 function  FileLoader:loadFile(req)
 	self._logger:LogTrace("downloading file '"..req.Path.."'")
-	local code, data = req:get()
+	local code, data = req.Request:get()
 	local file = filesystem.open(req.Path, "w")
 	if code ~= 200 or not data then
 		self._logger:LogError("Unable to request file '" .. req.Path .. "' from '" .. req.Url .. "'")
@@ -143,7 +143,7 @@ function FileLoader:loadFiles()
         while i <= #self._requests do
 			local done = false
             local request = self._requests[i]
-            if request:canGet() then
+            if request.Request:canGet() then
                 done = self:loadFile(request)
             end
 			if done then
