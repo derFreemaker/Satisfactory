@@ -1,6 +1,6 @@
-local Serializer = ModuleLoader.PreLoadModule("Serializer")
-local EventPullAdapter = ModuleLoader.PreLoadModule("EventPullAdapter")
-local NetworkPort = ModuleLoader.PreLoadModule("NetworkPort")
+local Serializer = require("Serializer")
+local EventPullAdapter = require("EventPullAdapter")
+local NetworkPort = require("NetworkPort")
 
 local NetworkClient = {}
 NetworkClient.__index = NetworkClient

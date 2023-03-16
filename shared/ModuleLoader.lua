@@ -201,3 +201,10 @@ function ModuleLoader.GetModule(moduleNameToLoad)
         end
     end
 end
+
+function require(moduleNameToLoad)
+	if _loadingPhase then
+		return ModuleLoader.PreLoadModule(moduleNameToLoad)
+	end
+	return ModuleLoader.GetModule(moduleNameToLoad)
+end

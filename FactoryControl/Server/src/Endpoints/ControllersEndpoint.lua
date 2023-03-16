@@ -1,5 +1,5 @@
-local DatabaseAccessLayer = ModuleLoader.PreLoadModule("DatabaseAccessLayer")
-local ApiController = ModuleLoader.PreLoadModule("ApiController")
+local DatabaseAccessLayer = require("DatabaseAccessLayer")
+local ApiController = require("ApiController")
 
 local ControllersEndpoint = {}
 ControllersEndpoint.__index = ControllersEndpoint

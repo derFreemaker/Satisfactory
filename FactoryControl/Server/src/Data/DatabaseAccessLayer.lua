@@ -1,4 +1,4 @@
-local Serializer = ModuleLoader.PreLoadModule("Serializer")
+local Serializer = require("Serializer")
 
 local DatabaseAccessLayer = {}
 DatabaseAccessLayer.__index = DatabaseAccessLayer

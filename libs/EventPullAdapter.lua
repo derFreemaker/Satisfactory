@@ -1,4 +1,4 @@
-local Event = ModuleLoader.PreLoadModule("Event")
+local Event = require("Event")
 
 local EventPullAdapter = {}
 EventPullAdapter.__index = EventPullAdapter

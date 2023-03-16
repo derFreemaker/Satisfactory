@@ -41,10 +41,10 @@ Main.SetupFilesTree = {
 Main.FactoryControlApiClient = {}
 
 function Main:Configure()
-    ModuleLoader.GetModule("EventPullAdapter"):Initialize(self._logger)
-    local netClient = ModuleLoader.GetModule("NetworkClient").new(self._logger)
-    local apiClient = ModuleLoader.GetModule("ApiClient").new(netClient, Config.ServerIPAddress, Config.ServerPort, Config.ReturnPort)
-    self.FactoryControlApiClient = ModuleLoader.GetModule("FactoryControlApiClient").new(apiClient)
+    require("EventPullAdapter"):Initialize(self._logger)
+    local netClient = require("NetworkClient").new(self._logger)
+    local apiClient = require("ApiClient").new(netClient, Config.ServerIPAddress, Config.ServerPort, Config.ReturnPort)
+    self.FactoryControlApiClient = require("FactoryControlApiClient").new(apiClient)
 end
 
 function Main:Run()

@@ -21,7 +21,7 @@ function Main:Configure()
 end
 
 function Main:Run()
-    local event = ModuleLoader.GetModule("Event").new("Test", self.Logger)
+    local event = require("Event").new("Test", self.Logger)
     local event1 = event:create("Event1")
     local event2 = event:create("Event2")
     local event3 = event:create("Event3")
