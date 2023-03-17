@@ -8,8 +8,8 @@ function FactoryControlApiClient.new(apiClient)
     }, FactoryControlApiClient)
 end
 
-function FactoryControlApiClient:AddController(controllerData)
-    return self.ApiClient:request("AddController", {ControllerData=controllerData})
+function FactoryControlApiClient:CreateController(controllerData)
+    return self.ApiClient:request("CreateController", {ControllerData=controllerData})
 end
 
 function FactoryControlApiClient:RemoveController(controllerIPAddress)

@@ -53,7 +53,7 @@ end
 
 function Main:Run()
     self._logger:LogInfo("adding controller...")
-    local result = self.FactoryControlApiClient:AddController({
+    local result = self.FactoryControlApiClient:CreateController({
         IPAddress = "TestIPAddress",
         Name = "Test",
         Category = "Test"

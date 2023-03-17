@@ -7,29 +7,34 @@ function ApiController.new(netPort)
         _logger = netPort._logger:create("ApiController"),
         Endpoints = {}
     }, ApiController)
-    netPort:AddListener("all", {Func = instance.onMessageRecieved, Object = instance})
+    netPort:AddListener("all", { Func = instance.onMessageRecieved, Object = instance })
     return instance
 end
 
-local function excuteCallback(listener, context)
-    local status, result
-    if listener.Object ~= nil then
-        status, result = pcall(listener.Func, listener.Object, context)
-    else
-        status, result = pcall(listener.Func, context)
+function ApiController:excuteEndpoint(context)
+    for endpointName, listener in pairs(self.Endpoints) do
+        if endpointName == context.EventName then
+            local thread = coroutine.create(listener.Func)
+            local status, result
+            if listener.Object ~= nil then
+                status, result = coroutine.resume(thread, listener.Object, context)
+            else
+                status, result = coroutine.resume(thread, context)
+            end
+            return status, result, thread
+        end
     end
-    return status, result
 end
 
 function ApiController:onMessageRecieved(context)
-    for endpointName, listener in pairs(self.Endpoints) do
-        if endpointName == context.EventName then
-            local status, result = excuteCallback(listener)
-            if context.Header.ReturnPort ~= nil then
-                self.NetPort.NetClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort,
-                context.EventName, {Success = status, Result = result})
-            end
-        end
+    self._logger:LogTrace("recieved request on endpoint: " .. context.EventName)
+    local status, result, thread = self:excuteEndpoint(context)
+    if context.Header.ReturnPort ~= nil then
+        self.NetPort.NetClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort,
+            context.EventName, { Success = status, Result = result })
+    end
+    if status then self._logger:LogTrace("request finished successfully")
+    else self._logger:LogTrace("request finished with error: " .. debug.traceback(thread, result))
     end
 end
 
