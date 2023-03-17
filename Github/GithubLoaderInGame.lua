@@ -21,7 +21,7 @@ for _,f in pairs(filesystem.childs("/dev")) do
 	end
 end
 if drive:len() < 1 then
-	print("[Computer] ERROR! Unable to find filesystem to install on! Please insert a drive or floppy!")
+	print("[Computer] ERROR! Unable to find filesystem to load on! Please insert a drive or floppy!")
 	computer.beep(0.2)
 	return
 end

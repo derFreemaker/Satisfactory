@@ -14,27 +14,23 @@ end
 function ApiController:excuteEndpoint(context)
     for endpointName, listener in pairs(self.Endpoints) do
         if endpointName == context.EventName then
-            local thread = coroutine.create(listener.Func)
-            local status, result
-            if listener.Object ~= nil then
-                status, result = coroutine.resume(thread, listener.Object, context)
-            else
-                status, result = coroutine.resume(thread, context)
-            end
-            return status, result, thread
+            local thread, success, result = Utils.ExecuteFunction(listener.Func, listener.Object, context)
+            return success, result, thread
         end
     end
 end
 
 function ApiController:onMessageRecieved(context)
     self._logger:LogTrace("recieved request on endpoint: " .. context.EventName)
-    local status, result, thread = self:excuteEndpoint(context)
+    local success, result, thread = self:excuteEndpoint(context)
     if context.Header.ReturnPort ~= nil then
         self.NetPort.NetClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort,
-            context.EventName, { Success = status, Result = result })
+            context.EventName, { Success = success, Result = result })
     end
-    if status then self._logger:LogTrace("request finished successfully")
-    else self._logger:LogTrace("request finished with error: " .. debug.traceback(thread, result))
+    if success then
+        self._logger:LogTrace("request finished successfully")
+    else
+        self._logger:LogTrace("request finished with error: " .. debug.traceback(thread, result))
     end
 end
 

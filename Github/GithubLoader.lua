@@ -18,6 +18,8 @@ local ModuleFileLoaderUrl = SharedFolderUrl.."ModuleLoader.lua"
 local ModuleFileLoaderPath = filesystem.path(SharedFolderPath, "ModuleLoader.lua")
 local LoggerUrl = SharedFolderUrl.."Logger.lua"
 local LoggerPath = filesystem.path(SharedFolderPath, "Logger.lua")
+local UtilsUrl = SharedFolderUrl.."Utils.lua"
+local UtilsPath = filesystem.path(SharedFolderPath, "Utils.lua")
 
 local VersionFilePath = "Version.lua"
 local MainFilePath = "Main.lua"
@@ -59,6 +61,13 @@ function GithubLoader:createLoaderFilesFolders()
     end
 end
 
+function GithubLoader:loadUtils()
+    if not self:internalDownload(UtilsUrl, UtilsPath, self._forceDownloadLoaderFiles) then
+        return false
+    end
+    filesystem.doFile(UtilsPath)
+end
+
 function GithubLoader:loadLogger(logLevel)
     if not filesystem.exists("log") then
         filesystem.createDir("log")
@@ -74,18 +83,19 @@ end
 
 function GithubLoader:loadGithubFileLoader()
     self._logger:LogDebug("loading github file loader...")
-    if not self:internalDownload(GithubFileLoaderUrl, GithubFileLoaderPath, self._forceDownloadLoaderFiles) then return false end
+    if not self:internalDownload(GithubFileLoaderUrl, GithubFileLoaderPath, self._forceDownloadLoaderFiles) then
+        return false end
     self._fileLoader = filesystem.doFile(GithubFileLoaderPath).new(self._logger)
     if self._fileLoader == nil then
-        return false
-    end
+        return false end
     self._logger:LogDebug("loaded github file loader")
     return true
 end
 
 function GithubLoader:loadModuleLoader()
     self._logger:LogDebug("loading module loader...")
-    if not self:internalDownload(ModuleFileLoaderUrl, ModuleFileLoaderPath, self._forceDownloadLoaderFiles) then return false end
+    if not self:internalDownload(ModuleFileLoaderUrl, ModuleFileLoaderPath, self._forceDownloadLoaderFiles) then
+        return false end
     filesystem.doFile(ModuleFileLoaderPath)
     ModuleLoader.Initialize(self._logger)
     self._logger:LogDebug("loaded module loader")
@@ -197,8 +207,7 @@ function GithubLoader:runConfigureFunction(logLevel)
     self._logger:LogDebug("configuring program...")
     self._mainProgramModule._logger = self._logger.new("Program", logLevel)
     if self._mainProgramModule.Configure ~= nil then
-        local thread = coroutine.create(self._mainProgramModule.Configure)
-        local success, error = coroutine.resume(thread, self._mainProgramModule)
+        local thread, success, error = Utils.ExecuteFunction(self._mainProgramModule.Configure, self._mainProgramModule)
         if success then
             self._logger:LogDebug("configured program")
         else
@@ -233,6 +242,9 @@ end
 function GithubLoader:Initialize(logLevel, forceDownload)
     if forceDownload == false or forceDownload == true then self._forceDownloadLoaderFiles = forceDownload end
     self:createLoaderFilesFolders()
+    if not self:loadUtils() then
+        computer.panic("Unable to load utils")
+    end
     if not self:loadLogger(logLevel) then
         computer.panic("Unable to load logger")
     end

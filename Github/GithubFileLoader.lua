@@ -123,16 +123,13 @@ function FileLoader:doFolder(parentPath, folder, force)
 end
 
 function  FileLoader:loadFile(req)
-	self._logger:LogTrace("downloading file '"..req.Path.."'")
 	local code, data = req.Request:get()
-	local file = filesystem.open(req.Path, "w")
 	if code ~= 200 or not data then
-		self._logger:LogError("Unable to request file '" .. req.Path .. "' from '" .. req.Url .. "'")
+		self._logger:LogError("unable to request file '" .. req.Path .. "' from '" .. req.Url .. "'")
 		return false
 	end
-	file:write(data)
-	file:close()
-	self._logger:LogTrace("downloaded file")
+	Utils.WriteToFile(req.Path, "w", data)
+	self._logger:LogTrace("downloaded file: '" .. req.Path .. "'")
 	return true
 end
 

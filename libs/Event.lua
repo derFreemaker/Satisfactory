@@ -17,13 +17,7 @@ function Event.new(name, logger)
 end
 
 function Event:excuteCallback(listener, ...)
-    local status, error
-    local thread = coroutine.create(listener.Func)
-    if listener.Object ~= nil then
-        status, error = coroutine.resume(thread, listener.Object, ...)
-    else
-        status, error = coroutine.resume(thread, ...)
-    end
+    local thread, status, error = Utils.ExecuteFunction(listener.Func, listener.Object, ...)    
     if not status then
         self._logger:LogError("trigger error: \n"..debug.traceback(thread, error) .. debug.traceback():sub(17))
     end

@@ -3,6 +3,8 @@ local Serializer = require("Serializer")
 local DatabaseAccessLayer = {}
 DatabaseAccessLayer.__index = DatabaseAccessLayer
 
+local controllerFilePath = filesystem.path("Database", "Controllers.db")
+
 function DatabaseAccessLayer:Initialize(logger)
     self._logger = logger:create("DatabaseAccessLayer")
     return self
@@ -26,9 +28,7 @@ end
 
 function DatabaseAccessLayer:saveChanges()
     self._logger:LogDebug("saving Database...")
-    local controllerFile = filesystem.open("Database/Controllers.db", "w")
-    controllerFile:write(Serializer:Serialize(self.Controllers))
-    controllerFile:close()
+    Utils.WriteToFile(controllerFilePath, "w", Serializer:Serialize(self.Controllers))
     self._logger:LogDebug("saved Database")
 end
 -- Core
