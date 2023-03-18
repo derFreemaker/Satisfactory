@@ -163,7 +163,7 @@ function ModuleLoader.LoadModules(modulesTree, loadingPhase)
         stillWaiters = true
         break
     end
-    if stillWaiters > 0 then
+    if stillWaiters then
         for moduleName, waiters in pairs(_waitingForLoad) do
             _logger:LogError("Unable to load: "..moduleName.." for "..#waiters.." modules")
         end
