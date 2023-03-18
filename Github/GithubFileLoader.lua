@@ -42,7 +42,7 @@ local function checkEntry(entry, parentPath)
 
 	entry.IgnoreDownload = (entry.IgnoreDownload or false)
 	entry.IgnoreLoad = (entry.IgnoreDownload or false)
-	entry.Path = (entry.Path or parentPath .. entry.FullName)
+	entry.Path = (entry.Path or filesystem.path(parentPath, entry.FullName))
 
 	local checkedEntry = {
 		Name = entry.Name,
