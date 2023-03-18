@@ -66,6 +66,7 @@ function GithubLoader:loadUtils()
         return false
     end
     filesystem.doFile(UtilsPath)
+    return true
 end
 
 function GithubLoader:loadLogger(logLevel)
