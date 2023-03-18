@@ -34,6 +34,8 @@ function Main:Test(context)
 end
 
 function Main:Configure()
+    require("EventPullAdapter"):Initialize(self._logger)
+
     local netClient = require("NetworkClient").new(self._logger)
     if netClient == nil then
         self._logger:LogError("netClient was nil")
@@ -50,7 +52,7 @@ function Main:Configure()
 end
 
 function Main:Run()
-
+    require("EventPullAdapter"):Run()
 end
 
 return Main
