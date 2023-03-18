@@ -8,15 +8,11 @@ local _waitingForLoad = {}
 local _loadingPhase = false
 
 local function checkEntry(entry, parentPath)
-    if entry.Name == nil then
-        if entry.FullName ~= nil then
-            entry.Name = entry.FullName
-        else
-            entry.Name = entry[1]
-        end
-    end
+    parentPath = parentPath or ""
 
-    entry.FullName = (entry.FullName or entry.Name)
+    entry.Name = entry.Name or entry.FullName or entry[1]
+
+    entry.FullName = entry.FullName or entry.Name
 
     if entry.IsFolder == nil then
         local childs = 0
@@ -32,11 +28,40 @@ local function checkEntry(entry, parentPath)
         end
     end
 
-    entry.IgnoreDownload = (entry.IgnoreDownload or false)
-    entry.IgnoreLoad = (entry.IgnoreDownload or false)
-    entry.Path = (entry.Path or filesystem.path(parentPath, entry.FullName))
+    entry.IgnoreDownload = entry.IgnoreDownload or false
+    entry.IgnoreLoad = entry.IgnoreLoad or false
 
-    local checkedEntry = {
+    if entry.IsFolder and not entry.IgnoreLoad then
+        entry.Path = entry.Path or filesystem.path(parentPath, entry.FullName)
+        local childs = {}
+        for _, child in pairs(entry) do
+            if type(child) == "table" then
+                table.insert(childs, checkEntry(child, entry.Path))
+            end
+        end
+        return {
+            Name = entry.Name,
+            FullName = entry.FullName,
+            IsFolder = entry.IsFolder,
+            IgnoreDownload = entry.IgnoreDownload,
+            IgnoreLoad = entry.IgnoreLoad,
+            Path = entry.Path,
+            Childs = childs
+        }
+    end
+
+    local nameLength = entry.Name:len()
+    if entry.Name:sub(nameLength - 3, nameLength) == ".lua" then
+        entry.Name = entry.Name:sub(0, nameLength - 4)
+    end
+    nameLength = entry.FullName:len()
+    if entry.FullName:sub(nameLength - 3, nameLength) ~= ".lua" then
+        entry.FullName = entry.FullName .. ".lua"
+    end
+
+    entry.Path = entry.Path or filesystem.path(parentPath, entry.FullName)
+
+    return {
         Name = entry.Name,
         FullName = entry.FullName,
         IsFolder = entry.IsFolder,
@@ -44,27 +69,6 @@ local function checkEntry(entry, parentPath)
         IgnoreLoad = entry.IgnoreLoad,
         Path = entry.Path
     }
-
-    if entry.IsFolder and not entry.IgnoreLoad then
-        local childs = {}
-        for _, child in pairs(entry) do
-            if type(child) == "table" then
-                table.insert(childs, checkEntry(child, checkedEntry.Path))
-            end
-        end
-        checkedEntry.Childs = childs
-    else
-        local nameLength = entry.Name:len()
-        if entry.Name:sub(nameLength - 3, nameLength) == ".lua" then
-            checkedEntry.Name = entry.Name:sub(0, nameLength - 4)
-        end
-        nameLength = entry.FullName:len()
-        if entry.FullName:sub(nameLength - 3, nameLength) ~= ".lua" then
-            checkedEntry.FullName = entry.FullName .. ".lua"
-        end
-    end
-
-    return checkedEntry
 end
 
 local function extractCallerInfo(path)
@@ -82,30 +86,28 @@ local function extractCallerInfo(path)
 	return callerData
 end
 
-function ModuleLoader.doEntry(parentPath, entry)
+function ModuleLoader.doEntry(entry)
 	if entry.IsFolder == true then
-		ModuleLoader.doFolder(parentPath, entry)
+		ModuleLoader.doFolder(entry)
 	else
-		ModuleLoader.doFile(parentPath, entry)
+		ModuleLoader.doFile(entry)
 	end
 end
 
-function ModuleLoader.doFile(parentPath, file)
+function ModuleLoader.doFile(file)
 	if file.IgnoreLoad == true then return end
-	local path = filesystem.path(parentPath, file.FullName)
-	if filesystem.exists(path) then
-		pcall(ModuleLoader.LoadModule, file, path)
+	if filesystem.exists(file.Path) then
+		pcall(ModuleLoader.LoadModule, file, file.Path)
     else
-        _logger:LogDebug("Unable to find module: "..path)
+        _logger:LogDebug("Unable to find module: "..file.Path)
 	end
 end
 
-function ModuleLoader.doFolder(parentPath, folder)
-	local path = filesystem.path(parentPath, folder.Name)
+function ModuleLoader.doFolder(folder)
 	table.remove(folder, 1)
 	for _, child in pairs(folder.Childs) do
 		if type(child) == "table" then
-			ModuleLoader.doEntry(path, child)
+			ModuleLoader.doEntry(folder.Path, child)
 		end
 	end
 end
@@ -156,8 +158,7 @@ function ModuleLoader.LoadModules(modulesTree, loadingPhase)
         _logger:LogDebug("modules tree was empty")
         return false
     end
-    local checkedTree = checkEntry(modulesTree)
-    ModuleLoader.doFolder("", checkedTree)
+    ModuleLoader.doFolder(checkEntry(modulesTree))
     if #_waitingForLoad > 0 then
         for moduleName, waiters in pairs(_waitingForLoad) do
             _logger:LogError("Unable to load: "..moduleName.." for "..#waiters.." modules")

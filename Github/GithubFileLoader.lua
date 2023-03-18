@@ -14,17 +14,11 @@ function FileLoader.new(logger)
 end
 
 local function checkEntry(entry, parentPath)
-	parentPath = (parentPath or "")
+	parentPath = parentPath or ""
 
-	if entry.Name == nil then
-		if entry.FullName ~= nil then
-			entry.Name = entry.FullName
-		else
-			entry.Name = entry[1]
-		end
-	end
+	entry.Name = entry.Name or entry.FullName or entry[1]
 
-	entry.FullName = (entry.FullName or entry.Name)
+	entry.FullName = entry.FullName or entry.Name
 
 	if entry.IsFolder == nil then
 		local childs = 0
@@ -40,11 +34,40 @@ local function checkEntry(entry, parentPath)
 		end
 	end
 
-	entry.IgnoreDownload = (entry.IgnoreDownload or false)
-	entry.IgnoreLoad = (entry.IgnoreDownload or false)
-	entry.Path = (entry.Path or filesystem.path(parentPath, entry.FullName))
+	entry.IgnoreDownload = entry.IgnoreDownload or false
+	entry.IgnoreLoad = entry.IgnoreLoad or false
 
-	local checkedEntry = {
+	if entry.IsFolder and not entry.IgnoreDownload then
+		entry.Path = entry.Path or filesystem.path(parentPath, entry.FullName)
+		local childs = {}
+		for _, child in pairs(entry) do
+			if type(child) == "table" then
+				table.insert(childs, checkEntry(child, entry.Path))
+			end
+		end
+		return {
+			Name = entry.Name,
+			FullName = entry.FullName,
+			IsFolder = entry.IsFolder,
+			IgnoreDownload = entry.IgnoreDownload,
+			IgnoreLoad = entry.IgnoreLoad,
+			Path = entry.Path,
+			Childs = childs
+		}
+	end
+
+	local nameLength = entry.Name:len()
+	if entry.Name:sub(nameLength - 3, nameLength) == ".lua" then
+		entry.Name = entry.Name:sub(0, nameLength - 4)
+	end
+	nameLength = entry.FullName:len()
+	if entry.FullName:sub(nameLength - 3, nameLength) ~= ".lua" then
+		entry.FullName = entry.FullName .. ".lua"
+	end
+
+	entry.Path = entry.Path or filesystem.path(parentPath, entry.FullName)
+
+	return {
 		Name = entry.Name,
 		FullName = entry.FullName,
 		IsFolder = entry.IsFolder,
@@ -52,27 +75,6 @@ local function checkEntry(entry, parentPath)
 		IgnoreLoad = entry.IgnoreLoad,
 		Path = entry.Path
 	}
-
-	if entry.IsFolder and not entry.IgnoreLoad then
-		local childs = {}
-		for _, child in pairs(entry) do
-			if type(child) == "table" then
-				table.insert(childs, checkEntry(child, checkedEntry.Path))
-			end
-		end
-		checkedEntry.Childs = childs
-	else
-		local nameLength = entry.Name:len()
-		if entry.Name:sub(nameLength - 3, nameLength) == ".lua" then
-			checkedEntry.Name = entry.Name:sub(0, nameLength - 4)
-		end
-		nameLength = entry.FullName:len()
-		if entry.FullName:sub(nameLength - 3, nameLength) ~= ".lua" then
-			checkedEntry.FullName = entry.FullName .. ".lua"
-		end
-	end
-
-	return checkedEntry
 end
 
 function FileLoader:requestFile(url, path)
