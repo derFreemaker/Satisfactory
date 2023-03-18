@@ -13,20 +13,20 @@ function FileLoader.new(logger)
 	return instance
 end
 
-local function checkEntry(entry)
-    if entry.Name == nil then
+local function checkEntry(entry, parentPath)
+	parentPath = (parentPath or "")
+
+	if entry.Name == nil then
 		if entry.FullName ~= nil then
-        	entry.Name = entry.FullName
+			entry.Name = entry.FullName
 		else
 			entry.Name = entry[1]
 		end
 	end
 
-	if entry.FullName == nil then
-		entry.FullName = entry.Name
-	end
+	entry.FullName = (entry.FullName or entry.Name)
 
-    if entry.IsFolder == nil then
+	if entry.IsFolder == nil then
 		local childs = 0
 		for _, child in pairs(entry) do
 			if type(child) == "table" then
@@ -38,45 +38,38 @@ local function checkEntry(entry)
 		else
 			entry.IsFolder = true
 		end
-    end
-
-	if entry.IgnoreDownload == true then
-		entry.IgnoreDownload = true
-	else
-		entry.IgnoreDownload = false
 	end
 
-	if entry.IgnoreLoad == true then
-		entry.IgnoreLoad = true
-	else
-		entry.IgnoreLoad = false
-	end
+	entry.IgnoreDownload = (entry.IgnoreDownload or false)
+	entry.IgnoreLoad = (entry.IgnoreDownload or false)
+	entry.Path = (entry.Path or parentPath .. entry.FullName)
 
 	local checkedEntry = {
 		Name = entry.Name,
 		FullName = entry.FullName,
 		IsFolder = entry.IsFolder,
 		IgnoreDownload = entry.IgnoreDownload,
-		IgnoreLoad = entry.IgnoreLoad
+		IgnoreLoad = entry.IgnoreLoad,
+		Path = entry.Path
 	}
 
 	if entry.IsFolder and not entry.IgnoreLoad then
 		local childs = {}
 		for _, child in pairs(entry) do
 			if type(child) == "table" then
-				table.insert(childs, checkEntry(child))
+				table.insert(childs, checkEntry(child, checkedEntry.Path))
 			end
 		end
 		checkedEntry.Childs = childs
 	else
 		local nameLength = entry.Name:len()
-    	if entry.Name:sub(nameLength - 3, nameLength) == ".lua" then
+		if entry.Name:sub(nameLength - 3, nameLength) == ".lua" then
 			checkedEntry.Name = entry.Name:sub(0, nameLength - 4)
 		end
 		nameLength = entry.FullName:len()
 		if entry.FullName:sub(nameLength - 3, nameLength) ~= ".lua" then
-			checkedEntry.FullName = entry.FullName..".lua"
-	 	end
+			checkedEntry.FullName = entry.FullName .. ".lua"
+		end
 	end
 
 	return checkedEntry
@@ -96,28 +89,26 @@ function FileLoader:requestFile(url, path)
 	})
 end
 
-function FileLoader:doEntry(parentPath, entry, force)
+function FileLoader:doEntry(entry, force)
 	if entry.IgnoreDownload == true then return end
 	if entry.IsFolder == true then
-		self:doFolder(parentPath, entry, force)
+		self:doFolder(entry, force)
 	else
-		self:doFile(parentPath, entry, force)
+		self:doFile(entry, force)
 	end
 end
 
-function FileLoader:doFile(parentPath, file, force)
-	local path = filesystem.path(parentPath, file.FullName)
-	if not filesystem.exists(path) or force then
-		self:requestFile(self._basePath .. path, path)
+function FileLoader:doFile(file, force)
+	if not filesystem.exists(file.Path) or force then
+		self:requestFile(self._basePath .. file.Path, file.Path)
 	end
 end
 
-function FileLoader:doFolder(parentPath, folder, force)
-	local path = filesystem.path(parentPath, folder.FullName)
-	filesystem.createDir(path)
+function FileLoader:doFolder(folder, force)
+	filesystem.createDir(folder.Path)
 	for _, child in pairs(folder.Childs) do
 		if type(child) == "table" then
-			self:doEntry(path, child, force)
+			self:doEntry(child, force)
 		end
 	end
 end
@@ -155,7 +146,7 @@ function FileLoader:loadFiles()
 end
 
 function FileLoader:requestFileTree(tree, force)
-    self:doFolder("", checkEntry(tree), force)
+    self:doFolder(checkEntry(tree), force)
 end
 
 function FileLoader:DownloadFileTree(basePath, tree, force)

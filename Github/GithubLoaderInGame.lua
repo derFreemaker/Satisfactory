@@ -46,6 +46,8 @@ end
 -- logLevel
 -- 0 = Trace / 1 = Debug / 2 = Info / 3 = Error
 
+-- Base Url
+GithubLoaderBaseUrl = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/"
 -- Initialize([logLevel:int], [forceDownload:boolean])
 local GithubLoader = filesystem.doFile(GithubLoaderPath):Initialize(2, false)
 

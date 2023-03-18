@@ -33,26 +33,26 @@ end
 function NetworkPort:AddListener(onRecivedEventName, listener)
     for _, event in pairs(self.Events) do
         if event.EventName == onRecivedEventName then
-            event.Event:AddListener(listener.Func, listener.Object)
+            event.Event:AddListener(listener)
             return
         end
     end
 
     local event = Event.new(onRecivedEventName, self._logger)
-    event:AddListener(listener.Func, listener.Object)
+    event:AddListener(listener)
     table.insert(self.Events, {EventName = onRecivedEventName, Event = event})
 end
 
 function NetworkPort:AddListenerOnce(onRecivedEventName, listener)
     for _, event in pairs(self.Events) do
         if event.EventName == onRecivedEventName then
-            event.Event:AddListenerOnce(listener.Func, listener.Object)
+            event.Event:AddListenerOnce(listener)
             return
         end
     end
 
     local event = Event.new(onRecivedEventName, self._logger)
-    event:AddListenerOnce(listener.Func, listener.Object)
+    event:AddListenerOnce(listener)
     table.insert(self.Events, {EventName = onRecivedEventName, Event = event})
 end
 

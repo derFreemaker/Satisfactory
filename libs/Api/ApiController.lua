@@ -1,3 +1,5 @@
+local Listener = require("Listener")
+
 local ApiController = {}
 ApiController.__index = ApiController
 
@@ -12,17 +14,16 @@ function ApiController.new(netPort)
 end
 
 function ApiController:excuteEndpoint(context)
-    for endpointName, listener in pairs(self.Endpoints) do
-        if endpointName == context.EventName then
-            local thread, success, result = Utils.ExecuteFunction(listener.Func, listener.Object, context)
-            return success, result, thread
-        end
+    local endpoint = self.Endpoints[context.EventName]
+    if endpoint == nil then
+        return nil, false, "Not found"
     end
+    return endpoint:Execute(self._logger, context)
 end
 
 function ApiController:onMessageRecieved(context)
     self._logger:LogTrace("recieved request on endpoint: " .. context.EventName)
-    local success, result, thread = self:excuteEndpoint(context)
+    local thread, success, result = self:excuteEndpoint(context)
     if context.Header.ReturnPort ~= nil then
         self.NetPort.NetClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort,
             context.EventName, { Success = success, Result = result })

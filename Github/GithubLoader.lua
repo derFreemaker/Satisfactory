@@ -3,16 +3,14 @@ local version = "1.0.8"
 local GithubLoader = {}
 GithubLoader.__index = GithubLoader
 
-local BaseUrl = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/"
-
-local GithubLoaderFilesUrl = BaseUrl.."Github/"
+local GithubLoaderFilesUrl = GithubLoaderBaseUrl .. "Github/"
 local GithubLoaderFilesPath = "GithubLoaderFiles"
 local OptionsUrl = GithubLoaderFilesUrl.."Options.lua"
 local OptionsPath = filesystem.path(GithubLoaderFilesPath, "Options.lua")
 local GithubFileLoaderUrl = GithubLoaderFilesUrl.."GithubFileLoader.lua"
 local GithubFileLoaderPath = filesystem.path(GithubLoaderFilesPath, "GithubFileLoader.lua")
 
-local SharedFolderUrl = BaseUrl.."shared/"
+local SharedFolderUrl = GithubLoaderBaseUrl .. "shared/"
 local SharedFolderPath = "shared"
 local ModuleFileLoaderUrl = SharedFolderUrl.."ModuleLoader.lua"
 local ModuleFileLoaderPath = filesystem.path(SharedFolderPath, "ModuleLoader.lua")
@@ -193,7 +191,7 @@ function GithubLoader:download(option, forceDownload)
     if forceDownload then
         loadProgramFiles = true
     end
-    if not self._fileLoader:DownloadFileTree(BaseUrl, self._mainProgramModule.SetupFilesTree, loadProgramFiles) then
+    if not self._fileLoader:DownloadFileTree(GithubLoaderBaseUrl, self._mainProgramModule.SetupFilesTree, loadProgramFiles) then
         self._logger:LogError("Unable to load setup files")
         return false
     end

@@ -16,21 +16,14 @@ function Event.new(name, logger)
     return instance
 end
 
-function Event:excuteCallback(listener, ...)
-    local thread, status, error = Utils.ExecuteFunction(listener.Func, listener.Object, ...)    
-    if not status then
-        self._logger:LogError("trigger error: \n"..debug.traceback(thread, error) .. debug.traceback():sub(17))
-    end
-end
-
-function Event:AddListener(listener, object)
-    table.insert(self.Funcs, {Func = listener, Object = object})
+function Event:AddListener(listener)
+    table.insert(self.Funcs, listener)
     return self
 end
 Event.On = Event.AddListener
 
-function Event:AddListenerOnce(listener, object)
-    table.insert(self.OnceFuncs, {Func = listener, Object = object})
+function Event:AddListenerOnce(listener)
+    table.insert(self.OnceFuncs, listener)
     return self
 end
 Event.Once = Event.AddListenerOnce
@@ -38,11 +31,11 @@ Event.Once = Event.AddListenerOnce
 function Event:Trigger(...)
     self._logger:LogTrace("got triggered")
     for _, listener in ipairs(self.Funcs) do
-        self:excuteCallback(listener, ...)
+        listener:Execute(self._logger, ...)
     end
 
     for _, listener in ipairs(self.OnceFuncs) do
-        self:excuteCallback(listener, ...)
+        listener:Execute(self._logger, ...)
     end
     self.OnceFuncs = {}
 end

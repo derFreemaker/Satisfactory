@@ -7,73 +7,64 @@ local _logger = {}
 local _waitingForLoad = {}
 local _loadingPhase = false
 
-local function checkEntry(entry)
+local function checkEntry(entry, parentPath)
     if entry.Name == nil then
-		if entry.FullName ~= nil then
-        	entry.Name = entry.FullName
-		else
-			entry.Name = entry[1]
-		end
-	end
-
-	if entry.FullName == nil then
-		entry.FullName = entry.Name
-	end
-
-    if entry.IsFolder == nil then
-		local childs = 0
-		for _, child in pairs(entry) do
-			if type(child) == "table" then
-				childs = childs + 1
-			end
-		end
-		if childs == 0 then
-			entry.IsFolder = false
-		else
-			entry.IsFolder = true
-		end
+        if entry.FullName ~= nil then
+            entry.Name = entry.FullName
+        else
+            entry.Name = entry[1]
+        end
     end
 
-	if entry.IgnoreDownload == true then
-		entry.IgnoreDownload = true
-	else
-		entry.IgnoreDownload = false
-	end
+    entry.FullName = (entry.FullName or entry.Name)
 
-	if entry.IgnoreLoad == true then
-		entry.IgnoreLoad = true
-	else
-		entry.IgnoreLoad = false
-	end
+    if entry.IsFolder == nil then
+        local childs = 0
+        for _, child in pairs(entry) do
+            if type(child) == "table" then
+                childs = childs + 1
+            end
+        end
+        if childs == 0 then
+            entry.IsFolder = false
+        else
+            entry.IsFolder = true
+        end
+    end
 
-	local checkedEntry = {
-		Name = entry.Name,
-		FullName = entry.FullName,
-		IsFolder = entry.IsFolder,
-		IgnoreDownload = entry.IgnoreDownload,
-		IgnoreLoad = entry.IgnoreLoad
-	}
+    entry.IgnoreDownload = (entry.IgnoreDownload or false)
+    entry.IgnoreLoad = (entry.IgnoreDownload or false)
+    entry.Path = (entry.Path or parentPath .. entry.FullName)
 
-	if entry.IsFolder and not entry.IgnoreLoad then
-		local childs = {}
-		for _, child in pairs(entry) do
-			if type(child) == "table" then
-				table.insert(childs, checkEntry(child))
-			end
-		end
-		checkedEntry.Childs = childs
-	else
-		local nameLength = entry.Name:len()
-    	if entry.Name:sub(nameLength - 3, nameLength) == ".lua" then
-			checkedEntry.Name = entry.Name:sub(0, nameLength - 4)
-		end
-		nameLength = entry.FullName:len()
-		if entry.FullName:sub(nameLength - 3, nameLength) ~= ".lua" then
-			checkedEntry.FullName = entry.FullName..".lua"
-	 	end
-	end
+    local checkedEntry = {
+        Name = entry.Name,
+        FullName = entry.FullName,
+        IsFolder = entry.IsFolder,
+        IgnoreDownload = entry.IgnoreDownload,
+        IgnoreLoad = entry.IgnoreLoad,
+        Path = entry.Path
+    }
 
-	return checkedEntry
+    if entry.IsFolder and not entry.IgnoreLoad then
+        local childs = {}
+        for _, child in pairs(entry) do
+            if type(child) == "table" then
+                table.insert(childs, checkEntry(child, checkedEntry.Path))
+            end
+        end
+        checkedEntry.Childs = childs
+    else
+        local nameLength = entry.Name:len()
+        if entry.Name:sub(nameLength - 3, nameLength) == ".lua" then
+            checkedEntry.Name = entry.Name:sub(0, nameLength - 4)
+        end
+        nameLength = entry.FullName:len()
+        if entry.FullName:sub(nameLength - 3, nameLength) ~= ".lua" then
+            checkedEntry.FullName = entry.FullName .. ".lua"
+        end
+    end
+
+    return checkedEntry
 end
 
 local function extractCallerInfo(path)
