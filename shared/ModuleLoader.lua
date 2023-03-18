@@ -118,13 +118,12 @@ function ModuleLoader.handleCouldNotLoadModule(moduleNameToLoad)
         _logger:LogError("caller was nil")
         return
     end
-    for moduleName, waiters in pairs(_waitingForLoad) do
-        if moduleName == moduleNameToLoad then
-            table.insert(waiters, caller)
-            return
-        end
+    local waiters = _waitingForLoad[moduleNameToLoad]
+    if waiters ~= nil then
+        table.insert(waiters, caller)
+    else
+        _waitingForLoad[moduleNameToLoad] = { caller }
     end
-    _waitingForLoad[moduleNameToLoad] = {caller}
     _logger:LogDebug("Added: "..caller.File.Name.." to load after "..moduleNameToLoad.." was loaded")
 end
 
@@ -159,7 +158,12 @@ function ModuleLoader.LoadModules(modulesTree, loadingPhase)
         return false
     end
     ModuleLoader.doFolder(checkEntry(modulesTree))
-    if #_waitingForLoad > 0 then
+    local stillWaiters = false
+    for _, _ in pairs(_waitingForLoad) do
+        stillWaiters = true
+        break
+    end
+    if stillWaiters > 0 then
         for moduleName, waiters in pairs(_waitingForLoad) do
             _logger:LogError("Unable to load: "..moduleName.." for "..#waiters.." modules")
         end
