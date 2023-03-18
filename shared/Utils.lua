@@ -11,7 +11,19 @@ function Utils.WriteToFile(path, mode, data)
     local file = filesystem.open(path, mode)
     file:write(data)
     file:close()
-    Utils.Sleep(1)
+end
+
+function  Utils.ReadFile(path)
+    local file = filesystem.open(path, "r")
+    local str = ""
+    while true do
+        local buf = file:read(256)
+        if not buf then
+            break
+        end
+        str = str .. buf
+    end
+    return str
 end
 
 function Utils.ExecuteFunction(func, object, ...)

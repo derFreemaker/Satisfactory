@@ -117,7 +117,7 @@ function NetworkClient:WaitForEvent(eventName, port)
         result = context
     end
     while gotCalled == false do
-        self:AddListenerOnce(eventName, port, {Listener = set, Object = self})
+        self:AddListenerOnce(eventName, port, {Func = set, Object = self})
         EventPullAdapter:Wait()
     end
     return result

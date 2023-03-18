@@ -34,7 +34,7 @@ end
 -- Core
 
 -- Controller
-function DatabaseAccessLayer:AddController(controllerData)
+function DatabaseAccessLayer:CreateController(controllerData)
     table.insert(self.Controllers, controllerData)
     self:saveChanges()
     return true
