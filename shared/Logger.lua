@@ -44,7 +44,7 @@ local function tableToLineTree(node, padding, maxLevel, level, properties)
 
       if level < maxLevel then
         local childLines = tableToLineTree(node[k], padding .. (i == #keys and '    ' or '│   '), maxLevel, level + 1,
-        properties)
+          properties)
         for _, l in ipairs(childLines) do
           table.insert(lines, l)
         end
@@ -75,13 +75,13 @@ function Logger:create(name, path)
 end
 
 function Logger:Log(message, logLevel)
-  message = "[" .. self.Name .. "] " .. message .. "\n"
+  message = "[" .. self.Name .. "] " .. message
 
   if self.Path ~= nil then
-    Utils.WriteToFile(self.Path, "+a", message)
+    Utils.WriteToFile(self.Path, "+a", message .. "\n")
   end
 
-  Utils.WriteToFile(mainLogFilePath, "+a", message)
+  Utils.WriteToFile(mainLogFilePath, "+a", message .. "\n")
   if logLevel >= self.LogLevel then
     print(message)
   end
