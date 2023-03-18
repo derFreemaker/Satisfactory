@@ -43,7 +43,9 @@ function Main:Configure()
 end
 
 function Main:Run()
+    self._logger:LogInfo("sending message...")
     self.ApiClient:request("Test", {Message = "Test Message"})
+    self._logger:LogInfo("sended message")
 end
 
 return Main

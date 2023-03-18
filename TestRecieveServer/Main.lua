@@ -52,6 +52,7 @@ function Main:Configure()
 end
 
 function Main:Run()
+    self._logger:LogInfo("waiting for message...")
     require("EventPullAdapter"):Run()
 end
 
