@@ -107,7 +107,7 @@ function ModuleLoader.doFolder(folder)
 	table.remove(folder, 1)
 	for _, child in pairs(folder.Childs) do
 		if type(child) == "table" then
-			ModuleLoader.doEntry(folder.Path, child)
+			ModuleLoader.doEntry(child)
 		end
 	end
 end
