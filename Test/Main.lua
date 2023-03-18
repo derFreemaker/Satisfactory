@@ -7,12 +7,13 @@ Main.SetupFilesTree = {
     "",
     {
         "shared",
-        {"Logger.lua"}
+        { "Logger.lua" }
     },
     {
         "libs",
-        {"Event.lua"},
-        {"Serializer.lua"},
+        { "Listener.lua" },
+        { "Event.lua" },
+        { "Serializer.lua" },
     }
 }
 

@@ -7,29 +7,30 @@ Main.SetupFilesTree = {
     "",
     {
         "shared",
-        {"Logger.lua"}
+        { "Logger.lua" }
     },
     {
         "libs",
         {
             "NetworkClient",
-            {"NetworkClient.lua"},
-            {"NetworkPort.lua"}
+            { "NetworkClient.lua" },
+            { "NetworkPort.lua" }
         },
         {
             "Api",
-            {"ApiController.lua"},
-            {"ApiClient.lua"}
+            { "ApiController.lua" },
+            { "ApiClient.lua" }
         },
-        {"Event.lua"},
-        {"EventPullAdapter.lua"},
-        {"Serializer.lua"},
+        { "Listener.lua" },
+        { "Event.lua" },
+        { "EventPullAdapter.lua" },
+        { "Serializer.lua" },
     },
     {
         "FactoryControl",
         {
             "Entities",
-            {"Controller.lua"}
+            { "Controller.lua" }
         },
         {
             "Server",
@@ -37,11 +38,11 @@ Main.SetupFilesTree = {
                 "src",
                 {
                     "Data",
-                    {"DatabaseAccessLayer.lua"}
+                    { "DatabaseAccessLayer.lua" }
                 },
                 {
                     "Endpoints",
-                    {"ControllersEndpoint.lua"}
+                    { "ControllersEndpoint.lua" }
                 }
             }
         }
