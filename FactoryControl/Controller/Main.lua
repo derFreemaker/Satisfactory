@@ -42,6 +42,7 @@ Main.SetupFilesTree = {
 Main.FactoryControlApiClient = {}
 
 function Main:Configure()
+    require("libs.EventPullAdapter"):Initialize(self._logger)
     local netClient = require("libs.NetworkClient.NetworkClient").new(self._logger)
     local apiClient = require("libs.Api.ApiClient").new(
         netClient,

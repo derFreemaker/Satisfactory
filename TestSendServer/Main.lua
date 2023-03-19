@@ -28,6 +28,8 @@ Main.SetupFilesTree = {
 }
 
 function Main:Configure()
+    require("libs.EventPullAdapter"):Initialize(self._logger)
+
     local netClient = require("libs.NetworkClient.NetworkClient").new(self._logger)
     if netClient == nil then
         self._logger:LogError("netClient was nil")
