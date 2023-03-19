@@ -1,5 +1,11 @@
 Utils = {}
 
+local _logger = {}
+
+function Utils.Initialize(logger)
+    _logger = logger
+end
+
 function Utils.Sleep(ms)
     if type(ms) ~= "number" then error("ms was not a number", 1) end
     local startTime = computer.millis()
@@ -13,7 +19,7 @@ function Utils.WriteToFile(path, mode, data)
     file:close()
 end
 
-function  Utils.ReadFile(path)
+function Utils.ReadFile(path)
     local file = filesystem.open(path, "r")
     local str = ""
     while true do
