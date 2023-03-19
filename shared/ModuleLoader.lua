@@ -75,7 +75,7 @@ end
 local _libs = {}
 local _loadingPhase = false
 local _waitingForLoad = {}
-local _getGetWithName = {}
+local _getGetWithName = true
 local _logger = {}
 
 function ModuleLoader.doEntry(entry)
@@ -147,6 +147,19 @@ function ModuleLoader.internalGetModule(moduleToGet)
     end
 end
 
+function ModuleLoader.checkForSameModuleNames()
+    local dupes = {}
+    for _, lib in pairs(_libs) do
+        for _, dupeLibInfo in pairs(dupes) do
+            if lib.Info.Name == dupeLibInfo.Name then
+                _getGetWithName = false
+                return
+            end
+        end
+        table.insert(dupes, lib.Info)
+    end
+end
+
 function ModuleLoader.Initialize(logger)
     _logger = logger:create("MOduleLoader")
 end
@@ -192,6 +205,7 @@ function ModuleLoader.LoadModules(modulesTree, loadingPhase)
     end
     _logger:LogDebug("loaded modules")
     _loadingPhase = false
+    ModuleLoader.checkForSameModuleNames()
     return true
 end
 

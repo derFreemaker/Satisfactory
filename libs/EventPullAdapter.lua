@@ -1,5 +1,5 @@
-local Event = require("Event")
-local Listener = require("Listener")
+local Event = require("libs.Event")
+local Listener = require("libs.Listener")
 
 local EventPullAdapter = {}
 EventPullAdapter.__index = EventPullAdapter

@@ -1,4 +1,4 @@
-local Serializer = require("Serializer")
+local Serializer = require("libs.Serializer")
 
 local DatabaseAccessLayer = {}
 DatabaseAccessLayer.__index = DatabaseAccessLayer

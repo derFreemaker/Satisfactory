@@ -1,4 +1,4 @@
-local Listener = require("Listener")
+local Listener = require("libs.Listener")
 
 local Main = {}
 Main.__index = Main
@@ -34,12 +34,12 @@ function Main:Test()
 end
 
 function Main:Configure()
-    local netClient = require("NetworkClient").new(self._logger)
+    local netClient = require("libs.NetworkClient.NetworkClient").new(self._logger)
     if netClient == nil then
         self._logger:LogError("netClient was nil")
         return
     end
-    self.ApiClient = require("ApiClient").new(netClient, Config.IPAddress, 443, 443)
+    self.ApiClient = require("libs.Api.ApiClient").new(netClient, Config.IPAddress, 443, 443)
     self._logger:LogInfo("created net client")
 end
 

@@ -1,4 +1,4 @@
-local Event = require("Event")
+local Event = require("libs.Event")
 
 local NetworkPort = {}
 NetworkPort.__index = NetworkPort

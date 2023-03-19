@@ -1,5 +1,5 @@
-local DatabaseAccessLayer = require("DatabaseAccessLayer")
-local ApiController = require("ApiController")
+local DatabaseAccessLayer = require("FactoryControl.Server.src.Data.DatabaseAccessLayer")
+local ApiController = require("libs.Api.ApiController")
 
 local ControllersEndpoint = {}
 ControllersEndpoint.__index = ControllersEndpoint

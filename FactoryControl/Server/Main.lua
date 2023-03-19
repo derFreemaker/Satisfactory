@@ -49,16 +49,21 @@ Main.SetupFilesTree = {
     }
 }
 
+local EventPullAdapter = require("libs.EventPullAdapter")
+
 function Main:Configure()
     self._logger:LogInfo("starting server...")
 
     self._logger:LogTrace("initialize 'EventPullAdapater' and 'DatabaseAccessLayer'...")
-    require("EventPullAdapter"):Initialize(self._logger)
-    require("DatabaseAccessLayer"):Initialize(self._logger):load()
+    EventPullAdapter:Initialize(self._logger)
+    require("FactoryControl.Server.src.Data.DatabaseAccessLayer"):Initialize(self._logger):load()
     self._logger:LogTrace("initialized 'EventPullAdapater' and 'DatabaseAccessLayer'")
 
     self._logger:LogTrace("creating net client...")
-    local netClient = require("NetworkClient").new(self._logger)
+    local netClient = require("libs.NetworkClient.NetworkClient").new(self._logger)
+    if netClient == nil then
+        error("netClient was nil")
+    end
     self._logger:LogTrace("creating net ports...")
     local controllerNetPort = netClient:CreateNetworkPort(443)
     self._logger:LogDebug("created net client and net ports")
@@ -74,7 +79,7 @@ end
 
 function Main:Run()
     self._logger:LogInfo("started server")
-    require("EventPullAdapter"):Run()
+    EventPullAdapter:Run()
 end
 
 return Main

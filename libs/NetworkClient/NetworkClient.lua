@@ -1,6 +1,6 @@
-local Serializer = require("Serializer")
-local EventPullAdapter = require("EventPullAdapter")
-local NetworkPort = require("NetworkPort")
+local Serializer = require("libs.Serializer")
+local EventPullAdapter = require("libs.EventPullAdapter")
+local NetworkPort = require("libs.NetworkClient.NetworkPort")
 
 local NetworkClient = {}
 NetworkClient.__index = NetworkClient
