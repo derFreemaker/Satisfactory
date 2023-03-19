@@ -1,5 +1,3 @@
-local Listener = require("libs.Listener")
-
 local Main = {}
 Main.__index = Main
 
@@ -28,10 +26,6 @@ Main.SetupFilesTree = {
         { "Serializer.lua" },
     }
 }
-
-function Main:Test()
-    self._logger:LogInfo("got to endpoint")
-end
 
 function Main:Configure()
     local netClient = require("libs.NetworkClient.NetworkClient").new(self._logger)
