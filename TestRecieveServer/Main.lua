@@ -37,9 +37,6 @@ end
 
 function Main:Configure()
     local listener = require("libs.Listener")
-    self.EventPullAdapter = require("libs.EventPullAdapter")
-
-    self.EventPullAdapter:Initialize(self._logger)
 
     local netClient = require("libs.NetworkClient.NetworkClient").new(self._logger)
     if netClient == nil then
@@ -58,7 +55,7 @@ end
 
 function Main:Run()
     self._logger:LogInfo("waiting for message...")
-    self.EventPullAdapter:Run()
+    require("libs.EventPullAdapter"):Run()
 end
 
 return Main

@@ -49,13 +49,10 @@ Main.SetupFilesTree = {
     }
 }
 
-local EventPullAdapter = require("libs.EventPullAdapter")
-
 function Main:Configure()
     self._logger:LogInfo("starting server...")
 
-    self._logger:LogTrace("initialize 'EventPullAdapater' and 'DatabaseAccessLayer'...")
-    EventPullAdapter:Initialize(self._logger)
+    self._logger:LogTrace("initialize 'DatabaseAccessLayer'...")
     require("FactoryControl.Server.src.Data.DatabaseAccessLayer"):Initialize(self._logger):load()
     self._logger:LogTrace("initialized 'EventPullAdapater' and 'DatabaseAccessLayer'")
 
@@ -79,7 +76,7 @@ end
 
 function Main:Run()
     self._logger:LogInfo("started server")
-    EventPullAdapter:Run()
+    require("libs.EventPullAdapter"):Run()
 end
 
 return Main

@@ -202,9 +202,22 @@ function GithubLoader:loadModules()
     return ModuleLoader.LoadModules(self._mainProgramModule.SetupFilesTree, true)
 end
 
+function  GithubLoader:configureEventPullAdapter(logger)
+    self._logger:LogTrace("configuring EventPullAdapter...")
+    local thread, success, eventPullAdapter = Utils.ExecuteFunction(ModuleLoader.GetModule, nil, "libs.EventPullAdapter")
+    if not success then
+        self._logger:LogTrace("could not configure eventPullAdapter")
+        self._logger:LogTrace(debug.traceback(thread, eventPullAdapter))
+        return
+    end
+    eventPullAdapter:Initialize(logger)
+    self._logger:LogTrace("configured EventPullAdapter")
+end
+
 function GithubLoader:runConfigureFunction(logLevel)
     self._logger:LogDebug("configuring program...")
     self._mainProgramModule._logger = self._logger.new("Program", logLevel)
+    self:configureEventPullAdapter(self._mainProgramModule._logger)
     if self._mainProgramModule.Configure ~= nil then
         local thread, success, error = Utils.ExecuteFunction(self._mainProgramModule.Configure, self._mainProgramModule)
         if success then
