@@ -1,5 +1,6 @@
 local DatabaseAccessLayer = require("FactoryControl.Server.src.Data.DatabaseAccessLayer")
 local ApiController = require("libs.Api.ApiController")
+local Listener = require("libs.Listener")
 
 local ControllersEndpoint = {}
 ControllersEndpoint.__index = ControllersEndpoint
@@ -12,11 +13,11 @@ function ControllersEndpoint:Configure(netPort, logger)
     self._logger = logger:create("ControllersEndpoint")
     self.DatabaseAccessLayer = DatabaseAccessLayer
     self.ApiController = ApiController.new(netPort)
-        :AddEndpoint("CreateController", {Func=self.CreateController, Object=self})
-        :AddEndpoint("DeleteController", {Func=self.DeleteController, Object=self})
-        :AddEndpoint("GetController", {Func=self.GetController, Object=self})
-        :AddEndpoint("GetControllers", {Func=self.GetControllers, Object=self})
-        :AddEndpoint("GetControllersFromCategory", {Func=self.GetControllersFromCategory, Object=self})
+        :AddEndpoint("CreateController", Listener.new(self.CreateController, self))
+        :AddEndpoint("DeleteController", Listener.new(self.DeleteController, self))
+        :AddEndpoint("GetController", Listener.new(self.GetController, self))
+        :AddEndpoint("GetControllers", Listener.new(self.GetControllers, self))
+        :AddEndpoint("GetControllersFromCategory", Listener.new(self.GetControllersFromCategory, self))
 end
 
 function ControllersEndpoint:CreateController(context)

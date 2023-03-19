@@ -1,6 +1,7 @@
 local Serializer = require("libs.Serializer")
 local EventPullAdapter = require("libs.EventPullAdapter")
 local NetworkPort = require("libs.NetworkClient.NetworkPort")
+local Listener = require("libs.Listener")
 
 local NetworkClient = {}
 NetworkClient.__index = NetworkClient
@@ -20,7 +21,7 @@ function NetworkClient.new(logger, networkCard)
     }
     instance = setmetatable(instance, NetworkClient)
     event.listen(instance.networkCard)
-    EventPullAdapter:AddListener("NetworkMessage", {Func = instance.networkMessageRecieved, Object = instance})
+    EventPullAdapter:AddListener("NetworkMessage", Listener.new(instance.networkMessageRecieved, instance))
     return instance
 end
 
@@ -117,7 +118,7 @@ function NetworkClient:WaitForEvent(eventName, port)
         result = context
     end
     while gotCalled == false do
-        self:AddListenerOnce(eventName, port, {Func = set, Object = self})
+        self:AddListenerOnce(eventName, port, Listener.new(set, self))
         EventPullAdapter:Wait()
     end
     return result
