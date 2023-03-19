@@ -18,7 +18,8 @@ Main.SetupFilesTree = {
         },
         {
             "Api",
-            { "ApiClient.lua" }
+            { "ApiClient.lua" },
+            { "ApiController.lua" }
         },
         { "Listener.lua" },
         { "Event.lua" },

@@ -68,7 +68,7 @@ function Utils.Entry.Check(entry, parentPath)
         local childs = {}
         for _, child in pairs(entry) do
             if type(child) == "table" then
-                table.insert(childs, Utils.CheckEntry(child, entry.Path))
+                table.insert(childs, Utils.Entry.Check(child, entry.Path))
             end
         end
         return {

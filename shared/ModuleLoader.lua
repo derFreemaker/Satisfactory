@@ -42,7 +42,7 @@ end
 
 function ModuleLoader.loadWaitingModules(awaitingModule)
     for i, moduleWaiters in pairs(_waitingForLoad) do
-        if string.gsub(moduleWaiters.AwaitingModule, ".", "\\") == awaitingModule.Path then
+        if string.gsub(moduleWaiters.AwaitingModule, "%.", "/") .. ".lua" == awaitingModule.Path then
             for x, waitingModule in pairs(moduleWaiters.Waiters) do
                 local success = ModuleLoader.LoadModule(waitingModule)
                 if success then
@@ -63,19 +63,19 @@ function ModuleLoader.handleCouldNotLoadModule(moduleCouldNotLoad)
         return
     end
     for _, moduleWaiters in pairs(_waitingForLoad) do
-        if string.gsub(moduleWaiters.AwaitingModule, ".", "\\") == moduleCouldNotLoad then
+        if moduleWaiters.AwaitingModule == moduleCouldNotLoad then
             table.insert(moduleWaiters.Waiters, caller)
-            _logger:LogDebug("Added: '" .. caller.Name .. "' to load after '" .. moduleCouldNotLoad .. "' was loaded")
+            _logger:LogDebug("added: '" .. caller.Name .. "' to load after '" .. moduleCouldNotLoad .. "' was loaded")
             return
         end
     end
     table.insert(_waitingForLoad, { AwaitingModule = moduleCouldNotLoad, Waiters = { caller } })
-    _logger:LogDebug("Added: '" .. caller.Name .. "' to load after '" .. moduleCouldNotLoad .. "' was loaded")
+    _logger:LogDebug("added: '" .. caller.Name .. "' to load after '" .. moduleCouldNotLoad .. "' was loaded")
 end
 
 function ModuleLoader.internalGetModule(moduleToGet)
     for _, lib in pairs(_libs) do
-        if lib.Info.Path == string.gsub(moduleToGet, ".", "\\") then
+        if lib.Info.Path == string.gsub(moduleToGet, "%.", "/") .. ".lua" then
             return lib
         end
         if _getGetWithName and lib.Info.Name == moduleToGet then
@@ -98,7 +98,7 @@ function ModuleLoader.checkForSameModuleNames()
 end
 
 function ModuleLoader.Initialize(logger)
-    _logger = logger:create("MOduleLoader")
+    _logger = logger:create("ModuleLoader")
 end
 
 function ModuleLoader.GetModules()
@@ -161,6 +161,9 @@ function ModuleLoader.GetModule(moduleToLoad)
         computer.panic("can't get module while being in loading phase")
     end
     local lib = ModuleLoader.internalGetModule(moduleToLoad)
+    if lib == nil then
+        error("could not get module: '" .. moduleToLoad .. "'")
+    end
     _logger:LogTrace("geted module: '" .. lib.Info.Name .. "'")
     return lib.Data
 end
