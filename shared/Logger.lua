@@ -78,10 +78,10 @@ function Logger:Log(message, logLevel)
   message = "[" .. self.Name .. "] " .. message
 
   if self.Path ~= nil then
-    Utils.WriteToFile(self.Path, "+a", message .. "\n")
+    Utils.File.Write(self.Path, "+a", message .. "\n")
   end
 
-  Utils.WriteToFile(mainLogFilePath, "+a", message .. "\n")
+  Utils.File.Write(mainLogFilePath, "+a", message .. "\n")
   if logLevel >= self.LogLevel then
     print(message)
   end

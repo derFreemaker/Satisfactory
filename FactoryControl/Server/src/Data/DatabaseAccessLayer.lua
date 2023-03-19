@@ -28,7 +28,7 @@ end
 
 function DatabaseAccessLayer:saveChanges()
     self._logger:LogDebug("saving Database...")
-    Utils.WriteToFile(controllerFilePath, "w", Serializer:Serialize(self.Controllers))
+    Utils.File.Write(controllerFilePath, "w", Serializer:Serialize(self.Controllers))
     self._logger:LogDebug("saved Database")
 end
 -- Core

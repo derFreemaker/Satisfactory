@@ -7,13 +7,24 @@ function Utils.Sleep(ms)
     while startTime <= endTime do startTime = computer.millis() end
 end
 
-function Utils.WriteToFile(path, mode, data)
+function Utils.ExecuteFunction(func, object, ...)
+    local thread = coroutine.create(func)
+    if object == nil then
+        return thread, coroutine.resume(thread, ...)
+    else
+        return thread, coroutine.resume(thread, object, ...)
+    end
+end
+
+Utils.File = {}
+
+function Utils.File.Write(path, mode, data)
     local file = filesystem.open(path, mode)
     file:write(data)
     file:close()
 end
 
-function Utils.ReadFile(path)
+function Utils.File.Read(path)
     local file = filesystem.open(path, "r")
     local str = ""
     while true do
@@ -26,16 +37,9 @@ function Utils.ReadFile(path)
     return str
 end
 
-function Utils.ExecuteFunction(func, object, ...)
-    local thread = coroutine.create(func)
-    if object == nil then
-        return thread, coroutine.resume(thread, ...)
-    else
-        return thread, coroutine.resume(thread, object, ...)
-    end
-end
+Utils.Entry = {}
 
-function Utils.CheckEntry(entry, parentPath)
+function Utils.Entry.Check(entry, parentPath)
     parentPath = parentPath or ""
 
     entry.Name = entry.Name or entry.FullName or entry[1]

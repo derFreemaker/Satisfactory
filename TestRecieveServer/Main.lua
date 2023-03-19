@@ -27,8 +27,7 @@ Main.SetupFilesTree = {
     }
 }
 
-local Listener = require("libs.Listener")
-local EventPullAdapter = require("libs.EventPullAdapter")
+Main.EventPullAdapter = {}
 
 function Main:Test(context)
     self._logger:LogTableDebug(context.Body)
@@ -36,7 +35,10 @@ function Main:Test(context)
 end
 
 function Main:Configure()
-    EventPullAdapter:Initialize(self._logger)
+    local listener = require("libs.Listener")
+    self.EventPullAdapter = require("libs.EventPullAdapter")
+
+    self.EventPullAdapter:Initialize(self._logger)
 
     local netClient = require("libs.NetworkClient.NetworkClient").new(self._logger)
     if netClient == nil then
@@ -49,13 +51,13 @@ function Main:Configure()
         return
     end
     local apiController = require("libs.Api.ApiController").new(netPort)
-    apiController:AddEndpoint("Test", Listener.new(self.Test, self))
+    apiController:AddEndpoint("Test", listener.new(self.Test, self))
     self._logger:LogTrace("created ApiController")
 end
 
 function Main:Run()
     self._logger:LogInfo("waiting for message...")
-    EventPullAdapter:Run()
+    self.EventPullAdapter:Run()
 end
 
 return Main

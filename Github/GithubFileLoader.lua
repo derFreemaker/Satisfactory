@@ -58,7 +58,7 @@ function  FileLoader:loadFile(req)
 		self._logger:LogError("unable to request file '" .. req.Path .. "' from '" .. req.Url .. "'")
 		return false
 	end
-	Utils.WriteToFile(req.Path, "w", data)
+	Utils.File.Write(req.Path, "w", data)
 	self._logger:LogDebug("downloaded file: '" .. req.Path .. "'")
 	return true
 end
@@ -84,7 +84,7 @@ function FileLoader:loadFiles()
 end
 
 function FileLoader:requestFileTree(tree, force)
-    self:doFolder(Utils.CheckEntry(tree), force)
+    self:doFolder(Utils.Entry.Check(tree), force)
 end
 
 function FileLoader:DownloadFileTree(basePath, tree, force)

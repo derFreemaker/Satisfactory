@@ -5,7 +5,7 @@ local function extractCallerInfo(path)
         FullName = filesystem.path(3, path),
         Path = path
     }
-    return Utils.CheckEntry(callerData)
+    return Utils.Entry.Check(callerData)
 end
 
 local _libs = {}
@@ -120,7 +120,7 @@ function ModuleLoader.LoadModule(file)
     table.insert(_libs, { Info = file, Data = fileData })
     _logger:LogTrace("loaded module: '" .. file.Name .. "'")
 
-    ModuleLoader.LoadWaitingModules(file)
+    ModuleLoader.loadWaitingModules(file)
     return true
 end
 
@@ -131,7 +131,7 @@ function ModuleLoader.LoadModules(modulesTree, loadingPhase)
         _logger:LogDebug("modules tree was empty")
         return true
     end
-    ModuleLoader.doFolder(Utils.CheckEntry(modulesTree))
+    ModuleLoader.doFolder(Utils.Entry.Check(modulesTree))
     if #_waitingForLoad > 0 then
         for _, waiters in pairs(_waitingForLoad) do
             _logger:LogError("Unable to load: '" .. waiters.AwaitingModule ..
