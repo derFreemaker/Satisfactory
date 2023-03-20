@@ -55,6 +55,7 @@ function  FileLoader:loadFile(req)
 	self._logger:LogTrace("downloading file: '" .. req.Path .. "'...")
 	local code, data = req.Request:get()
 	if code ~= 200 or not data then
+		req.Try = req.Try + 1
 		self._logger:LogError("unable to request file '" .. req.Path .. "' from '" .. req.Url .. "'")
 		return false
 	end
@@ -72,7 +73,10 @@ function FileLoader:loadFiles()
             local request = self._requests[i]
             if request.Request:canGet() then
                 done = self:loadFile(request)
-            end
+				if request.Try == 5 then
+					computer.panic("could not load requested file")
+				end
+			end
 			if done then
 				table.remove(self._requests, i)
 			end

@@ -36,7 +36,7 @@ Main.SetupFilesTree = {
             "Server",
             {
                 "Data",
-                { "DatabaseAccessLayer.lua" }
+                { "DAL.lua" }
             },
             {
                 "Endpoints",
@@ -52,7 +52,7 @@ function Main:Configure()
 
     self._logger:LogTrace("initialize 'EventPullAdapater' and 'DatabaseAccessLayer'...")
     self.EventPullAdapter:Initialize(self._logger)
-    require("FactoryControl.Server.src.Data.DatabaseAccessLayer"):Initialize(self._logger):load()
+    require("FactoryControl.Server.Data.DAL"):Initialize(self._logger):load()
     self._logger:LogTrace("initialized 'EventPullAdapater' and 'DatabaseAccessLayer'")
 
     self._logger:LogTrace("creating net client...")
