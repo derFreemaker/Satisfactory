@@ -46,7 +46,8 @@ function NetworkClient:networkMessageRecieved(signalName, signalSender, data)
         Header = data[4],
         Body = data[5]
     }
-    self._logger:LogTrace("got network message with event: '"..extractedData.EventName.."'' on port: '"..extractedData.Port.."'")
+    self._logger:LogTrace("got network message with event: '" ..
+    extractedData.EventName .. "'' on port: '" .. extractedData.Port .. "'")
     if extractedData.EventName == nil then return end
     local removePorts = {}
     for i, port in pairs(self.Ports) do
@@ -54,7 +55,7 @@ function NetworkClient:networkMessageRecieved(signalName, signalSender, data)
             port:executeCallback(createContext(signalName, signalSender, extractedData))
         end
         if #port.Events == 0 then
-            table.insert(removePorts, {Pos = i, Port = port})
+            table.insert(removePorts, { Pos = i, Port = port })
         end
     end
     for _, port in pairs(removePorts) do
@@ -73,9 +74,8 @@ function NetworkClient:AddListener(onRecivedEventName, onRecivedPort, listener)
         end
     end
 
-    local networkPort = NetworkPort.new(onRecivedPort, self._logger)
+    local networkPort = self:CreateNetworkPort(onRecivedPort)
     networkPort:AddListener(onRecivedEventName, listener)
-    table.insert(self.Ports, networkPort)
     return networkPort
 end
 
@@ -91,7 +91,6 @@ function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listen
 
     local networkPort = self:CreateNetworkPort(onRecivedPort)
     networkPort:AddListenerOnce(onRecivedEventName, listener)
-    table.insert(self.Ports, networkPort)
     return networkPort
 end
 
@@ -118,6 +117,7 @@ function NetworkClient:WaitForEvent(eventName, port)
     local gotCalled = false
     local result = nil
     local function set(context)
+        self._logger:LogTableTrace(context, 6)
         gotCalled = true
         result = context
     end
@@ -131,15 +131,20 @@ end
 function NetworkClient:OpenPort(port)
     self.networkCard:open(port)
 end
+
 function NetworkClient:ClosePort(port)
     self.networkCard:close(port)
 end
+
 function NetworkClient:CloseAllPorts()
     self.networkCard:closeAll()
 end
+
 function NetworkClient:SendMessage(ipAddress, port, eventName, data, header)
-    self.networkCard:send(ipAddress, port, eventName, Serializer:Serialize(header or {}), Serializer:Serialize(data or {}))
+    self.networkCard:send(ipAddress, port, eventName, Serializer:Serialize(header or {}),
+    Serializer:Serialize(data or {}))
 end
+
 function NetworkClient:BroadCastMessage(port, eventName, data)
     self.networkCard:broadcast(port, eventName, Serializer:Serialize(data))
 end
