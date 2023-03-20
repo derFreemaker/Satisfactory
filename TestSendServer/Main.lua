@@ -41,7 +41,8 @@ end
 
 function Main:Run()
     self._logger:LogInfo("sending message...")
-    self.ApiClient:request("Test", { Message = "Test Message" })
+    local response = self.ApiClient:request("Test", { Message = "Test Message" })
+    self._logger:LogInfo("result: ".. tostring(response.Body.Result))
     self._logger:LogInfo("sended message")
 end
 

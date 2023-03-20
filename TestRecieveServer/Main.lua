@@ -33,6 +33,7 @@ Main.EventPullAdapter = {}
 function Main:Test(context)
     self._logger:LogTableDebug(context.Body)
     self._logger:LogInfo("got to endpoint")
+    return true
 end
 
 function Main:Configure()
