@@ -35,15 +35,12 @@ Main.SetupFilesTree = {
         {
             "Server",
             {
-                "src",
-                {
-                    "Data",
-                    { "DatabaseAccessLayer.lua" }
-                },
-                {
-                    "Endpoints",
-                    { "ControllersEndpoint.lua" }
-                }
+                "Data",
+                { "DatabaseAccessLayer.lua" }
+            },
+            {
+                "Endpoints",
+                { "ControllersEndpoint.lua" }
             }
         }
     }

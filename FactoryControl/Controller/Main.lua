@@ -33,8 +33,8 @@ Main.SetupFilesTree = {
             { "Controller.lua" }
         },
         {
-            "FactoryControlApiClient",
-            { "FactoryControlApiClient.lua" }
+            "FCApiClient",
+            { "FCApiClient.lua" }
         }
     }
 }
