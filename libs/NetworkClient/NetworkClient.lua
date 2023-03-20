@@ -89,7 +89,7 @@ function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listen
         end
     end
 
-    local networkPort = NetworkPort.new(onRecivedPort, self._logger)
+    local networkPort = self:CreateNetworkPort(onRecivedPort)
     networkPort:AddListenerOnce(onRecivedEventName, listener)
     table.insert(self.Ports, networkPort)
     return networkPort

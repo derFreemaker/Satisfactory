@@ -52,7 +52,7 @@ function Main:Configure()
         return
     end
     netPort:OpenPort()
-    self._logger:LogTrace("opend Port: '" .. netPort.Port .. "'")
+    self._logger:LogTrace("opened Port: '" .. netPort.Port .. "'")
     local apiController = require("libs.Api.ApiController").new(netPort)
     apiController:AddEndpoint("Test", listener.new(self.Test, self))
     self._logger:LogTrace("created ApiController")
