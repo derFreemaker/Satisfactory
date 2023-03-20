@@ -5,7 +5,7 @@ local mainLogFilePath = filesystem.path("log", "Log.txt")
 
 local function tableToLineTree(node, padding, maxLevel, level, properties)
   padding = padding or '     '
-  maxLevel = maxLevel or math.huge
+  maxLevel = maxLevel or 5
   level = level or 1
   local lines = {}
 
