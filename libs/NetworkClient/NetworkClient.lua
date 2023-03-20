@@ -117,12 +117,11 @@ function NetworkClient:WaitForEvent(eventName, port)
     local gotCalled = false
     local result = nil
     local function set(context)
-        self._logger:LogTableTrace(context, 6)
         gotCalled = true
         result = context
     end
     while gotCalled == false do
-        self:AddListenerOnce(eventName, port, Listener.new(set, self)):OpenPort()
+        self:AddListenerOnce(eventName, port, Listener.new(set)):OpenPort()
         EventPullAdapter:Wait()
     end
     return result

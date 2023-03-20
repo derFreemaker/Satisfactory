@@ -29,7 +29,6 @@ end
 Event.Once = Event.AddListenerOnce
 
 function Event:Trigger(...)
-    self._logger:LogTrace("got triggered")
     for _, listener in ipairs(self.Funcs) do
         listener:Execute(self._logger, ...)
     end
