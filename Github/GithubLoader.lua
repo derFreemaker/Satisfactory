@@ -137,20 +137,23 @@ end
 
 function GithubLoader:isVersionTheSame()
     self._logger:LogDebug("loading info data...")
-    if filesystem.exists(VersionFilePath) then
+    local versionFileExists = filesystem.exists(VersionFilePath)
+    if versionFileExists then
         self._currentProgramInfo = filesystem.doFile(VersionFilePath)
     else
         self._logger:LogTrace("no version file found")
-        self._currentProgramInfo = { Name = "None", Version = "" }
-        return false
     end
 
     if not self:internalDownload(self._currentOption.Url .. "/Version.lua", VersionFilePath, true) then return false end
 
     local newProgramInfo = filesystem.doFile(VersionFilePath)
-
     if newProgramInfo == nil then
         newProgramInfo = { Name = "None", Version = "" }
+        return false
+    end
+
+    if not versionFileExists then
+        self._currentProgramInfo = newProgramInfo
         return false
     end
 
@@ -181,7 +184,7 @@ function GithubLoader:download(option, forceDownload)
         return false
     end
     local loadProgramFiles = self:isVersionTheSame()
-    if loadProgramFiles then
+    if not loadProgramFiles then
         self._logger:LogInfo("new Version of '" .. option .. "' found or diffrent program")
         forceDownload = true
     else
