@@ -37,7 +37,7 @@ end
 
 function Main:Configure()
     local listener = require("libs.Listener")
-    self.EventPullAdapter = 
+    self.EventPullAdapter = require("libs.EventPullAdapter")
 
     self.EventPullAdapter:Initialize(self._logger)
 
