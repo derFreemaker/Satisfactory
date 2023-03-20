@@ -25,7 +25,6 @@ function NetworkPort:executeCallback(context)
         end
     end
     for _, event in pairs(removeEvent) do
-        event.Event:ClosePort()
         table.remove(self.Events, event.Pos)
     end
 end

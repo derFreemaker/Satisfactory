@@ -9,7 +9,7 @@ function ApiController.new(netPort)
         _logger = netPort._logger:create("ApiController"),
         Endpoints = {}
     }, ApiController)
-    netPort:AddListener("all", { Func = instance.onMessageRecieved, Object = instance })
+    netPort:AddListener("all", Listener.new(instance.onMessageRecieved, instance))
     return instance
 end
 
