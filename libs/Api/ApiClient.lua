@@ -13,8 +13,11 @@ function ApiClient.new(netClient, serverIPAddress, serverPort, returnPort)
 end
 
 function ApiClient:request(endpointName, data)
-    self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, endpointName, data, {ReturnPort = self.ReturnPort})
-    return self.NetClient:WaitForEvent(endpointName, self.ReturnPort)
+    self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, endpointName, data, { ReturnPort = self.ReturnPort })
+    local response = self.NetClient:WaitForEvent(endpointName, self.ReturnPort)
+    response.Body.Success = response.Body.Success or false
+    response.Body.Result = response.Body.Result or nil
+    return response
 end
 
 return ApiClient
