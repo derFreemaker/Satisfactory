@@ -198,10 +198,6 @@ function GithubLoader:download(option, forceDownload)
     return true
 end
 
-function GithubLoader:loadModules()
-    return ModuleLoader.LoadModules(self._mainProgramModule.SetupFilesTree, true)
-end
-
 function GithubLoader:runConfigureFunction(logLevel)
     self._logger:LogDebug("configuring program...")
     self._mainProgramModule._logger = self._logger.new("Program", logLevel)
@@ -286,8 +282,7 @@ function GithubLoader:Run(option, logLevel, forceDownload)
     self._logger:LogDebug("downloaded program data")
     print()
 
-    local loadedModules = self:loadModules()
-    if not loadedModules then return false end
+    if not ModuleLoader.LoadModules(self._mainProgramModule.SetupFilesTree, true) then return false end
 
     if not self:runConfigureFunction(logLevel) then return false end
     if not self:runMainFunction() then return false end
