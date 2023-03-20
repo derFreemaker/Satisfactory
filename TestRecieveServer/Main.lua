@@ -51,6 +51,8 @@ function Main:Configure()
         self._logger:LogError("netPort was nil")
         return
     end
+    netPort:OpenPort()
+    self._logger:LogTrace("opend Port: '" .. netPort.Port .. "'")
     local apiController = require("libs.Api.ApiController").new(netPort)
     apiController:AddEndpoint("Test", listener.new(self.Test, self))
     self._logger:LogTrace("created ApiController")

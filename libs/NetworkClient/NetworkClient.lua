@@ -66,29 +66,33 @@ end
 function NetworkClient:AddListener(onRecivedEventName, onRecivedPort, listener)
     onRecivedPort = (onRecivedPort or "all")
 
-    for _, port in pairs(self.Ports) do
-        if port.Port == onRecivedPort then
-            port:AddListener(onRecivedEventName, listener)
+    for _, networkPort in pairs(self.Ports) do
+        if networkPort.Port == onRecivedPort then
+            networkPort:AddListener(onRecivedEventName, listener)
+            return networkPort
         end
     end
 
     local networkPort = NetworkPort.new(onRecivedPort, self._logger)
     networkPort:AddListener(onRecivedEventName, listener)
     table.insert(self.Ports, networkPort)
+    return networkPort
 end
 
 function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listener)
     onRecivedPort = (onRecivedPort or "all")
 
-    for _, port in pairs(self.Ports) do
-        if port.Port == onRecivedPort then
-            port:AddListenerOnce(onRecivedEventName, listener)
+    for _, networkPort in pairs(self.Ports) do
+        if networkPort.Port == onRecivedPort then
+            networkPort:AddListenerOnce(onRecivedEventName, listener)
+            return networkPort
         end
     end
 
     local networkPort = NetworkPort.new(onRecivedPort, self._logger)
     networkPort:AddListenerOnce(onRecivedEventName, listener)
     table.insert(self.Ports, networkPort)
+    return networkPort
 end
 
 function NetworkClient:CreateNetworkPort(port)
@@ -118,7 +122,7 @@ function NetworkClient:WaitForEvent(eventName, port)
         result = context
     end
     while gotCalled == false do
-        self:AddListenerOnce(eventName, port, Listener.new(set, self))
+        self:AddListenerOnce(eventName, port, Listener.new(set, self)):OpenPort()
         EventPullAdapter:Wait()
     end
     return result
