@@ -1,19 +1,55 @@
-ModuleLoader = {}
+---@class Module
+---@field Info Entry
+---@field Data 'ModuleType'
+local Module = {}
+Module.__index = {}
 
-local function extractCallerInfo(path)
+---@param info Entry
+---@param data 'ModuleType'
+---@return Module
+function Module.new(info, data)
+    return setmetatable({
+        Info = info,
+        Data = data
+    }, Module)
+end
+
+---@class WaitingModule
+---@field AwaitingModule string
+---@field Waiters Entry[]
+local WaitingModule = {}
+WaitingModule.__index = WaitingModule
+
+---@param awaitingModule string
+---@param waiters Entry[]
+---@return WaitingModule
+function WaitingModule.new(awaitingModule, waiters)
+    return setmetatable({
+        AwaitingModule = awaitingModule,
+        Waiters = waiters
+    }, WaitingModule)
+end
+
+---@class ModuleLoader
+---@field private libs Module[]
+---@field private waitingForLoad WaitingModule[]
+---@field private loadingPhase boolean
+---@field private getGetWithName boolean
+---@field private logger Logger
+---@field private entry Entry
+ModuleLoader = {}
+ModuleLoader.__index = ModuleLoader
+
+function ModuleLoader.extractCallerInfo(path)
     local callerData = {
         FullName = filesystem.path(3, path),
         Path = path
     }
-    return Utils.Entry.Check(callerData)
+    return ModuleLoader.entry.Check(callerData, nil)
 end
 
-local _libs = {}
-local _loadingPhase = false
-local _waitingForLoad = {}
-local _getGetWithName = true
-local _logger = {}
-
+---@private
+---@param entry Entry
 function ModuleLoader.doEntry(entry)
     if entry.IgnoreLoad then return end
     if entry.IsFolder == true then
@@ -23,15 +59,19 @@ function ModuleLoader.doEntry(entry)
     end
 end
 
+---@private
+---@param file Entry
 function ModuleLoader.doFile(file)
     if file.IgnoreLoad == true then return end
     if filesystem.exists(file.Path) then
         ModuleLoader.LoadModule(file)
     else
-        _logger:LogDebug("Unable to find module: " .. file.Path)
+        ModuleLoader.logger:LogDebug("Unable to find module: " .. file.Path)
     end
 end
 
+---@private
+---@param folder Entry
 function ModuleLoader.doFolder(folder)
     for _, child in pairs(folder.Childs) do
         if type(child) == "table" then
@@ -40,9 +80,11 @@ function ModuleLoader.doFolder(folder)
     end
 end
 
+---@private
+---@param awaitingModule Module
 function ModuleLoader.loadWaitingModules(awaitingModule)
-    for i, moduleWaiters in pairs(_waitingForLoad) do
-        if string.gsub(moduleWaiters.AwaitingModule, "%.", "/") .. ".lua" == awaitingModule.Path then
+    for i, moduleWaiters in pairs(ModuleLoader.waitingForLoad) do
+        if string.gsub(moduleWaiters.AwaitingModule, "%.", "/") .. ".lua" == awaitingModule.Info.Path then
             for x, waitingModule in pairs(moduleWaiters.Waiters) do
                 local success = ModuleLoader.LoadModule(waitingModule)
                 if success then
@@ -51,45 +93,51 @@ function ModuleLoader.loadWaitingModules(awaitingModule)
             end
         end
         if #moduleWaiters.Waiters == 0 then
-            table.remove(_waitingForLoad, i)
+            table.remove(ModuleLoader.waitingForLoad, i)
         end
     end
 end
 
+---@private
+---@param moduleCouldNotLoad string
 function ModuleLoader.handleCouldNotLoadModule(moduleCouldNotLoad)
-    local caller = extractCallerInfo(debug.getinfo(3).short_src)
+    local caller = ModuleLoader.extractCallerInfo(debug.getinfo(3).short_src)
     if caller == nil then
-        _logger:LogError("caller was nil")
+        ModuleLoader.logger:LogError("caller was nil")
         return
     end
-    for _, moduleWaiters in pairs(_waitingForLoad) do
+    for _, moduleWaiters in pairs(ModuleLoader.waitingForLoad) do
         if moduleWaiters.AwaitingModule == moduleCouldNotLoad then
             table.insert(moduleWaiters.Waiters, caller)
-            _logger:LogDebug("added: '" .. caller.Name .. "' to load after '" .. moduleCouldNotLoad .. "' was loaded")
+            ModuleLoader.logger:LogDebug("added: '" ..
+            caller.Name .. "' to load after '" .. moduleCouldNotLoad .. "' was loaded")
             return
         end
     end
-    table.insert(_waitingForLoad, { AwaitingModule = moduleCouldNotLoad, Waiters = { caller } })
-    _logger:LogDebug("added: '" .. caller.Name .. "' to load after '" .. moduleCouldNotLoad .. "' was loaded")
+    table.insert(ModuleLoader.waitingForLoad, WaitingModule.new(moduleCouldNotLoad, { caller }))
+    ModuleLoader.logger:LogDebug("added: '" .. caller.Name .. "' to load after '" .. moduleCouldNotLoad .. "' was loaded")
 end
 
+---@private
+---@param moduleToGet string
 function ModuleLoader.internalGetModule(moduleToGet)
-    for _, lib in pairs(_libs) do
+    for _, lib in pairs(ModuleLoader.libs) do
         if lib.Info.Path == string.gsub(moduleToGet, "%.", "/") .. ".lua" then
             return lib
         end
-        if _getGetWithName and lib.Info.Name == moduleToGet then
+        if ModuleLoader.getGetWithName and lib.Info.Name == moduleToGet then
             return lib
         end
     end
 end
 
+---@private
 function ModuleLoader.checkForSameModuleNames()
     local dupes = {}
-    for _, lib in pairs(_libs) do
+    for _, lib in pairs(ModuleLoader.libs) do
         for _, dupeLibInfo in pairs(dupes) do
             if lib.Info.Name == dupeLibInfo.Name then
-                _getGetWithName = false
+                ModuleLoader.getGetWithName = false
                 return
             end
         end
@@ -97,79 +145,98 @@ function ModuleLoader.checkForSameModuleNames()
     end
 end
 
-function ModuleLoader.Initialize(logger)
-    _logger = logger:create("ModuleLoader")
+---@param logger Logger
+---@param entry Entry
+function ModuleLoader.Initialize(logger, entry)
+    ModuleLoader.libs = {}
+    ModuleLoader.waitingForLoad = {}
+    ModuleLoader.loadingPhase = false
+    ModuleLoader.getGetWithName = false
+    ModuleLoader.logger = logger:create("ModuleLoader")
+    ModuleLoader.entry = entry
 end
 
 function ModuleLoader.GetModules()
     local clone = {}
-    for _, value in pairs(_libs) do
+    for _, value in pairs(ModuleLoader.libs) do
         table.insert(clone, value)
     end
     return clone
 end
 
-function ModuleLoader.LoadModule(file)
-    if file.IgnoreLoad == true then return true end
-    _logger:LogTrace("loading module: '" .. file.Name .. "' from path: '" .. file.Path .. "'")
-    local success, fileData = pcall(filesystem.doFile, file.Path)
+---@param fileEntry Entry
+---@return boolean
+function ModuleLoader.LoadModule(fileEntry)
+    if fileEntry.IgnoreLoad == true then return true end
+    ModuleLoader.logger:LogTrace("loading module: '" .. fileEntry.Name .. "' from path: '" .. fileEntry.Path .. "'")
+    local success, fileData = pcall(filesystem.doFile, fileEntry.Path)
     if not success then
-        _logger:LogTrace("unable to load module: '" .. file.Name .. "'")
+        ModuleLoader.logger:LogTrace("unable to load module: '" .. fileEntry.Name .. "'")
         return false
     end
-    table.insert(_libs, { Info = file, Data = fileData })
-    _logger:LogTrace("loaded module: '" .. file.Name .. "'")
+    local module = Module.new(fileEntry, fileData)
+    table.insert(ModuleLoader.libs, module)
+    ModuleLoader.logger:LogTrace("loaded module: '" .. fileEntry.Name .. "'")
 
-    ModuleLoader.loadWaitingModules(file)
+    ModuleLoader.loadWaitingModules(module)
     return true
 end
 
+---@param modulesTree table
+---@param loadingPhase boolean
+---@return boolean
 function ModuleLoader.LoadModules(modulesTree, loadingPhase)
-    _loadingPhase = loadingPhase or false
-    _logger:LogDebug("loading modules...")
+    loadingPhase = loadingPhase or false
+    ModuleLoader.logger:LogDebug("loading modules...")
     if modulesTree == nil then
-        _logger:LogDebug("modules tree was empty")
+        ModuleLoader.logger:LogDebug("modules tree was empty")
         return true
     end
     ModuleLoader.doFolder(Utils.Entry.Check(modulesTree))
-    if #_waitingForLoad > 0 then
-        for _, waiters in pairs(_waitingForLoad) do
-            _logger:LogError("Unable to load: '" .. waiters.AwaitingModule ..
+    if #ModuleLoader.waitingForLoad > 0 then
+        for _, waiters in pairs(ModuleLoader.waitingForLoad) do
+            ModuleLoader.logger:LogError("Unable to load: '" .. waiters.AwaitingModule ..
                 "' for '" .. #waiters.Waiters .. "' modules")
         end
-        _logger:LogError("Unable to load modules")
+        ModuleLoader.logger:LogError("Unable to load modules")
         return false
     end
-    _logger:LogDebug("loaded modules")
-    _loadingPhase = false
+    ModuleLoader.logger:LogDebug("loaded modules")
+    loadingPhase = false
     ModuleLoader.checkForSameModuleNames()
     return true
 end
 
+---@param moduleToLoad string
+---@return 'ModuleType'
 function ModuleLoader.PreLoadModule(moduleToLoad)
     local lib = ModuleLoader.internalGetModule(moduleToLoad)
     if lib ~= nil then
-        _logger:LogTrace("pre loaded module: '" .. lib.Info.Name .. "'")
+        ModuleLoader.logger:LogTrace("pre loaded module: '" .. lib.Info.Name .. "'")
         return lib.Data
     end
     ModuleLoader.handleCouldNotLoadModule(moduleToLoad)
     error("unable to load module: '" .. moduleToLoad .. "'")
 end
 
+---@param moduleToLoad string
+---@return 'ModuleType'
 function ModuleLoader.GetModule(moduleToLoad)
-    if _loadingPhase then
+    if ModuleLoader.loadingPhase then
         computer.panic("can't get module while being in loading phase")
     end
     local lib = ModuleLoader.internalGetModule(moduleToLoad)
     if lib == nil then
         error("could not get module: '" .. moduleToLoad .. "'")
     end
-    _logger:LogTrace("geted module: '" .. lib.Info.Name .. "'")
+    ModuleLoader.logger:LogTrace("geted module: '" .. lib.Info.Name .. "'")
     return lib.Data
 end
 
+---@param moduleToLoad string
+---@return 'ModuleType'
 function require(moduleToLoad)
-    if _loadingPhase then
+    if ModuleLoader.loadingPhase then
         return ModuleLoader.PreLoadModule(moduleToLoad)
     end
     return ModuleLoader.GetModule(moduleToLoad)

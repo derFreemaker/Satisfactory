@@ -1,26 +1,36 @@
 local Event = require("libs.Event")
 
+---@class NetworkPort
+---@field Logger Logger
+---@field Events Event[]
+---@field Port number
+---@field NetClient NetworkClient
 local NetworkPort = {}
 NetworkPort.__index = NetworkPort
 
+---@param port number
+---@param logger Logger
+---@param netClient NetworkClient
+---@return NetworkPort
 function NetworkPort.new(port, logger, netClient)
     local instance = setmetatable({
         Port = port,
         Events = {},
-        _logger = logger:create("Port:'"..port.."'"),
+        Logger = logger:create("Port:'"..port.."'"),
         NetClient = netClient
     }, NetworkPort)
     return instance
 end
 
+---@param context NetworkContext
 function NetworkPort:executeCallback(context)
-    self._logger:LogTrace("got triggerd with event: "..context.EventName)
+    self.Logger:LogTrace("got triggerd with event: "..context.EventName)
     local removeEvent = {}
     for i, event in pairs(self.Events) do
-        if event.EventName == context.EventName or event.EventName == "all" then
-            event.Event:Trigger(context)
+        if event.Name == context.EventName or event.Name == "all" then
+            event:Trigger(context)
         end
-        if #event.Event:Listeners() == 0 then
+        if #event:Listeners() == 0 then
             table.insert(removeEvent, {Pos = i, Event = event})
         end
     end
@@ -29,30 +39,38 @@ function NetworkPort:executeCallback(context)
     end
 end
 
+---@param onRecivedEventName string
+---@param listener Listener
+---@return NetworkPort
 function NetworkPort:AddListener(onRecivedEventName, listener)
     for _, event in pairs(self.Events) do
-        if event.EventName == onRecivedEventName then
-            event.Event:AddListener(listener)
-            return
+        if event.Name == onRecivedEventName then
+            event:AddListener(listener)
+            return self
         end
     end
 
-    local event = Event.new(onRecivedEventName, self._logger)
+    local event = Event.new(onRecivedEventName, self.Logger)
     event:AddListener(listener)
-    table.insert(self.Events, {EventName = onRecivedEventName, Event = event})
+    table.insert(self.Events, event)
+    return self
 end
 
+---@param onRecivedEventName string
+---@param listener Listener
+---@return NetworkPort
 function NetworkPort:AddListenerOnce(onRecivedEventName, listener)
     for _, event in pairs(self.Events) do
-        if event.EventName == onRecivedEventName then
-            event.Event:AddListenerOnce(listener)
-            return
+        if event.Name == onRecivedEventName then
+            event:AddListenerOnce(listener)
+            return self
         end
     end
 
-    local event = Event.new(onRecivedEventName, self._logger)
+    local event = Event.new(onRecivedEventName, self.Logger)
     event:AddListenerOnce(listener)
-    table.insert(self.Events, {EventName = onRecivedEventName, Event = event})
+    table.insert(self.Events, event)
+    return self
 end
 
 function NetworkPort:OpenPort()

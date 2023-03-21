@@ -1,5 +1,65 @@
-local version = "1.0.8"
+---@class Option
+---@field Name string
+---@field Url string
+local Option = {}
+Option.__index = Option
 
+---@param name string
+---@param url string
+---@return Option
+function Option.new(name, url)
+    return setmetatable({
+        Name = name,
+        Url = url
+    }, Option)
+end
+
+---@param extended boolean
+function Option:Print(extended)
+    ---@type string
+    local output
+    if extended == true and type(self.Url) == "string" then
+        output = self.Name .. " -> " .. self.Url
+    end
+    print(output)
+end
+
+
+---@class ProgramInfo
+---@field Name string
+---@field Version string
+local ProgramInfo = {}
+ProgramInfo.__index = ProgramInfo
+
+---@param name string
+---@param version string
+---@return ProgramInfo
+function ProgramInfo.new(name, version)
+    return setmetatable({
+        Name = name,
+        Version = version
+    }, ProgramInfo)
+end
+
+---@param programInfo ProgramInfo
+function ProgramInfo:Compare(programInfo)
+    if self.Name ~= programInfo.Name
+        or self.Version ~= programInfo.Version then
+        return false
+    end
+    return true
+end
+
+
+---@class GithubLoader
+---@field private forceDownloadLoaderFiles boolean
+---@field private options Option[]
+---@field private currentOption Option
+---@field private currentProgramInfo ProgramInfo
+---@field private mainProgramModule Main
+---@field private logger Logger
+---@field private fileLoader GithubFileLoader
+---@field private entryClass Entry
 local GithubLoader = {}
 GithubLoader.__index = GithubLoader
 
@@ -18,25 +78,26 @@ local LoggerUrl = SharedFolderUrl .. "Logger.lua"
 local LoggerPath = filesystem.path(SharedFolderPath, "Logger.lua")
 local UtilsUrl = SharedFolderUrl .. "Utils.lua"
 local UtilsPath = filesystem.path(SharedFolderPath, "Utils.lua")
+local EntryUrl = SharedFolderUrl .. "Entry.lua"
+local EntryPath = filesystem.path(SharedFolderPath, "Entry.lua")
+local MainUrl = SharedFolderUrl .. "Main.lua"
+local MainPath = filesystem.path(SharedFolderPath, "Main.lua")
 
 local VersionFilePath = "Version.lua"
 local MainFilePath = "Main.lua"
 
-GithubLoader._forceDownloadLoaderFiles = false
-GithubLoader._options = {}
-GithubLoader._currentOption = {}
-GithubLoader._currentProgramInfo = {}
-GithubLoader._mainProgramModule = {}
-GithubLoader._logger = nil
-GithubLoader._fileLoader = nil
-
+---@private
+---@param url string
+---@param path string
+---@param forceDownload boolean
+---@return boolean
 function GithubLoader:internalDownload(url, path, forceDownload)
     if forceDownload == nil then forceDownload = false end
     if filesystem.exists(path) and not forceDownload then
         return true
     end
-    if self._logger ~= nil then
-        self._logger:LogTrace("downloading " .. path .. " from: " .. url)
+    if self.logger ~= nil then
+        self.logger:LogTrace("downloading " .. path .. " from: " .. url)
     end
     local req = InternetCard:request(url, "GET", "")
     local code, data = req:await()
@@ -44,8 +105,8 @@ function GithubLoader:internalDownload(url, path, forceDownload)
     local file = filesystem.open(path, "w")
     file:write(data)
     file:close()
-    if self._logger ~= nil then
-        self._logger:LogTrace("downloaded " .. path .. " from: " .. url)
+    if self.logger ~= nil then
+        self.logger:LogTrace("downloaded " .. path .. " from: " .. url)
     end
     return true
 end
@@ -59,189 +120,251 @@ function GithubLoader:createLoaderFilesFolders()
     end
 end
 
+---@private
+---@return boolean
 function GithubLoader:loadUtils()
-    if not self:internalDownload(UtilsUrl, UtilsPath, self._forceDownloadLoaderFiles) then
+    if not self:internalDownload(UtilsUrl, UtilsPath, self.forceDownloadLoaderFiles) then
         return false
     end
     filesystem.doFile(UtilsPath)
     return true
 end
 
+---@private
+---@param logLevel number
+---@return boolean
 function GithubLoader:loadLogger(logLevel)
     if not filesystem.exists("log") then
         filesystem.createDir("log")
     end
-    if not self:internalDownload(LoggerUrl, LoggerPath, self._forceDownloadLoaderFiles) then return false end
-    self._logger = filesystem.doFile(LoggerPath).new("Loader", logLevel)
-    if self._logger == nil then
+    if not self:internalDownload(LoggerUrl, LoggerPath, self.forceDownloadLoaderFiles) then return false end
+    self.logger = filesystem.doFile(LoggerPath).new("Loader", logLevel)
+    if self.logger == nil then
         return false
     end
-    self._logger:ClearLog(true)
+    self.logger:ClearLog(true)
     return true
 end
 
+---@private
+---@return boolean
+function GithubLoader:loadEntry()
+    self.logger:LogDebug("loading entry...")
+    if not self:internalDownload(EntryUrl, EntryPath, self.forceDownloadLoaderFiles) then
+        return false
+    end
+    self.entryClass = filesystem.doFile(EntryPath).new(self.logger)
+    if self.entryClass == nil then
+        return false
+    end
+    self.logger:LogDebug("loaded github file loader")
+    return true
+end
+
+---@private
+---@return boolean
 function GithubLoader:loadGithubFileLoader()
-    self._logger:LogDebug("loading github file loader...")
-    if not self:internalDownload(GithubFileLoaderUrl, GithubFileLoaderPath, self._forceDownloadLoaderFiles) then
+    self.logger:LogDebug("loading github file loader...")
+    if not self:internalDownload(GithubFileLoaderUrl, GithubFileLoaderPath, self.forceDownloadLoaderFiles) then
         return false
     end
-    self._fileLoader = filesystem.doFile(GithubFileLoaderPath).new(self._logger)
-    if self._fileLoader == nil then
+    self.fileLoader = filesystem.doFile(GithubFileLoaderPath).new(self.logger)
+    if self.fileLoader == nil then
         return false
     end
-    self._logger:LogDebug("loaded github file loader")
+    self.logger:LogDebug("loaded github file loader")
     return true
 end
 
+---@private
+---@return boolean
 function GithubLoader:loadModuleLoader()
-    self._logger:LogDebug("loading module loader...")
-    if not self:internalDownload(ModuleFileLoaderUrl, ModuleFileLoaderPath, self._forceDownloadLoaderFiles) then
+    self.logger:LogDebug("loading module loader...")
+    if not self:internalDownload(ModuleFileLoaderUrl, ModuleFileLoaderPath, self.forceDownloadLoaderFiles) then
         return false
     end
     filesystem.doFile(ModuleFileLoaderPath)
-    ModuleLoader.Initialize(self._logger)
-    self._logger:LogDebug("loaded module loader")
+    ModuleLoader.Initialize(self.logger, self.entryClass)
+    self.logger:LogDebug("loaded module loader")
     return true
 end
 
-function GithubLoader:loadOptions()
-    if not self._options == nil then return true end
-    if not self:internalDownload(OptionsUrl, OptionsPath, true) then return false end
-    self._logger:LogDebug("loading options...")
-    self._options = filesystem.doFile(OptionsPath)
-
-    local formatedOptions = {}
-    for name, url in pairs(self._options) do
-        formatedOptions[name:gsub("_", "/")] = url
+---@private
+---@return boolean
+function GithubLoader:loadMainClass()
+    self.logger:LogDebug("loading main class...")
+    if not self:internalDownload(MainUrl, MainPath, self.forceDownloadLoaderFiles) then
+        return false
     end
-    self._options = formatedOptions
-    self._logger:LogDebug("loaded options")
+    self.mainClass = filesystem.doFile(MainPath)
+    self.logger:LogDebug("loaded main class")
     return true
 end
 
-function GithubLoader:loadOption(option)
+---@private
+---@return boolean
+function GithubLoader:loadOptions()
+    if not self.options == nil then return true end
+    if not self:internalDownload(OptionsUrl, OptionsPath, true) then return false end
+    self.logger:LogDebug("loading options...")
+    local options = filesystem.doFile(OptionsPath)
+
+    ---@type Option[]
+    local formatedOptions = {}
+    for name, url in pairs(options) do
+        ---@cast name string
+        ---@cast url string
+        table.insert(formatedOptions, Option.new(name, url))
+    end
+    self.options = formatedOptions
+    self.logger:LogDebug("loaded options")
+    return true
+end
+
+---@private
+---@param optionName string
+---@return boolean
+function GithubLoader:loadOption(optionName)
     if not self:loadOptions() then return false end
-    self._logger:LogDebug("loading option: " .. option)
-    for name, url in pairs(self._options) do
-        if name == option then
-            self._currentOption = {
-                Name = name,
-                Url = url
-            }
-            self._logger:LogDebug("loaded option: " .. option)
+    self.logger:LogDebug("loading option: " .. optionName)
+    for _, option in pairs(self.options) do
+        if option.Name == optionName then
+            self.currentOption = option
+            self.logger:LogDebug("loaded option: " .. option.Name)
             return true
         end
     end
     return false
 end
 
+---@private
+---@return boolean
 function GithubLoader:isVersionTheSame()
-    self._logger:LogDebug("loading info data...")
+    self.logger:LogDebug("loading info data...")
     local versionFileExists = filesystem.exists(VersionFilePath)
     if versionFileExists then
-        self._currentProgramInfo = filesystem.doFile(VersionFilePath)
+        self.currentProgramInfo = filesystem.doFile(VersionFilePath)
     else
-        self._logger:LogTrace("no version file found")
+        self.logger:LogTrace("no version file found")
     end
 
-    if not self:internalDownload(self._currentOption.Url .. "/Version.lua", VersionFilePath, true) then return false end
+    if not self:internalDownload(self.currentOption.Url .. "/Version.lua", VersionFilePath, true) then return false end
 
-    local newProgramInfo = filesystem.doFile(VersionFilePath)
+    local versionFile = filesystem.doFile(VersionFilePath)
+    local newProgramInfo = ProgramInfo.new(versionFile.Name, versionFile.Version)
+
     if newProgramInfo == nil then
-        newProgramInfo = { Name = "None", Version = "" }
         return false
     end
 
     if not versionFileExists then
-        self._currentProgramInfo = newProgramInfo
-        return false
+        self.currentProgramInfo = newProgramInfo
     end
 
-    self._logger:LogDebug("loaded info data")
-    if self._currentProgramInfo.Name ~= newProgramInfo.Name
-        or self._currentProgramInfo.Version ~= newProgramInfo.Version then
-        return false
+    self.logger:LogDebug("loaded info data")
+    local isSame = self.currentProgramInfo:Compare(newProgramInfo)
+    if not isSame then
+        self.currentProgramInfo = newProgramInfo
     end
-    return true
+    return isSame
 end
 
+---@private
+---@param forceDownload boolean
+---@return boolean
 function GithubLoader:loadOptionFiles(forceDownload)
-    self._logger:LogDebug("loading main program file...")
+    self.logger:LogDebug("loading main program file...")
     if not filesystem.exists(MainFilePath) or forceDownload then
-        if not self:internalDownload(self._currentOption.Url .. "/Main.lua", MainFilePath, forceDownload) then
-            self._logger:LogError("Unable to download main program file")
+        if not self:internalDownload(self.currentOption.Url .. "/Main.lua", MainFilePath, forceDownload) then
+            self.logger:LogError("Unable to download main program file")
             return false
         end
     end
-    self._mainProgramModule = filesystem.doFile(MainFilePath)
-    self._logger:LogDebug("loaded main program file")
+    self.mainProgramModule = filesystem.doFile(MainFilePath)
+    self.logger:LogDebug("loaded main program file")
     return true
 end
 
+---@private
+---@param option string
+---@param forceDownload boolean
+---@return boolean
 function GithubLoader:download(option, forceDownload)
     if self:loadOption(option) == false then
-        self._logger:LogError("Unable not find option: " .. option)
+        self.logger:LogError("Unable not find option: " .. option)
         return false
     end
     local loadProgramFiles = self:isVersionTheSame()
     if not loadProgramFiles then
-        self._logger:LogInfo("new Version of '" .. option .. "' found or diffrent program")
+        self.logger:LogInfo("new Version of '" .. option .. "' found or diffrent program")
         forceDownload = true
     else
-        self._logger:LogInfo("no new Version available")
+        self.logger:LogInfo("no new Version available")
     end
     if not self:loadOptionFiles(forceDownload) then
-        self._logger:LogError("Unable to load option files")
+        self.logger:LogError("Unable to load option files")
         return false
     end
     if forceDownload then
         loadProgramFiles = true
     end
-    if not self._fileLoader:DownloadFileTree(GithubLoaderBaseUrl, self._mainProgramModule.SetupFilesTree, loadProgramFiles) then
-        self._logger:LogError("Unable to load setup files")
+    if not self.fileLoader:DownloadFileTree(GithubLoaderBaseUrl, self.mainProgramModule.SetupFilesTree, loadProgramFiles) then
+        self.logger:LogError("Unable to load setup files")
         return false
     end
     return true
 end
 
+---@private
+---@param logLevel number
+---@return boolean
 function GithubLoader:runConfigureFunction(logLevel)
-    self._logger:LogDebug("configuring program...")
-    self._mainProgramModule._logger = self._logger.new("Program", logLevel)
-    if self._mainProgramModule.Configure ~= nil then
-        local thread, success, error = Utils.ExecuteFunction(self._mainProgramModule.Configure, self._mainProgramModule)
-        if success then
-            self._logger:LogDebug("configured program")
-        else
-            self._logger:LogError("configuration failed")
-            self._logger:LogError(debug.traceback(thread, error) .. debug.traceback():sub(17))
-            return false
-        end
+    self.logger:LogDebug("configuring program...")
+    self.mainProgramModule._logger = self.logger.new("Program", logLevel)
+    local thread, success, error = Utils.ExecuteFunction(self.mainProgramModule.Configure, self.mainProgramModule)
+    if success and error ~= "not found" then
+        self.logger:LogDebug("configured program")
+    elseif error ~= "$%not found%$" then
+        self.logger:LogError("configuration failed")
+        self.logger:LogError(debug.traceback(thread, error) .. debug.traceback():sub(17))
+        return false
     else
-        self._logger:LogDebug("no configure function found")
+        self.logger:LogDebug("no configure function found")
+        return false
     end
     return true
 end
 
+---@private
+---@return boolean
 function GithubLoader:runMainFunction()
-    self._logger:LogDebug("running program...")
-    if self._mainProgramModule.Run == nil then
-        self._logger:LogError("no main run function found")
+    self.logger:LogDebug("running program...")
+    local thread, success, result = Utils.ExecuteFunction(self.mainProgramModule.Run, self.mainProgramModule)
+    if result == "$%not found%$" then
+        self.logger:LogError("no main run function found")
         return false
     end
-    local thread = coroutine.create(self._mainProgramModule.Run)
-    local success, result = coroutine.resume(thread, self._mainProgramModule)
     if not success then
-        self._logger:LogError("program stoped running")
-        self._logger:LogError(debug.traceback(thread, result) .. debug.traceback():sub(17))
+        self.logger:LogError("program stoped running")
+        self.logger:LogError(debug.traceback(thread, result) .. debug.traceback():sub(17))
         return false
     else
-        self._logger:LogInfo("program stoped running: " .. tostring(result))
+        self.logger:LogInfo("program stoped running: " .. tostring(result))
     end
     return true
 end
 
+---@param logLevel number
+---@param forceDownload boolean
 function GithubLoader:Initialize(logLevel, forceDownload)
-    if forceDownload == false or forceDownload == true then self._forceDownloadLoaderFiles = forceDownload end
+    self.forceDownloadLoaderFiles = forceDownload or false
+    self.options = {}
+    self.currentOption = {}
+    self.currentProgramInfo = {}
+    self.mainProgramModule = {}
+    self.logger = nil
+    self.fileLoader = nil
+    self.entry = {}
     self:createLoaderFilesFolders()
     if not self:loadUtils() then
         computer.panic("Unable to load utils")
@@ -249,46 +372,46 @@ function GithubLoader:Initialize(logLevel, forceDownload)
     if not self:loadLogger(logLevel) then
         computer.panic("Unable to load logger")
     end
-    self._logger:LogDebug("Github Loader Version: " .. version)
     if not self:loadGithubFileLoader() then
         computer.panic("Unable to load github file loader")
     end
     if not self:loadModuleLoader() then
         computer.panic("Unable to load module loader")
     end
-    if self._forceDownloadLoaderFiles then
-        self._logger:LogInfo("loaded loader files")
+    if self.forceDownloadLoaderFiles then
+        self.logger:LogInfo("loaded loader files")
     end
     return self
 end
 
+---@param extended boolean
 function GithubLoader:ShowOptions(extended)
     if not self:loadOptions() then
-        self._logger:LogError("Unable to load options")
+        self.logger:LogError("Unable to load options")
     end
     print()
     print("Options:")
-    for name, url in pairs(self._options) do
-        if name ~= "//index" then
-            local output = name
-            if extended == true and type(url) == "string" then
-                output = output .. " -> " .. url
-            end
-            print(output)
+    for _, option in pairs(self.options) do
+        if option.Name ~= "//index" then
+            option:Print(extended)
         end
     end
 end
 
+---@param option string
+---@param logLevel number
+---@param forceDownload boolean
+---@return boolean
 function GithubLoader:Run(option, logLevel, forceDownload)
-    self._logger:LogDebug("downloading program data...")
+    self.logger:LogDebug("downloading program data...")
     if not self:download(option, forceDownload) then
-        self._logger:LogError("Unable to download '" .. option .. "'")
+        self.logger:LogError("Unable to download '" .. option .. "'")
         return false
     end
-    self._logger:LogDebug("downloaded program data")
+    self.logger:LogDebug("downloaded program data")
     print()
 
-    if not ModuleLoader.LoadModules(self._mainProgramModule.SetupFilesTree, true) then return false end
+    if not ModuleLoader.LoadModules(self.mainProgramModule.SetupFilesTree, true) then return false end
 
     if not self:runConfigureFunction(logLevel) then return false end
     if not self:runMainFunction() then return false end

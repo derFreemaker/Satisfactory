@@ -1,9 +1,8 @@
-local Main = {}
-Main.__index = Main
+---@class TestRecieveServer : Main
+local TestRecieveServer = {}
+TestRecieveServer.__index = TestRecieveServer
 
-Main._logger = {}
-
-Main.SetupFilesTree = {
+TestRecieveServer.SetupFilesTree = {
     "",
     {
         "shared",
@@ -14,12 +13,14 @@ Main.SetupFilesTree = {
         {
             "NetworkClient",
             { "NetworkClient.lua" },
-            { "NetworkPort.lua" }
+            { "NetworkPort.lua" },
+            { "NetworkContext.lua" }
         },
         {
             "Api",
             { "ApiClient.lua" },
-            { "ApiController.lua" }
+            { "ApiController.lua" },
+            { "ApiEndpoint.lua" }
         },
         { "Listener.lua" },
         { "Event.lua" },
@@ -28,40 +29,40 @@ Main.SetupFilesTree = {
     }
 }
 
-Main.EventPullAdapter = {}
+TestRecieveServer.EventPullAdapter = {}
 
-function Main:Test(context)
-    self._logger:LogTableDebug(context.Body)
-    self._logger:LogInfo("got to endpoint")
+function TestRecieveServer:Test(context)
+    self.Logger:LogTableDebug(context.Body)
+    self.Logger:LogInfo("got to endpoint")
     return true
 end
 
-function Main:Configure()
+function TestRecieveServer:Configure()
     local listener = require("libs.Listener")
     self.EventPullAdapter = require("libs.EventPullAdapter")
 
-    self.EventPullAdapter:Initialize(self._logger)
+    self.EventPullAdapter:Initialize(self.Logger)
 
-    local netClient = require("libs.NetworkClient.NetworkClient").new(self._logger)
+    local netClient = require("libs.NetworkClient.NetworkClient").new(self.Logger)
     if netClient == nil then
-        self._logger:LogError("netClient was nil")
+        self.Logger:LogError("netClient was nil")
         return
     end
     local netPort = netClient:CreateNetworkPort(443)
     if netPort == nil then
-        self._logger:LogError("netPort was nil")
+        self.Logger:LogError("netPort was nil")
         return
     end
     netPort:OpenPort()
-    self._logger:LogTrace("opened Port: '" .. netPort.Port .. "'")
+    self.Logger:LogTrace("opened Port: '" .. netPort.Port .. "'")
     local apiController = require("libs.Api.ApiController").new(netPort)
     apiController:AddEndpoint("Test", listener.new(self.Test, self))
-    self._logger:LogTrace("created ApiController")
+    self.Logger:LogTrace("created ApiController")
 end
 
-function Main:Run()
-    self._logger:LogInfo("waiting for message...")
+function TestRecieveServer:Run()
+    self.Logger:LogInfo("waiting for message...")
     self.EventPullAdapter:Run()
 end
 
-return Main
+return TestRecieveServer

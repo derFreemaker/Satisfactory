@@ -1,9 +1,20 @@
+---@class Logger
+---@field Name string
+---@field private logLevel number
+---@field private path string
 local Logger = {}
 Logger.__index = Logger
 
 local mainLogFilePath = filesystem.path("log", "Log.txt")
 
-local function tableToLineTree(node, padding, maxLevel, level, properties)
+---@private
+---@param node table
+---@param padding string | nil
+---@param maxLevel number | nil
+---@param level number | nil
+---@param properties string[] | nil
+---@return string[]
+function Logger.tableToLineTree(node, padding, maxLevel, level, properties)
   padding = padding or '     '
   maxLevel = maxLevel or 5
   level = level or 1
@@ -43,7 +54,8 @@ local function tableToLineTree(node, padding, maxLevel, level, properties)
       table.insert(lines, line)
 
       if level < maxLevel then
-        local childLines = tableToLineTree(node[k], padding .. (i == #keys and '    ' or '│   '), maxLevel, level + 1,
+        ---@cast properties string[]
+        local childLines = Logger.tableToLineTree(node[k], padding .. (i == #keys and '    ' or '│   '), maxLevel, level + 1,
           properties)
         for _, l in ipairs(childLines) do
           table.insert(lines, l)
@@ -59,89 +71,114 @@ local function tableToLineTree(node, padding, maxLevel, level, properties)
   return lines
 end
 
+---@param name string
+---@param logLevel number | nil
+---@param path string | nil
 function Logger.new(name, logLevel, path)
   if not filesystem.exists("log") then filesystem.createDir("log") end
   local instance = {
-    LogLevel = (logLevel or 0),
-    Name = (string.gsub(name, " ", "_") or ""),
-    Path = (path or nil)
+    logLevel = (logLevel or 0),
+    name = (string.gsub(name, " ", "_") or ""),
+    path = (path or nil)
   }
   instance = setmetatable(instance, Logger)
   return instance
 end
 
+---@param name string
+---@param path string | nil
 function Logger:create(name, path)
-  return Logger.new(self.Name .. "." .. name, self.LogLevel, path)
+  return Logger.new(self.Name .. "." .. name, self.logLevel, path)
 end
 
+---@private
+---@param message string
+---@param logLevel number
 function Logger:Log(message, logLevel)
   message = "[" .. self.Name .. "] " .. message
 
-  if self.Path ~= nil then
-    Utils.File.Write(self.Path, "+a", message .. "\n")
+  if self.path ~= nil then
+    Utils.File.Write(self.path, "+a", message .. "\n")
   end
 
   Utils.File.Write(mainLogFilePath, "+a", message .. "\n")
-  if logLevel >= self.LogLevel then
+  if logLevel >= self.logLevel then
     print(message)
   end
 end
 
+---@param message any
 function Logger:LogTrace(message)
   if message == nil then return end
-  self:Log("TRACE! " .. message, 0)
+  self:Log("TRACE! " .. tostring(message), 0)
 end
 
+---@param table table
+---@param maxLevel number | nil
+---@param properties table | nil
 function Logger:LogTableTrace(table, maxLevel, properties)
   if table == nil or type(table) ~= "table" then return end
-  local lineTree = tableToLineTree(table, nil, maxLevel, nil, properties)
+  local lineTree = Logger.tableToLineTree(table, nil, maxLevel, nil, properties)
   for _, line in pairs(lineTree) do
     self:LogTrace(line)
   end
 end
 
+---@param message any
 function Logger:LogDebug(message)
   if message == nil then return end
-  self:Log("DEBUG! " .. message, 1)
+  self:Log("DEBUG! " .. tostring(message), 1)
 end
 
+---@param table table
+---@param maxLevel number | nil
+---@param properties table | nil
 function Logger:LogTableDebug(table, maxLevel, properties)
   if table == nil or type(table) ~= "table" then return end
-  local lineTree = tableToLineTree(table, nil, maxLevel, nil, properties)
+  local lineTree = Logger.tableToLineTree(table, nil, maxLevel, nil, properties)
   for _, line in pairs(lineTree) do
     self:LogDebug(line)
   end
 end
 
+---@param message any
 function Logger:LogInfo(message)
   if message == nil then return end
-  self:Log("INFO! " .. message, 2)
+  self:Log("INFO! " .. tostring(message), 2)
 end
 
+---@param table table
+---@param maxLevel number | nil
+---@param properties table | nil
 function Logger:LogTableInfo(table, maxLevel, properties)
   if table == nil or type(table) ~= "table" then return end
-  local lineTree = tableToLineTree(table, nil, maxLevel, nil, properties)
+  local lineTree = Logger.tableToLineTree(table, nil, maxLevel, nil, properties)
   for _, line in pairs(lineTree) do
     self:LogInfo(line)
   end
 end
 
+---@param message any
 function Logger:LogError(message)
   if message == nil then return end
-  self:Log("ERROR! " .. message, 3)
+  self:Log("ERROR! " .. tostring(message), 3)
 end
 
+---@param table table
+---@param maxLevel number | nil
+---@param properties table | nil
 function Logger:LogTableError(table, maxLevel, properties)
   if table == nil or type(table) ~= "table" then return end
-  local lineTree = tableToLineTree(table, nil, maxLevel, nil, properties)
+  local lineTree = Logger.tableToLineTree(table, nil, maxLevel, nil, properties)
   for _, line in pairs(lineTree) do
     self:LogError(line)
   end
 end
 
+---@param clearMainFile boolean
 function Logger:ClearLog(clearMainFile)
-  if self.Path ~= nil then
-    local ownFile = filesystem.open(self.Path, "w")
+  if self.path ~= nil then
+    local ownFile = filesystem.open(self.path, "w")
     ownFile:write("")
     ownFile:close()
   end

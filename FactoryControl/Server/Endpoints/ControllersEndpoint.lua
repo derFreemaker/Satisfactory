@@ -2,17 +2,19 @@ local DatabaseAccessLayer = require("FactoryControl.Server.Data.DAL")
 local ApiController = require("libs.Api.ApiController")
 local Listener = require("libs.Listener")
 
+---@class ControllersEndpoint
+---@field private databaseAccessLayer DatabaseAccessLayer
+---@field private apiController ApiController
+---@---@field private logger Logger
 local ControllersEndpoint = {}
 ControllersEndpoint.__index = ControllersEndpoint
 
-ControllersEndpoint._logger = {}
-ControllersEndpoint.DatabaseAccessLayer = {}
-ControllersEndpoint.NetClient = {}
-
+---@param netPort NetworkPort
+---@param logger Logger
 function ControllersEndpoint:Configure(netPort, logger)
-    self._logger = logger:create("ControllersEndpoint")
-    self.DatabaseAccessLayer = DatabaseAccessLayer
-    self.ApiController = ApiController.new(netPort)
+    self.logger = logger:create("ControllersEndpoint")
+    self.databaseAccessLayer = DatabaseAccessLayer
+    self.apiController = ApiController.new(netPort)
         :AddEndpoint("CreateController", Listener.new(self.CreateController, self))
         :AddEndpoint("DeleteController", Listener.new(self.DeleteController, self))
         :AddEndpoint("GetController", Listener.new(self.GetController, self))
@@ -20,24 +22,34 @@ function ControllersEndpoint:Configure(netPort, logger)
         :AddEndpoint("GetControllersFromCategory", Listener.new(self.GetControllersFromCategory, self))
 end
 
+---@param context NetworkContext
+---@return ControllerData
 function ControllersEndpoint:CreateController(context)
-    return self.DatabaseAccessLayer:CreateController(context.Body.ControllerData)
+    return self.databaseAccessLayer:CreateController(context.Body.ControllerData)
 end
 
+---@param context NetworkContext
+---@return boolean
 function ControllersEndpoint:DeleteController(context)
-    return self.DatabaseAccessLayer:DeleteController(context.Body.ControllerIPAddress)
+    return self.databaseAccessLayer:DeleteController(context.Body.ControllerIPAddress)
 end
 
+---@param context NetworkContext
+---@return ControllerData | nil
 function ControllersEndpoint:GetController(context)
-    return self.DatabaseAccessLayer:GetController(context.Body.ControllerIPAddress)
+    return self.databaseAccessLayer:GetController(context.Body.ControllerIPAddress)
 end
 
+---@param context NetworkContext
+---@return ControllerData[]
 function ControllersEndpoint:GetControllers(context)
-    return self.DatabaseAccessLayer:GetControllers()
+    return self.databaseAccessLayer:GetControllers()
 end
 
+---@param context NetworkContext
+---@return ControllerData[]
 function ControllersEndpoint:GetControllersFromCategory(context)
-    return self.DatabaseAccessLayer:GetControllersFromCategory(context.Body.Category)
+    return self.databaseAccessLayer:GetControllersFromCategory(context.Body.Category)
 end
 
 return ControllersEndpoint
