@@ -53,13 +53,8 @@ function GithubLoader:createLoaderFilesFolders()
     if not filesystem.exists(SharedFolderPath) then
         filesystem.createDir(SharedFolderPath)
     end
-    if not filesystem.exists(ProgramFolderPath) then
-        filesystem.createDir(ProgramFolderPath)
-    end
 end
 
----@private
----@return boolean
 function GithubLoader:loadUtils()
     if not self:internalDownload(UtilsUrl, UtilsPath, self.forceDownloadLoaderFiles) then
         return false
@@ -68,9 +63,6 @@ function GithubLoader:loadUtils()
     return true
 end
 
----@private
----@param logLevel number
----@return boolean
 function GithubLoader:loadLogger(logLevel)
     if not filesystem.exists("log") then
         filesystem.createDir("log")
@@ -84,8 +76,6 @@ function GithubLoader:loadLogger(logLevel)
     return true
 end
 
----@private
----@return boolean
 function GithubLoader:loadGithubFileLoader()
     self.logger:LogDebug("loading github file loader...")
     if not self:internalDownload(GithubFileLoaderUrl, GithubFileLoaderPath, self.forceDownloadLoaderFiles) then
@@ -99,8 +89,6 @@ function GithubLoader:loadGithubFileLoader()
     return true
 end
 
----@private
----@return boolean
 function GithubLoader:loadModuleLoader()
     self.logger:LogDebug("loading module loader...")
     if not self:internalDownload(ModuleFileLoaderUrl, ModuleFileLoaderPath, self.forceDownloadLoaderFiles) then
@@ -112,8 +100,6 @@ function GithubLoader:loadModuleLoader()
     return true
 end
 
----@private
----@return boolean
 function GithubLoader:loadOptions()
     if not self.options == nil then return true end
     if not self:internalDownload(OptionsUrl, OptionsPath, true) then return false end
