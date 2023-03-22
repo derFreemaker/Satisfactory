@@ -1,8 +1,9 @@
----@class FactoryControlServer : Main
-local FactoryControlServer = {}
-FactoryControlServer.__index = FactoryControlServer
+local Main = {}
+Main.__index = Main
 
-FactoryControlServer.SetupFilesTree = {
+Main._logger = {}
+
+Main.SetupFilesTree = {
     "",
     {
         "shared",
@@ -13,14 +14,12 @@ FactoryControlServer.SetupFilesTree = {
         {
             "NetworkClient",
             { "NetworkClient.lua" },
-            { "NetworkPort.lua" },
-            { "NetworkContext.lua" }
+            { "NetworkPort.lua" }
         },
         {
             "Api",
             { "ApiController.lua" },
-            { "ApiClient.lua" },
-            { "ApiEndpoint.lua" }
+            { "ApiClient.lua" }
         },
         { "Listener.lua" },
         { "Event.lua" },
@@ -48,36 +47,36 @@ FactoryControlServer.SetupFilesTree = {
     }
 }
 
-function FactoryControlServer:Configure()
-    self.Logger:LogInfo("starting server...")
+function Main:Configure()
+    self._logger:LogInfo("starting server...")
     self.EventPullAdapter = require("libs.EventPullAdapter")
 
-    self.Logger:LogTrace("initialize 'EventPullAdapater' and 'DatabaseAccessLayer'...")
-    self.EventPullAdapter:Initialize(self.Logger)
-    require("FactoryControl.Server.Data.DAL"):Initialize(self.Logger):load()
-    self.Logger:LogTrace("initialized 'EventPullAdapater' and 'DatabaseAccessLayer'")
+    self._logger:LogTrace("initialize 'EventPullAdapater' and 'DatabaseAccessLayer'...")
+    self.EventPullAdapter:Initialize(self._logger)
+    require("FactoryControl.Server.Data.DAL"):Initialize(self._logger):load()
+    self._logger:LogTrace("initialized 'EventPullAdapater' and 'DatabaseAccessLayer'")
 
-    self.Logger:LogTrace("creating net client...")
-    local netClient = require("libs.NetworkClient.NetworkClient").new(self.Logger)
+    self._logger:LogTrace("creating net client...")
+    local netClient = require("libs.NetworkClient.NetworkClient").new(self._logger)
     if netClient == nil then
         error("netClient was nil")
     end
-    self.Logger:LogTrace("creating net ports...")
+    self._logger:LogTrace("creating net ports...")
     local controllerNetPort = netClient:CreateNetworkPort(443)
-    self.Logger:LogDebug("created net client and net ports")
+    self._logger:LogDebug("created net client and net ports")
 
-    self.Logger:LogTrace("configuring Endpoints...")
-    require("Satisfactory.FactoryControl.Server.Data.Endpointss.ControllersEndpoint"):Configure(controllerNetPort, self.Logger)
-    self.Logger:LogTrace("configured Endpoints")
+    self._logger:LogTrace("configuring Endpoints...")
+    require("ControllersEndpoint"):Configure(controllerNetPort, self._logger)
+    self._logger:LogTrace("configured Endpoints")
 
-    self.Logger:LogTrace("opening Ports...")
+    self._logger:LogTrace("opening Ports...")
     controllerNetPort:OpenPort()
-    self.Logger:LogTrace("opened Ports")
+    self._logger:LogTrace("opened Ports")
 end
 
-function FactoryControlServer:Run()
-    self.Logger:LogInfo("started server")
+function Main:Run()
+    self._logger:LogInfo("started server")
     self.EventPullAdapter:Run()
 end
 
-return FactoryControlServer
+return Main

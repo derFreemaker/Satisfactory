@@ -1,24 +1,15 @@
----@class Listener
----@field private func function
----@field private parent any
 local Listener = {}
 Listener.__index = Listener
 
----@param func function
----@param parent any
----@return Listener
-function Listener.new(func, parent)
+function Listener.new(func, object)
     return setmetatable({
-        func = func,
-        parent = parent
+        Func = func,
+        Object = object
     }, Listener)
 end
 
----@param logger Logger
----@param ... any
----@return thread, boolean, 'result'
 function Listener:Execute(logger, ...)
-    local thread, status, result = Utils.ExecuteFunction(self.func, self.parent, ...)
+    local thread, status, result = Utils.ExecuteFunction(self.Func, self.Object, ...)
     if not status then
         logger:LogError("execution error: \n" .. debug.traceback(thread, result) .. debug.traceback():sub(17))
     end

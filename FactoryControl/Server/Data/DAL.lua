@@ -1,22 +1,17 @@
 local Serializer = require("libs.Serializer")
 
----@class DatabaseAccessLayer
----@field private logger Logger
----@field Controllers ControllerData[]
 local DatabaseAccessLayer = {}
 DatabaseAccessLayer.__index = DatabaseAccessLayer
 
 local controllerFilePath = filesystem.path("Database", "Controllers.db")
 
----@param logger Logger
----@return DatabaseAccessLayer
 function DatabaseAccessLayer:Initialize(logger)
-    self.logger = logger:create("DatabaseAccessLayer")
+    self._logger = logger:create("DatabaseAccessLayer")
     return self
 end
 
 function DatabaseAccessLayer:load()
-    self.logger:LogDebug("loading Database...")
+    self._logger:LogDebug("loading Database...")
     if not filesystem.exists("Database") then
         filesystem.createDir("Database")
     end
@@ -28,27 +23,23 @@ function DatabaseAccessLayer:load()
     else
         self.Controllers = {}
     end
-    self.logger:LogDebug("loaded Database")
+    self._logger:LogDebug("loaded Database")
 end
 
 function DatabaseAccessLayer:saveChanges()
-    self.logger:LogDebug("saving Database...")
+    self._logger:LogDebug("saving Database...")
     Utils.File.Write(controllerFilePath, "w", Serializer:Serialize(self.Controllers))
-    self.logger:LogDebug("saved Database")
+    self._logger:LogDebug("saved Database")
 end
 -- Core
 
 -- Controller
----@param controllerData ControllerData
----@return ControllerData
 function DatabaseAccessLayer:CreateController(controllerData)
     table.insert(self.Controllers, controllerData)
     self:saveChanges()
-    return controllerData
+    return true
 end
 
----@param controllerIpAddress string
----@return boolean
 function DatabaseAccessLayer:DeleteController(controllerIpAddress)
     for i, controller in pairs(self.Controllers) do
         if controller.IPAddress == controllerIpAddress then
@@ -59,23 +50,18 @@ function DatabaseAccessLayer:DeleteController(controllerIpAddress)
     return true
 end
 
----@param controllerIpAddress string
----@return ControllerData | nil
 function DatabaseAccessLayer:GetController(controllerIpAddress)
     for _, controller in pairs(self.Controllers) do
         if controller.IPAddress == controllerIpAddress then
             return controller
         end
     end
-    return nil
 end
 
----@return ControllerData[]
 function DatabaseAccessLayer:GetControllers()
     return self.Controllers
 end
 
----@return ControllerData[]
 function DatabaseAccessLayer:GetControllersFromCategory(category)
     local controllers = {}
     for _, controller in pairs(self.Controllers) do

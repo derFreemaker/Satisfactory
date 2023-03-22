@@ -1,8 +1,9 @@
----@class FactoryControlController : Main
-local FactoryControlController = {}
-FactoryControlController.__index = FactoryControlController
+local Main = {}
+Main.__index = Main
 
-FactoryControlController.SetupFilesTree = {
+Main._logger = {}
+
+Main.SetupFilesTree = {
     "",
     {
         "shared",
@@ -13,14 +14,12 @@ FactoryControlController.SetupFilesTree = {
         {
             "NetworkClient",
             { "NetworkClient.lua" },
-            { "NetworkPort.lua" },
-            { "NetworkContext.lua" }
+            { "NetworkPort.lua" }
         },
         {
             "Api",
             { "ApiController.lua" },
-            { "ApiClient.lua" },
-            { "ApiEndpoint.lua" }
+            { "ApiClient.lua" }
         },
         { "Listener.lua" },
         { "Event.lua" },
@@ -41,14 +40,11 @@ FactoryControlController.SetupFilesTree = {
     }
 }
 
-FactoryControlController.FactoryControlApiClient = {}
+Main.FactoryControlApiClient = {}
 
-function FactoryControlController:Configure()
-    require("libs.EventPullAdapter"):Initialize(self.Logger)
-    local netClient = require("libs.NetworkClient.NetworkClient").new(self.Logger)
-    if netClient == nil then
-        error("netClient was nil")
-    end
+function Main:Configure()
+    require("libs.EventPullAdapter"):Initialize(self._logger)
+    local netClient = require("libs.NetworkClient.NetworkClient").new(self._logger)
     local apiClient = require("libs.Api.ApiClient").new(
         netClient,
         Config.ServerIPAddress,
@@ -57,15 +53,16 @@ function FactoryControlController:Configure()
     self.FactoryControlApiClient = require("FactoryControl.FCApiClient.FCApiClient").new(apiClient)
 end
 
-function FactoryControlController:Run()
-    self.Logger:LogInfo("adding controller...")
+function Main:Run()
+    self._logger:LogInfo("adding controller...")
     local result = self.FactoryControlApiClient:CreateController({
         IPAddress = "TestIPAddress",
         Name = "Test",
         Category = "Test"
     })
-    self.Logger:LogInfo("added controller")
-    self.Logger:LogTableInfo(result)
+    self._logger:LogInfo("added controllers")
+    self._logger:LogInfo(result.Body.Success)
+    self._logger:LogInfo(#result.Body.Result)
 end
 
-return FactoryControlController
+return Main

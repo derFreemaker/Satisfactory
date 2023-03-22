@@ -1,8 +1,9 @@
----@class TestSendServer : Main
-local TestSendServer = {}
-TestSendServer.__index = TestSendServer
+local Main = {}
+Main.__index = Main
 
-TestSendServer.SetupFilesTree = {
+Main._logger = {}
+
+Main.SetupFilesTree = {
     "",
     {
         "shared",
@@ -13,8 +14,7 @@ TestSendServer.SetupFilesTree = {
         {
             "NetworkClient",
             { "NetworkClient.lua" },
-            { "NetworkPort.lua" },
-            { "NetworkContext.lua" }
+            { "NetworkPort.lua" }
         },
         {
             "Api",
@@ -27,23 +27,23 @@ TestSendServer.SetupFilesTree = {
     }
 }
 
-function TestSendServer:Configure()
-    require("libs.EventPullAdapter"):Initialize(self.Logger)
+function Main:Configure()
+    require("libs.EventPullAdapter"):Initialize(self._logger)
 
-    local netClient = require("libs.NetworkClient.NetworkClient").new(self.Logger)
+    local netClient = require("libs.NetworkClient.NetworkClient").new(self._logger)
     if netClient == nil then
-        self.Logger:LogError("netClient was nil")
+        self._logger:LogError("netClient was nil")
         return
     end
     self.ApiClient = require("libs.Api.ApiClient").new(netClient, Config.IPAddress, 443, 443)
-    self.Logger:LogInfo("created net client")
+    self._logger:LogInfo("created net client")
 end
 
-function TestSendServer:Run()
-    self.Logger:LogInfo("sending message...")
+function Main:Run()
+    self._logger:LogInfo("sending message...")
     local response = self.ApiClient:request("Test", { Message = "Test Message" })
-    self.Logger:LogInfo("result: ".. tostring(response.Body.Result))
-    self.Logger:LogInfo("sended message")
+    self._logger:LogInfo("result: ".. tostring(response.Body.Result))
+    self._logger:LogInfo("sended message")
 end
 
-return TestSendServer
+return Main
