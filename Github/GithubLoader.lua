@@ -24,7 +24,6 @@ function Option:Print(extended)
     print(output)
 end
 
-
 ---@class ProgramInfo
 ---@field Name string
 ---@field Version string
@@ -49,7 +48,6 @@ function ProgramInfo:Compare(programInfo)
     end
     return true
 end
-
 
 ---@class GithubLoader
 ---@field private forceDownloadLoaderFiles boolean
@@ -78,13 +76,14 @@ local LoggerUrl = SharedFolderUrl .. "Logger.lua"
 local LoggerPath = filesystem.path(SharedFolderPath, "Logger.lua")
 local UtilsUrl = SharedFolderUrl .. "Utils.lua"
 local UtilsPath = filesystem.path(SharedFolderPath, "Utils.lua")
-local EntryUrl = SharedFolderUrl .. "Entry.lua"
-local EntryPath = filesystem.path(SharedFolderPath, "Entry.lua")
-local MainUrl = SharedFolderUrl .. "Main.lua"
-local MainPath = filesystem.path(SharedFolderPath, "Main.lua")
+local EntryClassUrl = SharedFolderUrl .. "Entry.lua"
+local EntryClassPath = filesystem.path(SharedFolderPath, "Entry.lua")
+local MainClassUrl = SharedFolderUrl .. "Main.lua"
+local MainClassPath = filesystem.path(SharedFolderPath, "Main.lua")
 
-local VersionFilePath = "Version.lua"
-local MainFilePath = "Main.lua"
+local ProgramFolderPath = ""
+local VersionFilePath = filesystem.path(ProgramFolderPath, "Version.lua")
+local MainFilePath = filesystem.path(ProgramFolderPath, "Main.lua")
 
 ---@private
 ---@param url string
@@ -148,12 +147,12 @@ end
 
 ---@private
 ---@return boolean
-function GithubLoader:loadEntry()
+function GithubLoader:loadEntryClass()
     self.logger:LogDebug("loading entry...")
-    if not self:internalDownload(EntryUrl, EntryPath, self.forceDownloadLoaderFiles) then
+    if not self:internalDownload(EntryClassUrl, EntryClassPath, self.forceDownloadLoaderFiles) then
         return false
     end
-    self.entryClass = filesystem.doFile(EntryPath).new(self.logger)
+    self.entryClass = filesystem.doFile(EntryClassPath).new(self.logger)
     if self.entryClass == nil then
         return false
     end
@@ -193,10 +192,10 @@ end
 ---@return boolean
 function GithubLoader:loadMainClass()
     self.logger:LogDebug("loading main class...")
-    if not self:internalDownload(MainUrl, MainPath, self.forceDownloadLoaderFiles) then
+    if not self:internalDownload(MainClassUrl, MainClassPath, self.forceDownloadLoaderFiles) then
         return false
     end
-    self.mainClass = filesystem.doFile(MainPath)
+    self.mainClass = filesystem.doFile(MainClassPath)
     self.logger:LogDebug("loaded main class")
     return true
 end
@@ -207,16 +206,12 @@ function GithubLoader:loadOptions()
     if not self.options == nil then return true end
     if not self:internalDownload(OptionsUrl, OptionsPath, true) then return false end
     self.logger:LogDebug("loading options...")
-    local options = filesystem.doFile(OptionsPath)
 
-    ---@type Option[]
-    local formatedOptions = {}
-    for name, url in pairs(options) do
+    for name, url in pairs(filesystem.doFile(OptionsPath)) do
         ---@cast name string
         ---@cast url string
-        table.insert(formatedOptions, Option.new(name, url))
+        table.insert(self.options, Option.new(name, url))
     end
-    self.options = formatedOptions
     self.logger:LogDebug("loaded options")
     return true
 end
@@ -243,7 +238,8 @@ function GithubLoader:isVersionTheSame()
     self.logger:LogDebug("loading info data...")
     local versionFileExists = filesystem.exists(VersionFilePath)
     if versionFileExists then
-        self.currentProgramInfo = filesystem.doFile(VersionFilePath)
+        local currentProgramInfo = filesystem.doFile(VersionFilePath)
+        self.currentProgramInfo = ProgramInfo.new(currentProgramInfo.Name, currentProgramInfo.Version)
     else
         self.logger:LogTrace("no version file found")
     end
@@ -281,6 +277,7 @@ function GithubLoader:loadOptionFiles(forceDownload)
         end
     end
     self.mainProgramModule = filesystem.doFile(MainFilePath)
+    self.mainProgramModule.SetupFilesTree = self.entryClass:Check(self.mainProgramModule.SetupFilesTree)
     self.logger:LogDebug("loaded main program file")
     return true
 end
@@ -364,7 +361,7 @@ function GithubLoader:Initialize(logLevel, forceDownload)
     self.mainProgramModule = {}
     self.logger = nil
     self.fileLoader = nil
-    self.entry = {}
+    self.entryClass = {}
     self:createLoaderFilesFolders()
     if not self:loadUtils() then
         computer.panic("Unable to load utils")
@@ -372,11 +369,17 @@ function GithubLoader:Initialize(logLevel, forceDownload)
     if not self:loadLogger(logLevel) then
         computer.panic("Unable to load logger")
     end
+    if not self:loadEntryClass() then
+        computer.panic("Unable to load entry class")
+    end
     if not self:loadGithubFileLoader() then
         computer.panic("Unable to load github file loader")
     end
     if not self:loadModuleLoader() then
         computer.panic("Unable to load module loader")
+    end
+    if not self:loadMainClass() then
+        computer.panic("Unable to load main class")
     end
     if self.forceDownloadLoaderFiles then
         self.logger:LogInfo("loaded loader files")

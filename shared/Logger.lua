@@ -1,7 +1,7 @@
 ---@class Logger
----@field Name string
 ---@field private logLevel number
 ---@field private path string
+---@field Name string
 local Logger = {}
 Logger.__index = Logger
 
@@ -78,8 +78,8 @@ function Logger.new(name, logLevel, path)
   if not filesystem.exists("log") then filesystem.createDir("log") end
   local instance = {
     logLevel = (logLevel or 0),
-    name = (string.gsub(name, " ", "_") or ""),
-    path = (path or nil)
+    path = (path or nil),
+    Name = (string.gsub(name, " ", "_") or ""),
   }
   instance = setmetatable(instance, Logger)
   return instance
