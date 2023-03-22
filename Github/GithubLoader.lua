@@ -276,7 +276,7 @@ function GithubLoader:loadOptionFiles(forceDownload)
             return false
         end
     end
-    self.mainProgramModule = filesystem.doFile(MainFilePath)
+    self.mainProgramModule = self.mainClass.new(filesystem.doFile(MainFilePath))
     self.mainProgramModule.SetupFilesTree = self.entryClass:Check(self.mainProgramModule.SetupFilesTree)
     self.logger:LogDebug("loaded main program file")
     return true
