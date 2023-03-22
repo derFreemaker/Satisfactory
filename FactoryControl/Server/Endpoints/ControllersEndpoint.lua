@@ -1,4 +1,4 @@
-local DatabaseAccessLayer = require("FactoryControl.Server.Data.DAL")
+local DatabaseAccessLayer = require("FactoryControl.Server.src.Data.DatabaseAccessLayer")
 local ApiController = require("libs.Api.ApiController")
 local Listener = require("libs.Listener")
 

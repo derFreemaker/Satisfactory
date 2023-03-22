@@ -38,7 +38,7 @@ FactoryControlServer.SetupFilesTree = {
             "Server",
             {
                 "Data",
-                { "DAL.lua" }
+                { "DatabaseAccessLayer.lua" }
             },
             {
                 "Endpoints",

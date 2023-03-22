@@ -54,7 +54,7 @@ function FactoryControlController:Configure()
         Config.ServerIPAddress,
         Config.ServerPort,
         Config.ReturnPort)
-    self.FactoryControlApiClient = require("FactoryControl.FCApiClient.FCApiClient").new(apiClient)
+    self.FactoryControlApiClient = require("FactoryControl.FactoryControlApiClient.FactoryControlApiClient").new(apiClient)
 end
 
 function FactoryControlController:Run()
