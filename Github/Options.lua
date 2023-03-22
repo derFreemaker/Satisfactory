@@ -1,11 +1,11 @@
 local Options = {}
 Options.__index = {}
 
-Options.Test = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Test"
-Options.TestRecieveServer = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/TestRecieveServer"
-Options.TestSendServer = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/TestSendServer"
+Options.Test = "Test"
+Options.TestRecieveServer = "TestRecieveServer"
+Options.TestSendServer = "TestSendServer"
 
-Options.FactoryControlServer = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/FactoryControl/Server"
-Options.FactoryControlController = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/FactoryControl/Controller"
+Options.FactoryControlServer = "FactoryControl/Server"
+Options.FactoryControlController = "FactoryControl/Controller"
 
 return Options

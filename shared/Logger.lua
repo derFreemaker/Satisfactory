@@ -75,18 +75,18 @@ function Logger.new(name, logLevel, path)
 end
 
 function Logger:create(name, path)
-  return Logger.new(self.Name .. "." .. name, self.LogLevel, path)
+  return Logger.new(self.Name .. "." .. name, self.logLevel, path)
 end
 
 function Logger:Log(message, logLevel)
   message = "[" .. self.Name .. "] " .. message
 
-  if self.Path ~= nil then
-    Utils.File.Write(self.Path, "+a", message .. "\n")
+  if self.path ~= nil then
+    Utils.File.Write(self.path, "+a", message .. "\n")
   end
 
   Utils.File.Write(mainLogFilePath, "+a", message .. "\n")
-  if logLevel >= self.LogLevel then
+  if logLevel >= self.logLevel then
     print(message)
   end
 end
@@ -144,8 +144,8 @@ function Logger:LogTableError(table, maxLevel, properties)
 end
 
 function Logger:ClearLog(clearMainFile)
-  if self.Path ~= nil then
-    local ownFile = filesystem.open(self.Path, "w")
+  if self.path ~= nil then
+    local ownFile = filesystem.open(self.path, "w")
     ownFile:write("")
     ownFile:close()
   end
