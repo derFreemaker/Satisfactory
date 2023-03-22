@@ -96,7 +96,7 @@ function Logger:LogTrace(message)
   self:Log("TRACE! " .. message, 0)
 end
 
----@param table table | any
+---@param table table
 ---@param maxLevel number | nil
 ---@param properties table | nil
 function Logger:LogTableTrace(table, maxLevel, properties)
@@ -112,7 +112,7 @@ function Logger:LogDebug(message)
   self:Log("DEBUG! " .. message, 1)
 end
 
----@param table table | any
+---@param table table
 ---@param maxLevel number | nil
 ---@param properties table | nil
 function Logger:LogTableDebug(table, maxLevel, properties)
@@ -128,7 +128,7 @@ function Logger:LogInfo(message)
   self:Log("INFO! " .. message, 2)
 end
 
----@param table table | any
+---@param table table
 ---@param maxLevel number | nil
 ---@param properties table | nil
 function Logger:LogTableInfo(table, maxLevel, properties)
@@ -140,29 +140,12 @@ function Logger:LogTableInfo(table, maxLevel, properties)
 end
 
 ---@param message any
-function Logger:LogWarning(message)
+function Logger:LogError(message)
   if message == nil then return end
   self:Log("ERROR! " .. message, 3)
 end
 
----@param table table | any
----@param maxLevel number | nil
----@param properties table | nil
-function Logger:LogTableWarning(table, maxLevel, properties)
-  if table == nil or type(table) ~= "table" then return end
-  local lineTree = Logger.tableToLineTree(table, nil, maxLevel, nil, properties)
-  for _, line in pairs(lineTree) do
-    self:LogError(line)
-  end
-end
-
----@param message any
-function Logger:LogError(message)
-  if message == nil then return end
-  self:Log("ERROR! " .. tostring(message), 4)
-end
-
----@param table table | any
+---@param table table
 ---@param maxLevel number | nil
 ---@param properties table | nil
 function Logger:LogTableError(table, maxLevel, properties)

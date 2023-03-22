@@ -44,7 +44,7 @@ end
 
 
 -- logLevel
--- 0 = Trace / 1 = Debug / 2 = Info / 3 = Warning / 4 = Error
+-- 0 = Trace / 1 = Debug / 2 = Info / 3 = Error
 
 -- Base Url
 GithubLoaderBaseUrl = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/"
