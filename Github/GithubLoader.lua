@@ -70,18 +70,18 @@ local GithubFileLoaderPath = filesystem.path(GithubLoaderFilesPath, "GithubFileL
 
 local SharedFolderUrl = GithubLoaderBaseUrl .. "shared/"
 local SharedFolderPath = "shared"
-local ModuleFileLoaderUrl = SharedFolderUrl .. "ModuleLoader.lua"
-local ModuleFileLoaderPath = filesystem.path(SharedFolderPath, "ModuleLoader.lua")
-local LoggerUrl = SharedFolderUrl .. "Logger.lua"
-local LoggerPath = filesystem.path(SharedFolderPath, "Logger.lua")
 local UtilsUrl = SharedFolderUrl .. "Utils.lua"
 local UtilsPath = filesystem.path(SharedFolderPath, "Utils.lua")
-local EntryClassUrl = SharedFolderUrl .. "Entry.lua"
-local EntryClassPath = filesystem.path(SharedFolderPath, "Entry.lua")
-local MainClassUrl = SharedFolderUrl .. "Main.lua"
-local MainClassPath = filesystem.path(SharedFolderPath, "Main.lua")
+local LoggerUrl = SharedFolderUrl .. "Logger.lua"
+local LoggerPath = filesystem.path(SharedFolderPath, "Logger.lua")
+local EntryClassUrl = SharedFolderUrl .. "EntryClass.lua"
+local EntryClassPath = filesystem.path(SharedFolderPath, "EntryClass.lua")
+local ModuleFileLoaderUrl = SharedFolderUrl .. "ModuleLoader.lua"
+local ModuleFileLoaderPath = filesystem.path(SharedFolderPath, "ModuleLoader.lua")
+local MainClassUrl = SharedFolderUrl .. "MainClass.lua"
+local MainClassPath = filesystem.path(SharedFolderPath, "MainClass.lua")
 
-local ProgramFolderPath = ""
+local ProgramFolderPath = "Program"
 local VersionFilePath = filesystem.path(ProgramFolderPath, "Version.lua")
 local MainFilePath = filesystem.path(ProgramFolderPath, "Main.lua")
 
@@ -116,6 +116,9 @@ function GithubLoader:createLoaderFilesFolders()
     end
     if not filesystem.exists(SharedFolderPath) then
         filesystem.createDir(SharedFolderPath)
+    end
+    if not filesystem.exists(ProgramFolderPath) then
+        filesystem.createDir(ProgramFolderPath)
     end
 end
 
