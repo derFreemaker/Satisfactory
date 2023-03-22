@@ -31,7 +31,8 @@ FactoryControlServer.SetupFilesTree = {
         "FactoryControl",
         {
             "Entities",
-            { "Controller.lua" }
+            { "Controller.lua" },
+            { "ControllerData.lua" }
         },
         {
             "Server",

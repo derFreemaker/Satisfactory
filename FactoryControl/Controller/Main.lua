@@ -31,7 +31,8 @@ FactoryControlController.SetupFilesTree = {
         "FactoryControl",
         {
             "Entities",
-            { "Controller.lua" }
+            { "Controller.lua" },
+            { "ControllerData.lua" }
         },
         {
             "FCApiClient",
@@ -63,9 +64,8 @@ function FactoryControlController:Run()
         Name = "Test",
         Category = "Test"
     })
-    self.Logger:LogInfo("added controllers")
-    self.Logger:LogInfo(result.Body.Success)
-    self.Logger:LogInfo(#result.Body.Result)
+    self.Logger:LogInfo("added controller")
+    self.Logger:LogTableInfo(result)
 end
 
 return FactoryControlController

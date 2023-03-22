@@ -14,32 +14,52 @@ function FactoryControlApiClient.new(apiClient)
 end
 
 ---@param controllerData ControllerData
----@return ControllerData
+---@return ControllerData | nil, boolean
 function FactoryControlApiClient:CreateController(controllerData)
-    return self.ApiClient:request("CreateController", {ControllerData=controllerData})
+    local result = self.ApiClient:request("CreateController", {ControllerData=controllerData})
+    if not result.Body.Success then
+        return nil, result.Body.Success
+    end
+    return result.Body.Result, result.Body.Success
 end
 
 ---@param controllerIPAddress string
----@return boolean
+---@return boolean, boolean
 function FactoryControlApiClient:RemoveController(controllerIPAddress)
-    return self.ApiClient:request("RemoveController", {ControllerIPAddress=controllerIPAddress})
+    local result = self.ApiClient:request("RemoveController", {ControllerIPAddress=controllerIPAddress})
+    if not result.Body.Success then
+        return false, result.Body.Success
+    end
+    return result.Body.Result, result.Body.Success
 end
 
 ---@param controllerIPAddress string
----@return ControllerData[]
+---@return ControllerData[] | nil, boolean
 function FactoryControlApiClient:GetController(controllerIPAddress)
-    return self.ApiClient:request("GetController", {ControllerIPAddress=controllerIPAddress})
+    local result = self.ApiClient:request("GetController", {ControllerIPAddress=controllerIPAddress})
+    if not result.Body.Success then
+        return nil, result.Body.Success
+    end
+    return result.Body.Result, result.Body.Success
 end
 
----@return ControllerData[]
+---@return ControllerData[] | nil, boolean
 function FactoryControlApiClient:GetControllers()
-    return self.ApiClient:request("GetControllers")
+    local result = self.ApiClient:request("GetControllers")
+    if not result.Body.Success then
+        return nil, result.Body.Success
+    end
+    return result.Body.Result, result.Body.Success
 end
 
 ---@param category string
----@return ControllerData[]
+---@return ControllerData[] | nil, boolean
 function FactoryControlApiClient:GetControllersFromCategory(category)
-    return self.ApiClient:request("GetControllersFromCategory", {Category=category})
+    local result = self.ApiClient:request("GetControllersFromCategory", {Category=category})
+    if not result.Body.Success then
+        return nil, result.Body.Success
+    end
+    return result.Body.Result, result.Body.Success
 end
 
 return FactoryControlApiClient
