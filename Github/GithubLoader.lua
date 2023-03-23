@@ -51,9 +51,8 @@ local LoggerPath = filesystem.path(SharedFolderPath, "Logger.lua")
 local UtilsUrl = SharedFolderUrl .. "Utils.lua"
 local UtilsPath = filesystem.path(SharedFolderPath, "Utils.lua")
 
-local ProgramFolderPath = "Program"
-local VersionFilePath = filesystem.path(ProgramFolderPath, "Version.lua")
-local MainFilePath = filesystem.path(ProgramFolderPath, "Program.lua")
+local VersionFilePath = "Version.lua"
+local MainFilePath = "Program.lua"
 
 ---@private
 ---@param url string
@@ -86,9 +85,6 @@ function GithubLoader:createLoaderFilesFolders()
     end
     if not filesystem.exists(SharedFolderPath) then
         filesystem.createDir(SharedFolderPath)
-    end
-    if not filesystem.exists(ProgramFolderPath) then
-        filesystem.createDir(ProgramFolderPath)
     end
 end
 
@@ -190,7 +186,7 @@ function GithubLoader:isVersionTheSame()
         self.logger:LogTrace("no version file found")
     end
 
-    if not self:internalDownload(self.currentOption.Url .. "/Version.lua", VersionFilePath, true) then return false end
+    if not self:internalDownload(GithubLoaderBaseUrl .. self.currentOption.Url .. "/Version.lua", VersionFilePath, true) then return false end
 
     local versionFile = filesystem.doFile(VersionFilePath)
     local newProgramInfo = Utils.ProgramInfo.new(versionFile.Name, versionFile.Version)
