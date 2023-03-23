@@ -1,8 +1,9 @@
----@class Test : Main
-local Test = {}
-Test.__index = Test
+local Main = {}
+Main.__index = Main
 
-Test.SetupFilesTree = {
+Main._logger = {}
+
+Main.SetupFilesTree = {
     "",
     {
         "shared",
@@ -16,16 +17,15 @@ Test.SetupFilesTree = {
     }
 }
 
-function Test:Configure()
-    self.Logger:LogTrace("configure function called")
+function Main:Configure()
+    self._logger:LogTrace("configure function called")
 end
 
-function Test:Run()
-    ---@type Event
-    local event = require("libs.Event")
-    local event1 = event.new("Event1", self.Logger)
-    local event2 = event.new("Event2", self.Logger)
-    local event3 = event.new("Event3", self.Logger)
+function Main:Run()
+    local event = require("libs.Event").new("Test", self.Logger)
+    local event1 = event:create("Event1")
+    local event2 = event:create("Event2")
+    local event3 = event:create("Event3")
 end
 
-return Test
+return Main

@@ -1,8 +1,9 @@
----@class TestSendServer : Main
-local TestSendServer = {}
-TestSendServer.__index = TestSendServer
+local Main = {}
+Main.__index = Main
 
-TestSendServer.SetupFilesTree = {
+Main._logger = {}
+
+Main.SetupFilesTree = {
     "",
     {
         "shared",
@@ -13,37 +14,54 @@ TestSendServer.SetupFilesTree = {
         {
             "NetworkClient",
             { "NetworkClient.lua" },
-            { "NetworkPort.lua" },
-            { "NetworkContext.lua" }
+            { "NetworkPort.lua" }
         },
         {
             "Api",
+            { "ApiController.lua" },
             { "ApiClient.lua" }
         },
         { "Listener.lua" },
         { "Event.lua" },
-        { "EventPullAdapter.lua" },
+        { "EventPullAdapter" },
         { "Serializer.lua" },
+    },
+    {
+        "FactoryControl",
+        {
+            "Entities",
+            { "Controller.lua" }
+        },
+        {
+            "FCApiClient",
+            { "FCApiClient.lua" }
+        }
     }
 }
 
-function TestSendServer:Configure()
-    require("libs.EventPullAdapter"):Initialize(self.Logger)
+Main.FactoryControlApiClient = {}
 
-    local netClient = require("libs.NetworkClient.NetworkClient").new(self.Logger)
-    if netClient == nil then
-        self.Logger:LogError("netClient was nil")
-        return
-    end
-    self.ApiClient = require("libs.Api.ApiClient").new(netClient, Config.IPAddress, 443, 443)
-    self.Logger:LogInfo("created net client")
+function Main:Configure()
+    require("libs.EventPullAdapter"):Initialize(self._logger)
+    local netClient = require("libs.NetworkClient.NetworkClient").new(self._logger)
+    local apiClient = require("libs.Api.ApiClient").new(
+        netClient,
+        Config.ServerIPAddress,
+        Config.ServerPort,
+        Config.ReturnPort)
+    self.FactoryControlApiClient = require("FactoryControl.FCApiClient.FCApiClient").new(apiClient)
 end
 
-function TestSendServer:Run()
-    self.Logger:LogInfo("sending message...")
-    local response = self.ApiClient:request("Test", { Message = "Test Message" })
-    self.Logger:LogInfo("result: ".. tostring(response.Body.Result))
-    self.Logger:LogInfo("sended message")
+function Main:Run()
+    self._logger:LogInfo("adding controller...")
+    local result = self.FactoryControlApiClient:CreateController({
+        IPAddress = "TestIPAddress",
+        Name = "Test",
+        Category = "Test"
+    })
+    self._logger:LogInfo("added controllers")
+    self._logger:LogInfo(result.Body.Success)
+    self._logger:LogInfo(result.Body.Result)
 end
 
-return TestSendServer
+return Main

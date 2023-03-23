@@ -1,16 +1,10 @@
 local Serializer = require("libs.Serializer")
 local EventPullAdapter = require("libs.EventPullAdapter")
 local NetworkPort = require("libs.NetworkClient.NetworkPort")
-local NetworkContext = require("libs.NetworkClient.NetworkContext")
 local Listener = require("libs.Listener")
 
----@class NetworkClient
----@field private ports NetworkPort[]
----@field private networkCard any
----@field Logger Logger
 local NetworkClient = {}
 NetworkClient.__index = NetworkClient
-
 
 function NetworkClient.new(logger, networkCard)
     if networkCard == nil then
@@ -21,14 +15,26 @@ function NetworkClient.new(logger, networkCard)
         end
     end
     local instance = {
-        ports = {},
+        Ports = {},
         networkCard = networkCard,
-        Logger = logger:create("NetworkCard")
+        _logger = logger:create("NetworkCard")
     }
     instance = setmetatable(instance, NetworkClient)
     event.listen(instance.networkCard)
     EventPullAdapter:AddListener("NetworkMessage", Listener.new(instance.networkMessageRecieved, instance))
     return instance
+end
+
+local function createContext(signalName, signalSender, extractedData)
+    return {
+        SignalName = signalName,
+        SignalSender = signalSender,
+        SenderIPAddress = extractedData.SenderIPAddress,
+        Port = extractedData.Port,
+        EventName = extractedData.EventName,
+        Body = Serializer:Deserialize(extractedData.Body),
+        Header = Serializer:Deserialize(extractedData.Header)
+    }
 end
 
 function NetworkClient:networkMessageRecieved(signalName, signalSender, data)
@@ -40,13 +46,13 @@ function NetworkClient:networkMessageRecieved(signalName, signalSender, data)
         Header = data[4],
         Body = data[5]
     }
-    self.Logger:LogTrace("got network message with event: '" ..
+    self._logger:LogTrace("got network message with event: '" ..
     extractedData.EventName .. "'' on port: '" .. extractedData.Port .. "'")
     if extractedData.EventName == nil then return end
     local removePorts = {}
-    for i, port in pairs(self.ports) do
+    for i, port in pairs(self.Ports) do
         if port.Port == extractedData.Port or port.Port == "all" then
-            port:executeCallback(NetworkContext.Parse(signalName, signalSender, extractedData))
+            port:executeCallback(createContext(signalName, signalSender, extractedData))
         end
         if #port.Events == 0 then
             table.insert(removePorts, { Pos = i, Port = port })
@@ -54,14 +60,14 @@ function NetworkClient:networkMessageRecieved(signalName, signalSender, data)
     end
     for _, port in pairs(removePorts) do
         port.Port:ClosePort()
-        table.remove(self.ports, port.Pos)
+        table.remove(self.Ports, port.Pos)
     end
 end
 
 function NetworkClient:AddListener(onRecivedEventName, onRecivedPort, listener)
     onRecivedPort = (onRecivedPort or "all")
 
-    for _, networkPort in pairs(self.ports) do
+    for _, networkPort in pairs(self.Ports) do
         if networkPort.Port == onRecivedPort then
             networkPort:AddListener(onRecivedEventName, listener)
             return networkPort
@@ -76,7 +82,7 @@ end
 function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listener)
     onRecivedPort = (onRecivedPort or "all")
 
-    for _, networkPort in pairs(self.ports) do
+    for _, networkPort in pairs(self.Ports) do
         if networkPort.Port == onRecivedPort then
             networkPort:AddListenerOnce(onRecivedEventName, listener)
             return networkPort
@@ -93,13 +99,13 @@ function NetworkClient:CreateNetworkPort(port)
 
     local networkPort = self:GetNetworkPort(port)
     if networkPort ~= nil then return networkPort end
-    networkPort = NetworkPort.new(port, self.Logger, self)
-    table.insert(self.ports, networkPort)
+    networkPort = NetworkPort.new(port, self._logger, self)
+    table.insert(self.Ports, networkPort)
     return networkPort
 end
 
 function NetworkClient:GetNetworkPort(port)
-    for _, networkPort in pairs(self.ports) do
+    for _, networkPort in pairs(self.Ports) do
         if networkPort.Port == port then
             return networkPort
         end

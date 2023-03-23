@@ -1,7 +1,6 @@
 local Serializer = {}
 Serializer.__index = Serializer
 
----@private
 local serialize
 
 local function dostring(str)
@@ -39,15 +38,11 @@ serialize = function(x, stk)
   return serialize_map[type(x)](x, stk)
 end
 
----@param x table
----@return string | nil
 function Serializer:Serialize(x)
   if x == nil then return nil end
   return serialize(x)
 end
 
----@param str string
----@return any | nil
 function Serializer:Deserialize(str)
   if str == nil then return nil end
   return dostring("return " .. str)
