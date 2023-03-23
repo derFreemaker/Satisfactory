@@ -44,7 +44,7 @@ function ModuleLoader.extractCallerInfo(path)
         FullName = filesystem.path(3, path),
         Path = path
     }
-    return ModuleLoader.entry.Check(callerData, nil)
+    return Utils.Entry.Parse(callerData)
 end
 
 ---@private
@@ -63,7 +63,10 @@ end
 function ModuleLoader.doFile(file)
     if file.IgnoreLoad == true then return end
     if filesystem.exists(file.Path) then
-        ModuleLoader.LoadModule(file)
+        local success = ModuleLoader.LoadModule(file)
+        if not success then
+            error("couldn't load module '" .. file.FullName .. "'")
+        end
     else
         ModuleLoader.logger:LogDebug("Unable to find module: " .. file.Path)
     end
@@ -109,7 +112,7 @@ function ModuleLoader.handleCouldNotLoadModule(moduleCouldNotLoad)
         if moduleWaiters.AwaitingModule == moduleCouldNotLoad then
             table.insert(moduleWaiters.Waiters, caller)
             ModuleLoader.logger:LogDebug("added: '" ..
-            caller.Name .. "' to load after '" .. moduleCouldNotLoad .. "' was loaded")
+                caller.Name .. "' to load after '" .. moduleCouldNotLoad .. "' was loaded")
             return
         end
     end
@@ -179,7 +182,7 @@ function ModuleLoader.LoadModule(fileEntry)
     return true
 end
 
----@param modulesTree table
+---@param modulesTree Entry
 ---@param loadingPhase boolean
 ---@return boolean
 function ModuleLoader.LoadModules(modulesTree, loadingPhase)
@@ -189,7 +192,7 @@ function ModuleLoader.LoadModules(modulesTree, loadingPhase)
         ModuleLoader.logger:LogDebug("modules tree was empty")
         return true
     end
-    ModuleLoader.doFolder(Utils.Entry.Check(modulesTree))
+    ModuleLoader.doFolder(modulesTree)
     if #ModuleLoader.waitingForLoad > 0 then
         for _, waiters in pairs(ModuleLoader.waitingForLoad) do
             ModuleLoader.logger:LogError("Unable to load: '" .. waiters.AwaitingModule ..

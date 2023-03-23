@@ -79,6 +79,7 @@ function GithubLoader:internalDownload(url, path, forceDownload)
     return true
 end
 
+---@private
 function GithubLoader:createLoaderFilesFolders()
     if not filesystem.exists(GithubLoaderFilesPath) then
         filesystem.createDir(GithubLoaderFilesPath)
@@ -219,7 +220,13 @@ function GithubLoader:loadOptionFiles(forceDownload)
         end
     end
     self.mainProgramModule = Utils.Main.new(filesystem.doFile(MainFilePath))
-    self.mainProgramModule.SetupFilesTree = Utils.Entry:Check(self.mainProgramModule.SetupFilesTree)
+    self.logger:LogTrace("parsing setup files...")
+    local parsedSetupFileTree, success = Utils.Entry.Parse(self.mainProgramModule.SetupFilesTree)
+    if not success then
+        return false
+    end
+    ---@cast parsedSetupFileTree Entry
+    self.mainProgramModule.SetupFilesTree = parsedSetupFileTree
     self.logger:LogTrace("loaded main program file")
     return true
 end
@@ -259,7 +266,7 @@ end
 ---@return boolean
 function GithubLoader:runConfigureFunction(logLevel)
     self.logger:LogTrace("configuring program...")
-    self.mainProgramModule._logger = self.logger.new("Program", logLevel)
+    self.mainProgramModule.Logger = self.logger.new("Program", logLevel)
     local thread, success, error = Utils.ExecuteFunction(self.mainProgramModule.Configure, self.mainProgramModule)
     if success and error ~= "not found" then
         self.logger:LogTrace("configured program")

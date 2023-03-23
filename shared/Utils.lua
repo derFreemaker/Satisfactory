@@ -48,7 +48,6 @@ function Utils.File.Read(path)
     return str
 end
 
-
 ---@class Entry
 ---@field Name string
 ---@field FullName string
@@ -60,48 +59,31 @@ end
 local Entry = {}
 Entry.__index = Entry
 
----@param name string
----@param fullName string
----@param isFolder boolean
----@param ignoreDownload boolean
----@param ignoreLoad boolean
----@param path string
----@param chidls Entry[]
+---@param name string | nil
+---@param fullName string | nil
+---@param isFolder boolean | nil
+---@param ignoreDownload boolean | nil
+---@param ignoreLoad boolean | nil
+---@param path string | nil
+---@param childs Entry[] | nil
 ---@return Entry
-function Entry.new(name, fullName, isFolder, ignoreDownload, ignoreLoad, path, chidls)
+function Entry.new(name, fullName, isFolder, ignoreDownload, ignoreLoad, path, childs)
     return setmetatable({
-        Name = name,
-        FullName = fullName,
-        IsFolder = isFolder,
-        IgnoreDownload = ignoreDownload,
-        IgnoreLoad = ignoreLoad,
-        Path = path,
-        Childs = chidls
-    }, Entry)
-end
-
----@param entryData table
----@return Entry
-function Entry.newWithDataTable(entryData)
-    return setmetatable({
-        Name = entryData.name,
-        FullName = entryData.fullName,
-        IsFolder = entryData.isFolder,
-        IgnoreDownload = entryData.ignoreDownload,
-        IgnoreLoad = entryData.ignoreLoad,
-        Path = entryData.path,
-        Childs = entryData.chidls
+        Name = name or "",
+        FullName = fullName or "",
+        IsFolder = isFolder == nil or isFolder,
+        IgnoreDownload = ignoreDownload == nil or ignoreDownload,
+        IgnoreLoad = ignoreLoad == nil or ignoreLoad,
+        Path = path or "/",
+        Childs = childs or {}
     }, Entry)
 end
 
 ---@param entry table
 ---@param parentEntry Entry | nil
----@return Entry
-function Entry.Check(entry, parentEntry)
-    parentEntry = parentEntry or Entry.new("", "", true, false, false, "", {})
-
-    entry.Name = entry.Name or entry.FullName or entry[1]
-    entry.FullName = entry.FullName or entry.Name
+---@return Entry | nil, boolean
+function Entry.Parse(entry, parentEntry)
+    parentEntry = parentEntry or Entry.new()
 
     if entry.IsFolder == nil then
         local childs = 0
@@ -117,6 +99,8 @@ function Entry.Check(entry, parentEntry)
         end
     end
 
+    entry.Name = entry.Name or entry.FullName or entry[1]
+    entry.FullName = entry.FullName or entry.Name
     entry.IgnoreDownload = entry.IgnoreDownload or false
     entry.IgnoreLoad = entry.IgnoreLoad or false
 
@@ -125,18 +109,12 @@ function Entry.Check(entry, parentEntry)
         local childs = {}
         for _, child in pairs(entry) do
             if type(child) == "table" then
-                table.insert(childs, Utils.Entry.Check(child, entry.Path))
+                local childEntry, _ = Utils.Entry.Parse(child, entry)
+                table.insert(childs, childEntry)
             end
         end
-        return {
-            Name = entry.Name,
-            FullName = entry.FullName,
-            IsFolder = entry.IsFolder,
-            IgnoreDownload = entry.IgnoreDownload,
-            IgnoreLoad = entry.IgnoreLoad,
-            Path = entry.Path,
-            Childs = childs
-        }
+        return Entry.new(entry.Name, entry.FullName, entry.IsFolder, entry.IgnoreDownload, entry.IgnoreLoad,
+            entry.Path, childs), true
     end
 
     local nameLength = entry.Name:len()
@@ -150,13 +128,8 @@ function Entry.Check(entry, parentEntry)
 
     entry.Path = entry.Path or filesystem.path(parentEntry.Path, entry.FullName)
 
-    return Entry.newWithDataTable(entry)
-end
-
----@param parentEntry Entry
----@return Entry
-function Entry:SelfCheck(parentEntry)
-    return Entry.Check(self, parentEntry)
+    return Entry.new(entry.Name, entry.FullName, entry.IsFolder, entry.IgnoreDownload,
+        entry.IgnoreLoad, entry.Path, entry.Childs), true
 end
 
 Utils.Entry = Entry
@@ -192,18 +165,19 @@ Utils.ProgramInfo = ProgramInfo
 
 ---@class Main
 ---@field Logger Logger
----@field SetupFilesTree table
+---@field SetupFilesTree Entry
 local Main = {}
 Main.__index = Main
 
 ---@param mainModule table
+---@return Main
 function Main.new(mainModule)
-    return setmetatable({
-        Logger = mainModule.Logger or {},
-        SetupFilesTree = mainModule.SetupFilesTree or {},
+    local instance = setmetatable({
+        SetupFilesTree = mainModule.SetupFilesTree,
         Configure = mainModule.Configure,
         Run = mainModule.Run
     }, Main)
+    return instance
 end
 
 ---@return string | any

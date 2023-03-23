@@ -31,8 +31,11 @@ FactoryControlController.SetupFilesTree = {
         "FactoryControl",
         {
             "Entities",
-            { "Controller.lua" },
-            { "ControllerData.lua" }
+            {
+                "Controller",
+                { "Controller.lua" },
+                { "ControllerData.lua" }
+            }
         },
         {
             "FCApiClient",
