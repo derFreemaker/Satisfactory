@@ -1,5 +1,6 @@
 -- if option is equeals to '%show%' it will show you all options
 local option = ""
+local extendOptionDetails = false
 
 -- logLevel
 -- 0 = Trace / 1 = Debug / 2 = Info / 3 = Warning / 4 = Error
@@ -68,7 +69,7 @@ GithubLoader:Initialize(loaderLogLevel, loaderForceDownload)
 
 if option == "%show%" then
 	-- GithubLoader:ShowOptions([extended:boolean])
-	GithubLoader:ShowOptions(false)
+	GithubLoader:ShowOptions(extendOptionDetails)
 else
 	-- GithubLoader:Run([option:string], [logLevel:int], [forceDownload:boolean])
 	GithubLoader:Run(option, programLogLevel, programForceDownload)

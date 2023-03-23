@@ -64,7 +64,7 @@ function FactoryControlServer:Configure()
     end
     self.Logger:LogTrace("creating net ports...")
     local controllerNetPort = netClient:CreateNetworkPort(443)
-    self.Logger:LogDebug("created net client and net ports")
+    self.Logger:LogTrace("created net client and net ports")
 
     self.Logger:LogTrace("configuring Endpoints...")
     require("Satisfactory.FactoryControl.Server.Data.Endpointss.ControllersEndpoint"):Configure(controllerNetPort, self.Logger)

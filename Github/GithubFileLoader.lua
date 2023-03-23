@@ -30,7 +30,7 @@ function Request:LoadFile(logger)
 		return false
 	end
 	Utils.File.Write(self.Path, "w", data)
-	logger:LogDebug("downloaded file: '" .. self.Path .. "'")
+	logger:LogTrace("downloaded file: '" .. self.Path .. "'")
 	return true
 end
 
@@ -102,7 +102,7 @@ end
 ---@private
 ---@return boolean
 function FileLoader:loadFiles()
-	self.logger:LogDebug("loading program files...")
+	self.logger:LogTrace("loading program files...")
     while #self.requests > 0 do
         local i = 1
         while i <= #self.requests do

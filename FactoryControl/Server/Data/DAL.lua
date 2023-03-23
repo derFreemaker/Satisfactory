@@ -16,7 +16,7 @@ function DatabaseAccessLayer:Initialize(logger)
 end
 
 function DatabaseAccessLayer:load()
-    self.logger:LogDebug("loading Database...")
+    self.logger:LogTrace("loading Database...")
     if not filesystem.exists("Database") then
         filesystem.createDir("Database")
     end
@@ -32,7 +32,7 @@ function DatabaseAccessLayer:load()
 end
 
 function DatabaseAccessLayer:saveChanges()
-    self.logger:LogDebug("saving Database...")
+    self.logger:LogTrace("saving Database...")
     Utils.File.Write(controllerFilePath, "w", Serializer:Serialize(self.Controllers))
     self.logger:LogDebug("saved Database")
 end

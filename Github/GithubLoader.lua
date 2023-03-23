@@ -65,7 +65,7 @@ function GithubLoader:internalDownload(url, path, forceDownload)
         return true
     end
     if self.logger ~= nil then
-        self.logger:LogTrace("downloading " .. path .. " from: " .. url)
+        self.logger:LogTrace("downloading '" .. path .. "' from: '" .. url .. "'...")
     end
     local req = InternetCard:request(url, "GET", "")
     local code, data = req:await()
@@ -74,7 +74,7 @@ function GithubLoader:internalDownload(url, path, forceDownload)
     file:write(data)
     file:close()
     if self.logger ~= nil then
-        self.logger:LogTrace("downloaded " .. path .. " from: " .. url)
+        self.logger:LogTrace("downloaded '" .. path .. "' from: '" .. url .. "'")
     end
     return true
 end
@@ -117,7 +117,7 @@ end
 ---@private
 ---@return boolean
 function GithubLoader:loadGithubFileLoader()
-    self.logger:LogDebug("loading github file loader...")
+    self.logger:LogTrace("loading github file loader...")
     if not self:internalDownload(GithubFileLoaderUrl, GithubFileLoaderPath, self.forceDownloadLoaderFiles) then
         return false
     end
@@ -125,20 +125,20 @@ function GithubLoader:loadGithubFileLoader()
     if self.fileLoader == nil then
         return false
     end
-    self.logger:LogDebug("loaded github file loader")
+    self.logger:LogTrace("loaded github file loader")
     return true
 end
 
 ---@private
 ---@return boolean
 function GithubLoader:loadModuleLoader()
-    self.logger:LogDebug("loading module loader...")
+    self.logger:LogTrace("loading module loader...")
     if not self:internalDownload(ModuleFileLoaderUrl, ModuleFileLoaderPath, self.forceDownloadLoaderFiles) then
         return false
     end
     filesystem.doFile(ModuleFileLoaderPath)
     ModuleLoader.Initialize(self.logger)
-    self.logger:LogDebug("loaded module loader")
+    self.logger:LogTrace("loaded module loader")
     return true
 end
 
@@ -147,14 +147,14 @@ end
 function GithubLoader:loadOptions()
     if not self.options == nil then return true end
     if not self:internalDownload(OptionsUrl, OptionsPath, true) then return false end
-    self.logger:LogDebug("loading options...")
+    self.logger:LogTrace("loading options...")
 
     for name, url in pairs(filesystem.doFile(OptionsPath)) do
         ---@cast name string
         ---@cast url string
         table.insert(self.options, Option.new(name, url))
     end
-    self.logger:LogDebug("loaded options")
+    self.logger:LogTrace("loaded options")
     return true
 end
 
@@ -163,11 +163,11 @@ end
 ---@return boolean
 function GithubLoader:loadOption(optionName)
     if not self:loadOptions() then return false end
-    self.logger:LogDebug("loading option: " .. optionName)
+    self.logger:LogTrace("loading option: " .. optionName)
     for _, option in pairs(self.options) do
         if option.Name == optionName then
             self.currentOption = option
-            self.logger:LogDebug("loaded option: " .. option.Name)
+            self.logger:LogTrace("loaded option: " .. option.Name)
             return true
         end
     end
@@ -177,7 +177,7 @@ end
 ---@private
 ---@return boolean
 function GithubLoader:isVersionTheSame()
-    self.logger:LogDebug("loading info data...")
+    self.logger:LogTrace("loading info data...")
     local versionFileExists = filesystem.exists(VersionFilePath)
     if versionFileExists then
         local currentProgramInfo = filesystem.doFile(VersionFilePath)
@@ -199,7 +199,7 @@ function GithubLoader:isVersionTheSame()
         self.currentProgramInfo = newProgramInfo
     end
 
-    self.logger:LogDebug("loaded info data")
+    self.logger:LogTrace("loaded info data")
     local isSame = self.currentProgramInfo:Compare(newProgramInfo)
     if not isSame then
         self.currentProgramInfo = newProgramInfo
@@ -211,7 +211,7 @@ end
 ---@param forceDownload boolean
 ---@return boolean
 function GithubLoader:loadOptionFiles(forceDownload)
-    self.logger:LogDebug("loading main program file...")
+    self.logger:LogTrace("loading main program file...")
     if not filesystem.exists(MainFilePath) or forceDownload then
         if not self:internalDownload(GithubLoaderBaseUrl .. self.currentOption.Url .. "/Main.lua", MainFilePath, forceDownload) then
             self.logger:LogError("Unable to download main program file")
@@ -220,7 +220,7 @@ function GithubLoader:loadOptionFiles(forceDownload)
     end
     self.mainProgramModule = Utils.Main.new(filesystem.doFile(MainFilePath))
     self.mainProgramModule.SetupFilesTree = Utils.Entry:Check(self.mainProgramModule.SetupFilesTree)
-    self.logger:LogDebug("loaded main program file")
+    self.logger:LogTrace("loaded main program file")
     return true
 end
 
@@ -229,7 +229,7 @@ end
 ---@param forceDownload boolean
 ---@return boolean
 function GithubLoader:download(option, forceDownload)
-    if self:loadOption(option) == false then
+    if not self:loadOption(option) then
         self.logger:LogError("Unable not find option: " .. option)
         return false
     end
@@ -258,17 +258,17 @@ end
 ---@param logLevel number
 ---@return boolean
 function GithubLoader:runConfigureFunction(logLevel)
-    self.logger:LogDebug("configuring program...")
+    self.logger:LogTrace("configuring program...")
     self.mainProgramModule._logger = self.logger.new("Program", logLevel)
     local thread, success, error = Utils.ExecuteFunction(self.mainProgramModule.Configure, self.mainProgramModule)
     if success and error ~= "not found" then
-        self.logger:LogDebug("configured program")
+        self.logger:LogTrace("configured program")
     elseif error ~= "$%not found%$" then
         self.logger:LogError("configuration failed")
         self.logger:LogError(debug.traceback(thread, error) .. debug.traceback():sub(17))
         return false
     else
-        self.logger:LogDebug("no configure function found")
+        self.logger:LogTrace("no configure function found")
         return false
     end
     return true
@@ -277,7 +277,7 @@ end
 ---@private
 ---@return boolean
 function GithubLoader:runMainFunction()
-    self.logger:LogDebug("running program...")
+    self.logger:LogTrace("running program...")
     local thread, success, result = Utils.ExecuteFunction(self.mainProgramModule.Run, self.mainProgramModule)
     if result == "$%not found%$" then
         self.logger:LogError("no main run function found")
@@ -341,12 +341,12 @@ end
 ---@param forceDownload boolean
 ---@return boolean
 function GithubLoader:Run(option, logLevel, forceDownload)
-    self.logger:LogDebug("downloading program data...")
+    self.logger:LogTrace("downloading program data...")
     if not self:download(option, forceDownload) then
         self.logger:LogError("Unable to download '" .. option .. "'")
         return false
     end
-    self.logger:LogDebug("downloaded program data")
+    self.logger:LogTrace("downloaded program data")
     print()
 
     if not ModuleLoader.LoadModules(self.mainProgramModule.SetupFilesTree, true) then return false end

@@ -184,7 +184,7 @@ end
 ---@return boolean
 function ModuleLoader.LoadModules(modulesTree, loadingPhase)
     loadingPhase = loadingPhase or false
-    ModuleLoader.logger:LogDebug("loading modules...")
+    ModuleLoader.logger:LogTrace("loading modules...")
     if modulesTree == nil then
         ModuleLoader.logger:LogDebug("modules tree was empty")
         return true
@@ -198,7 +198,7 @@ function ModuleLoader.LoadModules(modulesTree, loadingPhase)
         ModuleLoader.logger:LogError("Unable to load modules")
         return false
     end
-    ModuleLoader.logger:LogDebug("loaded modules")
+    ModuleLoader.logger:LogTrace("loaded modules")
     loadingPhase = false
     ModuleLoader.checkForSameModuleNames()
     return true
