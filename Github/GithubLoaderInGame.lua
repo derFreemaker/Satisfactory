@@ -14,7 +14,7 @@ local programForceDownload = false
 -- to define any config variables
 --Config = {}
 
-GithubLoaderBaseUrl = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/"
+GithubLoaderBaseUrl = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/dev/"
 
 
 
