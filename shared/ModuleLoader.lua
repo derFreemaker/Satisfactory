@@ -36,7 +36,6 @@ end
 ---@field private loadingPhase boolean
 ---@field private getGetWithName boolean
 ---@field private logger Logger
----@field private entry Entry
 ModuleLoader = {}
 ModuleLoader.__index = ModuleLoader
 
@@ -146,14 +145,12 @@ function ModuleLoader.checkForSameModuleNames()
 end
 
 ---@param logger Logger
----@param entry Entry
-function ModuleLoader.Initialize(logger, entry)
+function ModuleLoader.Initialize(logger)
     ModuleLoader.libs = {}
     ModuleLoader.waitingForLoad = {}
     ModuleLoader.loadingPhase = false
     ModuleLoader.getGetWithName = false
     ModuleLoader.logger = logger:create("ModuleLoader")
-    ModuleLoader.entry = entry
 end
 
 function ModuleLoader.GetModules()
