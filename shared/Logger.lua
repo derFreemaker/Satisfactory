@@ -93,7 +93,7 @@ end
 
 function Logger:LogTrace(message)
   if message == nil then return end
-  self:Log("TRACE! " .. message, 0)
+  self:Log("TRACE! " .. tostring(message), 0)
 end
 
 function Logger:LogTableTrace(table, maxLevel, properties)
@@ -106,7 +106,7 @@ end
 
 function Logger:LogDebug(message)
   if message == nil then return end
-  self:Log("DEBUG! " .. message, 1)
+  self:Log("DEBUG! " .. tostring(message), 1)
 end
 
 function Logger:LogTableDebug(table, maxLevel, properties)
@@ -119,7 +119,7 @@ end
 
 function Logger:LogInfo(message)
   if message == nil then return end
-  self:Log("INFO! " .. message, 2)
+  self:Log("INFO! " .. tostring(message), 2)
 end
 
 function Logger:LogTableInfo(table, maxLevel, properties)
@@ -132,7 +132,7 @@ end
 
 function Logger:LogError(message)
   if message == nil then return end
-  self:Log("ERROR! " .. message, 3)
+  self:Log("ERROR! " .. tostring(message), 3)
 end
 
 function Logger:LogTableError(table, maxLevel, properties)

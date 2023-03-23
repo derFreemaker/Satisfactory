@@ -18,32 +18,50 @@ Main.SetupFilesTree = {
         },
         {
             "Api",
+            { "ApiController.lua" },
             { "ApiClient.lua" }
         },
         { "Listener.lua" },
         { "Event.lua" },
-        { "EventPullAdapter.lua" },
+        { "EventPullAdapter" },
         { "Serializer.lua" },
+    },
+    {
+        "FactoryControl",
+        {
+            "Entities",
+            { "Controller.lua" }
+        },
+        {
+            "FCApiClient",
+            { "FCApiClient.lua" }
+        }
     }
 }
 
+Main.FactoryControlApiClient = {}
+
 function Main:Configure()
     require("libs.EventPullAdapter"):Initialize(self._logger)
-
     local netClient = require("libs.NetworkClient.NetworkClient").new(self._logger)
-    if netClient == nil then
-        self._logger:LogError("netClient was nil")
-        return
-    end
-    self.ApiClient = require("libs.Api.ApiClient").new(netClient, Config.IPAddress, 443, 443)
-    self._logger:LogInfo("created net client")
+    local apiClient = require("libs.Api.ApiClient").new(
+        netClient,
+        Config.ServerIPAddress,
+        Config.ServerPort,
+        Config.ReturnPort)
+    self.FactoryControlApiClient = require("FactoryControl.FCApiClient.FCApiClient").new(apiClient)
 end
 
 function Main:Run()
-    self._logger:LogInfo("sending message...")
-    local response = self.ApiClient:request("Test", { Message = "Test Message" })
-    self._logger:LogInfo("result: ".. tostring(response.Body.Result))
-    self._logger:LogInfo("sended message")
+    self._logger:LogInfo("adding controller...")
+    local result = self.FactoryControlApiClient:CreateController({
+        IPAddress = "TestIPAddress",
+        Name = "Test",
+        Category = "Test"
+    })
+    self._logger:LogInfo("added controllers")
+    self._logger:LogInfo(result.Body.Success)
+    self._logger:LogInfo(result.Body.Result)
 end
 
 return Main
