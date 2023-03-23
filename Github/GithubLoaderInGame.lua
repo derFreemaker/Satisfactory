@@ -1,6 +1,26 @@
-local GithubLoaderFilesFolder = "GithubLoaderFiles"
-local GithubLoaderPath = filesystem.path(GithubLoaderFilesFolder, "GithubLoader.lua")
-local GithubLoaderUrl = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/Github/GithubLoader.lua"
+-- if option is equeals to '%show%' it will show you all options
+local option = ""
+
+-- logLevel
+-- 0 = Trace / 1 = Debug / 2 = Info / 3 = Warning / 4 = Error
+local loaderLogLevel = 2
+local programLogLevel = 2
+
+-- forceDownload
+local loaderForceDownload = false
+local programForceDownload = false
+
+-- Config --
+-- to define any config variables
+--Config = {}
+
+GithubLoaderBaseUrl = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/"
+
+
+
+local GithubLoaderUrl = GithubLoaderBaseUrl .. "Github/GithubLoader.lua"
+local GithubLoaderFilesFolderPath = "GithubLoaderFiles"
+local GithubLoaderPath = filesystem.path(GithubLoaderFilesFolderPath, "GithubLoader.lua")
 
 computer.beep(5.0)
 InternetCard = computer.getPCIDevices(findClass("FINInternetCard"))[1]
@@ -28,8 +48,8 @@ end
 filesystem.mount("/dev/" .. drive, "/")
 print("[Computer] INFO! mounted filesystem on drive: " .. drive)
 
-if not filesystem.exists(GithubLoaderFilesFolder) then
-	filesystem.createDir(GithubLoaderFilesFolder)
+if not filesystem.exists(GithubLoaderFilesFolderPath) then
+	filesystem.createDir(GithubLoaderFilesFolderPath)
 end
 
 if not filesystem.exists(GithubLoaderPath) then
@@ -43,20 +63,16 @@ if not filesystem.exists(GithubLoaderPath) then
 end
 
 
--- logLevel
--- 0 = Trace / 1 = Debug / 2 = Info / 3 = Warning / 4 = Error
 
--- Base Url
-GithubLoaderBaseUrl = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main/"
+
 -- Initialize([logLevel:int], [forceDownload:boolean])
-local GithubLoader = filesystem.doFile(GithubLoaderPath):Initialize(2, false)
+local GithubLoader = filesystem.doFile(GithubLoaderPath)
+GithubLoader:Initialize(loaderLogLevel, loaderForceDownload)
 
--- GithubLoader:ShowOptions([extended:boolean])
-GithubLoader:ShowOptions(false)
-
--- Config --
--- to define any config variables
---Config = {}
-
--- GithubLoader:Run([option:string], [logLevel:int], [forceDownload:boolean])
---GithubLoader:Run("Test", 0, false)
+if option == "%show%" then
+	-- GithubLoader:ShowOptions([extended:boolean])
+	GithubLoader:ShowOptions(false)
+else
+	-- GithubLoader:Run([option:string], [logLevel:int], [forceDownload:boolean])
+	GithubLoader:Run(option, programLogLevel, programForceDownload)
+end
