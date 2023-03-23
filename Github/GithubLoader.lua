@@ -213,7 +213,7 @@ end
 function GithubLoader:loadOptionFiles(forceDownload)
     self.logger:LogDebug("loading main program file...")
     if not filesystem.exists(MainFilePath) or forceDownload then
-        if not self:internalDownload(self.currentOption.Url .. "/Main.lua", MainFilePath, forceDownload) then
+        if not self:internalDownload(GithubLoaderBaseUrl .. self.currentOption.Url .. "/Main.lua", MainFilePath, forceDownload) then
             self.logger:LogError("Unable to download main program file")
             return false
         end
