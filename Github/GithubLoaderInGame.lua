@@ -62,9 +62,6 @@ if not filesystem.exists(GithubLoaderPath) then
 	print("[Computer] INFO! downloaded Github loader")
 end
 
-
-
-
 -- Initialize([logLevel:int], [forceDownload:boolean])
 local GithubLoader = filesystem.doFile(GithubLoaderPath)
 GithubLoader:Initialize(loaderLogLevel, loaderForceDownload)
