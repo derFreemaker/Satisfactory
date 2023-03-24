@@ -18,10 +18,6 @@ local LoggerUrl = SharedFolderUrl .. "Logger.lua"
 local LoggerPath = filesystem.path(SharedFolderPath, "Logger.lua")
 local UtilsUrl = SharedFolderUrl .. "Utils.lua"
 local UtilsPath = filesystem.path(SharedFolderPath, "Utils.lua")
-local EntryUrl = SharedFolderUrl .. "Entry.lua"
-local EntryPath = filesystem.path(SharedFolderPath, "Entry.lua")
-local MainUrl = SharedFolderUrl .. "Main.lua"
-local MainPath = filesystem.path(SharedFolderPath, "Main.lua")
 
 local VersionFilePath = "Version.lua"
 local MainFilePath = "Main.lua"

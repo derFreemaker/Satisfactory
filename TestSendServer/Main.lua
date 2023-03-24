@@ -26,17 +26,6 @@ Main.SetupFilesTree = {
         { "EventPullAdapter" },
         { "Serializer.lua" },
     },
-    {
-        "FactoryControl",
-        {
-            "Entities",
-            { "Controller.lua" }
-        },
-        {
-            "FCApiClient",
-            { "FCApiClient.lua" }
-        }
-    }
 }
 
 Main.FactoryControlApiClient = {}
@@ -47,17 +36,16 @@ function Main:Configure()
     if netClient == nil then
         error("netClient was nil")
     end
-    local apiClient = require("libs.Api.ApiClient").new(
+    self.ApiClient = require("libs.Api.ApiClient").new(
         netClient,
         Config.ServerIPAddress,
         Config.ServerPort,
         Config.ReturnPort)
-    self.FactoryControlApiClient = require("FactoryControl.FCApiClient.FCApiClient").new(apiClient)
 end
 
 function Main:Run()
     self._logger:LogInfo("adding controller...")
-    local result = self.FactoryControlApiClient:CreateController({
+    local result = self.ApiClient:request("Test", {
         IPAddress = "TestIPAddress",
         Name = "Test",
         Category = "Test"
