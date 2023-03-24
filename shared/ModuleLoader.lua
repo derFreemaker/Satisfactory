@@ -1,38 +1,38 @@
----@class Module
+---@class ModuleOld
 ---@field Info Entry
 ---@field Data 'ModuleType'
-local Module = {}
-Module.__index = {}
+local ModuleOld = {}
+ModuleOld.__index = {}
 
 ---@param info Entry
 ---@param data 'ModuleType'
----@return Module
-function Module.new(info, data)
+---@return ModuleOld
+function ModuleOld.new(info, data)
     return setmetatable({
         Info = info,
         Data = data
-    }, Module)
+    }, ModuleOld)
 end
 
----@class WaitingModule
+---@class WaitingModuleOld
 ---@field AwaitingModule string
 ---@field Waiters Entry[]
-local WaitingModule = {}
-WaitingModule.__index = WaitingModule
+local WaitingModuleOld = {}
+WaitingModuleOld.__index = WaitingModuleOld
 
 ---@param awaitingModule string
 ---@param waiters Entry[]
----@return WaitingModule
-function WaitingModule.new(awaitingModule, waiters)
+---@return WaitingModuleOld
+function WaitingModuleOld.new(awaitingModule, waiters)
     return setmetatable({
         AwaitingModule = awaitingModule,
         Waiters = waiters
-    }, WaitingModule)
+    }, WaitingModuleOld)
 end
 
----@class ModuleLoader
----@field private libs Module[]
----@field private waitingForLoad WaitingModule[]
+---@class ModuleLoaderOld
+---@field private libs ModuleOld[]
+---@field private waitingForLoad WaitingModuleOld[]
 ---@field private loadingPhase boolean
 ---@field private getGetWithName boolean
 ---@field private logger Logger
@@ -80,7 +80,7 @@ function ModuleLoader.doFolder(folder)
 end
 
 ---@private
----@param awaitingModule Module
+---@param awaitingModule ModuleOld
 function ModuleLoader.loadWaitingModules(awaitingModule)
     for i, moduleWaiters in pairs(ModuleLoader.waitingForLoad) do
         if string.gsub(moduleWaiters.AwaitingModule, "%.", "/") .. ".lua" == awaitingModule.Info.Path then
@@ -108,7 +108,7 @@ function ModuleLoader.handleCouldNotLoadModule(moduleCouldNotLoad)
             return
         end
     end
-    table.insert(ModuleLoader.waitingForLoad, WaitingModule.new(moduleCouldNotLoad, { caller }))
+    table.insert(ModuleLoader.waitingForLoad, WaitingModuleOld.new(moduleCouldNotLoad, { caller }))
     ModuleLoader.logger:LogDebug("added: '" .. caller.Name .. "' to load after '" .. moduleCouldNotLoad .. "' was loaded")
 end
 
@@ -165,7 +165,7 @@ function ModuleLoader.LoadModule(fileEntry)
         ModuleLoader.logger:LogTrace("unable to load module: '" .. fileEntry.Name .. "'")
         return
     end
-    local module = Module.new(fileEntry, fileData)
+    local module = ModuleOld.new(fileEntry, fileData)
     table.insert(ModuleLoader.libs, module)
     ModuleLoader.logger:LogTrace("loaded module: '" .. fileEntry.Name .. "'")
 
