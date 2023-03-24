@@ -48,6 +48,14 @@ function Utils.File.Read(path)
     return str
 end
 
+Utils.Table = {}
+
+function Utils.Table.Copy(table)
+    local copy = {}
+    for key, value in pairs(table) do copy[key] = value end
+    return setmetatable(copy, getmetatable(table))
+end
+
 ---@class Entry
 ---@field Name string
 ---@field FullName string

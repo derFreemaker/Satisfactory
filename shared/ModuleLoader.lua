@@ -63,10 +63,7 @@ end
 function ModuleLoader.doFile(file)
     if file.IgnoreLoad == true then return end
     if filesystem.exists(file.Path) then
-        local success = ModuleLoader.LoadModule(file)
-        if not success then
-            error("couldn't load module '" .. file.FullName .. "'")
-        end
+        ModuleLoader.LoadModule(file)
     else
         ModuleLoader.logger:LogDebug("Unable to find module: " .. file.Path)
     end
@@ -87,16 +84,11 @@ end
 function ModuleLoader.loadWaitingModules(awaitingModule)
     for i, moduleWaiters in pairs(ModuleLoader.waitingForLoad) do
         if string.gsub(moduleWaiters.AwaitingModule, "%.", "/") .. ".lua" == awaitingModule.Info.Path then
-            for x, waitingModule in pairs(moduleWaiters.Waiters) do
-                local success = ModuleLoader.LoadModule(waitingModule)
-                if success then
-                    table.remove(moduleWaiters.Waiters, x)
-                end
+            for _, waitingModule in pairs(moduleWaiters.Waiters) do
+                ModuleLoader.LoadModule(waitingModule)
             end
         end
-        if #moduleWaiters.Waiters == 0 then
-            table.remove(ModuleLoader.waitingForLoad, i)
-        end
+        table.remove(ModuleLoader.waitingForLoad, i)
     end
 end
 
@@ -165,28 +157,26 @@ function ModuleLoader.GetModules()
 end
 
 ---@param fileEntry Entry
----@return boolean
 function ModuleLoader.LoadModule(fileEntry)
     if fileEntry.IgnoreLoad == true then return true end
     ModuleLoader.logger:LogTrace("loading module: '" .. fileEntry.Name .. "' from path: '" .. fileEntry.Path .. "'")
     local success, fileData = pcall(filesystem.doFile, fileEntry.Path)
     if not success then
         ModuleLoader.logger:LogTrace("unable to load module: '" .. fileEntry.Name .. "'")
-        return false
+        return
     end
     local module = Module.new(fileEntry, fileData)
     table.insert(ModuleLoader.libs, module)
     ModuleLoader.logger:LogTrace("loaded module: '" .. fileEntry.Name .. "'")
 
     ModuleLoader.loadWaitingModules(module)
-    return true
 end
 
 ---@param modulesTree Entry
 ---@param loadingPhase boolean
 ---@return boolean
 function ModuleLoader.LoadModules(modulesTree, loadingPhase)
-    loadingPhase = loadingPhase or false
+    ModuleLoader.loadingPhase = loadingPhase or false
     ModuleLoader.logger:LogTrace("loading modules...")
     if modulesTree == nil then
         ModuleLoader.logger:LogDebug("modules tree was empty")
@@ -195,14 +185,20 @@ function ModuleLoader.LoadModules(modulesTree, loadingPhase)
     ModuleLoader.doFolder(modulesTree)
     if #ModuleLoader.waitingForLoad > 0 then
         for _, waiters in pairs(ModuleLoader.waitingForLoad) do
+            local waitersNames = waiters.Waiters[1].Name
+            for i, waiter in pairs(waiters.Waiters) do
+                if i ~= 1 then
+                    waitersNames = waitersNames .. ", '" .. waiter.Name .. "'"
+                end
+            end
             ModuleLoader.logger:LogError("Unable to load: '" .. waiters.AwaitingModule ..
-                "' for '" .. #waiters.Waiters .. "' modules")
+                "' for '" .. waitersNames .. "'")
         end
         ModuleLoader.logger:LogError("Unable to load modules")
         return false
     end
     ModuleLoader.logger:LogTrace("loaded modules")
-    loadingPhase = false
+    ModuleLoader.loadingPhase = false
     ModuleLoader.checkForSameModuleNames()
     return true
 end
