@@ -17,7 +17,8 @@ local Config = {}
 Config.__index = Config
 
 local props = {
-    ["-path"] = "Path"
+    ["-path"] = "Path",
+    ["-name"] = "Name"
 }
 
 ---@return CompilerConfig
@@ -32,7 +33,15 @@ function Config:Build()
     for _, value in pairs(self.args) do
         local valueData = split(value, ":")
         local prop = props[valueData[1]]
-        self[prop] = valueData[2]
+        if prop ~= nil then
+            self[prop] = valueData[2]
+        end
+    end
+
+    for _, prop in pairs(props) do
+        if self[prop] == nil then
+            error(prop .. " was  nil")
+        end
     end
 
     self.args = {}
