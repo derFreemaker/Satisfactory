@@ -1,5 +1,3 @@
-local FileSystem = require("Satisfactory.Compiler.FileSystem")
-
 ---@class Compiler
 ---@field Config CompilerConfig
 ---@field CurrentPath string
@@ -12,12 +10,12 @@ Compiler.__index = Compiler
 function Compiler.new(config)
     return setmetatable({
         Config = config,
-        CurrentPath = FileSystem.get_script_path() .. "../"
+        CurrentPath = compilerFilesystem.get_script_path() .. "../"
     }, Compiler)
 end
 
 function Compiler:compileDataFile(shortPath, path, parentFolder)
-    local dataFile = FileSystem.getFile(path)
+    local dataFile = compilerFilesystem.getFile(path)
     local data = dataFile:ReadFile()
     if data == nil then
         print("data in file: '" .. path .. "' was nil")
@@ -33,15 +31,15 @@ function Compiler:compileDataFileFolder(path)
 end
 
 function Compiler:compileData()
-    self.DataFile = FileSystem.getFile(self.CurrentPath .. "Data.lua")
+    self.DataFile = compilerFilesystem.getFile(self.CurrentPath .. "Data.lua")
 end
 
 function Compiler:compileInfoFile()
-    local infoFile = FileSystem.getFile(self.Config.Path .. "Info.lua")
-    local compiledInfoFile = FileSystem.getFile(self.CurrentPath .. "Info.lua")
+    local infoFile = compilerFilesystem.getFile(self.Config.Path .. "Info.lua")
+    local compiledInfoFile = compilerFilesystem.getFile(self.CurrentPath .. "Info.lua")
     local content = infoFile:ReadFile()
-    if content == nil then
-        error("Unable to write Info file")
+    if content == nil or content == "" or content == " " then
+        error("Info file has no content")
     end
     compiledInfoFile:Create()
     compiledInfoFile:Write(content)
