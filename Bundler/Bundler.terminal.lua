@@ -1,5 +1,5 @@
-compilerFilesystem = require("Satisfactory.Compiler.FileSystem")
-local Config = require("Compiler.CompilerConfig")
+compilerFilesystem = require("Satisfactory.Bundler.FileSystem")
+local Config = require("Compiler.BundlerConfig")
 
 local function main(args)
     local config = Config.new(args)
