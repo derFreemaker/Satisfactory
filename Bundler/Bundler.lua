@@ -1,19 +1,19 @@
 local Module = require("Satisfactory.Compiler.Module")
 
----@class Compiler
----@field Config CompilerConfig
+---@class Bundler
+---@field Config BundlerConfig
 ---@field CurrentPath string
 ---@field DataFile File
-local Compiler = {}
-Compiler.__index = Compiler
+local Bundler = {}
+Bundler.__index = Bundler
 
----@param config CompilerConfig
----@return Compiler
-function Compiler.new(config)
+---@param config BundlerConfig
+---@return Bundler
+function Bundler.new(config)
     return setmetatable({
         Config = config,
         CurrentPath = compilerFilesystem.get_script_path() .. "../"
-    }, Compiler)
+    }, Bundler)
 end
 
 ---@private
@@ -43,7 +43,7 @@ end
 
 ---@private
 ---@param path string
-function Compiler:compileModule(filePath, path)
+function Bundler:compileModule(filePath, path)
     self.DataFile = compilerFilesystem.getFile(filePath)
 
     local uuid = generateRandomUUID()
@@ -57,7 +57,7 @@ function Compiler:compileModule(filePath, path)
     self.DataFile:Append(compiledModule)
 end
 
-function Compiler:compileInfoFile()
+function Bundler:compileInfoFile()
     local infoFile = compilerFilesystem.getFile(self.Config.Path .. "Info.lua")
     local compiledInfoFile = compilerFilesystem.getFile(self.CurrentPath .. "Info.lua")
     local content = infoFile:ReadFile()
@@ -68,8 +68,8 @@ function Compiler:compileInfoFile()
     compiledInfoFile:Write(content)
 end
 
-function Compiler:Compile()
+function Bundler:Compile()
 
 end
 
-return Compiler
+return Bundler

@@ -1,27 +1,27 @@
----@class Module
+---@class BundlePart
 ---@field private filePath string
 ---@field UUID string
 ---@field Path string
 ---@field FullName string
 ---@field Name string
-local Module = {}
-Module.__index = Module
+local BundlePart = {}
+BundlePart.__index = BundlePart
 
 ---@param path string
----@return Module
-function Module.new(uuid, filePath, path, fullName, name)
+---@return BundlePart
+function BundlePart.new(uuid, filePath, path, fullName, name)
     return setmetatable({
         filePath = filePath,
         UUID = uuid,
         Path = path,
         FullName = fullName,
         Name = name
-    }, Module)
+    }, BundlePart)
 end
 
----@param compiler Compiler
+---@param compiler Bundler
 ---@return string
-function Module:Compile(compiler)
+function BundlePart:Compile(compiler)
     local file = compilerFilesystem.getFile(self.filePath)
 
     return "\n\n\n"
@@ -37,4 +37,4 @@ function Module:Compile(compiler)
         .. "#-------------------- " .. self.Name .. " --------------------#\n"
 end
 
-return Module
+return BundlePart

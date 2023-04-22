@@ -1,4 +1,4 @@
----@class CompilerConfig
+---@class BundlerConfig
 ---@field private args string[]
 ---@field Path string
 local Config = {}
@@ -21,14 +21,14 @@ local function split(str, sep)
     return result
 end
 
----@return CompilerConfig
+---@return BundlerConfig
 function Config.new(args)
     return setmetatable({
         args = args
     }, Config)
 end
 
----@return CompilerConfig
+---@return BundlerConfig
 function Config:Build()
     for _, value in pairs(self.args) do
         local valueData = split(value, ":")
