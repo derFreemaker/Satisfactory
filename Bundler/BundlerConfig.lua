@@ -1,51 +1,44 @@
+local Utils = require("Utils")
+
 ---@class BundlerConfig
----@field private args string[]
+---@field private argumente string[]
 ---@field Path string
 local Config = {}
 Config.__index = Config
 
 local props = {
-    ["-path"] = "Path",
-    ["-name"] = "Name"
+    ["p"] = "Path"
 }
 
----@param str string
----@param sep string
----@return string[]
-local function split(str, sep)
-    local result = {}
-    local regex = ("([^%s]+)"):format(sep)
-    for each in str:gmatch(regex) do
-        table.insert(result, each)
-    end
-    return result
-end
-
+---@param argumente string
 ---@return BundlerConfig
-function Config.new(args)
+function Config.new(argumente)
     return setmetatable({
-        args = args
+        argumente = argumente
     }, Config)
 end
 
 ---@return BundlerConfig
 function Config:Build()
-    for _, value in pairs(self.args) do
-        local valueData = split(value, ":")
+    for _, value in pairs(self.argumente) do
+        local valueData = Utils.Split(value, "--")
         local prop = props[valueData[1]]
         if prop ~= nil then
             self[prop] = valueData[2]
         end
     end
 
+    self.args = {}
+    self:Check()
+    return self
+end
+
+function Config:Check()
     for _, prop in pairs(props) do
-        if self[prop] == nil then
+        if self[prop] == nil or self[prop] == "" then
             error(prop .. " was  nil")
         end
     end
-
-    self.args = {}
-    return self
 end
 
 return Config
