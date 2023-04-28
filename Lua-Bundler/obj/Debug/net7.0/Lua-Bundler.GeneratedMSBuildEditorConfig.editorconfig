@@ -8,4 +8,4 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Lua_Bundler
-build_property.ProjectDir = C:\Coding\Lua\Satisfactory\Lua-Bundler\
+build_property.ProjectDir = c:\Coding\Lua\Satisfactory\Lua-Bundler\
