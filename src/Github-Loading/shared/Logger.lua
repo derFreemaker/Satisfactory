@@ -1,4 +1,4 @@
-local Utils = require("Core.shared.Utils.Index")
+local Utils = require("src (Outdated).Core.shared.Utils.Index")
 
 ---@class Logger
 ---@field private logLevel number

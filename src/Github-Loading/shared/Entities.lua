@@ -1,3 +1,5 @@
+local Entities = {}
+
 ---@class Entry
 ---@field Name string
 ---@field FullName string
@@ -6,8 +8,8 @@
 ---@field IgnoreLoad boolean
 ---@field Path string
 ---@field Childs Entry[]
-local Entry = {}
-Entry.__index = Entry
+Entities.Entry = {}
+Entities.Entry.__index = Entities.Entry
 
 ---@param name string | nil
 ---@param fullName string | nil
@@ -17,7 +19,7 @@ Entry.__index = Entry
 ---@param path string | nil
 ---@param childs Entry[] | nil
 ---@return Entry
-function Entry.new(name, fullName, isFolder, ignoreDownload, ignoreLoad, path, childs)
+function Entities.Entry.new(name, fullName, isFolder, ignoreDownload, ignoreLoad, path, childs)
     return setmetatable({
         Name = name or "",
         FullName = fullName or "",
@@ -26,14 +28,14 @@ function Entry.new(name, fullName, isFolder, ignoreDownload, ignoreLoad, path, c
         IgnoreLoad = ignoreLoad == nil or ignoreLoad,
         Path = path or "/",
         Childs = childs or {}
-    }, Entry)
+    }, Entities.Entry)
 end
 
 ---@param entry table
 ---@param parentEntry Entry | nil
 ---@return Entry | nil, boolean
-function Entry.Parse(entry, parentEntry)
-    parentEntry = parentEntry or Entry.new()
+function Entities.Entry.Parse(entry, parentEntry)
+    parentEntry = parentEntry or Entities.Entry.new()
 
     if entry.IsFolder == nil then
         local childs = 0
@@ -59,11 +61,11 @@ function Entry.Parse(entry, parentEntry)
         local childs = {}
         for _, child in pairs(entry) do
             if type(child) == "table" then
-                local childEntry, _ = Entry.Parse(child, entry)
+                local childEntry, _ = Entities.Entry.Parse(child, entry)
                 table.insert(childs, childEntry)
             end
         end
-        return Entry.new(entry.Name, entry.FullName, entry.IsFolder, entry.IgnoreDownload, entry.IgnoreLoad,
+        return Entities.Entry.new(entry.Name, entry.FullName, entry.IsFolder, entry.IgnoreDownload, entry.IgnoreLoad,
             entry.Path, childs), true
     end
 
@@ -78,8 +80,60 @@ function Entry.Parse(entry, parentEntry)
 
     entry.Path = entry.Path or filesystem.path(parentEntry.Path, entry.FullName)
 
-    return Entry.new(entry.Name, entry.FullName, entry.IsFolder, entry.IgnoreDownload,
+    return Entities.Entry.new(entry.Name, entry.FullName, entry.IsFolder, entry.IgnoreDownload,
         entry.IgnoreLoad, entry.Path, entry.Childs), true
 end
 
-return Entry
+---@class Main
+---@field Logger Logger
+---@field SetupFilesTree Entry
+Entities.Main = {}
+Entities.Main.__index = Entities.Main
+
+---@param mainModule table
+---@return Main
+function Entities.Main.new(mainModule)
+    local instance = setmetatable({
+        SetupFilesTree = mainModule.SetupFilesTree,
+        Configure = mainModule.Configure,
+        Run = mainModule.Run
+    }, Entities.Main)
+    return instance
+end
+
+---@return string | any
+function Entities.Main:Configure()
+    return "$%not found%$"
+end
+
+---@return string | any
+function Entities.Main:Run()
+    return "$%not found%$"
+end
+
+---@class ProgramInfo
+---@field Name string
+---@field Version string
+Entities.ProgramInfo = {}
+Entities.ProgramInfo.__index = Entities.ProgramInfo
+
+---@param name string
+---@param version string
+---@return ProgramInfo
+function Entities.ProgramInfo.new(name, version)
+    return setmetatable({
+        Name = name,
+        Version = version
+    }, Entities.ProgramInfo)
+end
+
+---@param programInfo ProgramInfo
+function Entities.ProgramInfo:Compare(programInfo)
+    if self.Name ~= programInfo.Name
+        or self.Version ~= programInfo.Version then
+        return false
+    end
+    return true
+end
+
+return Entities

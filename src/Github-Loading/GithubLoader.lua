@@ -1,4 +1,4 @@
-local Utils = require("Core.shared.Utils.Index")
+local Utils = require("src (Outdated).Core.shared.Utils.Index")
 
 ---@class Option
 ---@field Name string
@@ -140,7 +140,7 @@ function GithubLoader:loadModuleLoader()
         return false
     end
     filesystem.doFile(ModuleFileLoaderPath)
-    ModuleLoader.Initialize(self.logger)
+    PackageLoaderOld.Initialize(self.logger)
     self.logger:LogTrace("loaded module loader")
     return true
 end
@@ -358,7 +358,7 @@ function GithubLoader:Run(option, logLevel, forceDownload)
     self.logger:LogTrace("downloaded program data")
     print()
 
-    if not ModuleLoader.LoadModules(self.mainProgramModule.SetupFilesTree, true) then return false end
+    if not PackageLoaderOld.LoadPackages(self.mainProgramModule.SetupFilesTree, true) then return false end
 
     if not self:runConfigureFunction(logLevel) then return false end
     if not self:runMainFunction() then return false end
