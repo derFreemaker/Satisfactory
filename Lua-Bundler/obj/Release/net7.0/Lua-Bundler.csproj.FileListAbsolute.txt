@@ -15,3 +15,4 @@ C:\Coding\Lua\Satisfactory\Lua-Bundler\obj\Release\net7.0\refint\Lua-Bundler.dll
 C:\Coding\Lua\Satisfactory\Lua-Bundler\obj\Release\net7.0\Lua-Bundler.pdb
 C:\Coding\Lua\Satisfactory\Lua-Bundler\obj\Release\net7.0\Lua-Bundler.genruntimeconfig.cache
 C:\Coding\Lua\Satisfactory\Lua-Bundler\obj\Release\net7.0\ref\Lua-Bundler.dll
+C:\Coding\Lua\Satisfactory\Lua-Bundler\bin\Release\net7.0\Newtonsoft.Json.dll

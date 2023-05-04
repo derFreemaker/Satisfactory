@@ -8,13 +8,17 @@ namespace Lua_Bundler
         static void Main(string[] args)
         {
 #if DEBUG
-            var test = new[] { "-s", "C:\\Coding\\Lua\\Satisfactory\\src\\Example", "-o", "C:\\Coding\\Lua\\Satisfactory" };
+            var test = new[] { "-s", "C:\\Coding\\Lua\\Satisfactory\\src\\Github", "-o", "C:\\Coding\\Lua\\Satisfactory" };
             var config = Parser.Default.ParseArguments<BundlerConfig>(test).Value;
 #else
             var config = Parser.Default.ParseArguments<BundlerConfig>(args).Value;
 #endif
 
-            var bundler = new Bundler(config.Build());
+            var (Success, ExitCode) = config.Build(out config);
+            if (!Success)
+                Environment.Exit(ExitCode);
+
+            var bundler = new Bundler(config);
 
             Console.WriteLine("building modules map...");
             var stopwatch = Stopwatch.StartNew();
@@ -22,7 +26,7 @@ namespace Lua_Bundler
             stopwatch.Stop();
             Console.WriteLine($"builded modules map in {stopwatch.Elapsed.TotalMilliseconds}ms");
 
-            Console.WriteLine("\nbundling package...");
+            Console.WriteLine("\nbundling package " + (config.Optimize ? "with" : "without") + " optimization...");
             stopwatch = Stopwatch.StartNew();
             bundler.Bundle();
             stopwatch.Stop();

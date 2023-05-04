@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "jRi1NWDa/n5s9byUTRRwGKp++Vz4GzQEOpIFwI9rVLx1cHmyeLPK1/eSUfg4T1qmR8cEe/33l09t0WrPYGio5g==",
+  "dgSpecHash": "InlX0pM8AXaS2+BpRg+S9wgiLBLrTmEYmBLIA8PbJdvRiVcrhAWouT9iT+Rd4WxbNT0xdSO9ZAn3nc8rQZrE/A==",
   "success": true,
   "projectFilePath": "C:\\Coding\\Lua\\Satisfactory\\Lua-Bundler\\Lua-Bundler.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\oskar\\.nuget\\packages\\commandlineparser\\2.9.1\\commandlineparser.2.9.1.nupkg.sha512"
+    "C:\\Users\\oskar\\.nuget\\packages\\commandlineparser\\2.9.1\\commandlineparser.2.9.1.nupkg.sha512",
+    "C:\\Users\\oskar\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
   ],
   "logs": []
 }

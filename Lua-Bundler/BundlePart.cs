@@ -1,7 +1,4 @@
-﻿using System.Net.Http.Headers;
-using System.Text;
-
-namespace Lua_Bundler
+﻿namespace Lua_Bundler
 {
     internal class BundlePart
     {
@@ -64,15 +61,15 @@ namespace Lua_Bundler
             Childs = childs.ToArray();
         }
 
-        private void BundleDirectoryData(StreamWriter writer)
+        private void BundleDirectoryData(StreamWriter writer, BundlerConfig config)
         {
-            writer.WriteLine("\n-- " + new string('#', 10) + $" {Namespace} " + new string('#', 10));
+            if (!config.Optimize) writer.WriteLine("\n-- " + new string('#', 10) + $" {Namespace} " + new string('#', 10));
             foreach (var child in Childs)
-                child.BundleData(writer);
-            writer.WriteLine("-- " + new string('#', 10) + $" {Namespace} " + new string('#', 10) + " --\n");
+                child.BundleData(writer, config);
+            if (!config.Optimize) writer.WriteLine("\n-- " + new string('#', 10) + $" {Namespace} " + new string('#', 10) + " --");
         }
 
-        private void BundleFileData(StreamWriter writer)
+        private void BundleFileData(StreamWriter writer, BundlerConfig config)
         {
             var modifyedContent = new List<string>();
             var content = File.ReadAllLines(Location).AsSpan();
@@ -80,23 +77,46 @@ namespace Lua_Bundler
             {
                 if (content[i] == "" || content[i].StartsWith("--"))
                     continue;
-                modifyedContent.Add(content[i]);
+                if (config.Optimize)
+                    modifyedContent.Add(content[i].Replace("  ", ""));
+                else
+                    modifyedContent.Add(content[i]);
             }
 
-            writer.WriteLine(Environment.NewLine + $"PackageData.{Id} = " + "{");
-            writer.WriteLine($"    Namespace = \"{Namespace}\",");
-            writer.WriteLine($"    Name = \"{Name}\",");
-            writer.WriteLine($"    FullName = \"{FullName}\",");
-            writer.WriteLine($"    IsRunable = {FullName.EndsWith(".lua").ToString().ToLower()},");
-            writer.WriteLine($"    Data = [[\n{string.Join("\n", modifyedContent)}\n]] " + "}" + Environment.NewLine);
+            string data;
+            if (config.Optimize)
+                data = $"[[{string.Join(" ", modifyedContent)}]]";
+            else
+                data = $"[[\n{string.Join("\n", modifyedContent)}\n]]";
+
+            if (config.Optimize)
+            {
+                writer.Write($"PackageData.{Id} = " + "{ ");
+                writer.Write($"Namespace = \"{Namespace}\", ");
+                writer.Write($"Name = \"{Name}\", ");
+                writer.Write($"FullName = \"{FullName}\", ");
+                writer.Write($"IsRunable = {FullName.EndsWith(".lua").ToString().ToLower()}, ");
+                writer.Write($"Data = {data} " + "}");
+            }
+            else
+            {
+                writer.WriteLine();
+                writer.WriteLine($"PackageData.{Id} = " + "{");
+                writer.WriteLine($"    Namespace = \"{Namespace}\",");
+                writer.WriteLine($"    Name = \"{Name}\",");
+                writer.WriteLine($"    FullName = \"{FullName}\",");
+                writer.WriteLine($"    IsRunable = {FullName.EndsWith(".lua").ToString().ToLower()},");
+                writer.WriteLine($"    Data = {data} " + "}");
+            }
+
         }
 
-        public void BundleData(StreamWriter writer)
+        public void BundleData(StreamWriter writer, BundlerConfig config)
         {
             if (IsDirectory)
-                BundleDirectoryData(writer);
+                BundleDirectoryData(writer, config);
             else
-                BundleFileData(writer);
+                BundleFileData(writer, config);
             writer.Flush();
         }
 
