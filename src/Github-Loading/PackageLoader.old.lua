@@ -16,24 +16,24 @@ function PackageOld.new(info, data)
     }, PackageOld)
 end
 
----@class WaitingPackage
+---@class WaitingPackageOld
 ---@field AwaitingPackage string
 ---@field Waiters Entry[]
-local WaitingPackage = {}
-WaitingPackage.__index = WaitingPackage
+local WaitingPackageOld = {}
+WaitingPackageOld.__index = WaitingPackageOld
 
 ---@param awaitingPackage string
 ---@param waiters Entry[]
-function WaitingPackage.new(awaitingPackage, waiters)
+function WaitingPackageOld.new(awaitingPackage, waiters)
     return setmetatable({
         AwaitingPackage = awaitingPackage,
         Waiters = waiters
-    }, WaitingPackage)
+    }, WaitingPackageOld)
 end
 
 ---@class PackageLoaderOld
 ---@field private packages PackageOld[]
----@field private waitingPackages WaitingPackage[]
+---@field private waitingPackages WaitingPackageOld[]
 ---@field private loadingPhase boolean
 ---@field private logger Logger
 PackageLoaderOld = {}
@@ -92,7 +92,7 @@ function PackageLoaderOld.handleCouldNotLoadPackage(packageCouldNotLoad)
             return
         end
     end
-    table.insert(PackageLoaderOld.waitingPackages, WaitingPackage.new(packageCouldNotLoad, { caller }))
+    table.insert(PackageLoaderOld.waitingPackages, WaitingPackageOld.new(packageCouldNotLoad, { caller }))
     PackageLoaderOld.logger:LogTrace("added: '" ..
         caller.Name .. "' to load after '" .. packageCouldNotLoad .. "' was loaded")
 end

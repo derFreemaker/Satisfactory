@@ -6,6 +6,7 @@
         "event",
         "filesystem",
         "InternetCard",
-        "ModuleLoader"
+        "ModuleLoader",
+        "LoggerManager"
     ]
 }

@@ -1,4 +1,5 @@
-local Utils = {}
+---@class Utils
+Utils = {}
 
 ---@param ms number defines how long the function will wait in Milliseconds
 function Utils.Sleep(ms)
@@ -51,10 +52,17 @@ end
 
 Utils.Table = {}
 
+---@generic Table
+---@param table Table
+---@return Table
 function Utils.Table.Copy(table)
     local copy = {}
     for key, value in pairs(table) do copy[key] = value end
     return setmetatable(copy, getmetatable(table))
 end
 
-return Utils
+
+-- Types and Classes --
+
+---@class Dictionary<T>: { [string]: T }
+---@class Array<T>: { [integer]: T }
