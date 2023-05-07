@@ -15,17 +15,17 @@ local programForceDownload = false
 -- to define any config variables
 --Config = {}
 
-GithubLoaderBaseUrl = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/dev/"
+local GithubLoaderBaseUrl ="https://raw.githubusercontent.com/derFreemaker/Satisfactory/Module-Bundling"
 
 
 
-local GithubLoaderUrl = GithubLoaderBaseUrl .. "Github/GithubLoader.lua"
-local GithubLoaderFilesFolderPath = "GithubLoaderFiles"
+local GithubLoaderUrl = filesystem.path(GithubLoaderBaseUrl, "Github-Loading/GithubLoader.lua")
+local GithubLoaderFilesFolderPath = "Github-Loading"
 local GithubLoaderPath = filesystem.path(GithubLoaderFilesFolderPath, "GithubLoader.lua")
 
 computer.beep(5.0)
-InternetCard = computer.getPCIDevices(findClass("FINInternetCard"))[1]
-if not InternetCard then
+local internetCard = computer.getPCIDevices(findClass("FINInternetCard"))[1]
+if not internetCard then
     print("[Computer] ERROR! No internet-card found! Please install a internet card!")
     computer.beep(0.2)
     return
@@ -55,7 +55,7 @@ end
 
 if not filesystem.exists(GithubLoaderPath) then
     print("[Computer] INFO! downloading Github loader...")
-    local req = InternetCard:request(GithubLoaderUrl, "GET", "")
+    local req = internetCard:request(GithubLoaderUrl, "GET", "")
     local _, libdata = req:await()
     local file = filesystem.open(GithubLoaderPath, "w")
     file:write(libdata)
@@ -64,8 +64,10 @@ if not filesystem.exists(GithubLoaderPath) then
 end
 
 -- Initialize([logLevel:int], [forceDownload:boolean])
+---@type GithubLoader
 local GithubLoader = filesystem.doFile(GithubLoaderPath)
-GithubLoader:Initialize(loaderLogLevel, loaderForceDownload)
+GithubLoader = GithubLoader.new(GithubLoaderBaseUrl, "", loaderForceDownload, internetCard)
+GithubLoader:Initialize(loaderLogLevel)
 
 if option == "%show%" then
     -- GithubLoader:ShowOptions([extended:boolean])

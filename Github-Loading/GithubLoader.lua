@@ -43,7 +43,7 @@ GithubLoader.__index = GithubLoader
 local GithubLoaderFiles = {
     "/",
     {
-        "Github",
+        "Github-Loading",
         {
             "shared",
             { "Entities.lua" },
