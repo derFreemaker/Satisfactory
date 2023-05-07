@@ -1,3 +1,4 @@
+---@class Entities
 local Entities = {}
 
 ---@class Entry

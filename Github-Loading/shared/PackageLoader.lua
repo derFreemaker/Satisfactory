@@ -83,18 +83,6 @@ end
 ---@field Packages Array<Package>
 local PackageLoader = {}
 
----@param packagesUrl string
----@param packagesPath string
----@param logger Logger
-function PackageLoader.new(packagesUrl, packagesPath, logger)
-    return setmetatable({
-        packagesUrl = packagesUrl,
-        packagesPath = packagesPath,
-        logger = logger,
-        Packages = {}
-    }, PackageLoader)
-end
-
 ---@private
 ---@param url string
 ---@param path string
@@ -111,7 +99,9 @@ function PackageLoader:internalDownload(url, path, forceDownload)
     local req = InternetCard:request(url, "GET", "")
     local code, data = req:await()
     if code ~= 200 or data == nil then return false end
-    Utils.File.Write(path, "w", data)
+    local file = filesystem.open(path, "w")
+    file:write(data)
+    file:close()
     if self.logger ~= nil then
         self.logger:LogTrace("downloaded '" .. path .. "' from: '" .. url .. "'")
     end
@@ -123,9 +113,9 @@ end
 ---@param forceDownload boolean
 ---@return boolean, Package | nil
 function PackageLoader:internalDownloadPackage(url, path, forceDownload)
-    local infoFileUrl = url .. "/Info.lua"
+    local infoFileUrl = url .. "Info.lua"
     local infoFilePath = filesystem.path(path, "Info.lua")
-    local dataFileUrl = url .. "/Data.lua"
+    local dataFileUrl = url .. "Data.lua"
     local dataFilePath = filesystem.path(path, "Data.lua")
 
     if not filesystem.exists(path) then
@@ -141,6 +131,18 @@ function PackageLoader:internalDownloadPackage(url, path, forceDownload)
     return true, Package.new(load(infoContent)(), load(dataContent)(), self)
 end
 
+---@param packagesUrl string
+---@param packagesPath string
+---@param logger Logger
+function PackageLoader.new(packagesUrl, packagesPath, logger)
+    return setmetatable({
+        packagesUrl = packagesUrl,
+        packagesPath = packagesPath,
+        logger = logger,
+        Packages = {}
+    }, PackageLoader)
+end
+
 ---@param packageName string
 ---@param forceDownload boolean | nil
 ---@return boolean, Package | nil
@@ -148,7 +150,7 @@ function PackageLoader:DownloadPackage(packageName, forceDownload)
     self.logger:LogDebug("downloading package: '" .. packageName .. "'...")
     forceDownload = forceDownload or false
     local path = filesystem.path(self.packagesPath, packageName)
-    local success, package = self:internalDownloadPackage(self.packagesUrl .. "/" .. packageName, path, forceDownload)
+    local success, package = self:internalDownloadPackage(self.packagesUrl .. packageName .. "/", path, forceDownload)
     if not success or not package then
         return false
     end
@@ -168,7 +170,7 @@ end
 
 ---@param packageName string
 ---@return Package
-function PackageLoader:LoadPackage(packageName)
+function PackageLoader:LoadPackage(packageName, forceDownload)
     self.logger:LogDebug("loading package: '" .. packageName .. "'...")
     local package = self:GetPackage(packageName)
     if package then
@@ -177,7 +179,7 @@ function PackageLoader:LoadPackage(packageName)
         return package
     end
 
-    local success, package = self:DownloadPackage(packageName)
+    local success, package = self:DownloadPackage(packageName, forceDownload)
     if not success then
         computer.panic("could not find or download package: '" .. packageName .. "'")
     end

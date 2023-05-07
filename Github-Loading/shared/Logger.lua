@@ -1,5 +1,3 @@
-local Utils = require("src (Outdated).Core.shared.Utils.Index")
-
 ---@class Logger
 ---@field private logLevel number
 ---@field private path string
@@ -7,7 +5,7 @@ local Utils = require("src (Outdated).Core.shared.Utils.Index")
 local Logger = {}
 Logger.__index = Logger
 
-local mainLogFilePath = filesystem.path("log", "Log.txt")
+local mainLogFilePath = filesystem.path("logs", "Log.txt")
 
 ---@private
 ---@param node table
