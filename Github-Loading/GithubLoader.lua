@@ -41,18 +41,15 @@ local GithubLoader = {}
 GithubLoader.__index = GithubLoader
 
 local GithubLoaderFiles = {
-    "/",
+    "Github-Loading",
     {
-        "Github-Loading",
-        {
-            "shared",
-            { "Entities.lua" },
-            { "Logger.lua" },
-            { "PackageLoader.lua" },
-            { "Utils.lua" }
-        },
-        { "Options.lua" }
-    }
+        "shared",
+        { "Entities.lua" },
+        { "Logger.lua" },
+        { "PackageLoader.lua" },
+        { "Utils.lua" }
+    },
+    { "Options.lua" }
 }
 
 ---@private
@@ -100,7 +97,7 @@ end
 ---@return boolean
 function GithubLoader:doFile(parentPath, file)
     local path = filesystem.path(parentPath, file[1])
-    return self:internalDownload(filesystem.path(self.GithubLoaderBaseUrl, path), path, self.forceDownloadLoaderFiles)
+    return self:internalDownload(self.GithubLoaderBaseUrl .. path, path, self.forceDownloadLoaderFiles)
 end
 
 ---@private
@@ -216,7 +213,7 @@ end
 ---@private
 ---@return boolean
 function GithubLoader:loadPackageLoader()
-    local baseUrl = filesystem.path(self.GithubLoaderBaseUrl, "Packages")
+    local baseUrl = self.GithubLoaderBaseUrl .. "/Packages"
     local basePath = filesystem.path(self.GithubLoaderBasePath, "Packages")
     if not filesystem.exists(basePath) then
         filesystem.createDir(basePath)
@@ -321,7 +318,6 @@ function GithubLoader:runConfigureFunction(logLevel)
     end
     return true
 end
-
 
 ---@private
 ---@return boolean

@@ -19,7 +19,7 @@ local GithubLoaderBaseUrl ="https://raw.githubusercontent.com/derFreemaker/Satis
 
 
 
-local GithubLoaderUrl = filesystem.path(GithubLoaderBaseUrl, "Github-Loading/GithubLoader.lua")
+local GithubLoaderUrl = GithubLoaderBaseUrl .. "/Github-Loading/GithubLoader.lua"
 local GithubLoaderFilesFolderPath = "Github-Loading"
 local GithubLoaderPath = filesystem.path(GithubLoaderFilesFolderPath, "GithubLoader.lua")
 
