@@ -288,7 +288,7 @@ end
 ---@param package Package
 ---@return boolean
 function GithubLoader:loadMainModule(package)
-    local mainModule = package:GetModule(package.Name .. "." .. "Program.Main"):GetData()
+    local mainModule = package:GetModule(package.Name .. "." .. "Main"):GetData()
     local mainModuleType = type(mainModule)
     if mainModuleType ~= "table" then
         self.logger:LogError("Unable to get or run main module type: " .. mainModuleType)
@@ -304,8 +304,8 @@ end
 ---@return boolean
 function GithubLoader:runConfigureFunction(logLevel)
     self.logger:LogTrace("configuring program...")
-    self.mainProgramModule.Logger = self.logger.new("Program", logLevel)
-    local thread, success, error = Utils.ExecuteFunction(self.mainProgramModule.Configure, self.mainProgramModule)
+    local logger = self.logger.new("Program", logLevel)
+    local thread, success, error = Utils.ExecuteFunction(self.mainProgramModule.Configure, self.mainProgramModule, logger)
     if success and error ~= "not found" then
         self.logger:LogTrace("configured program")
     elseif error ~= "$%not found%$" then

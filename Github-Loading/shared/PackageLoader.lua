@@ -80,6 +80,7 @@ end
 ---@field private packagesUrl string
 ---@field private packagesPath string
 ---@field private logger Logger
+---@field private internetCard table
 ---@field Packages Array<Package>
 local PackageLoader = {}
 
@@ -96,7 +97,7 @@ function PackageLoader:internalDownload(url, path, forceDownload)
     if self.logger ~= nil then
         self.logger:LogTrace("downloading '" .. path .. "' from: '" .. url .. "'...")
     end
-    local req = InternetCard:request(url, "GET", "")
+    local req = self.internetCard:request(url, "GET", "")
     local code, data = req:await()
     if code ~= 200 or data == nil then return false end
     local file = filesystem.open(path, "w")

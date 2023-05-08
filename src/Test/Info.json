@@ -1,5 +1,4 @@
 {
-  "Name": "Example",
-  "Namespace": "ExampleNamespace",
+  "Name": "Test",
   "RequiredPackages": ["Core"]
 }
