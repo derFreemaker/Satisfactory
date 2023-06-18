@@ -77,6 +77,7 @@ end
 -- ########## Package ########## --
 
 ---@class PackageLoader
+---@field CurrentPackageLoader PackageLoader | nil
 ---@field private packagesUrl string
 ---@field private packagesPath string
 ---@field private logger Logger
@@ -136,6 +137,7 @@ end
 ---@param packagesUrl string
 ---@param packagesPath string
 ---@param logger Logger
+---@param internetCard table
 ---@return PackageLoader
 function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard)
     return setmetatable({
@@ -145,6 +147,11 @@ function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard)
         internetCard = internetCard,
         Packages = {}
     }, PackageLoader)
+end
+
+---@param packageLoader PackageLoader
+function PackageLoader.setGlobal(packageLoader)
+    PackageLoader.CurrentPackageLoader = packageLoader
 end
 
 ---@param packageName string
@@ -193,10 +200,11 @@ function PackageLoader:LoadPackage(packageName, forceDownload)
         computer.panic("could not find or download package: '" .. packageName .. "'")
     end
     ---@cast package Package
-    self.logger:LogDebug("loaded package: '".. package.Name .."'")
+    self.logger:LogDebug("loaded package: '" .. package.Name .. "'")
     return package
 end
 
+---@param moduleToGet string
 function PackageLoader:GetModule(moduleToGet)
     self.logger:LogDebug("geting module: '" .. moduleToGet .. "'")
     local namespace = moduleToGet:find([[^(.+)\.+]])
@@ -210,13 +218,16 @@ function PackageLoader:GetModule(moduleToGet)
         end
     end
 
-    error("module could not be found: '".. moduleToGet .."'")
+    error("module could not be found: '" .. moduleToGet .. "'")
 end
 
 ---@param moduleToGet string
 ---@return table | string
 function require(moduleToGet)
-    local module = PackageLoader.GetModule(PackageLoader, moduleToGet)
+    if not PackageLoader.CurrentPackageLoader then
+        computer.panic("'PackageLoader.CurrentPackageLoader' was not set")
+    end
+    local module = PackageLoader.GetModule(PackageLoader.CurrentPackageLoader, moduleToGet)
     return module:GetData()
 end
 
