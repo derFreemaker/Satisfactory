@@ -76,7 +76,6 @@ end
 ---@param logLevel number | nil
 ---@param path string | nil
 function Logger.new(name, logLevel, path)
-  if not filesystem.exists("logs") then filesystem.createDir("logs") end
   local instance = setmetatable({
     logLevel = (logLevel or 0),
     path = (path or nil),

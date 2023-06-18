@@ -83,6 +83,7 @@ end
 ---@field private internetCard table
 ---@field Packages Array<Package>
 local PackageLoader = {}
+PackageLoader.__index = PackageLoader
 
 ---@private
 ---@param url string
@@ -135,6 +136,7 @@ end
 ---@param packagesUrl string
 ---@param packagesPath string
 ---@param logger Logger
+---@return PackageLoader
 function PackageLoader.new(packagesUrl, packagesPath, logger)
     return setmetatable({
         packagesUrl = packagesUrl,
@@ -176,19 +178,21 @@ function PackageLoader:LoadPackage(packageName, forceDownload)
     local package = self:GetPackage(packageName)
     if package then
         self.logger:LogDebug("found package: '" .. packageName .. "'")
-        
         return package
     end
 
     local success, package = self:DownloadPackage(packageName, forceDownload)
     if success then
         ---@cast package Package
+        table.insert(self.Packages, package)
+        self.logger:LogDebug("loading required packages...")
         package:Load()
         self.logger:LogDebug("loaded required packages")
     else
         computer.panic("could not find or download package: '" .. packageName .. "'")
     end
     ---@cast package Package
+    self.logger:LogDebug("loaded package: '".. package.Name .."'")
     return package
 end
 
