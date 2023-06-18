@@ -207,7 +207,7 @@ end
 ---@return boolean
 function GithubLoader:loadEntites()
     local path = self:searchForFile("Entities.lua")
-    self.entitites = filesystem.doFile(path)
+    self.entities = filesystem.doFile(path)
     return true
 end
 
