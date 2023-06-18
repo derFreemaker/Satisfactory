@@ -176,12 +176,16 @@ function PackageLoader:LoadPackage(packageName, forceDownload)
     local package = self:GetPackage(packageName)
     if package then
         self.logger:LogDebug("found package: '" .. packageName .. "'")
-        package:Load()
+        
         return package
     end
 
     local success, package = self:DownloadPackage(packageName, forceDownload)
-    if not success then
+    if success then
+        ---@cast package Package
+        package:Load()
+        self.logger:LogDebug("loaded required packages")
+    else
         computer.panic("could not find or download package: '" .. packageName .. "'")
     end
     ---@cast package Package
@@ -191,7 +195,7 @@ end
 function PackageLoader:GetModule(moduleToGet)
     self.logger:LogDebug("geting module: '" .. moduleToGet .. "'")
     local namespace = moduleToGet:find([[^(.+)\.+]])
-    for _, package in ipairs(PackageLoader.Packages) do
+    for _, package in ipairs(self.Packages) do
         if (package.Namespace) == namespace then
             local module = package:GetModule(moduleToGet)
             if module then
@@ -201,7 +205,7 @@ function PackageLoader:GetModule(moduleToGet)
         end
     end
 
-    error("module could not be found: '" .. moduleToGet .. "'")
+    error("module could not be found: '".. moduleToGet .."'")
 end
 
 ---@param moduleToGet string
