@@ -299,14 +299,19 @@ end
 ---@param package Package
 ---@return boolean
 function GithubLoader:loadMainModule(package)
-    local mainModule = package:GetModule(package.Name .. "." .. "Main"):GetData()
-    local mainModuleType = type(mainModule)
-    if mainModuleType ~= "table" then
-        self.logger:LogError("Unable to get or run main module type: " .. mainModuleType)
+    local mainModule = package:GetModule(package.Name .. "." .. "Main")
+    if not mainModule then
+        self.logger:LogError("Unable to get main module")
         return false
     end
-    ---@cast mainModule table
-    self.mainProgramModule = self.entities.Main.new(mainModule)
+    ---@cast mainModule Module
+    if not mainModule.IsRunnable then
+        self.logger:LogError("Unable to run main module")
+        return false
+    end
+    local mainModuleData = mainModule:GetData()
+    ---@cast mainModuleData table
+    self.mainProgramModule = self.entities.Main.new(mainModuleData)
     return true
 end
 

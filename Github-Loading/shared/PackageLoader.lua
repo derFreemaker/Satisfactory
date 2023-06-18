@@ -46,13 +46,13 @@ function Package.new(info, packageData, packageLoader)
     ---@type Dictionary<Module>
     local modules = {}
     for id, module in pairs(packageData) do
-        modules[id] = module
+        modules[id] = Module.new(module)
     end
 
     return setmetatable({
         Name = info.Name,
         Namespace = info.Namesapce,
-        RequiredPackages = info.RequiredPackages,
+        RequiredPackages = (info.RequiredPackages or {}),
         Modules = modules,
         PackageLoader = packageLoader
     }, Package)
