@@ -3,9 +3,15 @@
 local Test = {}
 
 ---@param logger Logger
----@return string | nil
 function Test:Configure(logger)
     self.logger = logger
+end
+
+---@return integer
+function Test:Run()
+    self.logger:LogInfo("Running Main Module")
+
+    return 0
 end
 
 return Test
