@@ -19,16 +19,41 @@ local GithubLoaderBaseUrl = "https://raw.githubusercontent.com/derFreemaker/Sati
 
 
 
+---@param obj any
+---@param typeToCheck type
+---@param functionName string
+---@param parameterPositionBefore integer
+---@param parameterPositionAfter integer
+function filesystem.checkType(obj, typeToCheck, functionName, parameterPositionBefore, parameterPositionAfter)
+    local objType = type(obj)
+    if objType == typeToCheck then
+        return
+    end
+    local message = functionName .. "("
+    local i = 0
+    while i < parameterPositionBefore do
+        message = message .. "..., "
+        i = i + 1
+    end
+    message = message .. "expexted '" .. typeToCheck .. "', got '" .. objType .. "'"
+    i = 0
+    while i < parameterPositionAfter do
+        message = message .. ", ..."
+        i = i + 1
+    end
+    message = message .. ")"
+    error(message, 3)
+end
+
 ---@param path string
 ---@return string
 function filesystem.fixPath(path)
+    filesystem.checkType(path, "string", "filesystem.fixPath", 0, 0)
     if path == nil then
         return ""
     end
-
     path = path:gsub("\\\\", "/")
     path = path:gsub("\\", "/")
-
     return path
 end
 
@@ -36,34 +61,31 @@ end
 ---@param path2 string
 ---@return string
 function filesystem.combinePaths(path1, path2)
-    if path1 == nil or path1 == "" then
-        return path2 or ""
+    filesystem.checkType(path1, "string", "filesystem.combinePaths", 0, 1)
+    filesystem.checkType(path2, "string", "filesystem.combinePaths", 1, 0)
+    if path1 == "" then
+        return path2
     end
-    if path2 == nil or path2 == "" then
-        return path1 or ""
+    if path2 == "" then
+        return path1
     end
-
     path1 = filesystem.fixPath(path1)
     path2 = filesystem.fixPath(path2)
-
     if (path1:find("./$") or path1 == "/") and path2:find("^[^/].") then
         return path1 .. path2
     end
     if path1 == "/" and (path2:find("^/.") or path2 == "/") then
         return path2
     end
-
     if path1:find(".[^/]$") and (path2:find("^/.") or path2 == "/") then
         return path1 .. path2
     end
     if (path1:find("./$") or path1 == "/") and path2 == "/" then
         return path1
     end
-
     if path1:find(".[^/]$") and path2:find("^[^/].") then
         return path1 .. "/" .. path2
     end
-
     error("could not combine paths: '" .. path1 .. "' <-> '" .. path2 .. "'")
 end
 

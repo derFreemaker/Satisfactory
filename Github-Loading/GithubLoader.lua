@@ -106,12 +106,13 @@ end
 ---@return boolean
 function GithubLoader:doFolder(parentPath, folder)
     local path = filesystem.combinePaths(parentPath, folder[1])
-    table.remove(folder, 1)
     filesystem.createDir(path)
     local successes = {}
-    for _, child in pairs(folder) do
-        local success = self:doEntry(path, child)
-        table.insert(successes, success)
+    for index, child in pairs(folder) do
+        if index ~= 1 then
+            local success = self:doEntry(path, child)
+            table.insert(successes, success)
+        end
     end
     for _, success in ipairs(successes) do
         if not success then
@@ -169,16 +170,17 @@ function GithubLoader:searchForFile(fileName)
     ---@return string | nil
     function funcs:doFolder(parentPath, folder, fileName)
         local path = filesystem.combinePaths(parentPath, folder[1])
-        table.remove(folder, 1)
-        for _, child in pairs(folder) do
-            local success = self:doEntry(path, child, fileName)
-            if success then
-                return success
+        for index, child in pairs(folder) do
+            if index ~= 1 then
+                local success = self:doEntry(path, child, fileName)
+                if success then
+                    return success
+                end
             end
         end
     end
 
-    return funcs:doEntry("", GithubLoaderFiles, fileName)
+    return funcs:doEntry("/", GithubLoaderFiles, fileName)
 end
 
 ---@private
@@ -205,7 +207,7 @@ end
 ---@private
 ---@return boolean
 function GithubLoader:loadEntites()
-    local path = self:searchForFile("Entites.lua")
+    local path = self:searchForFile("Entities.lua")
     self.entitites = filesystem.doFile(path)
     return true
 end
