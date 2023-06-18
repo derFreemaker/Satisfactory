@@ -195,12 +195,10 @@ end
 ---@param logLevel integer
 ---@return boolean
 function GithubLoader:loadLogger(logLevel)
-    if not filesystem.exists("logs") then
-        filesystem.createDir("logs")
-    end
     local path = self:searchForFile("Logger.lua")
     local logger = filesystem.doFile(path)
     self.logger = logger.new("Loader", logLevel)
+    self.logger:ClearLog(true)
     return true
 end
 

@@ -55,7 +55,8 @@ function Logger.tableToLineTree(node, padding, maxLevel, level, properties)
 
       if level < maxLevel then
         ---@cast properties string[]
-        local childLines = Logger.tableToLineTree(node[k], padding .. (i == #keys and '    ' or '│   '), maxLevel, level + 1,
+        local childLines = Logger.tableToLineTree(node[k], padding .. (i == #keys and '    ' or '│   '), maxLevel,
+          level + 1,
           properties)
         for _, l in ipairs(childLines) do
           table.insert(lines, l)
@@ -76,12 +77,11 @@ end
 ---@param path string | nil
 function Logger.new(name, logLevel, path)
   if not filesystem.exists("logs") then filesystem.createDir("logs") end
-  local instance = {
+  local instance = setmetatable({
     logLevel = (logLevel or 0),
     path = (path or nil),
     Name = (string.gsub(name, " ", "_") or ""),
-  }
-  instance = setmetatable(instance, Logger)
+  }, Logger)
   return instance
 end
 
@@ -192,8 +192,10 @@ function Logger:LogTableError(table, maxLevel, properties)
   end
 end
 
----@param clearMainFile boolean
+---@param clearMainFile boolean | nil
 function Logger:ClearLog(clearMainFile)
+  clearMainFile = clearMainFile or false
+
   if self.path ~= nil then
     local ownFile = filesystem.open(self.path, "w")
     ownFile:write("")
