@@ -5,7 +5,7 @@
 local Logger = {}
 Logger.__index = Logger
 
-local mainLogFilePath = filesystem.path("logs", "Log.txt")
+local mainLogFilePath = filesystem.combinePaths("logs", "Log.txt")
 
 ---@private
 ---@param node table

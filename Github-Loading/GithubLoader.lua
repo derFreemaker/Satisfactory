@@ -96,7 +96,7 @@ end
 ---@param file string
 ---@return boolean
 function GithubLoader:doFile(parentPath, file)
-    local path = filesystem.path(parentPath, file[1])
+    local path = filesystem.combinePaths(parentPath, file[1])
     return self:internalDownload(self.GithubLoaderBaseUrl .. path, path, self.forceDownloadLoaderFiles)
 end
 
@@ -105,7 +105,7 @@ end
 ---@param folder table
 ---@return boolean
 function GithubLoader:doFolder(parentPath, folder)
-    local path = filesystem.path(parentPath, folder[1])
+    local path = filesystem.combinePaths(parentPath, folder[1])
     table.remove(folder, 1)
     filesystem.createDir(path)
     local successes = {}
@@ -124,7 +124,7 @@ end
 ---@private
 ---@return boolean
 function GithubLoader:downloadLoaderFiles()
-    return self:doFolder("", GithubLoaderFiles)
+    return self:doFolder("/", GithubLoaderFiles)
 end
 
 -- ########## download Loader Files ########## --
@@ -159,8 +159,8 @@ function GithubLoader:searchForFile(fileName)
         if file[1] ~= fileName then
             return nil
         end
-        local path = filesystem.path(parentPath, file[1])
-        return filesystem.path(self.GithubLoaderBasePath, path)
+        local path = filesystem.combinePaths(parentPath, file[1])
+        return filesystem.combinePaths(self.GithubLoaderBasePath, path)
     end
 
     ---@param parentPath string
@@ -168,7 +168,7 @@ function GithubLoader:searchForFile(fileName)
     ---@param fileName string
     ---@return string | nil
     function funcs:doFolder(parentPath, folder, fileName)
-        local path = filesystem.path(parentPath, folder[1])
+        local path = filesystem.combinePaths(parentPath, folder[1])
         table.remove(folder, 1)
         for _, child in pairs(folder) do
             local success = self:doEntry(path, child, fileName)
@@ -214,7 +214,7 @@ end
 ---@return boolean
 function GithubLoader:loadPackageLoader()
     local baseUrl = self.GithubLoaderBaseUrl .. "/Packages"
-    local basePath = filesystem.path(self.GithubLoaderBasePath, "Packages")
+    local basePath = filesystem.combinePaths(self.GithubLoaderBasePath, "Packages")
     if not filesystem.exists(basePath) then
         filesystem.createDir(basePath)
     end
@@ -230,19 +230,29 @@ end
 function GithubLoader:loadLoaderFiles(logLevel)
     if not self:downloadLoaderFiles() then
         computer.panic("Unable to download loader files")
+    elseif logLevel <= 1 then
+        print("downloaded loader files")
     end
 
     if not self:loadUtils() then
         computer.panic("Unable to load Utils")
+    elseif logLevel <= 1 then
+        print("loaded Utils")
     end
     if not self:loadLogger(logLevel) then
         computer.panic("Unable to load Logger")
+    elseif logLevel <= 1 then
+        print("loaded Logger")
     end
     if not self:loadEntites() then
         computer.panic("Unable to load Entites")
+    elseif logLevel <= 1 then
+        print("loaded Entites")
     end
     if not self:loadPackageLoader() then
         computer.panic("Unable to load Package Loader")
+    elseif logLevel <= 1 then
+        print("loaded Package Loader")
     end
     if self.forceDownloadLoaderFiles then
         self.logger:LogInfo("loaded Loader Files")

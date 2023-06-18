@@ -1,4 +1,4 @@
--- if option is equeals to '%show%' it will show you all options
+-- if option is empty it will show you all options
 local option = ""
 local extendOptionDetails = false
 
@@ -15,13 +15,61 @@ local programForceDownload = false
 -- to define any config variables
 --Config = {}
 
-local GithubLoaderBaseUrl ="https://raw.githubusercontent.com/derFreemaker/Satisfactory/Module-Bundling"
+local GithubLoaderBaseUrl = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/Module-Bundling"
 
 
+
+---@param path string
+---@return string
+function filesystem.fixPath(path)
+    if path == nil then
+        return ""
+    end
+
+    path = path:gsub("\\\\", "/")
+    path = path:gsub("\\", "/")
+
+    return path
+end
+
+---@param path1 string
+---@param path2 string
+---@return string
+function filesystem.combinePaths(path1, path2)
+    if path1 == nil or path1 == "" then
+        return path2 or ""
+    end
+    if path2 == nil or path2 == "" then
+        return path1 or ""
+    end
+
+    path1 = filesystem.fixPath(path1)
+    path2 = filesystem.fixPath(path2)
+
+    if (path1:find("./$") or path1 == "/") and path2:find("^[^/].") then
+        return path1 .. path2
+    end
+    if path1 == "/" and (path2:find("^/.") or path2 == "/") then
+        return path2
+    end
+
+    if path1:find(".[^/]$") and (path2:find("^/.") or path2 == "/") then
+        return path1 .. path2
+    end
+    if (path1:find("./$") or path1 == "/") and path2 == "/" then
+        return path1
+    end
+
+    if path1:find(".[^/]$") and path2:find("^[^/].") then
+        return path1 .. "/" .. path2
+    end
+
+    error("could not combine paths: '" .. path1 .. "' <-> '" .. path2 .. "'")
+end
 
 local GithubLoaderUrl = GithubLoaderBaseUrl .. "/Github-Loading/GithubLoader.lua"
 local GithubLoaderFilesFolderPath = "Github-Loading"
-local GithubLoaderPath = filesystem.path(GithubLoaderFilesFolderPath, "GithubLoader.lua")
+local GithubLoaderPath = filesystem.combinePaths(GithubLoaderFilesFolderPath, "GithubLoader.lua")
 
 computer.beep(5.0)
 local internetCard = computer.getPCIDevices(findClass("FINInternetCard"))[1]
@@ -69,7 +117,7 @@ local GithubLoader = filesystem.doFile(GithubLoaderPath)
 GithubLoader = GithubLoader.new(GithubLoaderBaseUrl, "", loaderForceDownload, internetCard)
 GithubLoader:Initialize(loaderLogLevel)
 
-if option == "%show%" then
+if option == "" then
     -- GithubLoader:ShowOptions([extended:boolean])
     GithubLoader:ShowOptions(extendOptionDetails)
 else

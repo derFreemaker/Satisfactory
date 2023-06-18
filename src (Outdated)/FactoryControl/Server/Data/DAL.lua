@@ -7,7 +7,7 @@ local Serializer = require("libs.Serializer")
 local DatabaseAccessLayer = {}
 DatabaseAccessLayer.__index = DatabaseAccessLayer
 
-local controllerFilePath = filesystem.path("Database", "Controllers.db")
+local controllerFilePath = filesystem.combinePaths("Database", "Controllers.db")
 
 ---@param logger Logger
 ---@return DatabaseAccessLayer
