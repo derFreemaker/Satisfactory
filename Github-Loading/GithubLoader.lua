@@ -316,7 +316,7 @@ end
 function GithubLoader:runConfigureFunction(logLevel)
     self.logger:LogTrace("configuring program...")
     local logger = self.logger.new("Program", logLevel)
-    local thread, success, error = Utils.ExecuteFunction(self.mainProgramModule.Configure, self.mainProgramModule, logger)
+    local thread, success, error = Utils.ExecuteFunctionAsThread(self.mainProgramModule.Configure, self.mainProgramModule, logger)
     if success and error ~= "not found" then
         self.logger:LogTrace("configured program")
     elseif error ~= "$%not found%$" then
@@ -334,7 +334,7 @@ end
 ---@return boolean
 function GithubLoader:runMainFunction()
     self.logger:LogTrace("running program...")
-    local thread, success, result = Utils.ExecuteFunction(self.mainProgramModule.Run, self.mainProgramModule)
+    local thread, success, result = Utils.ExecuteFunctionAsThread(self.mainProgramModule.Run, self.mainProgramModule)
     if result == "$%not found%$" then
         self.logger:LogError("no main run function found")
         return false

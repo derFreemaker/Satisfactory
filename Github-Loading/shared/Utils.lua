@@ -13,7 +13,7 @@ end
 ---@param object table | nil
 ---@param ... any | nil
 ---@return thread, boolean, 'result'
-function Utils.ExecuteFunction(func, object, ...)
+function Utils.ExecuteFunctionAsThread(func, object, ...)
     local thread = coroutine.create(func)
     if object == nil then
         return thread, coroutine.resume(thread, ...)
@@ -28,8 +28,20 @@ Utils.File = {}
 ---@param path string
 ---@param mode string
 ---@param data string | nil
-function Utils.File.Write(path, mode, data)
-    if data == nil then return end
+---@param createPath boolean | nil
+function Utils.File.Write(path, mode, data, createPath)
+    data = data or ""
+    createPath = createPath or false
+
+    local fileName = filesystem.path(3, path)
+    local folderPath = path:gsub(fileName, "")
+    if not filesystem.exists(folderPath) then
+        if not createPath then
+            error("folder does not exists: '".. folderPath .."'", 2)
+        end
+        filesystem.createDir(folderPath)
+    end
+
     local file = filesystem.open(path, mode)
     file:write(data)
     file:close()

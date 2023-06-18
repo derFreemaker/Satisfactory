@@ -76,9 +76,12 @@ end
 ---@param logLevel number | nil
 ---@param path string | nil
 function Logger.new(name, logLevel, path)
+  if path ~= nil then
+    path = filesystem.combinePaths("logs", path)
+  end
   local instance = setmetatable({
     logLevel = (logLevel or 0),
-    path = (path or nil),
+    path = path,
     Name = (string.gsub(name, " ", "_") or ""),
   }, Logger)
   return instance
@@ -97,10 +100,10 @@ function Logger:Log(message, logLevel)
   message = "[" .. self.Name .. "] " .. message
 
   if self.path ~= nil then
-    Utils.File.Write(self.path, "+a", message .. "\n")
+    Utils.File.Write(self.path, "+a", message .. "\n", true)
   end
 
-  Utils.File.Write(mainLogFilePath, "+a", message .. "\n")
+  Utils.File.Write(mainLogFilePath, "+a", message .. "\n", true)
   if logLevel >= self.logLevel then
     print(message)
   end
@@ -195,16 +198,12 @@ end
 function Logger:ClearLog(clearMainFile)
   clearMainFile = clearMainFile or false
 
-  if self.path ~= nil then
-    local ownFile = filesystem.open(self.path, "w")
-    ownFile:write("")
-    ownFile:close()
+  if self.path ~= nil and filesystem.exists(self.path) then
+    Utils.File.Write(self.path, "w", nil)
   end
 
-  if clearMainFile then
-    local mainFile = filesystem.open("log\\Log.txt", "w")
-    mainFile:write("")
-    mainFile:close()
+  if clearMainFile and filesystem.exists(mainLogFilePath) then
+    Utils.File.Write(mainLogFilePath, "w", nil)
   end
 end
 
