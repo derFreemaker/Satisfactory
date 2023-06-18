@@ -1,4 +1,3 @@
-local Utils = require("src (Outdated).Core.shared.Utils.Index")
 local Serializer = require("libs.Serializer")
 
 ---@class DatabaseAccessLayer
@@ -23,9 +22,8 @@ function DatabaseAccessLayer:load()
     end
 
     if filesystem.exists("Database/Controllers.db") then
-        local controllerFile = filesystem.open("Database/Controllers.db", "r")
-        self.Controllers = Serializer:Deserialize(controllerFile:read("*all"))
-        controllerFile:close()
+        local controllerFileData = Utils.File.Read("Database/Controllers.db")
+        self.Controllers = Serializer:Deserialize(controllerFileData)
     else
         self.Controllers = {}
     end

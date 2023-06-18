@@ -59,6 +59,7 @@ function Utils.File.Read(path)
         end
         str = str .. buf
     end
+    file:close()
     return str
 end
 
