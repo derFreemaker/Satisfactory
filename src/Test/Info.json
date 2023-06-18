@@ -1,3 +1,4 @@
 {
-  "Name": "Test"
+  "Name": "Test",
+  "RequiredPackages": ["Core"]
 }

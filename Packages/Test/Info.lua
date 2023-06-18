@@ -1,1 +1,1 @@
-return{Name="Test",Namespace="Test"}
+return{Name="Test",Namespace="Test",RequiredPackages={"Core"}}
