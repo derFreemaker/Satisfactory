@@ -137,11 +137,12 @@ end
 ---@param packagesPath string
 ---@param logger Logger
 ---@return PackageLoader
-function PackageLoader.new(packagesUrl, packagesPath, logger)
+function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard)
     return setmetatable({
         packagesUrl = packagesUrl,
         packagesPath = packagesPath,
         logger = logger,
+        internetCard = internetCard,
         Packages = {}
     }, PackageLoader)
 end

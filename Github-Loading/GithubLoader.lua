@@ -222,7 +222,7 @@ function GithubLoader:loadPackageLoader()
     local path = self:searchForFile("PackageLoader.lua")
     local packageLoader = filesystem.doFile(path)
     local logger = self.logger:create("PackageLoader")
-    self.packageLoader = packageLoader.new(baseUrl, basePath, logger)
+    self.packageLoader = packageLoader.new(baseUrl, basePath, logger, self.internetCard)
     return true
 end
 
