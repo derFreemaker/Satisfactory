@@ -1,5 +1,5 @@
 ---@class Utils
-Utils = {}
+local Utils = {}
 
 ---@param ms number defines how long the function will wait in Milliseconds
 function Utils.Sleep(ms)
@@ -74,6 +74,7 @@ function Utils.Table.Copy(table)
     return setmetatable(copy, getmetatable(table))
 end
 
+return Utils
 
 -- Types and Classes --
 

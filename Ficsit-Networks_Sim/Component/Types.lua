@@ -1,0 +1,5 @@
+---@alias Ficsit_Networks_Sim.Component.Types
+---| "Color"
+---| "ItemCategory"
+---| "ItemType"
+---| "Object"

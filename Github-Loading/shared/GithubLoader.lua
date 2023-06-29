@@ -36,7 +36,10 @@ end
 ---@field private entities Entities
 ---@field private packageLoader PackageLoader
 ---@field private internetCard table
----@field private logger Logger
+---@field private utils Utils
+---@field private listenerLib Github_Loading.shared.Listener
+---@field private eventLib Github_Loading.shared.Event
+---@field private logger Github_Loading.shared.Logger
 local GithubLoader = {}
 GithubLoader.__index = GithubLoader
 
@@ -47,7 +50,9 @@ local GithubLoaderFiles = {
         { "Entities.lua" },
         { "Logger.lua" },
         { "PackageLoader.lua" },
-        { "Utils.lua" }
+        { "Utils.lua" },
+        { "Listener.lua" },
+        { "Event.lua" }
     },
     { "Options.lua" }
 }
@@ -69,6 +74,12 @@ function GithubLoader:internalDownload(url, path, forceDownload)
     local code, data = req:await()
     if code ~= 200 or data == nil then return false end
     local file = filesystem.open(path, "w")
+    if file == nil then
+        if self.logger ~= nil then
+            self.logger:LogError("unable to open file: '".. path .."'")
+        end
+        return false
+    end
     file:write(data)
     file:close()
     if self.logger ~= nil then
@@ -187,7 +198,32 @@ end
 ---@return boolean
 function GithubLoader:loadUtils()
     local path = self:searchForFile("Utils.lua")
-    filesystem.doFile(path)
+    if path == nil then
+        return false
+    end
+    self.utils = filesystem.doFile(path)
+    return true
+end
+
+---@private
+---@return boolean
+function GithubLoader:loadListener()
+    local path = self:searchForFile("Listener.lua")
+    if path == nil then
+        return false
+    end
+    self.listenerLib = filesystem.doFile(path)
+    return true
+end
+
+---@private
+---@return boolean
+function GithubLoader:loadEvent()
+    local path = self:searchForFile("Event.lua")
+    if path == nil then
+        return false
+    end
+    self.eventLib = filesystem.doFile(path)
     return true
 end
 
@@ -197,6 +233,9 @@ end
 function GithubLoader:loadLogger(logLevel)
     if not filesystem.exists("logs") then filesystem.createDir("logs") end
     local path = self:searchForFile("Logger.lua")
+    if path == nil then
+        return false
+    end
     local logger = filesystem.doFile(path)
     self.logger = logger.new("Loader", logLevel)
     self.logger:ClearLog(true)
@@ -207,6 +246,9 @@ end
 ---@return boolean
 function GithubLoader:loadEntites()
     local path = self:searchForFile("Entities.lua")
+    if path == nil then
+        return false
+    end
     self.entities = filesystem.doFile(path)
     return true
 end
@@ -220,8 +262,11 @@ function GithubLoader:loadPackageLoader()
         filesystem.createDir(basePath)
     end
     local path = self:searchForFile("PackageLoader.lua")
+    if path == nil then
+        return false
+    end
     local logger = self.logger:create("PackageLoader")
-    self.packageLoader = filesystem.doFile(path).new(baseUrl, basePath, logger, self.internetCard)
+    self.packageLoader = filesystem.doFile(path).new(baseUrl, basePath, logger, self.internetCard, self.utils)
     self.packageLoader.setGlobal(self.packageLoader)
     return true
 end
@@ -268,6 +313,9 @@ function GithubLoader:loadOptions()
     if not self.options == nil then return true end
     self.logger:LogTrace("loading options...")
     local path = self:searchForFile("Options.lua")
+    if path == nil then
+        return false
+    end
     for name, url in pairs(filesystem.doFile(path)) do
         ---@cast name string
         ---@cast url string
@@ -321,7 +369,8 @@ end
 function GithubLoader:runConfigureFunction(logLevel)
     self.logger:LogTrace("configuring program...")
     local logger = self.logger.new("Program", logLevel)
-    local thread, success, error = Utils.ExecuteFunctionAsThread(self.mainProgramModule.Configure, self.mainProgramModule, logger)
+    local thread, success, error = self.utils.ExecuteFunctionAsThread(self.mainProgramModule.Configure,
+        self.mainProgramModule, logger)
     if success and error ~= "not found" then
         self.logger:LogTrace("configured program")
     elseif error ~= "$%not found%$" then
@@ -339,7 +388,8 @@ end
 ---@return boolean
 function GithubLoader:runMainFunction()
     self.logger:LogTrace("running program...")
-    local thread, success, result = Utils.ExecuteFunctionAsThread(self.mainProgramModule.Run, self.mainProgramModule)
+    local thread, success, result = self.utils.ExecuteFunctionAsThread(self.mainProgramModule.Run, self
+    .mainProgramModule)
     if result == "$%not found%$" then
         self.logger:LogError("no main run function found")
         return false

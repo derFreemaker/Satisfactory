@@ -105,9 +105,9 @@ print("[Computer] INFO! found internet-card")
 filesystem.initFileSystem("/dev")
 
 local drive = ""
-for _, f in pairs(filesystem.childs("/dev")) do
-    if not (f == "serial") then
-        drive = f
+for _, child in pairs(filesystem.childs("/dev")) do
+    if not (child == "serial") then
+        drive = child
         break
     end
 end
@@ -128,6 +128,9 @@ if not filesystem.exists(GithubLoaderPath) then
     local req = internetCard:request(GithubLoaderUrl, "GET", "")
     local _, libdata = req:await()
     local file = filesystem.open(GithubLoaderPath, "w")
+    if file == nil then
+        error("Unable to open file: '".. GithubLoaderPath .."'")
+    end
     file:write(libdata)
     file:close()
     print("[Computer] INFO! downloaded Github loader")
@@ -136,6 +139,9 @@ end
 -- Initialize([logLevel:int], [forceDownload:boolean])
 ---@type GithubLoader
 local GithubLoader = filesystem.doFile(GithubLoaderPath)
+if GithubLoader == nil then
+    error("Unable to load GithubLoader")
+end
 GithubLoader = GithubLoader.new(GithubLoaderBaseUrl, "", loaderForceDownload, internetCard)
 GithubLoader:Initialize(loaderLogLevel)
 

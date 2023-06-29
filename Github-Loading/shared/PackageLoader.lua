@@ -78,11 +78,12 @@ end
 
 ---@class PackageLoader
 ---@field CurrentPackageLoader PackageLoader | nil
+---@field Packages Array<Package>
 ---@field private packagesUrl string
 ---@field private packagesPath string
----@field private logger Logger
+---@field private logger Github_Loading.shared.Logger
 ---@field private internetCard table
----@field Packages Array<Package>
+---@field private utils Utils
 local PackageLoader = {}
 PackageLoader.__index = PackageLoader
 
@@ -118,34 +119,31 @@ end
 function PackageLoader:internalDownloadPackage(url, path, forceDownload)
     local infoFileUrl = url .. "/Info.lua"
     local infoFilePath = filesystem.combinePaths(path, "Info.lua")
+    if not self:internalDownload(infoFileUrl, infoFilePath, forceDownload) then return false end
+    local infoContent = self.utils.File.Read(infoFilePath)
+
     local dataFileUrl = url .. "/Data.lua"
     local dataFilePath = filesystem.combinePaths(path, "Data.lua")
-
-    if not filesystem.exists(path) then
-        filesystem.createDir(path)
-    end
-
-    if not self:internalDownload(infoFileUrl, infoFilePath, forceDownload) then return false end
     if not self:internalDownload(dataFileUrl, dataFilePath, forceDownload) then return false end
-
-    local infoContent = Utils.File.Read(infoFilePath)
-    local dataContent = Utils.File.Read(dataFilePath)
+    local dataContent = self.utils.File.Read(dataFilePath)
 
     return true, Package.new(load(infoContent)(), load(dataContent)(), self)
 end
 
 ---@param packagesUrl string
 ---@param packagesPath string
----@param logger Logger
+---@param logger Github_Loading.shared.Logger
 ---@param internetCard table
+---@param utils Utils
 ---@return PackageLoader
-function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard)
+function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard, utils)
     return setmetatable({
+        Packages = {},
         packagesUrl = packagesUrl,
         packagesPath = packagesPath,
         logger = logger,
         internetCard = internetCard,
-        Packages = {}
+        utils = utils
     }, PackageLoader)
 end
 

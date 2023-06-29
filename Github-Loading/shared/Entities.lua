@@ -16,7 +16,7 @@ function Entities.Main.new(mainModule)
     return instance
 end
 
----@param logger Logger
+---@param logger Github_Loading.shared.Logger
 ---@return string | any
 function Entities.Main:Configure(logger)
     return "$%not found%$"

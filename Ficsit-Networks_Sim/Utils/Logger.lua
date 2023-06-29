@@ -1,12 +1,21 @@
-local Event = require("Github-Loading.shared.Event")
+local Event = require("Ficsit-Networks_Sim.Utils.Event")
+local Tools = require("Ficsit-Networks_Sim.Utils.Tools")
 
----@class Github_Loading.shared.Logger
----@field OnLog Github_Loading.shared.Event
----@field OnAllLog Github_Loading.shared.Event
----@field OnClearLog Github_Loading.shared.Event
----@field OnClearMainLog Github_Loading.shared.Event
+---@alias Ficsit_Networks_Sim.Utils.Logger.LogLevel integer
+---|0 Trace
+---|1 Debug
+---|2 Info
+---|3 Warning
+---|4 Error
+---|5 Fatal
+
+---@class Ficsit_Networks_Sim.Utils.Logger
+---@field OnLog Ficsit_Networks_Sim.Utils.Event
+---@field OnAllLog Ficsit_Networks_Sim.Utils.Event
+---@field OnClearLog Ficsit_Networks_Sim.Utils.Event
+---@field OnClearMainLog Ficsit_Networks_Sim.Utils.Event
 ---@field Name string
----@field private logLevel number
+---@field private logLevel Ficsit_Networks_Sim.Utils.Logger.LogLevel
 local Logger = {}
 Logger.__index = Logger
 
@@ -91,8 +100,8 @@ function Logger.tableToLineTree(node, maxLevel, properties, logFunc, logFuncPare
 end
 
 ---@param name string
----@param logLevel number | nil
----@return Github_Loading.shared.Logger
+---@param logLevel Ficsit_Networks_Sim.Utils.Logger.LogLevel | integer
+---@return Ficsit_Networks_Sim.Utils.Logger
 function Logger.new(name, logLevel)
   return setmetatable({
     logLevel = (logLevel or 0),
@@ -105,9 +114,13 @@ function Logger.new(name, logLevel)
 end
 
 ---@param name string
----@return Github_Loading.shared.Logger
+---@return Ficsit_Networks_Sim.Utils.Logger
 function Logger:create(name)
-  return Logger.new(self.Name .. "." .. name, self.logLevel)
+  local logger = Logger.new(self.Name .. "." .. name, self.logLevel)
+  logger.OnLog:TransferListeners(self.OnLog)
+  logger.OnAllLog:TransferListeners(self.OnAllLog)
+  logger.OnClearMainLog:TransferListeners(self.OnClearMainLog)
+  return logger
 end
 
 ---@private
@@ -190,6 +203,20 @@ end
 function Logger:LogTableError(table, maxLevel, properties)
   if table == nil or type(table) ~= "table" then return end
   Logger.tableToLineTree(table, maxLevel, properties, self.LogError, self)
+end
+
+---@param message any
+function Logger:LogFatal(message)
+  if message == nil then return end
+  self:Log("FATAL! " .. tostring(message), 5)
+end
+
+---@param table table | any
+---@param maxLevel number | nil
+---@param properties table | nil
+function Logger:LogTableFatal(table, maxLevel, properties)
+  if table == nil or type(table) ~= "table" then return end
+  Logger.tableToLineTree(table, maxLevel, properties, self.LogFatal, self)
 end
 
 ---@param clearMainFile boolean | nil
