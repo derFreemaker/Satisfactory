@@ -8,12 +8,12 @@ SimulatorNetwork.__index = SimulatorNetwork
 
 ---@param queueFolderPath Ficsit_Networks_Sim.Filesystem.Path
 ---@param simulatorId string
----@param logger Ficsit_Networks_Sim.Utils.Logger
+---@param loggerConfig Ficsit_Networks_Sim.Config.NetworkConfig
 ---@return Ficsit_Networks_Sim.Network.SimulatorNetwork
-function SimulatorNetwork.new(queueFolderPath, simulatorId, logger)
+function SimulatorNetwork.new(queueFolderPath, simulatorId, loggerConfig)
     return setmetatable({
-        EventNetwork = Network.new(queueFolderPath, simulatorId, logger:create("EventNetwork")),
-        logger = logger
+        EventNetwork = Network.new(queueFolderPath, simulatorId, loggerConfig.EventNetworkLogger),
+        logger = loggerConfig.Logger
     }, SimulatorNetwork)
 end
 

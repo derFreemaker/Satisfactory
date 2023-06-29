@@ -89,14 +89,13 @@ function ComponentManager:GetComponentClass(type)
 end
 
 ---@param id string
----@return Array<Ficsit_Networks_Sim.Component.Entities.Object>
+---@return Array<Ficsit_Networks_Sim.Component.Entities.Object> | nil
 function ComponentManager:GetComponentWithId(id)
     for _, component in ipairs(self.components) do
         if component.Id == id then
-            return {component:Build(self)}
+            return component:Build(self)
         end
     end
-    return {}
 end
 
 ---@param nickname string

@@ -123,6 +123,11 @@ function Logger:create(name)
   return logger
 end
 
+---@param logLevel Ficsit_Networks_Sim.Utils.Logger.LogLevel
+function Logger:setLogLevel(logLevel)
+  self.logLevel = logLevel
+end
+
 ---@private
 ---@param message string
 ---@param logLevel number

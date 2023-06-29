@@ -1,11 +1,10 @@
-local Path = require("Ficsit-Networks_Sim.Filesystem.Path")
-local Listener = require("Ficsit-Networks_Sim.Utils.Listener")
-local Logger = require("Ficsit-Networks_Sim.Utils.Logger")
-local SimulatorNetwork = require("Ficsit-Networks_Sim.Network.SimulatorNetwork")
+local Path              = require("Ficsit-Networks_Sim.Filesystem.Path")
+local Logger            = require("Ficsit-Networks_Sim.Utils.Logger")
+local SimulatorNetwork  = require("Ficsit-Networks_Sim.Network.SimulatorNetwork")
 local FileSystemManager = require("Ficsit-Networks_Sim.Filesystem.FileSystemManager")
 local EEPROMManager     = require("Ficsit-Networks_Sim.Computer.EEPROMManager")
 local ComponentManager  = require("Ficsit-Networks_Sim.Component.ComponentManager")
-local SimulatorConfig   = require("Ficsit-Networks_Sim.SimulatorConfig")
+local SimulatorConfig   = require("Ficsit-Networks_Sim.Config.SimulatorConfig")
 
 ---@alias Ficsit_Networks_Sim.Simulator.exitcode integer
 ---|0 success
@@ -36,22 +35,17 @@ Simulator.__index = Simulator
 ---@param configure function | nil
 ---@param id string
 ---@param filePath string
----@param currentPath string | Ficsit_Networks_Sim.Filesystem.Path
----@param logLevel Ficsit_Networks_Sim.Utils.Logger.LogLevel
 ---@return Ficsit_Networks_Sim.Simulator
-function Simulator.new(configure, id, filePath, currentPath, logLevel)
-    if type(currentPath) == "string" then
-        currentPath = Path.new(currentPath)
-    elseif type(currentPath) ~= "table" then
-        error("What the fuck are you doing?! Check currentPath!", 2)
-    end
-
-    local source = debug.getinfo(1, "S").source:gsub("\\", "/"):gsub("@", "")
+function Simulator.new(configure, id, filePath)
+    local source = debug.getinfo(2, "S").source:gsub("\\", "/"):gsub("@", "")
     local slashPos = source:reverse():find("/")
     local lenght = source:len()
-    local simLibPath = Path.new(source:sub(0, lenght - slashPos))
+    local currentPath = Path.new(source:sub(0, lenght - slashPos))
 
-    local logger = Logger.new("Simulator:'" .. id .. "'", logLevel)
+    source = debug.getinfo(1, "S").source:gsub("\\", "/"):gsub("@", "")
+    slashPos = source:reverse():find("/")
+    lenght = source:len()
+    local simLibPath = Path.new(source:sub(0, lenght - slashPos))
 
     return setmetatable({
         simLibPath = simLibPath,
@@ -61,22 +55,22 @@ function Simulator.new(configure, id, filePath, currentPath, logLevel)
         filePath = filePath,
         CurrentPath = currentPath,
         CurrentDataPath = currentPath:Extend("Ficsit-Networks"),
-        logger = logger
     }, Simulator)
 end
 
 ---@private
 function Simulator:configure()
-    self.simConfig = SimulatorConfig.new(self.logger)
+    self.simConfig = SimulatorConfig.new(self.Id)
     if self.configureFunc and not self.configureFunc(self.simConfig) then
         error("Unable to configure. Do you return true if the function successes?", 2)
     end
+    self.logger = self.simConfig.Logger
     self.logger:LogDebug("configured Simulator")
 end
 
 function Simulator:loadNetwork()
     self.simNetwork = SimulatorNetwork.new(self.CurrentDataPath:Extend("Network"),
-        self.Id, self.logger:create("SimulatorNetwork"))
+        self.Id, self.simConfig.NetworkConfig)
     self.logger:LogDebug("loaded Simulator Network")
 end
 
@@ -163,6 +157,9 @@ end
 
 ---@return boolean
 function Simulator:Start()
+    if not self.simThread then
+        error("Simulator is not ready to run without loading. Use Simulator:Run() for one method execution.", 2)
+    end
     local success, result, message
     repeat
         self.logger:LogDebug("running script...")
