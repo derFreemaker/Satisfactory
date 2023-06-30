@@ -26,9 +26,9 @@ function computer.stop()
     Simulator:Stop(1, "stop")
 end
 
----@param errorString string
-function computer.panic(errorString)
-    errorString = errorString or ""
+---@param error string |nil
+function computer.panic(error)
+    local errorString = tostring(error)
     errorString = "!Panic: ".. errorString
     Simulator:Stop(0, errorString)
 end
@@ -80,10 +80,14 @@ function computer.magicTime()
     return os.time, os.date(), os.date("!%Y-%m-%d %H:%M:%S")
 end
 
----@param typeToGet Ficsit_Networks_Sim.Computer.PCIDevice.Types
----@return Ficsit_Networks_Sim.Computer.PCIDevice
+---@param typeToGet Ficsit_Networks_Sim.Computer.PCIDevice.Types | Ficsit_Networks_Sim.Component.Entities.Object
+---@return table
 function computer.getPCIDevices(typeToGet)
-    Tools.CheckParameterType(typeToGet, "string")
+    Tools.CheckParameterType(typeToGet, { "string", "table" })
+    if type(typeToGet) == "table" then
+        typeToGet = typeToGet:GetType()
+        ---@cast typeToGet string
+    end
     return PCIDeviceManager:GetPCIDevicesByType(typeToGet)
 end
 

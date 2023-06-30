@@ -1,4 +1,4 @@
----@alias Ficsit_Networks_Sim.Component.Types
+---@alias Ficsit_Networks_Sim.Component.Types string
 ---| "Color"
 ---| "ItemCategory"
 ---| "ItemType"

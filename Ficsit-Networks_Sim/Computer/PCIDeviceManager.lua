@@ -2,14 +2,17 @@ local Tools = require("Ficsit-Networks_Sim.Utils.Tools")
 
 ---@class Ficsit_Networks_Sim.Computer.PCIDeviceManager
 ---@field PCIDevices Array<Ficsit_Networks_Sim.Computer.PCIDevice>
+---@field private componentManager Ficsit_Networks_Sim.Component.ComponentManager
 local PCIDeviceManager = {}
 PCIDeviceManager.__index = PCIDeviceManager
 
 ---@param config Ficsit_Networks_Sim.Computer.Config
+---@param componentManager Ficsit_Networks_Sim.Component.ComponentManager
 ---@return Ficsit_Networks_Sim.Computer.PCIDeviceManager
-function PCIDeviceManager.new(config)
+function PCIDeviceManager.new(config, componentManager)
     return setmetatable({
-        PCIDevices = config.PCIDevices
+        PCIDevices = config.PCIDevices,
+        componentManager = componentManager
     }, PCIDeviceManager)
 end
 
@@ -42,14 +45,14 @@ function PCIDeviceManager:GetPCIDevices()
     return Tools.Table.Copy(self.PCIDevices)
 end
 
----@param dType Ficsit_Networks_Sim.Computer.PCIDevice.Types
+---@param dType Ficsit_Networks_Sim.Component.Types
 ---@return Array<Ficsit_Networks_Sim.Computer.PCIDevice>
 function PCIDeviceManager:GetPCIDevicesByType(dType)
     ---@type Array<Ficsit_Networks_Sim.Computer.PCIDevice>
     local found = {}
     for _, pciDevice in ipairs(self.PCIDevices) do
         if pciDevice:GetType() == dType then
-            table.insert(found, pciDevice)
+            table.insert(found, pciDevice:Build(self.componentManager))
         end
     end
     return found

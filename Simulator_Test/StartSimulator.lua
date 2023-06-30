@@ -1,7 +1,6 @@
 ---@type string, string
 local simulatorName, filePath = "Simulator_Test", "Ficsit-Computer.Test.lua"
 
-local Object = require("Ficsit-Networks_Sim.Component.Entities.Object")
 ---@param config Ficsit_Networks_Sim.Simulator.Config
 local function Configure(config)
     config.Logger:setLogLevel(0)
@@ -10,7 +9,7 @@ local function Configure(config)
         :AddComponent("TestColor", "Color", { r = 100 })
         :AddComponent("TestItemType", "ItemType", { name = "Test" })
 
-    config.ComputerConfig:AddPCIDevice("TestObject", Object.new())
+    config.ComputerConfig:AddPCIDevice("TestObject", "FINComputerGPU", { Name = "Hi" })
     return true
 end
 

@@ -87,18 +87,6 @@ function Simulator:loadFileSystemAPI()
 end
 
 ---@private
-function Simulator:loadComputerAPI()
-    self.EEPROMManager = EEPROMManager.new(self.CurrentPath:Extend(self.filePath):GetPath())
-    self.PCIDeviceManager = PCIDeviceManager.new(self.simConfig.ComputerConfig)
-    local computerFunc = loadfile(self.SimLibPath:Extend("computer.lua"):GetPath())
-    if not computerFunc then
-        error("Unable to load 'computer' API", 3)
-    end
-    self.computerAPI = computerFunc(self, self.EEPROMManager, self.PCIDeviceManager)
-    self.logger:LogDebug("loaded 'computer' API")
-end
-
----@private
 function Simulator:loadComponentAPI()
     self.componentManager = ComponentManager.new(self.simConfig.ComponentConfig)
     self.componentManager:LoadComponentClasses()
@@ -108,6 +96,18 @@ function Simulator:loadComponentAPI()
     end
     self.componentAPI = componentFunc(self.componentManager)
     self.logger:LogDebug("loaded 'component' API")
+end
+
+---@private
+function Simulator:loadComputerAPI()
+    self.EEPROMManager = EEPROMManager.new(self.CurrentPath:Extend(self.filePath):GetPath())
+    self.PCIDeviceManager = PCIDeviceManager.new(self.simConfig.ComputerConfig, self.componentManager)
+    local computerFunc = loadfile(self.SimLibPath:Extend("computer.lua"):GetPath())
+    if not computerFunc then
+        error("Unable to load 'computer' API", 3)
+    end
+    self.computerAPI = computerFunc(self, self.EEPROMManager, self.PCIDeviceManager)
+    self.logger:LogDebug("loaded 'computer' API")
 end
 
 ---@private
@@ -128,8 +128,8 @@ function Simulator:Load()
     self:configure()
     self:loadNetwork()
     self:loadFileSystemAPI()
-    self:loadComputerAPI()
     self:loadComponentAPI()
+    self:loadComputerAPI()
     self:loadGlobal()
 
     -- //TODO: finish load sequence
@@ -174,8 +174,10 @@ function Simulator:Start()
     ---@cast success boolean
     ---@cast result Ficsit_Networks_Sim.Simulator.exitcode
     ---@cast message string
-    if  result == 1 then
-        self.logger:LogInfo("Process ended with message: '" .. message .. "'")
+    if result == 0 then
+        self.logger:LogInfo("Process completed")
+    elseif result == 1 then
+        self.logger:LogInfo("Process ended with message: '" .. tostring(message) .. "'")
     elseif not success and (result == 2 or type(result) ~= "number") then
         self.logger:LogError("Process crashed: \n" .. result .. "\n" .. debug.traceback(self.simThread))
     elseif result == 3 then
@@ -184,11 +186,6 @@ function Simulator:Start()
     if not self:Cleanup() then
         self.logger:LogError("Unable to cleanup")
         error("Unable to cleanup")
-    end
-    if success then
-        self.logger:LogInfo("Simulator finished successfully")
-    else
-        self.logger:LogInfo("Simulator didn't finish successfully")
     end
     return success
 end

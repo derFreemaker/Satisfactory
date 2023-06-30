@@ -14,12 +14,15 @@ function ComputerConfig.new()
 end
 
 ---@param id string
----@param obj Ficsit_Networks_Sim.Component.Entities.Object
+---@param dType Ficsit_Networks_Sim.Computer.PCIDevice.Types
+---@param data table | nil
 ---@return Ficsit_Networks_Sim.Computer.Config
-function ComputerConfig:AddPCIDevice(id, obj)
+function ComputerConfig:AddPCIDevice(id, dType, data)
     Tools.CheckParameterType(id, "string", 1)
-    Tools.CheckParameterType(obj, "table", 2)
-    local pciDevice = PCIDevice.new(id, obj)
+    Tools.CheckParameterType(dType, "string", 2)
+    Tools.CheckParameterType(data, { "table", "nil" }, 3)
+    PCIDevice.CheckPCIDeviceType(dType)
+    local pciDevice = PCIDevice.newAsBuildable(id, dType, data)
     table.insert(self.PCIDevices, pciDevice)
     return self
 end
