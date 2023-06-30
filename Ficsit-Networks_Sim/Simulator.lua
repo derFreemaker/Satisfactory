@@ -3,6 +3,7 @@ local Logger            = require("Ficsit-Networks_Sim.Utils.Logger")
 local SimulatorNetwork  = require("Ficsit-Networks_Sim.Network.SimulatorNetwork")
 local FileSystemManager = require("Ficsit-Networks_Sim.Filesystem.FileSystemManager")
 local EEPROMManager     = require("Ficsit-Networks_Sim.Computer.EEPROMManager")
+local PCIDeviceManager  = require("Ficsit-Networks_Sim.Computer.PCIDeviceManager")
 local ComponentManager  = require("Ficsit-Networks_Sim.Component.ComponentManager")
 local SimulatorConfig   = require("Ficsit-Networks_Sim.Config.SimulatorConfig")
 
@@ -16,14 +17,15 @@ local SimulatorConfig   = require("Ficsit-Networks_Sim.Config.SimulatorConfig")
 ---@field Id string
 ---@field CurrentPath Ficsit_Networks_Sim.Filesystem.Path
 ---@field CurrentDataPath Ficsit_Networks_Sim.Filesystem.Path
----@field private simLibPath Ficsit_Networks_Sim.Filesystem.Path
+---@field SimLibPath Ficsit_Networks_Sim.Filesystem.Path
 ---@field private simThread thread | nil
----@field private simConfig Ficsit_Networks_Sim.SimulatorConfig
+---@field private simConfig Ficsit_Networks_Sim.Simulator.Config
 ---@field private configureFunc function
 ---@field private loaded boolean
 ---@field private filePath string
 ---@field private fileSystemManager Ficsit_Networks_Sim.Filesystem.FileSystemManager
 ---@field private EEPROMManager Ficsit_Networks_Sim.Computer.EEPROMManager
+---@field private PCIDeviceManager Ficsit_Networks_Sim.Computer.PCIDeviceManager
 ---@field private componentManager Ficsit_Networks_Sim.Component.ComponentManager
 ---@field private filesystemAPI Ficsit_Networks_Sim.filesystem
 ---@field private computerAPI Ficsit_Networks_Sim.computer
@@ -48,8 +50,8 @@ function Simulator.new(configure, id, filePath)
     local simLibPath = Path.new(source:sub(0, lenght - slashPos))
 
     return setmetatable({
-        simLibPath = simLibPath,
         Id = id,
+        SimLibPath = simLibPath,
         configureFunc = (configure or (function() return true end)),
         loaded = false,
         filePath = filePath,
@@ -60,7 +62,7 @@ end
 
 ---@private
 function Simulator:configure()
-    self.simConfig = SimulatorConfig.new(self.Id)
+    self.simConfig = SimulatorConfig.new(self)
     if self.configureFunc and not self.configureFunc(self.simConfig) then
         error("Unable to configure. Do you return true if the function successes?", 2)
     end
@@ -69,50 +71,43 @@ function Simulator:configure()
 end
 
 function Simulator:loadNetwork()
-    self.simNetwork = SimulatorNetwork.new(self.CurrentDataPath:Extend("Network"),
-        self.Id, self.simConfig.NetworkConfig)
+    self.simNetwork = SimulatorNetwork.new(self.simConfig.NetworkConfig)
     self.logger:LogDebug("loaded Simulator Network")
 end
 
 ---@private
 function Simulator:loadFileSystemAPI()
-    self.fileSystemManager = FileSystemManager.new(self.CurrentDataPath:Extend("Filesystem"), self.Id)
-    local filesystemFunc = loadfile(self.simLibPath:Extend("filesystem.lua"):GetPath())
+    self.fileSystemManager = FileSystemManager.new(self.Id, self.simConfig.FileSystemConfig)
+    local filesystemFunc = loadfile(self.SimLibPath:Extend("filesystem.lua"):GetPath())
     if not filesystemFunc then
-        error("Unable to load filesystem API", 3)
+        error("Unable to load 'filesystem' API", 3)
     end
     self.filesystemAPI = filesystemFunc(self.fileSystemManager)
-    self.logger:LogDebug("loaded file system API")
+    self.logger:LogDebug("loaded 'filesystem' API")
 end
 
 ---@private
 function Simulator:loadComputerAPI()
     self.EEPROMManager = EEPROMManager.new(self.CurrentPath:Extend(self.filePath):GetPath())
-    local computerFunc = loadfile(self.simLibPath:Extend("computer.lua"):GetPath())
+    self.PCIDeviceManager = PCIDeviceManager.new(self.simConfig.ComputerConfig)
+    local computerFunc = loadfile(self.SimLibPath:Extend("computer.lua"):GetPath())
     if not computerFunc then
-        error("Unable to load computer API", 3)
+        error("Unable to load 'computer' API", 3)
     end
-    self.computerAPI = computerFunc(self.EEPROMManager, self)
-    self.logger:LogDebug("loaded computer API")
+    self.computerAPI = computerFunc(self, self.EEPROMManager, self.PCIDeviceManager)
+    self.logger:LogDebug("loaded 'computer' API")
 end
 
 ---@private
 function Simulator:loadComponentAPI()
-    self.componentManager = ComponentManager.new(self.simLibPath)
+    self.componentManager = ComponentManager.new(self.simConfig.ComponentConfig)
     self.componentManager:LoadComponentClasses()
-    local componentFunc = loadfile(self.simLibPath:Extend("component.lua"):GetPath())
+    local componentFunc = loadfile(self.SimLibPath:Extend("component.lua"):GetPath())
     if not componentFunc then
-        error("Unable to load component API", 3)
+        error("Unable to load 'component' API", 3)
     end
     self.componentAPI = componentFunc(self.componentManager)
-    self.logger:LogDebug("loaded component API")
-end
-
----@private
-function Simulator:applyConfiguration()
-    self.fileSystemManager:Configure(self.simConfig.FileSystemConfig)
-    self.componentManager:Configure(self.simConfig.ComponentConfig)
-    self.logger:LogDebug("loaded rest of configuration")
+    self.logger:LogDebug("loaded 'component' API")
 end
 
 ---@private
@@ -120,7 +115,7 @@ function Simulator:loadGlobal()
     filesystem = self.filesystemAPI
     computer = self.computerAPI
     component = self.componentAPI
-    local globalFunctionsFunc = loadfile(self.simLibPath:Extend("GlobalFunctions.lua"):GetPath())
+    local globalFunctionsFunc = loadfile(self.SimLibPath:Extend("GlobalFunctions.lua"):GetPath())
     if not globalFunctionsFunc then
         error("Unable to load global functions", 3)
     end
@@ -135,7 +130,6 @@ function Simulator:Load()
     self:loadFileSystemAPI()
     self:loadComputerAPI()
     self:loadComponentAPI()
-    self:applyConfiguration()
     self:loadGlobal()
 
     -- //TODO: finish load sequence
@@ -163,10 +157,10 @@ function Simulator:Start()
     local success, result, message
     repeat
         self.logger:LogDebug("running script...")
-        print([[\\\\\\\\\\]])
+        print([[\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\]])
         ---@type boolean, Ficsit_Networks_Sim.Simulator.exitcode, string
         success, result, message = coroutine.resume(self.simThread)
-        print("//////////")
+        print([[/////////////////////////////////////////////////////////////////////////]])
         if result == 3 then
             if not self:Cleanup() then
                 self.logger:LogError("Unable to cleanup")

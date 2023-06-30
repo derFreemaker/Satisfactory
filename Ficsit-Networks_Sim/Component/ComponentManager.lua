@@ -10,15 +10,13 @@ local Path = require("Ficsit-Networks_Sim.Filesystem.Path")
 local ComponentManager = {}
 ComponentManager.__index = ComponentManager
 
----@param simLibPath Ficsit_Networks_Sim.Filesystem.Path
+---@param config Ficsit_Networks_Sim.Component.Config
 ---@return Ficsit_Networks_Sim.Component.ComponentManager
-function ComponentManager.new(simLibPath)
-    simLibPath = simLibPath:Copy()
+function ComponentManager.new(config)
     return setmetatable({
-        entitiesPath = simLibPath
-            :Append("Component")
-            :Append("Entities"),
-        registeredComponents = {}
+        entitiesPath = Path.new(config.EntitiesPath),
+        registeredComponents = {},
+        components = config.Components
     }, ComponentManager)
 end
 
@@ -122,11 +120,6 @@ function ComponentManager:GetComponentsWithClass(class)
         end
     end
     return foundComponents
-end
-
----@param config Ficsit_Networks_Sim.Component.Config
-function ComponentManager:Configure(config)
-    self.components = config.Components
 end
 
 return ComponentManager

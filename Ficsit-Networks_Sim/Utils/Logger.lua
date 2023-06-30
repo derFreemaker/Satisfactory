@@ -143,7 +143,7 @@ end
 ---@param message any
 function Logger:LogTrace(message)
   if message == nil then return end
-  self:Log("TRACE! " .. tostring(message), 0)
+  self:Log("TRCE! " .. tostring(message), 0)
 end
 
 ---@param table table | any
@@ -157,7 +157,7 @@ end
 ---@param message any
 function Logger:LogDebug(message)
   if message == nil then return end
-  self:Log("DEBUG! " .. tostring(message), 1)
+  self:Log("DEBG! " .. tostring(message), 1)
 end
 
 ---@param table table | any
@@ -199,7 +199,7 @@ end
 ---@param message any
 function Logger:LogError(message)
   if message == nil then return end
-  self:Log("ERROR! " .. tostring(message), 4)
+  self:Log("EROR! " .. tostring(message), 4)
 end
 
 ---@param table table | any
@@ -213,7 +213,7 @@ end
 ---@param message any
 function Logger:LogFatal(message)
   if message == nil then return end
-  self:Log("FATAL! " .. tostring(message), 5)
+  self:Log("FATL! " .. tostring(message), 5)
 end
 
 ---@param table table | any

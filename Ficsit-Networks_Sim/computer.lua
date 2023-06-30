@@ -1,13 +1,14 @@
 local args = table.pack(...)
----@type Ficsit_Networks_Sim.Computer.EEPROMManager
-local EEPROMManager = args[1]
 ---@type Ficsit_Networks_Sim.Simulator
-local Simulator = args[2]
+local Simulator = args[1]
+---@type Ficsit_Networks_Sim.Computer.EEPROMManager
+local EEPROMManager = args[2]
+---@type Ficsit_Networks_Sim.Computer.PCIDeviceManager
+local PCIDeviceManager = args[3]
+
 local Tools = require("Ficsit-Networks_Sim.Utils.Tools")
 
 ---@class Ficsit_Networks_Sim.computer
----@field private EEEPROMManager Ficsit_Networks_Sim.Computer.EEPROMManager
----@field private Simulator Ficsit_Networks_Sim.Simulator
 local computer = {
     PCIDevices = {}
 }
@@ -75,15 +76,15 @@ function computer.millis()
     return os.clock()
 end
 
--- //TODO: computer.magicTime()
 function computer.magicTime()
-    error("Not Implemented yet")
+    return os.time, os.date(), os.date("!%Y-%m-%d %H:%M:%S")
 end
 
--- //TODO: computer.getPCIDevices
+---@param typeToGet Ficsit_Networks_Sim.Computer.PCIDevice.Types
+---@return Ficsit_Networks_Sim.Computer.PCIDevice
 function computer.getPCIDevices(typeToGet)
-    Tools.CheckParameterType(typeToGet, "table")
-    error("Not Implemented yet")
+    Tools.CheckParameterType(typeToGet, "string")
+    return PCIDeviceManager:GetPCIDevicesByType(typeToGet)
 end
 
 return computer

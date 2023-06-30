@@ -1,3 +1,4 @@
+local Path = require("Ficsit-Networks_Sim.Filesystem.Path")
 local FilesystemEntity = require("Ficsit-Networks_Sim.Filesystem.FilesystemEntity")
 local StorageDevice = require("Ficsit-Networks_Sim.Filesystem.StorageDevice")
 local MountedDevice = require("Ficsit-Networks_Sim.Filesystem.MountedDevice")
@@ -11,17 +12,18 @@ local MountedDevice = require("Ficsit-Networks_Sim.Filesystem.MountedDevice")
 local FileSystemManager = {}
 FileSystemManager.__index = FileSystemManager
 
----@param fileSystemFolder Ficsit_Networks_Sim.Filesystem.Path
 ---@param id string
+---@param config Ficsit_Networks_Sim.Filesystem.Config
 ---@return Ficsit_Networks_Sim.Filesystem.FileSystemManager
-function FileSystemManager.new(fileSystemFolder, id)
-    fileSystemFolder:Append(id)
-    if not os.rename(fileSystemFolder:GetPath(), fileSystemFolder:GetPath()) then
-        os.execute("mkdir \"" .. fileSystemFolder:GetPath() .. "\"")
+function FileSystemManager.new(id, config)
+    local dataFolderPath = Path.new(config.FileSystemPath)
+    dataFolderPath:Append(id)
+    if not os.rename(dataFolderPath:GetPath(), dataFolderPath:GetPath()) then
+        os.execute("mkdir \"" .. dataFolderPath:GetPath() .. "\"")
     end
     return setmetatable({
-        fileSystemFolder = fileSystemFolder,
-        storageDevices = {},
+        fileSystemFolder = dataFolderPath,
+        storageDevices = config:GetStorageDevices(),
         mountedDevices = {},
         filesystemEntities = {}
     }, FileSystemManager)
@@ -214,11 +216,6 @@ function FileSystemManager:GetPath(pathToGet)
         :Extend(pathToGet:gsub(bestMatchMountedDevice.MountPoint, ""))
         :GetPath()
     return path
-end
-
----@param config Ficsit_Networks_Sim.Filesystem.Config
-function FileSystemManager:Configure(config)
-    self.StorageDevices = config.StorageDevices
 end
 
 function FileSystemManager:Cleanup()

@@ -1,4 +1,4 @@
-local test = component.proxy("TestColor")
----@cast test Ficsit_Networks_Sim.Component.Entities.Color
+local test = component.proxy("TestItemType")
+---@cast test Ficsit_Networks_Sim.Component.Entities.ItemType
 
-print(test.r)
+print(test.name)
