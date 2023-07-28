@@ -5,7 +5,9 @@
     "Config",
     "component",
     "filesystem",
-    "computer"
+    "computer",
+    "findStruct",
+    "findItem"
   ],
   "Lua.completion.autoRequire": false
 }

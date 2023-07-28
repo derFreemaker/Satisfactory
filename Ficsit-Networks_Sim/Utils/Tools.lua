@@ -35,7 +35,7 @@ end
 ---@param parameterPos integer | nil
 ---@param errorLevel integer | nil
 function Tools.CheckParameterType(value, typesToCheck, parameterPos, errorLevel)
-    errorLevel = errorLevel or 3
+    errorLevel = 3 + (errorLevel or 0)
     local debugInfo = debug.getinfo(2)
     local valueType = type(value)
     if type(typesToCheck) == "table" then

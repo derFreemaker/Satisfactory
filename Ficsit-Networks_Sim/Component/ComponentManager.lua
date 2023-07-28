@@ -27,7 +27,10 @@ function ComponentManager:LoadComponentClass(path)
         return true
     end
     ---@type Ficsit_Networks_Sim.Component.Entities.Object
-    local component = loadfile(path:GetPath())(ClassManipulation.useBase)
+    local component = dofile(path:GetPath())
+    if component == nil then
+        return true
+    end
     local componentType = component:GetType()
     for _, registeredComponent in ipairs(self.registeredComponents) do
         if registeredComponent:GetType() == componentType then
@@ -43,21 +46,21 @@ end
 ---@param path Ficsit_Networks_Sim.Filesystem.Path
 ---@return boolean success
 function ComponentManager:loadFolder(path)
-    local result = io.popen("dir \"" .. path:GetPath() .. "\" /b /a:-D /o 2>NUL", "r")
-    if not result then
+    local files = io.popen("dir \"" .. path:GetPath() .. "\" /b /a:-D /o 2>NUL", "r")
+    if not files then
         error("Unable to run 'dir' command with path: '".. path .."'")
     end
-    for line in result:lines() do
-        if not self:LoadComponentClass(path:Extend(line)) then
+    for file in files:lines() do
+        if not self:LoadComponentClass(path:Extend(file)) then
             return false
         end
     end
-    result = io.popen("dir \"" .. path:GetPath() .. "\" /b /a:D /o 2>NUL", "r")
-    if not result then
+    local directories = io.popen("dir \"" .. path:GetPath() .. "\" /b /a:D /o 2>NUL", "r")
+    if not directories then
         error("Unable to run 'dir' command with path: '" .. path .. "'")
     end
-    for line in result:lines() do
-        if not self:loadFolder(path:Extend(line)) then
+    for directory in directories:lines() do
+        if not self:loadFolder(path:Extend(directory)) then
             return false
         end
     end

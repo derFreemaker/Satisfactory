@@ -107,7 +107,7 @@ end
 ---@param file string
 ---@return boolean
 function GithubLoader:doFile(parentPath, file)
-    local path = filesystem.combinePaths(parentPath, file[1])
+    local path = filesystem.path(parentPath, file[1])
     return self:internalDownload(self.GithubLoaderBaseUrl .. path, path, self.forceDownloadLoaderFiles)
 end
 
@@ -116,7 +116,7 @@ end
 ---@param folder table
 ---@return boolean
 function GithubLoader:doFolder(parentPath, folder)
-    local path = filesystem.combinePaths(parentPath, folder[1])
+    local path = filesystem.path(parentPath, folder[1])
     filesystem.createDir(path)
     local successes = {}
     for index, child in pairs(folder) do
@@ -171,8 +171,8 @@ function GithubLoader:searchForFile(fileName)
         if file[1] ~= fileName then
             return nil
         end
-        local path = filesystem.combinePaths(parentPath, file[1])
-        return filesystem.combinePaths(self.GithubLoaderBasePath, path)
+        local path = filesystem.path(parentPath, file[1])
+        return filesystem.path(self.GithubLoaderBasePath, path)
     end
 
     ---@param parentPath string
@@ -180,7 +180,7 @@ function GithubLoader:searchForFile(fileName)
     ---@param fileName string
     ---@return string | nil
     function funcs:doFolder(parentPath, folder, fileName)
-        local path = filesystem.combinePaths(parentPath, folder[1])
+        local path = filesystem.path(parentPath, folder[1])
         for index, child in pairs(folder) do
             if index ~= 1 then
                 local success = self:doEntry(path, child, fileName)
@@ -257,7 +257,7 @@ end
 ---@return boolean
 function GithubLoader:loadPackageLoader()
     local baseUrl = self.GithubLoaderBaseUrl .. "/Packages"
-    local basePath = filesystem.combinePaths(self.GithubLoaderBasePath, "Packages")
+    local basePath = filesystem.path(self.GithubLoaderBasePath, "Packages")
     if not filesystem.exists(basePath) then
         filesystem.createDir(basePath)
     end

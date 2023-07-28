@@ -33,10 +33,10 @@ end
 function component.findComponent(query)
     Tools.CheckParameterType(query, { "string", "table" })
     local queryType = type(query)
-    if queryType == "table" then
-        return ComponentManager:GetComponentsWithClass(query)
-    elseif queryType == "string" then
+    if queryType == "string" then
         return ComponentManager:GetComponentsWithNickname(query)
+    elseif queryType == "table" then
+        return ComponentManager:GetComponentsWithClass(query)
     end
     return {}
 end

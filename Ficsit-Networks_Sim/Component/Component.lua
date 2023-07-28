@@ -27,7 +27,7 @@ function Component:Build(componentManager)
     if not self.instance then
         self.instance = componentManager:GetComponentClass(self.Type)
     end
-    return self.instance.newWithData((self.Data or {}))
+    return self.instance(self.Data)
 end
 
 return Component

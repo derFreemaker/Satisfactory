@@ -118,12 +118,12 @@ end
 ---@return boolean, Package | nil
 function PackageLoader:internalDownloadPackage(url, path, forceDownload)
     local infoFileUrl = url .. "/Info.lua"
-    local infoFilePath = filesystem.combinePaths(path, "Info.lua")
+    local infoFilePath = filesystem.path(path, "Info.lua")
     if not self:internalDownload(infoFileUrl, infoFilePath, forceDownload) then return false end
     local infoContent = self.utils.File.Read(infoFilePath)
 
     local dataFileUrl = url .. "/Data.lua"
-    local dataFilePath = filesystem.combinePaths(path, "Data.lua")
+    local dataFilePath = filesystem.path(path, "Data.lua")
     if not self:internalDownload(dataFileUrl, dataFilePath, forceDownload) then return false end
     local dataContent = self.utils.File.Read(dataFilePath)
 
@@ -158,7 +158,7 @@ end
 function PackageLoader:DownloadPackage(packageName, forceDownload)
     self.logger:LogDebug("downloading package: '" .. packageName .. "'...")
     forceDownload = forceDownload or false
-    local path = filesystem.combinePaths(self.packagesPath, packageName)
+    local path = filesystem.path(self.packagesPath, packageName)
     local success, package = self:internalDownloadPackage(self.packagesUrl .. "/" .. packageName, path, forceDownload)
     if not success or not package then
         return false

@@ -1,23 +1,11 @@
+local ClassManipulation = require("Ficsit-Networks_Sim.Utils.ClassManipulation")
+
 ---@class Ficsit_Networks_Sim.Component.Entities.Object
 ---@field private type string
 ---@field private hash integer
 ---@field internalName string
 ---@field internalPath string
-local Object = {
-    type = "Object"
-}
-Object.__index = Object
-
----@return Ficsit_Networks_Sim.Component.Entities.Object
-function Object.new()
-    return setmetatable({}, Object)
-end
-
----@param data table
----@return Ficsit_Networks_Sim.Component.Entities.Object
-function Object.newWithData(data)
-    return setmetatable(data, Object)
-end
+local Object = ClassManipulation.CreateClass("Object")
 
 ---@return integer
 function Object:GetHash()

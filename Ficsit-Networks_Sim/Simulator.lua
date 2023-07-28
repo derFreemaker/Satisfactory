@@ -1,11 +1,10 @@
-local Path              = require("Ficsit-Networks_Sim.Filesystem.Path")
-local Logger            = require("Ficsit-Networks_Sim.Utils.Logger")
-local SimulatorNetwork  = require("Ficsit-Networks_Sim.Network.SimulatorNetwork")
+local Path = require("Ficsit-Networks_Sim.Filesystem.Path")
+local SimulatorNetwork = require("Ficsit-Networks_Sim.Network.SimulatorNetwork")
 local FileSystemManager = require("Ficsit-Networks_Sim.Filesystem.FileSystemManager")
-local EEPROMManager     = require("Ficsit-Networks_Sim.Computer.EEPROMManager")
-local PCIDeviceManager  = require("Ficsit-Networks_Sim.Computer.PCIDeviceManager")
-local ComponentManager  = require("Ficsit-Networks_Sim.Component.ComponentManager")
-local SimulatorConfig   = require("Ficsit-Networks_Sim.Config.SimulatorConfig")
+local EEPROMManager = require("Ficsit-Networks_Sim.Computer.EEPROMManager")
+local PCIDeviceManager = require("Ficsit-Networks_Sim.Computer.PCIDeviceManager")
+local ComponentManager = require("Ficsit-Networks_Sim.Component.ComponentManager")
+local SimulatorConfig = require("Ficsit-Networks_Sim.Config.SimulatorConfig")
 
 ---@alias Ficsit_Networks_Sim.Simulator.exitcode integer
 ---|0 success
@@ -119,7 +118,7 @@ function Simulator:loadGlobal()
     if not globalFunctionsFunc then
         error("Unable to load global functions", 3)
     end
-    globalFunctionsFunc(self.componentManager)
+    globalFunctionsFunc(self.componentManager, self.SimLibPath:GetPath())
     self.logger:LogDebug("mapped all global functions and APIs")
 end
 
@@ -141,11 +140,13 @@ end
 ---@return boolean
 function Simulator:Cleanup()
     self.fileSystemManager:Cleanup()
+    self.simThread = nil
     self.fileSystemManager = nil
     filesystem = nil
     computer = nil
     component = nil
     event = nil
+    collectgarbage("collect")
     return true
 end
 

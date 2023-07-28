@@ -3,7 +3,7 @@ local Event = require("Ficsit-Networks_Sim.Utils.Event")
 local Listener = require("Ficsit-Networks_Sim.Utils.Listener")
 
 ---@class Ficsit_Networks_Sim.Network.Network
----@field RecievedMessage Ficsit_Networks_Sim.Utils.Event
+---@field OnMessageRecieved Ficsit_Networks_Sim.Utils.Event
 ---@field private Queue Ficsit_Networks_Sim.Queue.Queue
 ---@field private logger Ficsit_Networks_Sim.Utils.Logger
 local Network = {}
@@ -16,10 +16,10 @@ Network.__index = Network
 function Network.new(queueFolderPath, networkId, logger)
     local instance = setmetatable({
         Queue = Queue.new(queueFolderPath, networkId),
-        RecievedMessage = Event.new(),
+        OnMessageRecieved = Event.new(),
         logger = logger
     }, Network)
-    instance.Queue.Callback:On(Listener.new(Network.MessageRecieved, instance))
+    instance.Queue.Callback:On(Listener.new(instance.OnMessageRecieved.Trigger))
     return instance
 end
 
@@ -40,11 +40,6 @@ local function checkData(...)
         end
     end
     return data
-end
-
----@private
-function Network:MessageRecieved(queueItem)
-    self.logger:LogTrace("MessageRecieved")
 end
 
 ---@param signalName string

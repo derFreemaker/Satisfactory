@@ -1,5 +1,4 @@
----@type function
-local useBase = table.pack(...)[1]
+local ClassManipulation = require("Ficsit-Networks_Sim.Utils.ClassManipulation")
 local Object = require("Ficsit-Networks_Sim.Component.Entities.Object")
 
 ---@class Ficsit_Networks_Sim.Component.Entities.Color
@@ -7,14 +6,5 @@ local Object = require("Ficsit-Networks_Sim.Component.Entities.Object")
 ---@field g number Green
 ---@field b number Blue
 ---@field a number Alpha
-local Color = useBase({
-    type = "Color"
-}, Object.new())
-Color.__index = Color
-
----@return Ficsit_Networks_Sim.Component.Entities.Color
-function Color.new()
-    return setmetatable({}, Color)
-end
-
+local Color = ClassManipulation.CreateClass("Color")
 return Color

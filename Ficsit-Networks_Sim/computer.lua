@@ -9,9 +9,7 @@ local PCIDeviceManager = args[3]
 local Tools = require("Ficsit-Networks_Sim.Utils.Tools")
 
 ---@class Ficsit_Networks_Sim.computer
-local computer = {
-    PCIDevices = {}
-}
+local computer = {}
 
 -- //TODO: computer.getInstance()
 function computer.getInstance()
@@ -80,7 +78,7 @@ function computer.magicTime()
     return os.time, os.date(), os.date("!%Y-%m-%d %H:%M:%S")
 end
 
----@param typeToGet Ficsit_Networks_Sim.Computer.PCIDevice.Types | Ficsit_Networks_Sim.Component.Entities.Object
+---@param typeToGet Ficsit_Networks_Sim.Component.PCIDeviceTypes | Ficsit_Networks_Sim.Component.Entities.Object
 ---@return table
 function computer.getPCIDevices(typeToGet)
     Tools.CheckParameterType(typeToGet, { "string", "table" })
