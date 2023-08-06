@@ -366,11 +366,11 @@ end
 ---@private
 ---@param logLevel number
 ---@return boolean
-function GithubLoader:runConfigureFunction(logLevel)
+function GithubLoader:ConfigureProgram(logLevel)
     self.logger:LogTrace("configuring program...")
     local logger = self.logger.new("Program", logLevel)
-    local thread, success, error = self.utils.ExecuteFunctionAsThread(self.mainProgramModule.Configure,
-        self.mainProgramModule, logger)
+    self.mainProgramModule.Logger = logger
+    local thread, success, error = self.utils.ExecuteFunctionAsThread(self.mainProgramModule.Configure, self.mainProgramModule)
     if success and error ~= "not found" then
         self.logger:LogTrace("configured program")
     elseif error ~= "$%not found%$" then
@@ -462,7 +462,7 @@ function GithubLoader:Run(option, logLevel, forceDownload)
         return false
     end
     print()
-    if not self:runConfigureFunction(logLevel) then return false end
+    if not self:ConfigureProgram(logLevel) then return false end
     if not self:runMainFunction() then return false end
     return true
 end

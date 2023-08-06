@@ -12,7 +12,7 @@ function Event.new()
     }, Event)
 end
 
----@param listener Ficsit_Networks_Sim.Utils.Listener
+---@param listener Github_Loading.shared.Listener
 ---@return Github_Loading.shared.Event
 function Event:AddListener(listener)
     table.insert(self.funcs, listener)
@@ -20,7 +20,7 @@ function Event:AddListener(listener)
 end
 Event.On = Event.AddListener
 
----@param listener Ficsit_Networks_Sim.Utils.Listener
+---@param listener Github_Loading.shared.Listener
 ---@return Github_Loading.shared.Event
 function Event:AddListenerOnce(listener)
     table.insert(self.onceFuncs, listener)
@@ -40,7 +40,7 @@ function Event:Trigger(...)
     self.OnceFuncs = {}
 end
 
----@return Ficsit_Networks_Sim.Utils.Listener[]
+---@return Github_Loading.shared.Listener[]
 function Event:Listeners()
     local clone = {}
 

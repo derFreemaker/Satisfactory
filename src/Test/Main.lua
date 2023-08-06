@@ -1,8 +1,8 @@
 ---@class TestMain : Main
----@field private logger Logger
+---@field private logger Github_Loading.shared.Logger
 local Test = {}
 
----@param logger Logger
+---@param logger Github_Loading.shared.Logger
 function Test:Configure(logger)
     self.logger = logger
 end

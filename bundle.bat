@@ -1,2 +1,2 @@
 echo off
-.\..\Lua-Bundler\bin\Release\net7.0\Lua-Bundler.exe --SourcePath C:\Coding\Lua\Satisfactory\src\%1 --OutputPath C:\Coding\Lua\Satisfactory\Packages %2
+.\..\Lua-Bundler\bin\Release\net7.0\Lua-Bundler.exe --SourcePath %CD%\src\%1 --OutputPath %CD%\Packages %2

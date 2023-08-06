@@ -2,6 +2,7 @@
 local Entities = {}
 
 ---@class Main
+---@field Logger Github_Loading.shared.Logger
 Entities.Main = {}
 Entities.Main.__index = Entities.Main
 
@@ -16,9 +17,8 @@ function Entities.Main.new(mainModule)
     return instance
 end
 
----@param logger Github_Loading.shared.Logger
 ---@return string | any
-function Entities.Main:Configure(logger)
+function Entities.Main:Configure()
     return "$%not found%$"
 end
 
