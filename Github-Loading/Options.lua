@@ -1,5 +1,3 @@
-local Options = {}
-
-Options.Test = "Test"
-
-return Options
+return {
+    Test = "Test"
+}

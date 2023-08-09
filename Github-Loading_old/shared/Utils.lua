@@ -15,11 +15,7 @@ end
 ---@return thread, boolean, 'result'
 function Utils.ExecuteFunctionAsThread(func, object, ...)
     local thread = coroutine.create(func)
-    if object == nil then
-        return thread, coroutine.resume(thread, ...)
-    else
-        return thread, coroutine.resume(thread, object, ...)
-    end
+    return thread, coroutine.resume(thread, object, ...)
 end
 
 
