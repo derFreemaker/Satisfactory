@@ -1,6 +1,6 @@
 local LoadedLoaderFiles = table.pack(...)[1]
 ---@type Github_Loading.Event
-local Event = LoadedLoaderFiles["/Github-Loading/Loader/10_Event.lua"]
+local Event = LoadedLoaderFiles["/Github-Loading/Loader/10_Event.lua"][1]
 
 ---@alias Github_Loading.Logger.LogLevel
 ---|0 Trace

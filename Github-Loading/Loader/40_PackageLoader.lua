@@ -1,8 +1,6 @@
 local LoadedLoaderFiles = table.pack(...)[1]
----@type Utils
-local Utils = LoadedLoaderFiles["/Github-Loading/Loader/10_Utils.lua"]
 ---@type Github_Loading.Package
-local Package = LoadedLoaderFiles["/Github-Loading/Loader/30_Package.lua"]
+local Package = LoadedLoaderFiles["/Github-Loading/Loader/30_Package.lua"][1]
 
 ---@class Github_Loading.PackageLoader
 ---@field Packages Github_Loading.Package[]

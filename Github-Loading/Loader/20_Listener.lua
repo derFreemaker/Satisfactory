@@ -1,6 +1,6 @@
 local LoadedLoaderFiles = table.pack(...)[1]
 ---@type Utils
-local Utils = LoadedLoaderFiles["/Github-Loading/Loader/10_Utils.lua"]
+local Utils = LoadedLoaderFiles["/Github-Loading/Loader/10_Utils.lua"][1]
 
 ---@class Github_Loading.Listener
 ---@field private func function

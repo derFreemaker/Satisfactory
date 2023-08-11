@@ -6,11 +6,12 @@ local LoaderFiles = {
         { "10_Entities.lua" },
         { "10_Event.lua" },
         { "10_Module.lua" },
+        { "10_Option.lua" },
         { "10_Utils.lua" },
         { "20_Listener.lua" },
         { "20_Logger.lua" },
         { "30_Package.lua" },
-        { "40_PackageLoader" },
+        { "40_PackageLoader.lua" },
     },
     { "100_Options.lua" },
 }
@@ -101,7 +102,11 @@ local function downloadFiles(LoaderBaseUrl, LoaderBasePath, forceDownload, inter
     local function downloadFile(path)
         local url = LoaderBaseUrl .. path
         path = LoaderBasePath .. path
-        return internalDownload(url, path, forceDownload, internetCard)
+        if not internalDownload(url, path, forceDownload, internetCard) then
+            error("Unable to download file: '".. path .."'")
+            return false
+        end
+        return true
     end
 
     ---@param path string
@@ -133,7 +138,7 @@ local function loadFiles(loaderBasePath)
             local entries = loadEntries[num]
             if not entries then
                 entries = {}
-                loadEntries = entries
+                loadEntries[num] = entries
                 table.insert(loadOrder, num)
             end
             table.insert(entries, path)

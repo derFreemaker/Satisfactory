@@ -57,7 +57,7 @@ if not filesystem.exists(LoaderFilesPath) then
     filesystem.createDir(LoaderFilesPath)
 end
 
-if not filesystem.exists(LoaderPath) then
+if not filesystem.exists(LoaderPath) or loaderForceDownload then
     print("[Computer] INFO! downloading Github loader...")
     local req = internetCard:request(LoaderUrl, "GET", "")
     local _, libdata = req:await()
@@ -96,7 +96,7 @@ for name, url in pairs(Loader:Get("/Github-Loading/100_Options.lua")) do
     table.insert(Options, optionObj)
 end
 if option == nil then
-    print("Options:")
+    print("\nOptions:")
     for _, optionObj in ipairs(Options) do
         optionObj:Print(showExtendOptionDetails)
     end
