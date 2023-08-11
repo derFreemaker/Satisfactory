@@ -1,4 +1,6 @@
 local LoadedLoaderFiles = table.pack(...)[1]
+---@type Utils
+local Utils = LoadedLoaderFiles["/Github-Loading/Loader/10_Utils.lua"][1]
 ---@type Github_Loading.Event
 local Event = LoadedLoaderFiles["/Github-Loading/Loader/10_Event.lua"][1]
 
@@ -107,16 +109,22 @@ function Logger.new(name, logLevel)
         logLevel = logLevel,
         Name = (string.gsub(name, " ", "_") or ""),
         OnLog = Event.new(),
-        OnAllLog = Event.new(),
-        OnClearLog = Event.new(),
-        OnClearMainLog = Event.new()
+        OnClear = Event.new()
     }, metatable)
 end
 
 ---@param name string
 ---@return Github_Loading.Logger
 function Logger:create(name)
-    return Logger.new(self.Name .. "." .. name, self.logLevel)
+    name = self.Name .. "." .. name
+    local metatable = Logger
+    metatable.__index = Logger
+    return setmetatable({
+        logLevel = self.logLevel,
+        Name = name:gsub(" ", "_"),
+        OnLog = Utils.Table.Copy(self.OnLog),
+        OnClear = Utils.Table.Copy(self.OnClear)
+    }, metatable)
 end
 
 ---@private
