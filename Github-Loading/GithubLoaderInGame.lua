@@ -167,6 +167,8 @@ local programEntry = Entities.newMain(mainModuleData)
 
 Logger:LogTrace("configuring program...")
 local programLogger = Logger.new("Program", programLogLevel)
+programLogger.OnLog:AddListener(Listener.new(log))
+programLogger.OnClear:AddListener(Listener.new(clear))
 programEntry.Logger = programLogger
 local thread, success, errorMsg = Utils.Function.InvokeFunctionAsThread(programEntry.Configure, programEntry)
 if success and errorMsg ~= "not found" then
