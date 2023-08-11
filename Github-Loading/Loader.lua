@@ -45,15 +45,16 @@ local FileTreeTools = {}
 ---@private
 ---@param parentPath string
 ---@param entry table | string
----@param func fun(path: string) : boolean
+---@param fileFunc fun(path: string) : boolean
+---@param folderFunc fun(path: string) : boolean
 ---@return boolean
-function FileTreeTools:doEntry(parentPath, entry, func)
+function FileTreeTools:doEntry(parentPath, entry, fileFunc, folderFunc)
     if #entry == 1 then
         ---@cast entry string
-        return self:doFile(parentPath, entry, func)
+        return self:doFile(parentPath, entry, fileFunc)
     else
         ---@cast entry table
-        return self:doFolder(parentPath, entry, func)
+        return self:doFolder(parentPath, entry, fileFunc, folderFunc)
     end
 end
 
@@ -69,14 +70,17 @@ end
 
 ---@param parentPath string
 ---@param folder table
----@param func fun(path: string) : boolean
+---@param fileFunc fun(path: string) : boolean
+---@param folderFunc fun(path: string) : boolean
 ---@return boolean
-function FileTreeTools:doFolder(parentPath, folder, func)
+function FileTreeTools:doFolder(parentPath, folder, fileFunc, folderFunc)
     local path = filesystem.path(parentPath, folder[1])
-    filesystem.createDir(path)
+    if not folderFunc(path) then
+        return false
+    end
     for index, child in pairs(folder) do
         if index ~= 1 then
-            local success = self:doEntry(path, child, func)
+            local success = self:doEntry(path, child, fileFunc, folderFunc)
             if not success then
                 return false
             end
@@ -100,7 +104,13 @@ local function downloadFiles(LoaderBaseUrl, LoaderBasePath, forceDownload, inter
         return internalDownload(url, path, forceDownload, internetCard)
     end
 
-    return FileTreeTools:doFolder("/", LoaderFiles, downloadFile)
+    ---@param path string
+    ---@return boolean success
+    local function createFolder(path)
+        return filesystem.createDir(LoaderBasePath .. path)
+    end
+
+    return FileTreeTools:doFolder("/", LoaderFiles, downloadFile, createFolder)
 end
 
 
@@ -131,7 +141,7 @@ local function loadFiles(loaderBasePath)
         return true
     end
 
-    if not FileTreeTools:doFolder("/", LoaderFiles, retrivePath) then
+    if not FileTreeTools:doFolder("/", LoaderFiles, retrivePath, function() return true end) then
         error("Unable to load loader Files")
     end
 

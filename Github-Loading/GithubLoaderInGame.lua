@@ -79,7 +79,7 @@ if Loader == nil then
     error("Unable to load loader")
 end
 
-Loader = Loader.new(LoaderFilesPath, LoaderFilesPath, loaderForceDownload, internetCard)
+Loader = Loader.new(BaseUrl, LoaderFilesPath, loaderForceDownload, internetCard)
 if not Loader:Download() then
     error("Unable to download loader Files")
 end
