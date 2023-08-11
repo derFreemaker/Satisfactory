@@ -59,7 +59,7 @@ function DatabaseAccessLayer:DeleteController(controllerIpAddress)
 end
 
 ---@param controllerIpAddress string
----@return ControllerData | nil
+---@return ControllerData?
 function DatabaseAccessLayer:GetController(controllerIpAddress)
     for _, controller in pairs(self.Controllers) do
         if controller.IPAddress == controllerIpAddress then

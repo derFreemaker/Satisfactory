@@ -7,7 +7,6 @@
 ---@class FicsIt_Networks.Filesystem.Api
 filesystem = {}
 
-
 ---@alias FicsIt_Networks.Filesystem.Type
 ---|"tmpfs" # A temporary filesystem only existing at runtime in the memory of your computer. All data will be lost when the system stops.
 
@@ -119,7 +118,7 @@ function filesystem.unmount(mountPoint) end
 --- Executes Lua code in the file referd by the given path.
 --- Function fails if path doesn’t exist or path doesn’t refer to a file.
 ---@param path string path to file you want to execute as Lua code
----@return ... Returned values from executed file.
+---@return any ... Returned values from executed file.
 function filesystem.doFile(path) end
 
 
@@ -130,11 +129,6 @@ function filesystem.doFile(path) end
 function filesystem.loadFile(path) end
 
 
---- Combines a variable amount of strings as paths together to one big path.
----@param ... string paths to be combined
----@return string path the final combined and converted output path
-function filesystem.path(...) end
-
 ---@alias FicsIt_Networks.Filesystem.PathParameters
 ---|0 Normalize the path. -> /my/../weird/./path → /weird/path
 ---|1 Normalizes and converts the path to an absolute path. -> my/abs/path → /my/abs/path
@@ -144,9 +138,15 @@ function filesystem.path(...) end
 ---|5 Returns the file-extension of the filename. -> /path/to/file.txt → .txt || /path/to/.file → empty-str || /path/to/file. → .
 
 --- Combines a variable amount of strings as paths together to one big path.
+---@param ... string paths to be combined
+---@return string path the final combined path
+function filesystem.path(...) end
+
+--- Combines a variable amount of strings as paths together to one big path.
 --- Additionally, applies given conversion.
 ---@param parameter FicsIt_Networks.Filesystem.PathParameters defines a conversion that should get applied to the output path.
 ---@param ... string paths to be combined
+---@return string path the final combined and converted output path
 function filesystem.path(parameter, ...) end
 
 

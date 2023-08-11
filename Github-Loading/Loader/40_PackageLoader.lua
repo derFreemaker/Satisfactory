@@ -1,91 +1,16 @@
----@class Module
----@field Name string
----@field FullName string
----@field Namespace string
----@field IsRunnable boolean
----@field Data string
-local Module = {}
-Module.__index = Module
+local LoadedLoaderFiles = table.pack(...)[1]
+---@type Utils
+local Utils = LoadedLoaderFiles["/Github-Loading/Loader/10_Utils.lua"]
+---@type Github_Loading.Package
+local Package = LoadedLoaderFiles["/Github-Loading/Loader/30_Package.lua"]
 
----@param moduleData table
----@return Module
-function Module.new(moduleData)
-    return setmetatable({
-        Namespace = moduleData.Namespace,
-        Name = moduleData.Name,
-        FullName = moduleData.FullName,
-        IsRunnable = moduleData.IsRunnable,
-        Data = moduleData.Data
-    }, Module)
-end
-
----@return table | string
-function Module:GetData()
-    if self.IsRunnable then
-        return load(self.Data)()
-    end
-    return self.Data
-end
-
--- ########## Module ########## --
-
----@class Package
----@field private PackageLoader PackageLoader
----@field Name string
----@field Namespace string
----@field RequiredPackages Array<string>
----@field Modules Dictionary<Module>
-local Package = {}
-Package.__index = Package
-
----@param info table
----@param packageData table
----@param packageLoader PackageLoader
----@return Package
-function Package.new(info, packageData, packageLoader)
-    ---@type Dictionary<Module>
-    local modules = {}
-    for id, module in pairs(packageData) do
-        modules[id] = Module.new(module)
-    end
-
-    return setmetatable({
-        Name = info.Name,
-        Namespace = info.Namesapce,
-        RequiredPackages = (info.RequiredPackages or {}),
-        Modules = modules,
-        PackageLoader = packageLoader
-    }, Package)
-end
-
----@param moduleToGet string
----@return Module | nil
-function Package:GetModule(moduleToGet)
-    for _, module in pairs(self.Modules) do
-        if module.Namespace == moduleToGet then
-            return module
-        end
-    end
-end
-
-function Package:Load()
-    for _, packageName in ipairs(self.RequiredPackages) do
-        self.PackageLoader:LoadPackage(packageName)
-    end
-end
-
--- ########## Package ########## --
-
----@class PackageLoader
----@field CurrentPackageLoader PackageLoader | nil
----@field Packages Array<Package>
+---@class Github_Loading.PackageLoader
+---@field Packages Github_Loading.Package[]
 ---@field private packagesUrl string
 ---@field private packagesPath string
----@field private logger Github_Loading.shared.Logger
----@field private internetCard table
----@field private utils Utils
+---@field private logger Github_Loading.Logger
+---@field private internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
 local PackageLoader = {}
-PackageLoader.__index = PackageLoader
 
 ---@private
 ---@param url string
@@ -97,64 +22,61 @@ function PackageLoader:internalDownload(url, path, forceDownload)
     if filesystem.exists(path) and not forceDownload then
         return true
     end
-    if self.logger ~= nil then
-        self.logger:LogTrace("downloading '" .. path .. "' from: '" .. url .. "'...")
-    end
+    self.logger:LogTrace("downloading '" .. path .. "' from: '" .. url .. "'...")
     local req = self.internetCard:request(url, "GET", "")
     local code, data = req:await()
     if code ~= 200 or data == nil then return false end
     local file = filesystem.open(path, "w")
     file:write(data)
     file:close()
-    if self.logger ~= nil then
-        self.logger:LogTrace("downloaded '" .. path .. "' from: '" .. url .. "'")
-    end
+    self.logger:LogTrace("downloaded '" .. path .. "' from: '" .. url .. "'")
     return true
 end
 
 ---@param url string
 ---@param path string
 ---@param forceDownload boolean
----@return boolean, Package | nil
+---@return boolean, Github_Loading.Package?
 function PackageLoader:internalDownloadPackage(url, path, forceDownload)
     local infoFileUrl = url .. "/Info.lua"
     local infoFilePath = filesystem.path(path, "Info.lua")
     if not self:internalDownload(infoFileUrl, infoFilePath, forceDownload) then return false end
-    local infoContent = self.utils.File.Read(infoFilePath)
 
     local dataFileUrl = url .. "/Data.lua"
     local dataFilePath = filesystem.path(path, "Data.lua")
     if not self:internalDownload(dataFileUrl, dataFilePath, forceDownload) then return false end
-    local dataContent = self.utils.File.Read(dataFilePath)
 
-    return true, Package.new(load(infoContent)(), load(dataContent)(), self)
+    local infoContent = filesystem.doFile(infoFilePath)
+    local dataContent = filesystem.doFile(dataFilePath)
+
+    return true, Package.new(infoContent, dataContent, self)
 end
 
 ---@param packagesUrl string
 ---@param packagesPath string
----@param logger Github_Loading.shared.Logger
----@param internetCard table
----@param utils Utils
----@return PackageLoader
-function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard, utils)
+---@param logger Github_Loading.Logger
+---@param internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+---@return Github_Loading.PackageLoader
+function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard)
+    local metatable = PackageLoader
+    metatable.__index = PackageLoader
     return setmetatable({
         Packages = {},
         packagesUrl = packagesUrl,
         packagesPath = packagesPath,
         logger = logger,
         internetCard = internetCard,
-        utils = utils
-    }, PackageLoader)
+    }, metatable)
 end
 
----@param packageLoader PackageLoader
+---@param packageLoader Github_Loading.PackageLoader
 function PackageLoader.setGlobal(packageLoader)
-    PackageLoader.CurrentPackageLoader = packageLoader
+    _G.PackageLoader = packageLoader
 end
 
 ---@param packageName string
----@param forceDownload boolean | nil
----@return boolean, Package | nil
+---@param forceDownload boolean?
+---@return boolean, Github_Loading.Package?
 function PackageLoader:DownloadPackage(packageName, forceDownload)
     self.logger:LogDebug("downloading package: '" .. packageName .. "'...")
     forceDownload = forceDownload or false
@@ -168,7 +90,7 @@ function PackageLoader:DownloadPackage(packageName, forceDownload)
 end
 
 ---@param packageName string
----@return Package | nil
+---@return Github_Loading.Package?
 function PackageLoader:GetPackage(packageName)
     for _, package in ipairs(self.Packages) do
         if package.Name == packageName then
@@ -178,7 +100,7 @@ function PackageLoader:GetPackage(packageName)
 end
 
 ---@param packageName string
----@return Package
+---@return Github_Loading.Package
 function PackageLoader:LoadPackage(packageName, forceDownload)
     self.logger:LogDebug("loading package: '" .. packageName .. "'...")
     local package = self:GetPackage(packageName)
@@ -189,7 +111,7 @@ function PackageLoader:LoadPackage(packageName, forceDownload)
 
     local success, package = self:DownloadPackage(packageName, forceDownload)
     if success then
-        ---@cast package Package
+        ---@cast package Github_Loading.Package
         table.insert(self.Packages, package)
         self.logger:LogDebug("loading required packages...")
         package:Load()
@@ -197,7 +119,7 @@ function PackageLoader:LoadPackage(packageName, forceDownload)
     else
         computer.panic("could not find or download package: '" .. packageName .. "'")
     end
-    ---@cast package Package
+    ---@cast package Github_Loading.Package
     self.logger:LogDebug("loaded package: '" .. package.Name .. "'")
     return package
 end
@@ -220,13 +142,14 @@ function PackageLoader:GetModule(moduleToGet)
 end
 
 ---@param moduleToGet string
----@return table | string
-function require(moduleToGet)
-    if not PackageLoader.CurrentPackageLoader then
-        computer.panic("'PackageLoader.CurrentPackageLoader' was not set")
+---@param ... any
+---@return any ...
+function require(moduleToGet, ...)
+    if _G.PackageLoader == nil then
+        computer.panic("'PackageLoader' was not set")
     end
-    local module = PackageLoader.GetModule(PackageLoader.CurrentPackageLoader, moduleToGet)
-    return module:GetData()
+    local module = _G.PackageLoader:GetModule(moduleToGet)
+    return module:Load(...)
 end
 
 return PackageLoader

@@ -1,1 +1,25 @@
-local PackageData={}PackageData.MFYoiWSx={Namespace="Test.Config",Name="Config",FullName="Config.json",IsRunnable=false,Data=[[]]}PackageData.oVIzFPpX={Namespace="Test.File1",Name="File1",FullName="File1.lua",IsRunnable=true,Data=[[local Test = {} Test.__index = Test function Test.Test() return "Test" end return Test]]}PackageData.PksKdJNx={Namespace="Test.Main",Name="Main",FullName="Main.lua",IsRunnable=true,Data=[[local Test = {} function Test:Configure(logger) self.logger = logger end function Test:Run() self.logger:LogInfo("Running Main Module") local file1 = require("Test.File1") print(file1:Test()) return 0 end return Test]]} return PackageData
+local PackageData = {}
+
+-- ########## Test ##########
+
+PackageData.MFYoiWSx = {
+    Namespace = "Test.Main",
+    Name = "Main",
+    FullName = "Main.lua",
+    IsRunnable = true,
+    Data = function(...)
+local Test = {}
+function Test:Configure()
+    self.Logger:LogDebug("called configure function")
+end
+function Test:Run()
+    self.Logger:LogInfo("called run function")
+    return 0
+end
+return Test
+end
+}
+
+-- ########## Test ########## --
+
+return PackageData

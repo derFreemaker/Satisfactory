@@ -35,7 +35,7 @@ function ControllersEndpoint:DeleteController(context)
 end
 
 ---@param context NetworkContext
----@return ControllerData | nil
+---@return ControllerData?
 function ControllersEndpoint:GetController(context)
     return self.databaseAccessLayer:GetController(context.Body.ControllerIPAddress)
 end

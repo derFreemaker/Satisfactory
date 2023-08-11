@@ -7,6 +7,7 @@ local Future = {}
 
 
 --- Waits for the future to finish processing and returns the result.
+---@async
 ---@return ... data
 function Future:await() end
 

@@ -1,4 +1,4 @@
----@class TestMain : Main
+---@class Test.Main : Github_Loading.Main
 local Test = {}
 
 function Test:Configure()
@@ -7,9 +7,7 @@ end
 
 ---@return integer
 function Test:Run()
-    self.Logger:LogInfo("Running Main Module")
-    local file1 = require("Test.File1")
-    print(file1:Test())
+    self.Logger:LogInfo("called run function")
     return 0
 end
 
