@@ -91,17 +91,17 @@ function FileTreeTools:doFolder(parentPath, folder, fileFunc, folderFunc)
 end
 
 
----@param LoaderBaseUrl string
----@param LoaderBasePath string
+---@param loaderBaseUrl string
+---@param loaderBasePath string
 ---@param forceDownload boolean
 ---@param internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
 ---@return boolean
-local function downloadFiles(LoaderBaseUrl, LoaderBasePath, forceDownload, internetCard)
+local function downloadFiles(loaderBaseUrl, loaderBasePath, forceDownload, internetCard)
     ---@param path string
     ---@return boolean success
     local function downloadFile(path)
-        local url = LoaderBaseUrl .. path
-        path = LoaderBasePath .. path
+        local url = loaderBaseUrl .. path
+        path = loaderBasePath .. path
         if not internalDownload(url, path, forceDownload, internetCard) then
             error("Unable to download file: '".. path .."'")
             return false
@@ -112,7 +112,10 @@ local function downloadFiles(LoaderBaseUrl, LoaderBasePath, forceDownload, inter
     ---@param path string
     ---@return boolean success
     local function createFolder(path)
-        return filesystem.createDir(LoaderBasePath .. path)
+        if not filesystem.exists(loaderBasePath .. path) then
+            return filesystem.createDir(loaderBasePath .. path)
+        end
+        return true
     end
 
     return FileTreeTools:doFolder("/", LoaderFiles, downloadFile, createFolder)

@@ -144,7 +144,7 @@ Logger.OnClear:AddListener(Listener.new(clear))
 
 ---@type Github_Loading.PackageLoader
 local PackageLoader = Loader:Get("/Github-Loading/Loader/40_PackageLoader.lua")
-PackageLoader = PackageLoader.new(BaseUrl .. "/Packages", "/Packages", Logger:create("PackageLoader"), internetCard)
+PackageLoader = PackageLoader.new(BaseUrl .. "/Packages", LoaderFilesPath .. "/Packages", Logger:create("PackageLoader"), internetCard)
 
 local package = PackageLoader:LoadPackage(chosenOption.Url, programForceDownload)
 

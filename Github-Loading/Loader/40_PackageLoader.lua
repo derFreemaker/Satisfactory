@@ -56,6 +56,9 @@ end
 ---@param internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
 ---@return Github_Loading.PackageLoader
 function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard)
+    if not filesystem.exists(packagesPath) and not filesystem.createDir(packagesPath) then
+        error("Unable to create folder for packages")
+    end
     local metatable = PackageLoader
     metatable.__index = PackageLoader
     return setmetatable({
@@ -73,21 +76,6 @@ function PackageLoader.setGlobal(packageLoader)
 end
 
 ---@param packageName string
----@param forceDownload boolean?
----@return boolean, Github_Loading.Package?
-function PackageLoader:DownloadPackage(packageName, forceDownload)
-    self.logger:LogDebug("downloading package: '" .. packageName .. "'...")
-    forceDownload = forceDownload or false
-    local path = filesystem.path(self.packagesPath, packageName)
-    local success, package = self:internalDownloadPackage(self.packagesUrl .. "/" .. packageName, path, forceDownload)
-    if not success or not package then
-        return false
-    end
-    self.logger:LogDebug("downloaded package: '" .. packageName .. "'")
-    return true, package
-end
-
----@param packageName string
 ---@return Github_Loading.Package?
 function PackageLoader:GetPackage(packageName)
     for _, package in ipairs(self.Packages) do
@@ -95,6 +83,26 @@ function PackageLoader:GetPackage(packageName)
             return package
         end
     end
+end
+
+---@param packageName string
+---@param forceDownload boolean?
+---@return boolean, Github_Loading.Package?
+function PackageLoader:DownloadPackage(packageName, forceDownload)
+    self.logger:LogDebug("downloading package: '" .. packageName .. "'...")
+    forceDownload = forceDownload or false
+    local path = self.packagesPath .. "/" .. packageName
+    if not filesystem.exists(path) then
+        if not filesystem.createDir(path) then
+            error("Unable to create folder for package: '" .. packageName .. "'")
+        end
+    end
+    local success, package = self:internalDownloadPackage(self.packagesUrl .. "/" .. packageName, path, forceDownload)
+    if not success or not package then
+        return false
+    end
+    self.logger:LogDebug("downloaded package: '" .. packageName .. "'")
+    return true, package
 end
 
 ---@param packageName string
