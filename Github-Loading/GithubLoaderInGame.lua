@@ -63,9 +63,7 @@ if not filesystem.exists(LoaderPath) or loaderForceDownload then
     local _, libdata = req:await()
     ---@cast libdata string
     local file = filesystem.open(LoaderPath, "w")
-    if file == nil then
-        error("Unable to open file: '" .. LoaderPath .. "'")
-    end
+    assert(file, "Unable to open file: '" .. LoaderPath .. "'")
     file:write(libdata)
     file:close()
     print("[Computer] INFO! downloaded Github loader")
@@ -75,15 +73,33 @@ end
 
 ---@type Github_Loading.Loader
 local Loader = filesystem.doFile(LoaderPath)
-if Loader == nil then
-    error("Unable to load loader")
-end
+assert(Loader, "Unable to load loader")
 
 Loader = Loader.new(BaseUrl, LoaderFilesPath, loaderForceDownload, internetCard)
-if not Loader:Download() then
-    error("Unable to download loader Files")
-end
+assert(Loader:Download(), "Unable to download loader Files")
 Loader:Load()
+
+-- ######## setup logger ######## --
+
+---@type Utils
+local Utils = Loader:Get("/Github-Loading/Loader/10_Utils.lua")
+
+local function log(message)
+    print(message)
+    Utils.File.Write("/Logs/main.log", "+a", message, true)
+end
+local function clear()
+    Utils.File.Clear("/Logs/main.log")
+end
+
+---@type Github_Loading.Listener
+local Listener = Loader:Get("/Github-Loading/Loader/20_Listener.lua")
+---@type Github_Loading.Logger
+local Logger = Loader:Get("/Github-Loading/Loader/20_Logger.lua")
+local loaderLogger = Logger.new("Loader", loaderLogLevel)
+loaderLogger.OnLog:AddListener(Listener.new(log))
+loaderLogger.OnClear:AddListener(Listener.new(clear))
+loaderLogger:setErrorLogger()
 
 -- ######## handling option ######## --
 
@@ -119,42 +135,17 @@ if not chosenOption then
     return
 end
 
--- ######## setup logger ######## --
-
----@type Utils
-local Utils = Loader:Get("/Github-Loading/Loader/10_Utils.lua")
-
-local function log(message)
-    print(message)
-    Utils.File.Write("/Logs/main.log", "+a", message, true)
-end
-local function clear()
-    Utils.File.Clear("/Logs/main.log")
-end
-
----@type Github_Loading.Listener
-local Listener = Loader:Get("/Github-Loading/Loader/20_Listener.lua")
----@type Github_Loading.Logger
-local Logger = Loader:Get("/Github-Loading/Loader/20_Logger.lua")
-Logger = Logger.new("Loader", loaderLogLevel)
-Logger.OnLog:AddListener(Listener.new(log))
-Logger.OnClear:AddListener(Listener.new(clear))
-
 -- ######## load main module ######## --
 
 ---@type Github_Loading.PackageLoader
 local PackageLoader = Loader:Get("/Github-Loading/Loader/40_PackageLoader.lua")
-PackageLoader = PackageLoader.new(BaseUrl .. "/Packages", LoaderFilesPath .. "/Packages", Logger:create("PackageLoader"), internetCard)
+PackageLoader = PackageLoader.new(BaseUrl .. "/Packages", LoaderFilesPath .. "/Packages", loaderLogger:create("PackageLoader"), internetCard)
 
 local package = PackageLoader:LoadPackage(chosenOption.Url, programForceDownload)
 
 local mainModule = package:GetModule(package.Name .. ".Main")
-if not mainModule then
-    error("Unable to get main module from option")
-end
-if not mainModule.IsRunnable then
-    error("main module from option is not runnable")
-end
+assert(mainModule, "Unable to get main module from option")
+assert(mainModule.IsRunnable, "main module from option is not runnable")
 
 ---@type Github_Loading.Main
 local mainModuleData = mainModule:Load()
@@ -165,34 +156,33 @@ local programEntry = Entities.newMain(mainModuleData)
 
 -- ######## configure program ######## --
 
-Logger:LogTrace("configuring program...")
-local programLogger = Logger.new("Program", programLogLevel)
-programLogger.OnLog:AddListener(Listener.new(log))
-programLogger.OnClear:AddListener(Listener.new(clear))
-programEntry.Logger = programLogger
-local thread, success, errorMsg = Utils.Function.InvokeFunctionAsThread(programEntry.Configure, programEntry)
-if success and errorMsg ~= "not found" then
-    programLogger:LogTrace("configured program")
-elseif errorMsg ~= "$%not found%$" then
-    programLogger:LogError("configuration failed")
-    programLogger:LogError(debug.traceback(thread, errorMsg))
-    error("configure function failed")
-else
-    programLogger:LogTrace("no configure function found")
+local function configure()
+    loaderLogger:LogTrace("configuring program...")
+    local programLogger = loaderLogger.new("Program", programLogLevel)
+    programLogger.OnLog:AddListener(Listener.new(log))
+    programLogger.OnClear:AddListener(Listener.new(clear))
+    programEntry.Logger = programLogger
+    programLogger:setErrorLogger()
+    local errorMsg = programEntry:Configure()
+    loaderLogger:setErrorLogger()
+    if errorMsg ~= "not found" then
+        programLogger:LogTrace("configured program")
+    else
+        programLogger:LogTrace("no configure function found")
+    end
 end
+configure()
 
 -- ######## run program ######## --
 
-Logger:LogTrace("running program...")
-local thread, success, result = Utils.Function.InvokeFunctionAsThread(programEntry.Run, programEntry)
-if result == "$%not found%$" then
-    Logger:LogError("no main run function found")
-    error("no main run function found")
+local function run()
+    loaderLogger:LogTrace("running program...")
+    programEntry.Logger:setErrorLogger()
+    local result = programEntry:Run()
+    loaderLogger:setErrorLogger()
+    if result == "$%not found%$" then
+        error("no main run function found")
+    end
+    loaderLogger:LogInfo("program stoped running: " .. tostring(result))
 end
-if not success then
-    Logger:LogError("program stoped running:")
-    Logger:LogError(debug.traceback(thread, result))
-    computer.panic("porgram stoped running: " .. debug.traceback(thread, result))
-else
-    Logger:LogInfo("program stoped running: " .. tostring(result))
-end
+run()

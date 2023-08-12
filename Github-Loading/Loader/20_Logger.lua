@@ -139,18 +139,25 @@ function Logger:Log(message, logLevel)
     self.OnLog:Trigger(message)
 end
 
+---@param t table
+---@param logLevel Github_Loading.Logger.LogLevel
+---@param maxLevel number?
+---@param properties table?
+function Logger:LogTable(t, logLevel, maxLevel, properties)
+    if table == nil or type(table) ~= "table" then return end
+    local function log(message) self:Log(message, logLevel) end
+    Logger.tableToLineTree(table, maxLevel, properties, log, self)
+end
+
+function Logger:Clear()
+    self.OnClear:Trigger()
+end
+
+
 ---@param message any
 function Logger:LogTrace(message)
     if message == nil then return end
     self:Log("TRACE! " .. tostring(message), 0)
-end
-
----@param table table | any
----@param maxLevel number?
----@param properties table?
-function Logger:LogTableTrace(table, maxLevel, properties)
-    if table == nil or type(table) ~= "table" then return end
-    Logger.tableToLineTree(table, maxLevel, properties, self.LogTrace, self)
 end
 
 ---@param message any
@@ -159,26 +166,10 @@ function Logger:LogDebug(message)
     self:Log("DEBUG! " .. tostring(message), 1)
 end
 
----@param table table | any
----@param maxLevel number?
----@param properties table?
-function Logger:LogTableDebug(table, maxLevel, properties)
-    if table == nil or type(table) ~= "table" then return end
-    Logger.tableToLineTree(table, maxLevel, properties, self.LogDebug, self)
-end
-
 ---@param message any
 function Logger:LogInfo(message)
     if message == nil then return end
     self:Log("INFO! " .. tostring(message), 2)
-end
-
----@param table table | any
----@param maxLevel number?
----@param properties table?
-function Logger:LogTableInfo(table, maxLevel, properties)
-    if table == nil or type(table) ~= "table" then return end
-    Logger.tableToLineTree(table, maxLevel, properties, self.LogInfo, self)
 end
 
 ---@param message any
@@ -187,30 +178,50 @@ function Logger:LogWarning(message)
     self:Log("WARN! " .. tostring(message), 3)
 end
 
----@param table table | any
----@param maxLevel number?
----@param properties table?
-function Logger:LogTableWarning(table, maxLevel, properties)
-    if table == nil or type(table) ~= "table" then return end
-    Logger.tableToLineTree(table, maxLevel, properties, self.LogWarning, self)
-end
-
 ---@param message any
 function Logger:LogError(message)
     if message == nil then return end
-    self:Log("ERROR! " .. tostring(message), 4)
+    self:Log("ERROR! " .. debug.traceback(tostring(message), 2), 4)
 end
 
----@param table table | any
----@param maxLevel number?
----@param properties table?
-function Logger:LogTableError(table, maxLevel, properties)
-    if table == nil or type(table) ~= "table" then return end
-    Logger.tableToLineTree(table, maxLevel, properties, self.LogError, self)
+
+---@type Github_Loading.Logger
+local __errorLogger = nil
+---@param logger Github_Loading.Logger
+function Logger.setErrorLogger(logger)
+    __errorLogger = logger
 end
 
-function Logger:Clear()
-    self.OnClear:Trigger()
+local errorFunc = error
+---@param message string
+---@param level integer?
+function error(message, level)
+    message = message or "no error message"
+    level = level or 1
+    level = level + 1
+    if __errorLogger then
+        local debugInfo = debug.getinfo(level)
+        local errorMessage = debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
+        errorMessage = debug.traceback(errorMessage, level + 1)
+        pcall(__errorLogger.LogError, __errorLogger, errorMessage)
+    end
+    return errorFunc(message, level)
+end
+
+local asserFunc = assert
+---@generic T
+---@param condition T
+---@param message? any
+---@param ... any
+---@return T, any ...
+function assert(condition, message, ...)
+    if not condition and __errorLogger then
+        local debugInfo = debug.getinfo(2)
+        local errorMessage = debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
+        errorMessage = debug.traceback(errorMessage, 3)
+        pcall(__errorLogger.LogError, __errorLogger, errorMessage)
+    end
+    return asserFunc(condition, message, ...)
 end
 
 return Logger

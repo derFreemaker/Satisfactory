@@ -9,7 +9,7 @@ computer = {}
 
 --- Not sure what it does. "https://github.com/Panakotta00/FicsIt-Networks/blob/659a65dbe0e56cdbee2f225bdbb3a9d988b35657/Source/FicsItNetworks/FicsItKernel/Processor/Lua/LuaComputerAPI.cpp#L20"
 --- ### Not in Documentation. ###
----@return userdata
+---@return FicsIt_Networks.Components.ComputerCase_C
 function computer.getInstance() end
 
 --- Stops the current code execution immediately and queues the system to restart in the next tick.

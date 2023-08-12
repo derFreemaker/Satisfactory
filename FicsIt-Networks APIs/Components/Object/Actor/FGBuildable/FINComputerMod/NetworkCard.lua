@@ -37,13 +37,14 @@ function NetworkCard:broadcast(port) end
 
 
 --- Triggers when the network card receives a network message on one of its opened ports. The additional arguments are the data that is contained within the network message.
---- **Additional returns of event.pull:**
+--- **returns from event.pull:**
 --- ```
 --- local signalName, component, sender, port, ... = event.pull()
 --- ```
 --- - sender: string -> The component id of the sender of the network message.
 --- - port: integer -> The port on which the network message got sent.
 --- - ... data -> The 7 addtional parameters if some were sent.
+---@deprecated
 ---@type FicsIt_Networks.Components.Signal
 NetworkCard.NetworkMessage = {}
 

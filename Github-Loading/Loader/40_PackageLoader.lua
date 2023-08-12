@@ -56,9 +56,8 @@ end
 ---@param internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
 ---@return Github_Loading.PackageLoader
 function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard)
-    if not filesystem.exists(packagesPath) and not filesystem.createDir(packagesPath) then
-        error("Unable to create folder for packages")
-    end
+    assert(not (not filesystem.exists(packagesPath) and not filesystem.createDir(packagesPath)), 
+            "Unable to create folder for packages")
     local metatable = PackageLoader
     metatable.__index = PackageLoader
     return setmetatable({
@@ -92,11 +91,7 @@ function PackageLoader:DownloadPackage(packageName, forceDownload)
     self.logger:LogDebug("downloading package: '" .. packageName .. "'...")
     forceDownload = forceDownload or false
     local path = self.packagesPath .. "/" .. packageName
-    if not filesystem.exists(path) then
-        if not filesystem.createDir(path) then
-            error("Unable to create folder for package: '" .. packageName .. "'")
-        end
-    end
+    assert(not (not filesystem.exists(path) and not filesystem.createDir(path)), "Unable to create folder for package: '" .. packageName .. "'")
     local success, package = self:internalDownloadPackage(self.packagesUrl .. "/" .. packageName, path, forceDownload)
     if not success or not package then
         return false

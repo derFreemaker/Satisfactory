@@ -17,40 +17,45 @@ local Function = {}
 ---@param func function
 ---@param parent any
 ---@param ... any
----@return thread thread, boolean success, table results
-function Function.InvokeFunctionAsThread(func, parent, ...)
-    local thread = coroutine.create(func)
-    local result = {}
-    if parent == nil then
-        result = table.pack(coroutine.resume(thread, ...))
+---@return boolean success, any[] returns
+function Function.InvokeProtected(func, parent, ...)
+    local results
+    if parent ~= nil then
+        results = table.pack(pcall(func, parent, ...))
     else
-        result = table.pack(coroutine.resume(thread, parent, ...))
+        results = table.pack(pcall(func, ...))
     end
-    ---@type boolean
-    local success = result[1]
-    result[1] = nil
-    result = Utils.Table.Clean(result)
-    return thread, success, result
+    local success = Utils.Table.Retrive(results, 1)
+    return success, results
 end
 
 ---@param func function
 ---@param parent any
----@param args table
----@return table results
-function Function.InvokeDynamic(func, parent, args)
-    if parent == nil then
-        return table.pack(func(table.unpack(args)))
+---@param args any[]
+---@return any[] returns
+function Function.DynamicInvoke(func, parent, args)
+    local results
+    if parent ~= nil then
+        results = table.pack(func(parent, table.unpack(args)))
     else
-        return table.pack(func(parent, table.unpack(args)))
+        results = table.pack(func(table.unpack(args)))
     end
+    return results
 end
 
 ---@param func function
 ---@param parent any
----@param args table
----@return thread thread, boolean success, table results
-function Function.InvokeDynamicAsThread(func, parent, args)
-    return Function.InvokeFunctionAsThread(func, parent, table.unpack(args))
+---@param args any[]
+---@return boolean success, any[] returns
+function Function.DynamicInvokeProtected(func, parent, args)
+    local results
+    if parent ~= nil then
+        results = table.pack(pcall(func, parent, table.unpack(args)))
+    else
+        results = table.pack(pcall(func, table.unpack(args)))
+    end
+    local success = Utils.Table.Retrive(results, 1)
+    return success, results
 end
 
 Utils.Function = Function
@@ -114,40 +119,58 @@ Utils.File = File
 ---@class Utils.Table
 local Table = {}
 
----@generic Table
----@param table Table
----@return Table
-function Table.Copy(table)
+---@param T table
+---@return table table
+function Table.Copy(T)
     local copy = {}
-    for key, value in pairs(table) do copy[key] = value end
-    return setmetatable(copy, getmetatable(table))
+    for key, value in pairs(T) do copy[key] = value end
+    return setmetatable(copy, getmetatable(T))
 end
 
 --- removes all margins like table[1] = "1", table[2] = nil, table[3] = "3" -> table[2] would be removed meaning table[3] would be table[2] now and so on. Removes no named values (table["named"]). And sets n to number of cleaned results. Should only be used on arrays really.
----@param table table
----@return table table cleaned table
-function Table.Clean(table)
-    ---@param t table
+---@generic T
+---@param t T[]
+---@return T[] table cleaned table
+---@return integer numberOfCleanedValues
+function Table.Clean(t)
+    ---@generic T
+    ---@param tableToLook T[]
     ---@param index integer
     ---@return integer
-    local function findNearestNilValueDownward(t, index)
-        if index == 1 then
+    local function findNearestNilValueDownward(tableToLook, index)
+        if tableToLook[index] == nil then
             return index
         end
-        if t[index] == nil then
-            return index
-        end
-        return findNearestNilValueDownward(t, index - 1)
+        return findNearestNilValueDownward(tableToLook, index - 1)
     end
+
     local numberOfCleanedValues = 0
-    for index, value in ipairs(table) do
-        local nearestNilValue = findNearestNilValueDownward(table, index)
-        table[nearestNilValue] = value
-        table[index] = nil
-        numberOfCleanedValues = numberOfCleanedValues + 1
+    for index = 1, #t, 1 do
+        local value = t[index]
+        if index ~= 1 and type(index) == "number" then
+            local nearestNilValue = findNearestNilValueDownward(t, index)
+            t[nearestNilValue] = value
+            t[index] = nil
+            numberOfCleanedValues = numberOfCleanedValues + 1
+        elseif value ~= nil and type(index) == "number" then
+            numberOfCleanedValues = numberOfCleanedValues + 1
+        end
     end
-    table.n = numberOfCleanedValues
-    return table
+    return t, numberOfCleanedValues
+end
+
+--- Gets the value out of the array at specifyed index if not nil.
+--- And fills the removed value by sorting the array.
+--- Uses ```Table.Clean``` so ```t.n``` will be used.
+---@generic T
+---@param t T[]
+---@param index integer
+---@return T value
+function Table.Retrive(t, index)
+    local value = t[index]
+    t[index] = nil
+    t = Table.Clean(t)
+    return value
 end
 
 Utils.Table = Table

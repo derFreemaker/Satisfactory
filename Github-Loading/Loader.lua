@@ -102,10 +102,7 @@ local function downloadFiles(loaderBaseUrl, loaderBasePath, forceDownload, inter
     local function downloadFile(path)
         local url = loaderBaseUrl .. path
         path = loaderBasePath .. path
-        if not internalDownload(url, path, forceDownload, internetCard) then
-            error("Unable to download file: '".. path .."'")
-            return false
-        end
+        assert(internalDownload(url, path, forceDownload, internetCard), "Unable to download file: '".. path .."'")
         return true
     end
 
@@ -149,9 +146,8 @@ local function loadFiles(loaderBasePath)
         return true
     end
 
-    if not FileTreeTools:doFolder("/", LoaderFiles, retrivePath, function() return true end) then
-        error("Unable to load loader Files")
-    end
+    assert(FileTreeTools:doFolder("/", LoaderFiles, retrivePath, function() return true end),
+            "Unable to load loader Files")
 
     table.sort(loadOrder)
     ---@type Dictionary<string, any>
