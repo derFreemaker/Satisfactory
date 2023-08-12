@@ -169,13 +169,13 @@ end
 ---@param message any
 function Logger:LogInfo(message)
     if message == nil then return end
-    self:Log("INFO! " .. tostring(message), 2)
+    self:Log("INFO ! " .. tostring(message), 2)
 end
 
 ---@param message any
 function Logger:LogWarning(message)
     if message == nil then return end
-    self:Log("WARN! " .. tostring(message), 3)
+    self:Log("WARN ! " .. tostring(message), 3)
 end
 
 ---@param message any

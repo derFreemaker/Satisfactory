@@ -15,7 +15,7 @@ end
 function Test:Run()
     self.Logger:LogInfo("called run function")
     local test = require("Core.Test")
-    print(test)
+    print(test())
     return 0
 end
 return Test
