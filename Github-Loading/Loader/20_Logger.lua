@@ -157,31 +157,31 @@ end
 ---@param message any
 function Logger:LogTrace(message)
     if message == nil then return end
-    self:Log("TRACE! " .. tostring(message), 0)
+    self:Log("TRACE!: " .. tostring(message), 0)
 end
 
 ---@param message any
 function Logger:LogDebug(message)
     if message == nil then return end
-    self:Log("DEBUG! " .. tostring(message), 1)
+    self:Log("DEBUG!: " .. tostring(message), 1)
 end
 
 ---@param message any
 function Logger:LogInfo(message)
     if message == nil then return end
-    self:Log("INFO ! " .. tostring(message), 2)
+    self:Log("INFO !: " .. tostring(message), 2)
 end
 
 ---@param message any
 function Logger:LogWarning(message)
     if message == nil then return end
-    self:Log("WARN ! " .. tostring(message), 3)
+    self:Log("WARN !: " .. tostring(message), 3)
 end
 
 ---@param message any
 function Logger:LogError(message)
     if message == nil then return end
-    self:Log("ERROR! " .. tostring(message), 4)
+    self:Log("ERROR!: " .. tostring(message), 4)
 end
 
 
@@ -215,6 +215,7 @@ local asserFunc = assert
 ---@param ... any
 ---@return T, any ...
 function assert(condition, message, ...)
+    message = message or "assertation failed"
     if not condition and __errorLogger then
         local debugInfo = debug.getinfo(2)
         local errorMessage = debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
@@ -229,7 +230,7 @@ local panicFunc = computer.panic
 function computer.panic(errorMsg) ---@diagnostic disable-line
     if __errorLogger then
         local debugInfo = debug.getinfo(2)
-        local errorMessage = debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. errorMsg
+        local errorMessage = "PANIC!: " .. debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. errorMsg
         errorMessage = debug.traceback(errorMessage, 3)
         pcall(__errorLogger.LogError, __errorLogger, errorMessage)
     end
