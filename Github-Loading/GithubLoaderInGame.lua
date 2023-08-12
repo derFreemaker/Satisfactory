@@ -86,7 +86,7 @@ local Utils = Loader:Get("/Github-Loading/Loader/10_Utils.lua")
 
 local function log(message)
     print(message)
-    Utils.File.Write("/Logs/main.log", "+a", message, true)
+    Utils.File.Write("/Logs/main.log", "+a", message .. "\n", true)
 end
 local function clear()
     Utils.File.Clear("/Logs/main.log")
@@ -100,6 +100,7 @@ local loaderLogger = Logger.new("Loader", loaderLogLevel)
 loaderLogger.OnLog:AddListener(Listener.new(log))
 loaderLogger.OnClear:AddListener(Listener.new(clear))
 loaderLogger:setErrorLogger()
+loaderLogger:Clear()
 
 -- ######## handling option ######## --
 

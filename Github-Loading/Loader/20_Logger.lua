@@ -224,4 +224,16 @@ function assert(condition, message, ...)
     return asserFunc(condition, message, ...)
 end
 
+local panicFunc = computer.panic
+---@param errorMsg string
+function computer.panic(errorMsg) ---@diagnostic disable-line
+    if __errorLogger then
+        local debugInfo = debug.getinfo(2)
+        local errorMessage = debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. errorMsg
+        errorMessage = debug.traceback(errorMessage, 3)
+        pcall(__errorLogger.LogError, __errorLogger, errorMessage)
+    end
+    return panicFunc(errorMsg)
+end
+
 return Logger
