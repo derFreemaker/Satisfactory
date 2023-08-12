@@ -181,7 +181,7 @@ end
 ---@param message any
 function Logger:LogError(message)
     if message == nil then return end
-    self:Log("ERROR! " .. debug.traceback(tostring(message), 2), 4)
+    self:Log("ERROR! " .. tostring(message), 4)
 end
 
 
