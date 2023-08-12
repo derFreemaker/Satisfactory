@@ -111,7 +111,8 @@ function File.Clear(path)
     if not filesystem.exists(path) then
         return
     end
-    local file = filesystem.open(path, "+r")
+    local file = filesystem.open(path, "w")
+    file:write("")
     file:close()
 end
 
