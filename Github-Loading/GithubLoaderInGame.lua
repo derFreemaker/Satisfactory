@@ -141,6 +141,7 @@ end
 ---@type Github_Loading.PackageLoader
 local PackageLoader = Loader:Get("/Github-Loading/Loader/40_PackageLoader.lua")
 PackageLoader = PackageLoader.new(BaseUrl .. "/Packages", LoaderFilesPath .. "/Packages", loaderLogger:create("PackageLoader"), internetCard)
+PackageLoader:setGlobal()
 
 local package = PackageLoader:LoadPackage(chosenOption.Url, programForceDownload)
 
