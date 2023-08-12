@@ -1,4 +1,7 @@
 return {
     Name = "Test",
-    Namespace = "Test"
+    Namespace = "Test",
+    RequiredPackages = {
+        "Core"
+    }
 }
