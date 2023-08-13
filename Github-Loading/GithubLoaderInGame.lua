@@ -46,7 +46,7 @@ end
 filesystem.mount("/dev/" .. drive, "/")
 
 -- //TODO: debug message
-print("[Computer] DBUG! mounted filesystem on drive: " .. drive)
+print("[Computer] DEBUG mounted filesystem on drive: " .. drive)
 
 if not filesystem.exists(LoaderFilesPath) then
     filesystem.createDir(LoaderFilesPath)
