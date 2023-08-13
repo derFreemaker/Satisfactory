@@ -231,7 +231,7 @@ function Loader:setupLogger(logLevel)
     ---@type Github_Loading.Listener
     local Listener = self:Get("/Github-Loading/Loader/20_Listener.lua")
     ---@type Github_Loading.Logger
-    local Logger = Loader:Get("/Github-Loading/Loader/20_Logger.lua")
+    local Logger = self:Get("/Github-Loading/Loader/20_Logger.lua")
     self.logger = Logger.new("Loader", logLevel)
     self.logger.OnLog:AddListener(Listener.new(loggerLog))
     self.logger.OnClear:AddListener(Listener.new(loggerClear))
