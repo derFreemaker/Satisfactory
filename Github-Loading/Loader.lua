@@ -169,6 +169,7 @@ end
 ---@field private forceDownload boolean
 ---@field private internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
 ---@field private loadedLoaderFiles Dictionary<string, any>
+---@field private logger Github_Loading.Logger
 local Loader = {}
 
 ---@param loaderBaseUrl string
@@ -189,15 +190,16 @@ function Loader.new(loaderBaseUrl, loaderBasePath, forceDownload, internetCard)
 end
 
 
----@return boolean success
 function Loader:Download()
-    return downloadFiles(self.loaderBaseUrl, self.loaderBasePath, self.forceDownload, self.internetCard)
+    assert(downloadFiles(self.loaderBaseUrl, self.loaderBasePath, self.forceDownload, self.internetCard),
+        "Unable to download loader Files")
 end
 
 
-function Loader:Load()
+function Loader:LoadFiles()
     self.loadedLoaderFiles = loadFiles(self.loaderBasePath)
 end
+
 
 ---@param moduleToGet string
 ---@return any ...
@@ -208,5 +210,138 @@ function Loader:Get(moduleToGet)
     end
     return table.unpack(module)
 end
+
+
+---@type fun(message), fun()
+local loggerLog, loggerClear
+---@private
+---@param logLevel Github_Loading.Logger.LogLevel
+function Loader:setupLogger(logLevel)
+    ---@type Utils
+    local Utils = self:Get("/Github-Loading/Loader/10_Utils.lua")
+
+    loggerLog = function(message)
+        print(message)
+        Utils.File.Write("/Logs/main.log", "+a", message .. "\n", true)
+    end
+    loggerClear = function()
+        Utils.File.Clear("/Logs/main.log")
+    end
+
+    ---@type Github_Loading.Listener
+    local Listener = self:Get("/Github-Loading/Loader/20_Listener.lua")
+    ---@type Github_Loading.Logger
+    local Logger = Loader:Get("/Github-Loading/Loader/20_Logger.lua")
+    self.logger = Logger.new("Loader", logLevel)
+    self.logger.OnLog:AddListener(Listener.new(loggerLog))
+    self.logger.OnClear:AddListener(Listener.new(loggerClear))
+    self.logger:setErrorLogger()
+    self.logger:Clear()
+end
+
+
+---@param logLevel Github_Loading.Logger.LogLevel
+function Loader:Load(logLevel)
+    self:LoadFiles()
+    self:setupLogger(logLevel)
+end
+
+
+---@param option string
+---@param extendOptionDetails boolean
+---@return Github_Loading.Option chosenOption
+function Loader:LoadOption(option, extendOptionDetails)
+    ---@type Github_Loading.Option
+    local Option = self:Get("/Github-Loading/Loader/10_Option.lua")
+    ---@type Github_Loading.Option[]
+    local Options = {}
+    for name, url in pairs(self:Get("/Github-Loading/100_Options.lua")) do
+        local optionObj = Option.new(name, url)
+        table.insert(Options, optionObj)
+    end
+    if option == nil then
+        print("\nOptions:")
+        for _, optionObj in ipairs(Options) do
+            optionObj:Print(extendOptionDetails)
+        end
+        computer.stop()
+        return {}
+    end
+
+    ---@param optionName string
+    ---@return Github_Loading.Option?
+    local function getOption(optionName)
+        for _, optionObj in ipairs(Options) do
+            if optionObj.Name == optionName then
+                return optionObj
+            end
+        end
+    end
+    local chosenOption = getOption(option)
+    if not chosenOption then
+        computer.panic("Option: '" .. option .. "' not found")
+        return {}
+    end
+    return chosenOption
+end
+
+
+---@param option Github_Loading.Option
+---@param baseUrl string
+---@param forceDownload boolean
+---@return Github_Loading.Main program
+function Loader:LoadProgram(option, baseUrl, forceDownload)
+    ---@type Github_Loading.PackageLoader
+    local PackageLoader = self:Get("/Github-Loading/Loader/40_PackageLoader.lua")
+    PackageLoader = PackageLoader.new(baseUrl .. "/Packages", self.loaderBasePath .. "/Packages",
+        self.logger:create("PackageLoader"), self.internetCard)
+    PackageLoader:setGlobal()
+
+    local package = PackageLoader:LoadPackage(option.Url, forceDownload)
+
+    local mainModule = package:GetModule(package.Name .. ".Main")
+    assert(mainModule, "Unable to get main module from option")
+    assert(mainModule.IsRunnable, "main module from option is not runnable")
+
+    ---@type Github_Loading.Main
+    local mainModuleData = mainModule:Load()
+
+    ---@type Github_Loading.Entities
+    local Entities = self:Get("/Github-Loading/Loader/10_Entities.lua")
+    return Entities.newMain(mainModuleData)
+end
+
+
+---@param program Github_Loading.Main
+---@param logLevel Github_Loading.Logger.LogLevel
+function Loader:Configure(program, logLevel)
+    self.logger:LogTrace("configuring program...")
+    local Listener = self:Get("/Github-Loading/Loader/20_Listener.lua")
+    program.Logger = self.logger.new("Program", logLevel)
+    program.Logger.OnLog:AddListener(Listener.new(loggerLog))
+    program.Logger.OnClear:AddListener(Listener.new(loggerClear))
+    program.Logger:setErrorLogger()
+    local errorMsg = program:Configure()
+    self.logger:setErrorLogger()
+    if errorMsg ~= "not found" then
+        self.logger:LogTrace("configured program")
+    else
+        self.logger:LogTrace("no configure function found")
+    end
+end
+
+
+---@param program Github_Loading.Main
+function Loader:Run(program)
+    self.logger:LogTrace("running program...")
+    program.Logger:setErrorLogger()
+    local result = program:Run()
+    self.logger:setErrorLogger()
+    if result == "$%not found%$" then
+        error("no main run function found")
+    end
+    self.logger:LogInfo("program stoped running: " .. tostring(result))
+end
+
 
 return Loader
