@@ -212,19 +212,17 @@ function Loader:Get(moduleToGet)
 end
 
 
----@type fun(message), fun()
-local loggerLog, loggerClear
 ---@private
 ---@param logLevel Github_Loading.Logger.LogLevel
 function Loader:setupLogger(logLevel)
     ---@type Utils
-    local Utils = self:Get("/Github-Loading/Loader/10_Utils.lua")
+    Utils = self:Get("/Github-Loading/Loader/10_Utils.lua")
 
-    loggerLog = function(message)
+    local function log(message)
         print(message)
         Utils.File.Write("/Logs/main.log", "+a", message .. "\n", true)
     end
-    loggerClear = function()
+    local function clear()
         Utils.File.Clear("/Logs/main.log")
     end
 
@@ -233,8 +231,8 @@ function Loader:setupLogger(logLevel)
     ---@type Github_Loading.Logger
     local Logger = self:Get("/Github-Loading/Loader/20_Logger.lua")
     self.logger = Logger.new("Loader", logLevel)
-    self.logger.OnLog:AddListener(Listener.new(loggerLog))
-    self.logger.OnClear:AddListener(Listener.new(loggerClear))
+    self.logger.OnLog:AddListener(Listener.new(log))
+    self.logger.OnClear:AddListener(Listener.new(clear))
     self.logger:setErrorLogger()
     self.logger:Clear()
 end
@@ -289,7 +287,7 @@ end
 ---@param option Github_Loading.Option
 ---@param baseUrl string
 ---@param forceDownload boolean
----@return Github_Loading.Main program
+---@return Github_Loading.Entities.Main program
 function Loader:LoadProgram(option, baseUrl, forceDownload)
     ---@type Github_Loading.PackageLoader
     local PackageLoader = self:Get("/Github-Loading/Loader/40_PackageLoader.lua")
@@ -303,7 +301,7 @@ function Loader:LoadProgram(option, baseUrl, forceDownload)
     assert(mainModule, "Unable to get main module from option")
     assert(mainModule.IsRunnable, "main module from option is not runnable")
 
-    ---@type Github_Loading.Main
+    ---@type Github_Loading.Entities.Main
     local mainModuleData = mainModule:Load()
 
     ---@type Github_Loading.Entities
@@ -312,14 +310,23 @@ function Loader:LoadProgram(option, baseUrl, forceDownload)
 end
 
 
----@param program Github_Loading.Main
+---@param program Github_Loading.Entities.Main
 ---@param logLevel Github_Loading.Logger.LogLevel
 function Loader:Configure(program, logLevel)
     self.logger:LogTrace("configuring program...")
     local Listener = self:Get("/Github-Loading/Loader/20_Listener.lua")
     program.Logger = self.logger.new("Program", logLevel)
-    program.Logger.OnLog:AddListener(Listener.new(loggerLog))
-    program.Logger.OnClear:AddListener(Listener.new(loggerClear))
+
+    local function log(message)
+        print(message)
+        Utils.File.Write("/Logs/main.log", "+a", message .. "\n", true)
+    end
+    local function clear()
+        Utils.File.Clear("/Logs/main.log")
+    end
+
+    program.Logger.OnLog:AddListener(Listener.new(log))
+    program.Logger.OnClear:AddListener(Listener.new(clear))
     program.Logger:setErrorLogger()
     local errorMsg = program:Configure()
     self.logger:setErrorLogger()
@@ -331,7 +338,7 @@ function Loader:Configure(program, logLevel)
 end
 
 
----@param program Github_Loading.Main
+---@param program Github_Loading.Entities.Main
 function Loader:Run(program)
     self.logger:LogTrace("running program...")
     program.Logger:setErrorLogger()

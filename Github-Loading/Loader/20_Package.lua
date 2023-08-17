@@ -47,6 +47,18 @@ function Package:Load()
     for _, packageName in ipairs(self.RequiredPackages) do
         self.PackageLoader:LoadPackage(packageName)
     end
+
+    local eventsModule = self:GetModule(self.Namespace .. ".__events")
+    if eventsModule == nil then
+        return
+    end
+
+    -- ######## OnLoaded ######## --
+    ---@type Github_Loading.Entities.Events
+    local eventsModuleLoaded = eventsModule:Load()
+    if type(eventsModuleLoaded.OnLoaded) == "function" then
+        eventsModuleLoaded.OnLoaded()
+    end
 end
 
 return Package

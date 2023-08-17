@@ -1,5 +1,3 @@
-local LoadedLoaderFiles = table.pack(...)[1]
-
 ---@alias Github_Loading.Module.LoadFunction fun(...) : any
 
 ---@class Github_Loading.Module

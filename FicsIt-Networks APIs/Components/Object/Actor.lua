@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 
 --- This is the base class of all things that can exist within the world by them self.

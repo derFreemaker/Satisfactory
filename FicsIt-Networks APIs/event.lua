@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 --- Computer Api from Documentation and in Code found.
 --- [Documentation](https://docs.ficsit.app/ficsit-networks/latest/index.html)
@@ -18,19 +18,12 @@ function event.listen(component) end
 function event.listening() end
 
 
---- Waits for a signal in the queue. Blocks the execution until a signal got pushed to the signal queue.
---- Returns directly if there is already a signal in the queue (the tick doesn’t get yielded).
----@return string signalName The name of the returned signal.
----@return FicsIt_Networks.Component component The component representation of the signal sender.
----@return ... The parameters passed to the signal.
-function event.pull() end
-
 --- Waits for a signal in the queue. Blocks the execution until a signal got pushed to the signal queue, or the timeout is reached.
 --- Returns directly if there is already a signal in the queue (the tick doesn’t get yielded).
----@param timeout number The amount of time needs to pass until pull unblocks when no signal got pushed.
+---@param timeout number? The amount of time needs to pass until pull unblocks when no signal got pushed.
 ---@return string signalName The name of the returned signal.
 ---@return FicsIt_Networks.Component component The component representation of the signal sender.
----@return ... The parameters passed to the signal.
+---@return any ... The parameters passed to the signal.
 function event.pull(timeout) end
 
 

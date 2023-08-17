@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 ---@alias FicsIt_Networks.Components.Property.DataType
 ---|0 nil

@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 --- The base class for all things of the reflection system.
 ---@class FicsIt_Networks.Components.ReflectionBase : FicsIt_Networks.Components.Object

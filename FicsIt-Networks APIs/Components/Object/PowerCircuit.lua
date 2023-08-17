@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 
 --- A Object that represents a whole power circuit.
@@ -8,7 +8,7 @@
 ---@field capacity float The power capacity of the whole network in the last tick. (The max amount of power available in the last tick)
 ---@field batteryInput float The power that gone into batteries in the last tick.
 ---@field maxPowerConsumption float The maximum consumption of power in the last tick.
----@field isFuesed boolen True if the fuse in the network triggered.
+---@field isFuesed boolean True if the fuse in the network triggered.
 ---@field hasBatteries boolean True if the power circuit has batteries connected to it.
 ---@field batteryCapacity float The energy capacity all batteries of the network combined provide.
 ---@field batteryStore float The amount of energy currently stored in all batteries of the network combined.
@@ -22,4 +22,4 @@ local PowerCircuit = {}
 
 --- Gets Triggerd when the fuse state of the power circuit changes.
 ---@type FicsIt_Networks.Components.Signal
-PowerCircuit.PowerFuseChanged = {}
+PowerCircuit.PowerFuseChanged = { isVarArgs = false }

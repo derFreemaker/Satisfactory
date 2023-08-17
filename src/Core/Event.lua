@@ -1,9 +1,9 @@
----@class Github_Loading.Event
----@field private funcs Github_Loading.Listener[]
----@field private onceFuncs Github_Loading.Listener[]
+---@class Core.Event
+---@field private funcs Core.Listener[]
+---@field private onceFuncs Core.Listener[]
 local Event = {}
 
----@return Github_Loading.Event
+---@return Core.Event
 function Event.new()
     local metatable = Event
     metatable.__index = Event
@@ -13,8 +13,8 @@ function Event.new()
     }, metatable)
 end
 
----@param listener Github_Loading.Listener
----@return Github_Loading.Event
+---@param listener Core.Listener
+---@return Core.Event
 function Event:AddListener(listener)
     table.insert(self.funcs, listener)
     return self
@@ -22,8 +22,8 @@ end
 
 Event.On = Event.AddListener
 
----@param listener Github_Loading.Listener
----@return Github_Loading.Event
+---@param listener Core.Listener
+---@return Core.Event
 function Event:AddListenerOnce(listener)
     table.insert(self.onceFuncs, listener)
     return self
@@ -55,7 +55,7 @@ function Event:TriggerDynamic(args)
     self.OnceFuncs = {}
 end
 
----@return Github_Loading.Listener[]
+---@return Core.Listener[]
 function Event:Listeners()
     local clone = {}
 

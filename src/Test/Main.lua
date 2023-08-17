@@ -1,4 +1,4 @@
----@class Test.Main : Github_Loading.Main
+---@class Test.Main : Github_Loading.Entities.Main
 local Test = {}
 
 function Test:Configure()

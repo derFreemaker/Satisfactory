@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 
 --- A reflection object representing a trace property.

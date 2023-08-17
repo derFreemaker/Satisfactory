@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 
 --- # not a property only for documentation purposes

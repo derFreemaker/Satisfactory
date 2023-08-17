@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 
 ---@class FicsIt_Networks.Components.FINComputerMod.NetworkCard : FicsIt_Networks.Components.FINComputerMod
@@ -46,7 +46,7 @@ function NetworkCard:broadcast(port) end
 --- - ... data -> The 7 addtional parameters if some were sent.
 ---@deprecated
 ---@type FicsIt_Networks.Components.Signal
-NetworkCard.NetworkMessage = {}
+NetworkCard.NetworkMessage = { isVarArgs = true }
 
 
 --- The FicsIt Networks Card allows yout to send network messages to other network cards in the same computer network. <br>

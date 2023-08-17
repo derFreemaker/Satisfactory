@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 
 --- Contains three cordinates (X, Y, Z) to describe a postition or movement vector in 3D Space

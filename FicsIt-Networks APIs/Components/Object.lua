@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 --- The base class of ervery object
 ---@class FicsIt_Networks.Components.Object : FicsIt_Networks.Component

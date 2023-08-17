@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 
 --- A component/part of an actor in the world.

@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 --- Component Api from Documentation and in Code found.
 --- [Documentation](https://docs.ficsit.app/ficsit-networks/latest/index.html)

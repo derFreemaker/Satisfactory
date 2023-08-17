@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 --- Reflection Object that holds information about structures.
 ---@class FicsIt_Networks.Components.Struct : FicsIt_Networks.Components.ReflectionBase

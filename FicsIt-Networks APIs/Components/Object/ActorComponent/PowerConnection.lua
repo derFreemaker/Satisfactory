@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 
 --- A actor component that allows for a connection point to the power network. Basically a point were a power cable can get attached to.

@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 ---@class FicsIt_Networks.Components.ComputerCase : FicsIt_Networks.Components.FGBuildable
 local ComputerCase = {}
@@ -14,7 +14,7 @@ local ComputerCase = {}
 --- - to: string The new file path of the node if it has changed.
 ---@deprecated
 ---@type FicsIt_Networks.Components.Signal
-ComputerCase.FileSystemUpdate = {}
+ComputerCase.FileSystemUpdate = { isVarArgs = false }
 
 
 --- The FicsIt-Network computer case is the most important thing you will know of. This case already holds the essentials of a computer for you.

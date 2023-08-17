@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 
 --- Contains rotation information about the object in 3D spaces using 3 rotation axis in a gimble.

@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 
 --- Object that contains all information about a type.

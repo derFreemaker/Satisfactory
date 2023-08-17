@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 
 --- A actor component that provides information and mainly statistics about the power connection it is attached to.

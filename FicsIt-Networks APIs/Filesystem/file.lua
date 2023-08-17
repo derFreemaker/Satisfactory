@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 ---@class FicsIt_Networks.Filesystem.File
 local File = {}

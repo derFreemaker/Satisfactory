@@ -16,7 +16,7 @@ function Listener.new(func, parent)
     }, Listener)
 end
 
----@param logger Logger
+---@param logger Core.Logger
 ---@param ... any
 ---@return thread, boolean, 'result'
 function Listener:Execute(logger, ...)

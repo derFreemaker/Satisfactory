@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 
 ---@class FicsIt_Networks.Components.FGBuildable : FicsIt_Networks.Components.Actor

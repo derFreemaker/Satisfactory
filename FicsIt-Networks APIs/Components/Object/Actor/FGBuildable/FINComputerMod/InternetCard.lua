@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 
 ---@class FicsIt_Networks.Components.FINComputerMod.FINInternetCard : FicsIt_Networks.Components.FINComputerMod

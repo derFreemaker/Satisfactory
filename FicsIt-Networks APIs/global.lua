@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 --- [Documentation](https://docs.ficsit.app/ficsit-networks/latest/index.html)
 --- [Code](https://github.com/Panakotta00/FicsIt-Networks/tree/master)

@@ -1,4 +1,4 @@
----@diagnostic disable
+---@meta
 
 
 --- Bits and their meaning (least significant bit first)

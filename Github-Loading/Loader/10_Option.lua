@@ -1,5 +1,3 @@
-local LoadedLoaderFiles = table.pack(...)[1]
-
 ---@class Github_Loading.Option
 ---@field Name string
 ---@field Url string

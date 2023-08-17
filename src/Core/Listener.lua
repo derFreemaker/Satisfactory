@@ -1,15 +1,11 @@
-local LoadedLoaderFiles = table.pack(...)[1]
----@type Utils
-local Utils = LoadedLoaderFiles["/Github-Loading/Loader/10_Utils.lua"][1]
-
----@class Github_Loading.Listener
+---@class Core.Listener
 ---@field private func function
 ---@field private parent any
 local Listener = {}
 
 ---@param func function
 ---@param parent any
----@return Github_Loading.Listener
+---@return Core.Listener
 function Listener.new(func, parent)
     local metatable = Listener
     metatable.__index = Listener
