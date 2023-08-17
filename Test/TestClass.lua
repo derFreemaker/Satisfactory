@@ -22,9 +22,13 @@ function TestClass:__add(other)
     return other
 end
 
-
 function TestClass:Test()
     print(self.str)
+end
+
+---@private
+function TestClass:__len()
+    return self
 end
 
 

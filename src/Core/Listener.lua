@@ -1,18 +1,15 @@
----@class Core.Listener
+---@class Core.Listener : Object
 ---@field private func function
 ---@field private parent any
+---@overload fun(func: function, parent: any) : Core.Listener
 local Listener = {}
 
+---@private
 ---@param func function
 ---@param parent any
----@return Core.Listener
-function Listener.new(func, parent)
-    local metatable = Listener
-    metatable.__index = Listener
-    return setmetatable({
-        func = func,
-        parent = parent
-    }, metatable)
+function Listener:Listener(func, parent)
+    self.func = func
+    self.parent = parent
 end
 
 ---@param ... any
@@ -31,4 +28,4 @@ function Listener:ExecuteDynamic(args)
     return success, results
 end
 
-return Listener
+return Utils.Class.CreateClass(Listener, "Listener")

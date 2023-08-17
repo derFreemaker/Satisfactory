@@ -15,7 +15,7 @@ local Event = LoadedLoaderFiles["/Github-Loading/Loader/10_Event.lua"][1]
 ---@field OnLog Github_Loading.Event
 ---@field OnClear Github_Loading.Event
 ---@field Name string
----@field private logLevel number
+---@field LogLevel number
 local Logger = {}
 
 ---@private
@@ -120,7 +120,7 @@ function Logger:create(name)
     local metatable = Logger
     metatable.__index = Logger
     return setmetatable({
-        logLevel = self.logLevel,
+        logLevel = self.LogLevel,
         Name = name:gsub(" ", "_"),
         OnLog = Utils.Table.Copy(self.OnLog),
         OnClear = Utils.Table.Copy(self.OnClear)
@@ -131,7 +131,7 @@ end
 ---@param message string
 ---@param logLevel Github_Loading.Logger.LogLevel
 function Logger:Log(message, logLevel)
-    if logLevel < self.logLevel then
+    if logLevel < self.LogLevel then
         return
     end
 
@@ -185,11 +185,9 @@ function Logger:LogError(message)
 end
 
 
----@type Github_Loading.Logger
-local __errorLogger = nil
 ---@param logger Github_Loading.Logger
 function Logger.setErrorLogger(logger)
-    __errorLogger = logger
+    _G.__errorLogger = logger
 end
 
 local errorFunc = error
@@ -203,7 +201,7 @@ function error(message, level)
         local debugInfo = debug.getinfo(level)
         local errorMessage = debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
         errorMessage = debug.traceback(errorMessage, level + 1)
-        pcall(__errorLogger.LogError, __errorLogger, errorMessage)
+        pcall(_G.__errorLogger.LogError, _G.__errorLogger, errorMessage)
     end
     return errorFunc(message, level)
 end
@@ -220,7 +218,7 @@ function assert(condition, message, ...)
         local debugInfo = debug.getinfo(2)
         local errorMessage = debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
         errorMessage = debug.traceback(errorMessage, 3)
-        pcall(__errorLogger.LogError, __errorLogger, errorMessage)
+        pcall(_G.__errorLogger.LogError, _G.__errorLogger, errorMessage)
     end
     return asserFunc(condition, message, ...)
 end
@@ -232,7 +230,7 @@ function computer.panic(errorMsg) ---@diagnostic disable-line
         local debugInfo = debug.getinfo(2)
         local errorMessage = "PANIC!: " .. debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. errorMsg
         errorMessage = debug.traceback(errorMessage, 3)
-        pcall(__errorLogger.LogError, __errorLogger, errorMessage)
+        pcall(_G.__errorLogger.LogError, _G.__errorLogger, errorMessage)
     end
     return panicFunc(errorMsg)
 end

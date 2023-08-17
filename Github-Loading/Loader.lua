@@ -315,7 +315,8 @@ end
 function Loader:Configure(program, logLevel)
     self.logger:LogTrace("configuring program...")
     local Listener = self:Get("/Github-Loading/Loader/20_Listener.lua")
-    program.Logger = self.logger.new("Program", logLevel)
+    local Logger = require("Core.Logger")
+    program.Logger = Logger("Program", logLevel)
 
     local function log(message)
         print(message)

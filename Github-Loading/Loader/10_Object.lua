@@ -1,34 +1,38 @@
----@class Object
----@field protected __add (fun(self: Object, other: any) : any)?
----@field protected __sub (fun(self: Object, other: any) : any)?
----@field protected __mul (fun(self: Object, other: any) : any)?
----@field protected __div (fun(self: Object, other: any) : any)?
----@field protected __mod (fun(self: Object, other: any) : any)?
----@field protected __pow (fun(self: Object, other: any) : any)?
----@field protected __idiv (fun(self: Object, other: any) : any)?
----@field protected __band (fun(self: Object, other: any) : any)?
----@field protected __bor (fun(self: Object, other: any) : any)?
----@field protected __bxor (fun(self: Object, other: any) : any)?
----@field protected __shl (fun(self: Object, other: any) : any)?
----@field protected __shr (fun(self: Object, other: any) : any)?
----@field protected __concat (fun(self: Object, other: any) : any)?
----@field protected __eq (fun(self: Object, other: any) : any)?
----@field protected __lt (fun(self: Object, other: any) : any)?
----@field protected __le (fun(self: Object, other: any) : any)?
----@field protected __unm (fun(self: Object) : any)?
----@field protected __bnot (fun(self: Object) : any)?
----@field protected __len (fun(self: Object) : integer)?
----@field protected __pairs (fun(t):(fun(iterator,t,startPoint):key: any, value: any))?
----@field protected __ipairs (fun(t):(fun(iterator,t,startPoint):key: any, value: any))?
----@field protected __tostring (fun(t):string)?
+---@class Utils.Class.ObjectMetaMethods
+---@field protected __add (fun(self: Object, other: any) : any)? (self) + (value)
+---@field protected __sub (fun(self: Object, other: any) : any)? (self) - (value)
+---@field protected __mul (fun(self: Object, other: any) : any)? (self) * (value)
+---@field protected __div (fun(self: Object, other: any) : any)? (self) / (value)
+---@field protected __mod (fun(self: Object, other: any) : any)? (self) % (value)
+---@field protected __pow (fun(self: Object, other: any) : any)? (self) ^ (value)
+---@field protected __idiv (fun(self: Object, other: any) : any)? (self) // (value)
+---@field protected __band (fun(self: Object, other: any) : any)? (self) & (value)
+---@field protected __bor (fun(self: Object, other: any) : any)? (self) | (value)
+---@field protected __bxor (fun(self: Object, other: any) : any)? (self) ~ (value)
+---@field protected __shl (fun(self: Object, other: any) : any)? (self) << (value)
+---@field protected __shr (fun(self: Object, other: any) : any)? (self) >> (value)
+---@field protected __concat (fun(self: Object, other: any) : any)? (self) .. (value)
+---@field protected __eq (fun(self: Object, other: any) : any)? (self) == (value)
+---@field protected __lt (fun(t1: any, t2: any) : any)? (self) < (value)
+---@field protected __le (fun(t1: any, t2: any) : any)? (self) <= (value)
+---@field protected __unm (fun(self: Object) : any)? -(self)
+---@field protected __bnot (fun(self: Object) : any)?  ~(self)
+---@field protected __len (fun(self: Object) : any)? #(self)
+---@field protected __pairs (fun(self: Object) : (fun(iterator, t, startPoint) : key: any, value: any))? pairs(self)
+---@field protected __ipairs (fun(self: Object) : (fun(iterator, t, startPoint) : key: any, value: any))? ipairs(self)
+---@field protected __tostring (fun(self: Object) : string)? tostring(self)
+
+---@class Object : Utils.Class.ObjectMetaMethods
 local Object = {}
 
 
 ---@return string
 function Object:GetType()
+    ---@type Utils.Class.Metatable
     local metatable = getmetatable(self)
     return metatable.Type
 end
+
 
 local metatable = {
     Type = "Object",

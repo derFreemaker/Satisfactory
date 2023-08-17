@@ -1,5 +1,5 @@
 local LoadedLoaderFiles = table.pack(...)[1]
----@type Utils
+---@type Object
 local Object = LoadedLoaderFiles["/Github-Loading/Loader/10_Object.lua"][1]
 
 ---@class Utils
@@ -189,53 +189,6 @@ Utils.Table = Table
 ---@class Utils.Class
 local Class = {}
 Class.SearchValueInBase = {}
-
-
----@class Utils.Class.MetaMethods
----@field __call (fun(t,...):...)?
----@field __gc fun(t)?
----@field __add (fun(t1,t2):any)?
----@field __sub (fun(t1,t2):any)?
----@field __mul (fun(t1,t2):any)?
----@field __div (fun(t1,t2):any)?
----@field __mod (fun(t1,t2):any)?
----@field __pow (fun(t1,t2):any)?
----@field __unm (fun(t):any)?
----@field __idiv (fun(t1,t2):any)?
----@field __band (fun(t1,t2):any)?
----@field __bor (fun(t1,t2):any)?
----@field __bxor (fun(t1,t2):any)?
----@field __bnot (fun(t):any)?
----@field __shl (fun(t1,t2):any)?
----@field __shr (fun(t1,t2):any)?
----@field __concat (fun(t1,t2):any)?
----@field __len (fun(t):integer)?
----@field __eq (fun(t1,t2):boolean)?
----@field __lt (fun(t1,t2):boolean)?
----@field __le (fun(t1,t2):boolean)?
----@field __index (fun(class, key):any)?
----@field __newindex fun(class, key, value)?
----@field __pairs (fun(t):(fun(t,k,v):any,any))?
----@field __tostring (fun(t):string)?
-
----@alias Utils.Class.ConstructorState
----|1 waiting
----|2 running
----|3 finished
-
----@class Utils.Class.Metatable : Utils.Class.MetaMethods
----@field Type string
----@field Base Object
----@field HasBaseClass boolean
----@field IsBaseClass boolean
----@field HasConstructor boolean
----@field ConstructorState Utils.Class.ConstructorState
----@field HasDeconstructor boolean
----@field HiddenMembers Utils.Class.MetaMethods | table
----@field Index (fun(class, key):any)?
----@field HasIndex boolean
----@field NewIndex (fun(class, key, value))?
----@field HasNewIndex boolean
 
 
 local metatableMethods = {

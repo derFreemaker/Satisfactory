@@ -7,11 +7,12 @@ local Event = require("Core.Event")
 ---|3 Warning
 ---|4 Error
 
----@class Core.Logger
----@field OnLog Github_Loading.Event
----@field OnClear Github_Loading.Event
+---@class Core.Logger : Object
+---@field OnLog Core.Event
+---@field OnClear Core.Event
 ---@field Name string
----@field private logLevel Core.Logger.LogLevel
+---@field LogLevel Core.Logger.LogLevel
+---@overload fun(name: string, logLevel: Core.Logger.LogLevel, onLog: Core.Event?, onClear: Core.Event?) : Core.Logger
 local Logger = {}
 
 ---@private
@@ -95,39 +96,30 @@ function Logger.tableToLineTree(node, maxLevel, properties, logFunc, logFuncPare
     return lines
 end
 
+---@private
 ---@param name string
 ---@param logLevel Core.Logger.LogLevel
----@return Core.Logger
-function Logger.new(name, logLevel)
-    local metatable = Logger
-    metatable.__index = Logger
-    return setmetatable({
-        logLevel = logLevel,
-        Name = (string.gsub(name, " ", "_") or ""),
-        OnLog = Event.new(),
-        OnClear = Event.new()
-    }, metatable)
+---@param onLog Core.Event?
+---@param onClear Core.Event?
+function Logger:Logger(name, logLevel, onLog, onClear)
+    self.LogLevel = logLevel
+    self.Name = (string.gsub(name, " ", "_") or "")
+    self.OnLog = onLog or Event()
+    self.OnClear = onClear or Event()
 end
 
 ---@param name string
 ---@return Core.Logger
 function Logger:create(name)
     name = self.Name .. "." .. name
-    local metatable = Logger
-    metatable.__index = Logger
-    return setmetatable({
-        logLevel = self.logLevel,
-        Name = name:gsub(" ", "_"),
-        OnLog = Utils.Table.Copy(self.OnLog),
-        OnClear = Utils.Table.Copy(self.OnClear)
-    }, metatable)
+    return Logger(name, self.LogLevel, Utils.Table.Copy(self.OnLog), Utils.Table.Copy(self.OnClear))
 end
 
 ---@private
 ---@param message string
 ---@param logLevel Core.Logger.LogLevel
 function Logger:Log(message, logLevel)
-    if logLevel < self.logLevel then
+    if logLevel < self.LogLevel then
         return
     end
 
@@ -179,4 +171,9 @@ function Logger:LogError(message)
     self:Log("ERROR " .. tostring(message), 4)
 end
 
-return Logger
+
+function Logger:setErrorLogger()
+    _G.__errorLogger = self
+end
+
+return Utils.Class.CreateClass(Logger, "Logger")

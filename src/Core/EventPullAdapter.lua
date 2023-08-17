@@ -29,7 +29,7 @@ end
 function EventPullAdapter:Initialize(logger)
     self.events = {}
     self.logger = logger
-    self.OnEventPull = Event.new()
+    self.OnEventPull = Event()
     return self
 end
 
@@ -41,7 +41,7 @@ function EventPullAdapter:GetEvent(signalName)
             return event
         end
     end
-    local event = Event.new()
+    local event = Event()
     self.events[signalName] = event
     return event
 end

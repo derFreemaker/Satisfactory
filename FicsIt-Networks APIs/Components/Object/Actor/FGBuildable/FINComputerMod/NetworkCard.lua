@@ -33,7 +33,8 @@ function NetworkCard:close(port) end
 --- Max amount of such parameters is 7 and
 --- ### they can only be nil, booleans, numbers, and strings. ###
 ---@param port integer The port on which the network message should get sent. For outgoing network messages a port does not need to be opened.
-function NetworkCard:broadcast(port) end
+---@param ... any
+function NetworkCard:broadcast(port, ...) end
 
 
 --- Triggers when the network card receives a network message on one of its opened ports. The additional arguments are the data that is contained within the network message.

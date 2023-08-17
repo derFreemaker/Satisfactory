@@ -1,16 +1,14 @@
----@class Core.Event
+---@class Core.Event : Object
 ---@field private funcs Core.Listener[]
 ---@field private onceFuncs Core.Listener[]
+---@operator len() : integer
+---@overload fun() : Core.Event
 local Event = {}
 
----@return Core.Event
-function Event.new()
-    local metatable = Event
-    metatable.__index = Event
-    return setmetatable({
-        funcs = {},
-        onceFuncs = {}
-    }, metatable)
+---@private
+function Event:Event()
+    self.funcs = {}
+    self.onceFuncs = {}
 end
 
 ---@param listener Core.Listener
@@ -19,7 +17,6 @@ function Event:AddListener(listener)
     table.insert(self.funcs, listener)
     return self
 end
-
 Event.On = Event.AddListener
 
 ---@param listener Core.Listener
@@ -28,7 +25,6 @@ function Event:AddListenerOnce(listener)
     table.insert(self.onceFuncs, listener)
     return self
 end
-
 Event.Once = Event.AddListenerOnce
 
 ---@param ... any
@@ -55,18 +51,33 @@ function Event:TriggerDynamic(args)
     self.OnceFuncs = {}
 end
 
----@return Core.Listener[]
+---@alias Core.Event.Mode
+---|"Permanent"
+---|"Once"
+
+---@return Dictionary<Core.Event.Mode, Core.Listener[]>
 function Event:Listeners()
-    local clone = {}
-
+    ---@type Core.Listener[]
+    local permanentListeners = {}
     for _, listener in ipairs(self.funcs) do
-        table.insert(clone, { Mode = "Permanent", Listener = listener })
-    end
-    for _, listener in ipairs(self.onceFuncs) do
-        table.insert(clone, { Mode = "Once", Listener = listener })
+        table.insert(permanentListeners, listener)
     end
 
-    return clone
+    ---@type Core.Listener[]
+    local onceListeners = {}
+    for _, listener in ipairs(self.onceFuncs) do
+        table.insert(onceListeners, listener)
+    end
+    return {
+        Permanent = permanentListeners,
+        Once = onceListeners
+    }
 end
 
-return Event
+---@private
+---@return integer count
+function Event:__len()
+    return #self.funcs + #self.onceFuncs
+end
+
+return Utils.Class.CreateClass(Event, "Event")
