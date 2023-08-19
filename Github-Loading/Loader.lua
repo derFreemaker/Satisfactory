@@ -156,7 +156,7 @@ local function loadFiles(loaderBasePath)
                 end
                 str = str .. buf
             end
-            loadedLoaderFiles[path] = str
+            loadedLoaderFiles[path] = { str }
             file:close()
         end
         return true
