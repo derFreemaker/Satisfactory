@@ -106,7 +106,7 @@ function Logger.new(name, logLevel)
     local metatable = Logger
     metatable.__index = Logger
     return setmetatable({
-        logLevel = logLevel,
+        LogLevel = logLevel,
         Name = (string.gsub(name, " ", "_") or ""),
         OnLog = Event.new(),
         OnClear = Event.new()
@@ -120,7 +120,7 @@ function Logger:create(name)
     local metatable = Logger
     metatable.__index = Logger
     return setmetatable({
-        logLevel = self.LogLevel,
+        LogLevel = self.LogLevel,
         Name = name:gsub(" ", "_"),
         OnLog = Utils.Table.Copy(self.OnLog),
         OnClear = Utils.Table.Copy(self.OnClear)
