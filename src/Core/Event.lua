@@ -80,4 +80,16 @@ function Event:__len()
     return #self.funcs + #self.onceFuncs
 end
 
+---@param event Core.Event
+---@return Core.Event event
+function Event:CopyTo(event)
+    for _, listener in ipairs(self.funcs) do
+        event:AddListener(listener)
+    end
+    for _, listener in ipairs(self.onceFuncs) do
+        event:AddListenerOnce(listener)
+    end
+    return event
+end
+
 return Utils.Class.CreateClass(Event, "Event")

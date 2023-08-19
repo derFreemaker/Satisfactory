@@ -4,18 +4,18 @@ local LoaderFiles = {
     {
         "Loader",
         { "10_Entities.lua" },
-        { "10_Event.lua" },
         { "10_Module.lua" },
         { "10_Object.lua" },
         { "10_Option.lua" },
         { "20_Package.lua" },
         { "20_Utils.lua" },
+        { "30_Event.lua" },
         { "30_Listener.lua" },
-        { "30_Logger.lua" },
-        { "70_PackageLoader.lua" },
+        { "30_PackageLoader.lua" },
+        { "40_Logger.lua" },
     },
+    { "00_Options.lua" },
     { "Version.latest.txt" },
-    { "100_Options.lua" },
 }
 
 
@@ -156,6 +156,7 @@ local function loadFiles(loaderBasePath)
                 end
                 str = str .. buf
             end
+            path = path:match("^(.+/.+)%..+$")
             loadedLoaderFiles[path] = { str }
             file:close()
         end
@@ -169,7 +170,8 @@ local function loadFiles(loaderBasePath)
     for _, num in ipairs(loadOrder) do
         for _, path in pairs(loadEntries[num]) do
             local loadedFile = table.pack(filesystem.loadFile(loaderBasePath .. path)(loadedLoaderFiles))
-            loadedLoaderFiles[path] = loadedFile
+            local folderPath, filename = path:match("^(.+/)%d+_(.+)%..+$")
+            loadedLoaderFiles[folderPath .. filename] = loadedFile
         end
     end
 
@@ -230,8 +232,10 @@ end
 ---@private
 ---@param logLevel Github_Loading.Logger.LogLevel
 function Loader:setupLogger(logLevel)
-    local function log(message)
+    local function logConsole(message)
         print(message)
+    end
+    local function logFile(message)
         Utils.File.Write("/Logs/main.log", "+a", message .. "\n", true)
     end
     local function clear()
@@ -239,15 +243,16 @@ function Loader:setupLogger(logLevel)
     end
 
     ---@type Github_Loading.Listener
-    local Listener = self:Get("/Github-Loading/Loader/30_Listener.lua")
+    local Listener = self:Get("/Github-Loading/Loader/Listener")
     ---@type Github_Loading.Logger
-    local Logger = self:Get("/Github-Loading/Loader/30_Logger.lua")
+    local Logger = self:Get("/Github-Loading/Loader/Logger")
     self.Logger = Logger.new("Github Loader", logLevel)
-    self.Logger.OnLog:AddListener(Listener.new(log))
+    self.Logger.OnLog:AddListener(Listener.new(logFile))
     self.Logger.OnClear:AddListener(Listener.new(clear))
     self.Logger:setErrorLogger()
     self.Logger:Clear()
     self.Logger:LogInfo("###### LOG START ######")
+    self.Logger.OnLog:AddListener(Listener.new(logConsole))
 end
 
 
@@ -256,7 +261,7 @@ function Loader:Load(logLevel)
     self:LoadFiles()
 
     ---@type Utils
-    Utils = self:Get("/Github-Loading/Loader/20_Utils.lua")
+    Utils = self:Get("/Github-Loading/Loader/Utils")
 
     self:setupLogger(logLevel)
 end
@@ -267,7 +272,7 @@ end
 function Loader:CheckVersion()
     local versionFilePath = self.loaderBasePath .. "/Github-Loading/Version.now.txt"
     local OldVersionString = Utils.File.ReadAll(versionFilePath)
-    local NewVersionString = self:Get("/Github-Loading/Version.latest.txt")
+    local NewVersionString = self:Get("/Github-Loading/Version.latest")
     Utils.File.Write(versionFilePath, "w", NewVersionString, true)
     return OldVersionString ~= NewVersionString
 end
@@ -278,8 +283,8 @@ end
 ---@return Github_Loading.Option chosenOption
 function Loader:LoadOption(option, extendOptionDetails)
     ---@type Github_Loading.Option
-    local Option = self:Get("/Github-Loading/Loader/10_Option.lua")
-    local options = self:Get("/Github-Loading/100_Options.lua")
+    local Option = self:Get("/Github-Loading/Loader/Option")
+    local options = self:Get("/Github-Loading/Options")
     ---@type Github_Loading.Option[]
     local mappedOptions = {}
     for name, url in pairs(options) do
@@ -319,9 +324,9 @@ end
 ---@return Github_Loading.Entities.Main program
 function Loader:LoadProgram(option, baseUrl, forceDownload)
     ---@type Github_Loading.PackageLoader
-    local PackageLoader = self:Get("/Github-Loading/Loader/70_PackageLoader.lua")
+    local PackageLoader = self:Get("/Github-Loading/Loader/PackageLoader")
     PackageLoader = PackageLoader.new(baseUrl .. "/Packages", self.loaderBasePath .. "/Packages",
-        self.Logger:create("PackageLoader"), self.internetCard)
+        self.Logger:subLogger("PackageLoader"), self.internetCard)
     PackageLoader:setGlobal()
 
     local package = PackageLoader:LoadPackage(option.Url, forceDownload)
@@ -334,7 +339,7 @@ function Loader:LoadProgram(option, baseUrl, forceDownload)
     local mainModuleData = mainModule:Load()
 
     ---@type Github_Loading.Entities
-    local Entities = self:Get("/Github-Loading/Loader/10_Entities.lua")
+    local Entities = self:Get("/Github-Loading/Loader/Entities")
     return Entities.newMain(mainModuleData)
 end
 
@@ -343,20 +348,9 @@ end
 ---@param logLevel Github_Loading.Logger.LogLevel
 function Loader:Configure(program, logLevel)
     self.Logger:LogTrace("configuring program...")
-    local Listener = self:Get("/Github-Loading/Loader/30_Listener.lua")
     local Logger = require("Core.Logger")
     program.Logger = Logger("Program", logLevel)
-
-    local function log(message)
-        print(message)
-        Utils.File.Write("/Logs/main.log", "+a", message .. "\n", true)
-    end
-    local function clear()
-        Utils.File.Clear("/Logs/main.log")
-    end
-
-    program.Logger.OnLog:AddListener(Listener.new(log))
-    program.Logger.OnClear:AddListener(Listener.new(clear))
+    self.Logger:CopyListenersTo(program.Logger)
     program.Logger:setErrorLogger()
     local errorMsg = program:Configure()
     self.Logger:setErrorLogger()

@@ -1,8 +1,8 @@
 local LoadedLoaderFiles = table.pack(...)[1]
 ---@type Utils
-local Utils = LoadedLoaderFiles["/Github-Loading/Loader/20_Utils.lua"][1]
+local Utils = LoadedLoaderFiles["/Github-Loading/Loader/Utils"][1]
 ---@type Github_Loading.Event
-local Event = LoadedLoaderFiles["/Github-Loading/Loader/10_Event.lua"][1]
+local Event = LoadedLoaderFiles["/Github-Loading/Loader/Event"][1]
 
 ---@alias Github_Loading.Logger.LogLevel
 ---|0 Trace
@@ -115,7 +115,7 @@ end
 
 ---@param name string
 ---@return Github_Loading.Logger
-function Logger:create(name)
+function Logger:subLogger(name)
     name = self.Name .. "." .. name
     local metatable = Logger
     metatable.__index = Logger
@@ -125,6 +125,14 @@ function Logger:create(name)
         OnLog = Utils.Table.Copy(self.OnLog),
         OnClear = Utils.Table.Copy(self.OnClear)
     }, metatable)
+end
+
+---@param logger Github_Loading.Logger | Core.Logger
+---@return Github_Loading.Logger | Core.Logger logger
+function Logger:CopyListenersTo(logger)
+    self.OnLog:CopyTo(logger.OnLog)
+    self.OnClear:CopyTo(logger.OnClear)
+    return logger
 end
 
 ---@private

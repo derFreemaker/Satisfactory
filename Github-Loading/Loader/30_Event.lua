@@ -1,3 +1,7 @@
+local LoadedLoaderFiles = table.pack(...)[1]
+---@type Utils
+local Utils = LoadedLoaderFiles["/Github-Loading/Loader/Utils"][1]
+
 ---@class Github_Loading.Event
 ---@field private funcs Github_Loading.Listener[]
 ---@field private onceFuncs Github_Loading.Listener[]
@@ -67,6 +71,18 @@ function Event:Listeners()
     end
 
     return clone
+end
+
+---@param event Github_Loading.Event | Core.Event
+---@return Github_Loading.Event | Core.Event event
+function Event:CopyTo(event)
+    for _, listener in ipairs(self.funcs) do
+        event:AddListener(listener)
+    end
+    for _, listener in ipairs(self.onceFuncs) do
+        event:AddListenerOnce(listener)
+    end
+    return event
 end
 
 return Event

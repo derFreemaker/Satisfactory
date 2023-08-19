@@ -1,6 +1,6 @@
 local LoadedLoaderFiles = table.pack(...)[1]
 ---@type Object
-local Object = LoadedLoaderFiles["/Github-Loading/Loader/10_Object.lua"][1]
+local Object = LoadedLoaderFiles["/Github-Loading/Loader/Object"][1]
 
 ---@class Utils
 local Utils = {}
