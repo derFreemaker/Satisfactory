@@ -1,4 +1,4 @@
-local Event = require("Core.Event")
+local Event = require("Core.Event.Event")
 
 ---@class Core.EventPullAdapter
 ---@field private events Dictionary<string, Core.Event>
@@ -74,6 +74,7 @@ function EventPullAdapter:Wait(timeout)
 end
 
 function EventPullAdapter:Run()
+    self.logger:LogDebug("## started event pull loop ##")
     while true do
         self:Wait()
     end

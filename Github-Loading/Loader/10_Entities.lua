@@ -33,7 +33,7 @@ local Events = {}
 
 ---@param loadModule Github_Loading.Entities.Events
 ---@return Github_Loading.Entities.Events
-function Events.newLoad(loadModule)
+function Entities.newLoad(loadModule)
     local metatable = {
         __index = Events
     }

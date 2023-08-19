@@ -1,4 +1,4 @@
-local Event = require("Core.Event")
+local Event = require("Core.Event.Event")
 
 ---@class Core.Net.NetworkPort : Object
 ---@field Port integer | "all"

@@ -1,6 +1,6 @@
 local Json = require("Core.Json")
-local EventPullAdapter = require("Core.EventPullAdapter")
-local Listener = require("Core.Listener")
+local EventPullAdapter = require("Core.Event.EventPullAdapter")
+local Listener = require("Core.Event.Listener")
 local NetworkPort = require("Core.Net.NetworkPort")
 local NetworkContext = require("Core.Net.NetworkContext")
 

@@ -41,7 +41,7 @@ PackageData.RONgYwHx = {
     FullName = "ApiController.lua",
     IsRunnable = true,
     Data = function(...)
-local Listener = require("Core.Listener")
+local Listener = require("Core.Event.Listener")
 local ApiEndpoint = require("Core.Api.Server.ApiEndpoint")
 local ApiHelper = require("Core.Api.ApiHelper")
 local StatusCodes = require("Core.Api.StatusCodes")
@@ -100,7 +100,6 @@ PackageData.seyrvpeX = {
     FullName = "ApiEndpoint.lua",
     IsRunnable = true,
     Data = function(...)
-local ApiResponse = require("Core.Api.ApiResponse")
 local ApiResponseTemplates = require("Core.Api.Server.ApiResponseTemplates")
 local ApiEndpoint = {}
 function ApiEndpoint:ApiEndpoint(listener)
@@ -296,17 +295,185 @@ end
 
 -- ########## Core.Api ########## --
 
--- ########## Core.Net ##########
+-- ########## Core.Event ##########
 
 PackageData.agsRDvly = {
+    Namespace = "Core.Event.Event",
+    Name = "Event",
+    FullName = "Event.lua",
+    IsRunnable = true,
+    Data = function(...)
+local Event = {}
+function Event:Event()
+    self.funcs = {}
+    self.onceFuncs = {}
+end
+function Event:AddListener(listener)
+    table.insert(self.funcs, listener)
+    return self
+end
+Event.On = Event.AddListener
+function Event:AddListenerOnce(listener)
+    table.insert(self.onceFuncs, listener)
+    return self
+end
+Event.Once = Event.AddListenerOnce
+function Event:Trigger(...)
+    for _, listener in ipairs(self.funcs) do
+        listener:Execute(...)
+    end
+    for _, listener in ipairs(self.onceFuncs) do
+        listener:Execute(...)
+    end
+    self.OnceFuncs = {}
+end
+function Event:TriggerDynamic(args)
+    for _, listener in ipairs(self.funcs) do
+        listener:ExecuteDynamic(args)
+    end
+    for _, listener in ipairs(self.onceFuncs) do
+        listener:ExecuteDynamic(args)
+    end
+    self.OnceFuncs = {}
+end
+function Event:Listeners()
+
+    local permanentListeners = {}
+    for _, listener in ipairs(self.funcs) do
+        table.insert(permanentListeners, listener)
+    end
+
+    local onceListeners = {}
+    for _, listener in ipairs(self.onceFuncs) do
+        table.insert(onceListeners, listener)
+    end
+    return {
+        Permanent = permanentListeners,
+        Once = onceListeners
+    }
+end
+function Event:__len()
+    return #self.funcs + #self.onceFuncs
+end
+function Event:CopyTo(event)
+    for _, listener in ipairs(self.funcs) do
+        event:AddListener(listener)
+    end
+    for _, listener in ipairs(self.onceFuncs) do
+        event:AddListenerOnce(listener)
+    end
+    return event
+end
+return Utils.Class.CreateClass(Event, "Event")
+end
+}
+
+PackageData.CwccbpJY = {
+    Namespace = "Core.Event.EventPullAdapter",
+    Name = "EventPullAdapter",
+    FullName = "EventPullAdapter.lua",
+    IsRunnable = true,
+    Data = function(...)
+local Event = require("Core.Event.Event")
+local EventPullAdapter = {}
+function EventPullAdapter:onEventPull(eventPullData)
+
+    local removeEvent = {}
+    for name, event in pairs(self.events) do
+        if name == eventPullData[1] then
+            event:Trigger(eventPullData)
+        end
+        if #event:Listeners() == 0 then
+            table.insert(removeEvent, name)
+        end
+    end
+    for _, name in ipairs(removeEvent) do
+        self.events[name] = nil
+    end
+end
+function EventPullAdapter:Initialize(logger)
+    self.events = {}
+    self.logger = logger
+    self.OnEventPull = Event()
+    return self
+end
+function EventPullAdapter:GetEvent(signalName)
+    for name, event in pairs(self.events) do
+        if name == signalName then
+            return event
+        end
+    end
+    local event = Event()
+    self.events[signalName] = event
+    return event
+end
+function EventPullAdapter:AddListener(signalName, listener)
+    local event = self:GetEvent(signalName)
+    event:AddListener(listener)
+    return self
+end
+function EventPullAdapter:AddListenerOnce(signalName, listener)
+    local event = self:GetEvent(signalName)
+    event:AddListenerOnce(listener)
+    return self
+end
+function EventPullAdapter:Wait(timeout)
+    local eventPullData = table.pack(event.pull(timeout))
+    if #eventPullData == 0 then
+        return
+    end
+    self.logger:LogDebug("signalName: '".. eventPullData[1] .."' was recieved")
+    self.OnEventPull:Trigger(eventPullData)
+    self:onEventPull(eventPullData)
+end
+function EventPullAdapter:Run()
+    self.logger:LogDebug("## started event pull loop ##")
+    while true do
+        self:Wait()
+    end
+end
+return EventPullAdapter
+end
+}
+
+PackageData.dLNnyigy = {
+    Namespace = "Core.Event.Listener",
+    Name = "Listener",
+    FullName = "Listener.lua",
+    IsRunnable = true,
+    Data = function(...)
+local Listener = {}
+function Listener:Listener(func, parent)
+    self.func = func
+    self.parent = parent
+end
+function Listener:Execute(...)
+    local success, result = Utils.Function.InvokeProtected(self.func, self.parent, ...)
+    assert(success, "listener execution failed")
+    return success, table.unpack(result)
+end
+function Listener:ExecuteDynamic(args)
+    local success, results = Utils.Function.DynamicInvokeProtected(self.func, self.parent, args)
+    assert(success, "listener dynamic execution failed")
+    return success, results
+end
+return Utils.Class.CreateClass(Listener, "Listener")
+end
+}
+
+-- ########## Core.Event ########## --
+
+-- ########## Core.Net ##########
+
+PackageData.fphJtVby = {
     Namespace = "Core.Net.NetworkClient",
     Name = "NetworkClient",
     FullName = "NetworkClient.lua",
     IsRunnable = true,
     Data = function(...)
 local Json = require("Core.Json")
-local EventPullAdapter = require("Core.EventPullAdapter")
-local Listener = require("Core.Listener")
+local EventPullAdapter = require("Core.Event.EventPullAdapter")
+local Listener = require("Core.Event.Listener")
 local NetworkPort = require("Core.Net.NetworkPort")
 local NetworkContext = require("Core.Net.NetworkContext")
 local NetworkClient = {}
@@ -401,7 +568,7 @@ return Utils.Class.CreateClass(NetworkClient, "NetworkClient")
 end
 }
 
-PackageData.CwccbpJY = {
+PackageData.GFSURPyY = {
     Namespace = "Core.Net.NetworkContext",
     Name = "NetworkContext",
     FullName = "NetworkContext.lua",
@@ -422,13 +589,13 @@ return Utils.Class.CreateClass(NetworkContext, "NetworkContext")
 end
 }
 
-PackageData.dLNnyigy = {
+PackageData.hUCfoIVy = {
     Namespace = "Core.Net.NetworkPort",
     Name = "NetworkPort",
     FullName = "NetworkPort.lua",
     IsRunnable = true,
     Data = function(...)
-local Event = require("Core.Event")
+local Event = require("Core.Event.Event")
 local NetworkPort = {}
 function NetworkPort:NetworkPort(port, logger, netClient)
     self.Port = port
@@ -487,136 +654,7 @@ end
 
 -- ########## Core.Net ########## --
 
-PackageData.EaxyWcDY = {
-    Namespace = "Core.Event",
-    Name = "Event",
-    FullName = "Event.lua",
-    IsRunnable = true,
-    Data = function(...)
-local Event = {}
-function Event:Event()
-    self.funcs = {}
-    self.onceFuncs = {}
-end
-function Event:AddListener(listener)
-    table.insert(self.funcs, listener)
-    return self
-end
-Event.On = Event.AddListener
-function Event:AddListenerOnce(listener)
-    table.insert(self.onceFuncs, listener)
-    return self
-end
-Event.Once = Event.AddListenerOnce
-function Event:Trigger(...)
-    for _, listener in ipairs(self.funcs) do
-        listener:Execute(...)
-    end
-    for _, listener in ipairs(self.onceFuncs) do
-        listener:Execute(...)
-    end
-    self.OnceFuncs = {}
-end
-function Event:TriggerDynamic(args)
-    for _, listener in ipairs(self.funcs) do
-        listener:ExecuteDynamic(args)
-    end
-    for _, listener in ipairs(self.onceFuncs) do
-        listener:ExecuteDynamic(args)
-    end
-    self.OnceFuncs = {}
-end
-function Event:Listeners()
-
-    local permanentListeners = {}
-    for _, listener in ipairs(self.funcs) do
-        table.insert(permanentListeners, listener)
-    end
-
-    local onceListeners = {}
-    for _, listener in ipairs(self.onceFuncs) do
-        table.insert(onceListeners, listener)
-    end
-    return {
-        Permanent = permanentListeners,
-        Once = onceListeners
-    }
-end
-function Event:__len()
-    return #self.funcs + #self.onceFuncs
-end
-return Utils.Class.CreateClass(Event, "Event")
-end
-}
-
-PackageData.fphJtVby = {
-    Namespace = "Core.EventPullAdapter",
-    Name = "EventPullAdapter",
-    FullName = "EventPullAdapter.lua",
-    IsRunnable = true,
-    Data = function(...)
-local Event = require("Core.Event")
-local EventPullAdapter = {}
-function EventPullAdapter:onEventPull(eventPullData)
-
-    local removeEvent = {}
-    for name, event in pairs(self.events) do
-        if name == eventPullData[1] then
-            event:Trigger(eventPullData)
-        end
-        if #event:Listeners() == 0 then
-            table.insert(removeEvent, name)
-        end
-    end
-    for _, name in ipairs(removeEvent) do
-        self.events[name] = nil
-    end
-end
-function EventPullAdapter:Initialize(logger)
-    self.events = {}
-    self.logger = logger
-    self.OnEventPull = Event()
-    return self
-end
-function EventPullAdapter:GetEvent(signalName)
-    for name, event in pairs(self.events) do
-        if name == signalName then
-            return event
-        end
-    end
-    local event = Event()
-    self.events[signalName] = event
-    return event
-end
-function EventPullAdapter:AddListener(signalName, listener)
-    local event = self:GetEvent(signalName)
-    event:AddListener(listener)
-    return self
-end
-function EventPullAdapter:AddListenerOnce(signalName, listener)
-    local event = self:GetEvent(signalName)
-    event:AddListenerOnce(listener)
-    return self
-end
-function EventPullAdapter:Wait(timeout)
-    local eventPullData = table.pack(event.pull(timeout))
-    if #eventPullData == 0 then
-        return
-    end
-    self.logger:LogDebug("signalName: '".. eventPullData[1] .."' was recieved")
-    self.OnEventPull:Trigger(eventPullData)
-    self:onEventPull(eventPullData)
-end
-function EventPullAdapter:Run()
-    while true do
-        self:Wait()
-    end
-end
-return EventPullAdapter
-end
-}
-
-PackageData.GFSURPyY = {
+PackageData.JjmrMBtY = {
     Namespace = "Core.Json",
     Name = "Json",
     FullName = "Json.lua",
@@ -921,38 +959,13 @@ return json
 end
 }
 
-PackageData.hUCfoIVy = {
-    Namespace = "Core.Listener",
-    Name = "Listener",
-    FullName = "Listener.lua",
-    IsRunnable = true,
-    Data = function(...)
-local Listener = {}
-function Listener:Listener(func, parent)
-    self.func = func
-    self.parent = parent
-end
-function Listener:Execute(...)
-    local success, result = Utils.Function.InvokeProtected(self.func, self.parent, ...)
-    assert(success, "listener execution failed: \n" .. debug.traceback(result[1]))
-    return success, table.unpack(result)
-end
-function Listener:ExecuteDynamic(args)
-    local success, results = Utils.Function.DynamicInvokeProtected(self.func, self.parent, args)
-    assert(success, "listener dynamic execution failed: \n" .. debug.traceback(results[1]))
-    return success, results
-end
-return Utils.Class.CreateClass(Listener, "Listener")
-end
-}
-
-PackageData.JjmrMBtY = {
+PackageData.kyXCjvQy = {
     Namespace = "Core.Logger",
     Name = "Logger",
     FullName = "Logger.lua",
     IsRunnable = true,
     Data = function(...)
-local Event = require("Core.Event")
+local Event = require("Core.Event.Event")
 local Logger = {}
 function Logger.tableToLineTree(node, maxLevel, properties, logFunc, logFuncParent, level, padding)
     padding = padding or '     '
