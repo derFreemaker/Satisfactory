@@ -4,7 +4,7 @@ local StatusCodes = require("Core.Api.StatusCodes")
 ---@field Code Core.Api.StatusCodes
 
 ---@class Core.Api.ApiResponse
----@field Header Core.Api.ApiResponse.Header | Dictionary<string, any>
+---@field Headers Core.Api.ApiResponse.Header | Dictionary<string, any>
 ---@field Body any
 ---@field WasSuccessfull boolean
 ---@overload fun(header: (Core.Api.ApiResponse.Header | Dictionary<string, any>)?, body: any) : Core.Api.ApiResponse
@@ -14,9 +14,17 @@ local ApiResponse = {}
 ---@param header (Core.Api.ApiResponse.Header | Dictionary<string, any>)?
 ---@param body any
 function ApiResponse:ApiResponse(header, body)
-    self.Header = header or {}
+    self.Headers = header or {}
     self.Body = body
-    self.WasSuccessfull = self.Header.Code == StatusCodes.Status200OK
+    self.WasSuccessfull = self.Headers.Code == StatusCodes.Status200OK
+end
+
+---@return table
+function ApiResponse:ExtractData()
+    return {
+        Headers = self.Headers,
+        Body = self.Body
+    }
 end
 
 return Utils.Class.CreateClass(ApiResponse, "ApiResponse")

@@ -1,4 +1,5 @@
 return {
     Name = "Core",
-    Namespace = "Core"
+    Version = "0.5",
+    Namespace = "Core",
 }

@@ -93,8 +93,11 @@ function File.Write(path, mode, data, createPath)
 end
 
 ---@param path string
----@return string
+---@return string?
 function File.ReadAll(path)
+    if filesystem.exists(path) then
+        return nil
+    end
     local file = filesystem.open(path, "r")
     local str = ""
     while true do

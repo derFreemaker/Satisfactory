@@ -35,12 +35,12 @@ function ApiController:onMessageRecieved(context)
     local response = endpoint:Execute(request)
     if context.Header.ReturnPort then
         self.NetPort.NetClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort,
-            "Rest-Response", nil, response)
+            "Rest-Response", nil, response:ExtractData())
     end
-    if response.Header.Code == StatusCodes.Status200OK then
+    if response.Headers.Code == StatusCodes.Status200OK then
         self.Logger:LogDebug("request finished successfully")
     else
-        self.Logger:LogDebug("request finished with status code: ".. response.Header.Code .." with message: '".. response.Header.Message .."'")
+        self.Logger:LogDebug("request finished with status code: ".. response.Headers.Code .." with message: '".. response.Headers.Message .."'")
     end
 end
 

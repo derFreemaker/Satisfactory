@@ -1,4 +1,3 @@
-local ApiResponse = require("Core.Api.ApiResponse")
 local ApiResponseTemplates = require("Core.Api.Server.ApiResponseTemplates")
 
 ---@class Core.Api.Server.ApiEndpoint : Object

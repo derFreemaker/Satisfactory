@@ -7,13 +7,13 @@ local Helper = {}
 ---@param context Core.Net.NetworkContext
 ---@return Core.Api.ApiResponse response
 function Helper.NetworkContextToApiResponse(context)
-    return context.Body
+    return ApiResponse(context.Body.Headers, context.Body.Body)
 end
 
 ---@param context Core.Net.NetworkContext
 ---@return Core.Api.ApiRequest request
 function Helper.NetworkContextToApiRequest(context)
-    return context.Body
+    return ApiRequest(context.Body.Endpoint, context.Body.Headers, context.Body.Body)
 end
 
 return Helper

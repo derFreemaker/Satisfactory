@@ -24,7 +24,7 @@ end
 
 ---@param request Core.Api.ApiRequest
 function ApiClient:request(request)
-    self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, "Rest-Request", { ReturnPort = self.ReturnPort }, request)
+    self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, "Rest-Request", { ReturnPort = self.ReturnPort }, request:ExtractData())
     local context = self.NetClient:WaitForEvent("Rest-Response", self.ReturnPort)
     local response = ApiHelper.NetworkContextToApiResponse(context)
     return response

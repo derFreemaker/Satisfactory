@@ -48,34 +48,47 @@ filesystem.mount("/dev/" .. drive, "/")
 -- //TODO: debug message
 print("[Computer] DEBUG mounted filesystem on drive: " .. drive)
 
-if not filesystem.exists(LoaderFilesPath) then
-    filesystem.createDir(LoaderFilesPath)
+---@return boolean restart
+local function Run()
+    if not filesystem.exists(LoaderFilesPath) then
+        filesystem.createDir(LoaderFilesPath)
+    end
+    if not filesystem.exists(LoaderPath) or loaderForceDownload then
+        print("[Computer] INFO! downloading Github loader...")
+        local req = internetCard:request(LoaderUrl, "GET", "")
+        local _, libdata = req:await()
+        ---@cast libdata string
+        local file = filesystem.open(LoaderPath, "w")
+        assert(file, "Unable to open file: '" .. LoaderPath .. "'")
+        file:write(libdata)
+        file:close()
+        print("[Computer] INFO! downloaded Github loader")
+    end
+
+    -- ######## load Loader Files and initialize ######## --
+    ---@type Github_Loading.Loader
+    local Loader = filesystem.doFile(LoaderPath)
+    assert(Loader, "Unable to load loader")
+
+    Loader = Loader.new(BaseUrl, LoaderFilesPath, loaderForceDownload, internetCard)
+    Loader:Download()
+    local diffrentVersionFound = Loader:Load(loaderLogLevel)
+    if diffrentVersionFound then
+        loaderForceDownload = true
+        return true
+    end
+
+    -- ######## load option ######## --
+    local chosenOption = Loader:LoadOption(option, showExtendOptionDetails)
+    local program = Loader:LoadProgram(chosenOption, BaseUrl, programForceDownload)
+
+    -- ######## start Program ######## --
+    Loader:Configure(program, programLogLevel)
+    Loader:Run(program)
+
+    return false
 end
-if not filesystem.exists(LoaderPath) or loaderForceDownload then
-    print("[Computer] INFO! downloading Github loader...")
-    local req = internetCard:request(LoaderUrl, "GET", "")
-    local _, libdata = req:await()
-    ---@cast libdata string
-    local file = filesystem.open(LoaderPath, "w")
-    assert(file, "Unable to open file: '" .. LoaderPath .. "'")
-    file:write(libdata)
-    file:close()
-    print("[Computer] INFO! downloaded Github loader")
-end
 
--- ######## load Loader Files and initialize ######## --
----@type Github_Loading.Loader
-local Loader = filesystem.doFile(LoaderPath)
-assert(Loader, "Unable to load loader")
-
-Loader = Loader.new(BaseUrl, LoaderFilesPath, loaderForceDownload, internetCard)
-Loader:Download()
-Loader:Load(loaderLogLevel)
-
--- ######## load option ######## --
-local chosenOption = Loader:LoadOption(option, showExtendOptionDetails)
-local program = Loader:LoadProgram(chosenOption, BaseUrl, programForceDownload)
-
--- ######## start Program ######## --
-Loader:Configure(program, programLogLevel)
-Loader:Run(program)
+repeat
+    local restart = Run()
+until not restart

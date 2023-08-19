@@ -15,4 +15,13 @@ function ApiRequest:ApiRequest(endpoint, headers, body)
     self.Body = body
 end
 
+---@return table
+function ApiRequest:ExtractData()
+    return {
+        Endpoint = self.Endpoint,
+        Headers = self.Headers,
+        Body = self.Body
+    }
+end
+
 return Utils.Class.CreateClass(ApiRequest, "ApiRequest")

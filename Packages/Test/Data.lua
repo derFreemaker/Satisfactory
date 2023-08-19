@@ -2,7 +2,15 @@ local PackageData = {}
 
 -- ########## Test ##########
 
-PackageData.MFYoiWSx = {
+-- ########## Test.RecieveServer ##########
+
+-- ########## Test.RecieveServer ########## --
+
+-- ########## Test.SendServer ##########
+
+-- ########## Test.SendServer ########## --
+
+PackageData.PksKdJNx = {
     Namespace = "Test.Main",
     Name = "Main",
     FullName = "Main.lua",
@@ -14,8 +22,6 @@ function Test:Configure()
 end
 function Test:Run()
     self.Logger:LogInfo("called run function")
-    local test = require("Core.Test")
-    print(test())
     return 0
 end
 return Test

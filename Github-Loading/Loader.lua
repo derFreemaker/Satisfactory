@@ -13,6 +13,7 @@ local LoaderFiles = {
         { "30_Package.lua" },
         { "40_PackageLoader.lua" },
     },
+    { "Version.latest.json" },
     { "100_Options.lua" },
 }
 
@@ -126,6 +127,8 @@ local function loadFiles(loaderBasePath)
     local loadEntries = {}
     ---@type integer[]
     local loadOrder = {}
+    ---@type Dictionary<string, any>
+    local loadedLoaderFiles = {}
 
     ---@param path string
     ---@return boolean success
@@ -142,6 +145,18 @@ local function loadFiles(loaderBasePath)
                 table.insert(loadOrder, num)
             end
             table.insert(entries, path)
+        else
+            local file = filesystem.open(loaderBasePath .. path, "r")
+            local str = ""
+            while true do
+                local buf = file:read(8192)
+                if not buf then
+                    break
+                end
+                str = str .. buf
+            end
+            loadedLoaderFiles[path] = str
+            file:close()
         end
         return true
     end
@@ -150,8 +165,6 @@ local function loadFiles(loaderBasePath)
             "Unable to load loader Files")
 
     table.sort(loadOrder)
-    ---@type Dictionary<string, any>
-    local loadedLoaderFiles = {}
     for _, num in ipairs(loadOrder) do
         for _, path in pairs(loadEntries[num]) do
             local loadedFile = table.pack(filesystem.loadFile(loaderBasePath .. path)(loadedLoaderFiles))
@@ -196,6 +209,7 @@ function Loader:Download()
 end
 
 
+
 function Loader:LoadFiles()
     self.loadedLoaderFiles = loadFiles(self.loaderBasePath)
 end
@@ -215,9 +229,6 @@ end
 ---@private
 ---@param logLevel Github_Loading.Logger.LogLevel
 function Loader:setupLogger(logLevel)
-    ---@type Utils
-    Utils = self:Get("/Github-Loading/Loader/10_Utils.lua")
-
     local function log(message)
         print(message)
         Utils.File.Write("/Logs/main.log", "+a", message .. "\n", true)
@@ -238,10 +249,22 @@ function Loader:setupLogger(logLevel)
 end
 
 
+---@nodiscard
 ---@param logLevel Github_Loading.Logger.LogLevel
+---@return boolean diffrentVersionFound
 function Loader:Load(logLevel)
     self:LoadFiles()
+
+    ---@type Utils
+    Utils = self:Get("/Github-Loading/Loader/10_Utils.lua")
+
     self:setupLogger(logLevel)
+
+    local versionFilePath = self.loaderBasePath .. "/Github-Loading/Version.now.json"
+    local OldVersionString = Utils.File.ReadAll(versionFilePath)
+    local NewVersionString = self:Get("/Github-Loading/Version.latest.json")
+    Utils.File.Write(versionFilePath, "w", NewVersionString, true)
+    return OldVersionString ~= NewVersionString
 end
 
 
@@ -251,15 +274,16 @@ end
 function Loader:LoadOption(option, extendOptionDetails)
     ---@type Github_Loading.Option
     local Option = self:Get("/Github-Loading/Loader/10_Option.lua")
+    local options = self:Get("/Github-Loading/100_Options.lua")
     ---@type Github_Loading.Option[]
-    local Options = {}
-    for name, url in pairs(self:Get("/Github-Loading/100_Options.lua")) do
+    local mappedOptions = {}
+    for name, url in pairs(options) do
         local optionObj = Option.new(name, url)
-        table.insert(Options, optionObj)
+        table.insert(mappedOptions, optionObj)
     end
     if option == nil then
         print("\nOptions:")
-        for _, optionObj in ipairs(Options) do
+        for _, optionObj in ipairs(mappedOptions) do
             optionObj:Print(extendOptionDetails)
         end
         computer.stop()
@@ -269,7 +293,7 @@ function Loader:LoadOption(option, extendOptionDetails)
     ---@param optionName string
     ---@return Github_Loading.Option?
     local function getOption(optionName)
-        for _, optionObj in ipairs(Options) do
+        for _, optionObj in ipairs(mappedOptions) do
             if optionObj.Name == optionName then
                 return optionObj
             end
