@@ -95,7 +95,7 @@ end
 ---@param path string
 ---@return string?
 function File.ReadAll(path)
-    if filesystem.exists(path) then
+    if not filesystem.exists(path) then
         return nil
     end
     local file = filesystem.open(path, "r")
