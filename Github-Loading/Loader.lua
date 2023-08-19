@@ -14,7 +14,7 @@ local LoaderFiles = {
         { "30_Logger.lua" },
         { "70_PackageLoader.lua" },
     },
-    { "Version.latest.json" },
+    { "Version.latest.txt" },
     { "100_Options.lua" },
 }
 
@@ -247,7 +247,7 @@ function Loader:setupLogger(logLevel)
     self.Logger.OnClear:AddListener(Listener.new(clear))
     self.Logger:setErrorLogger()
     self.Logger:Clear()
-    self.Logger:LogDebug("###### LOG START ######")
+    self.Logger:LogInfo("###### LOG START ######")
 end
 
 
@@ -265,9 +265,9 @@ end
 ---@nodiscard
 ---@return boolean diffrentVersionFound
 function Loader:CheckVersion()
-    local versionFilePath = self.loaderBasePath .. "/Github-Loading/Version.now.json"
+    local versionFilePath = self.loaderBasePath .. "/Github-Loading/Version.now.txt"
     local OldVersionString = Utils.File.ReadAll(versionFilePath)
-    local NewVersionString = self:Get("/Github-Loading/Version.latest.json")
+    local NewVersionString = self:Get("/Github-Loading/Version.latest.txt")
     Utils.File.Write(versionFilePath, "w", NewVersionString, true)
     return OldVersionString ~= NewVersionString
 end
