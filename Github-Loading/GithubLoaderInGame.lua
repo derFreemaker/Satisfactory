@@ -54,7 +54,7 @@ local function Run()
         filesystem.createDir(LoaderFilesPath)
     end
     if not filesystem.exists(LoaderPath) or loaderForceDownload then
-        print("[Computer] INFO! downloading Github loader...")
+        print("[Computer] INFO downloading Github Loader...")
         local req = internetCard:request(LoaderUrl, "GET", "")
         local _, libdata = req:await()
         ---@cast libdata string
@@ -62,18 +62,20 @@ local function Run()
         assert(file, "Unable to open file: '" .. LoaderPath .. "'")
         file:write(libdata)
         file:close()
-        print("[Computer] INFO! downloaded Github loader")
+        print("[Computer] INFO downloaded Github Loader")
     end
 
     -- ######## load Loader Files and initialize ######## --
     ---@type Github_Loading.Loader
     local Loader = filesystem.doFile(LoaderPath)
-    assert(Loader, "Unable to load loader")
+    assert(Loader, "Unable to load Github Loader")
 
     Loader = Loader.new(BaseUrl, LoaderFilesPath, loaderForceDownload, internetCard)
     Loader:Download()
-    local diffrentVersionFound = Loader:Load(loaderLogLevel)
+    Loader:Load(loaderLogLevel)
+    local diffrentVersionFound = Loader:CheckVersion()
     if diffrentVersionFound then
+        Loader.Logger:LogInfo("new Github Loader version found")
         loaderForceDownload = true
         return true
     end
