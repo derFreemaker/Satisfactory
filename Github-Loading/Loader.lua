@@ -239,9 +239,9 @@ function Loader:setupLogger(logLevel)
     end
 
     ---@type Github_Loading.Listener
-    local Listener = self:Get("/Github-Loading/Loader/20_Listener.lua")
+    local Listener = self:Get("/Github-Loading/Loader/30_Listener.lua")
     ---@type Github_Loading.Logger
-    local Logger = self:Get("/Github-Loading/Loader/20_Logger.lua")
+    local Logger = self:Get("/Github-Loading/Loader/30_Logger.lua")
     self.Logger = Logger.new("Github Loader", logLevel)
     self.Logger.OnLog:AddListener(Listener.new(log))
     self.Logger.OnClear:AddListener(Listener.new(clear))
@@ -319,7 +319,7 @@ end
 ---@return Github_Loading.Entities.Main program
 function Loader:LoadProgram(option, baseUrl, forceDownload)
     ---@type Github_Loading.PackageLoader
-    local PackageLoader = self:Get("/Github-Loading/Loader/40_PackageLoader.lua")
+    local PackageLoader = self:Get("/Github-Loading/Loader/70_PackageLoader.lua")
     PackageLoader = PackageLoader.new(baseUrl .. "/Packages", self.loaderBasePath .. "/Packages",
         self.Logger:create("PackageLoader"), self.internetCard)
     PackageLoader:setGlobal()
@@ -343,7 +343,7 @@ end
 ---@param logLevel Github_Loading.Logger.LogLevel
 function Loader:Configure(program, logLevel)
     self.Logger:LogTrace("configuring program...")
-    local Listener = self:Get("/Github-Loading/Loader/20_Listener.lua")
+    local Listener = self:Get("/Github-Loading/Loader/30_Listener.lua")
     local Logger = require("Core.Logger")
     program.Logger = Logger("Program", logLevel)
 
