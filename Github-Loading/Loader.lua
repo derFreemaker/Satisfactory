@@ -256,7 +256,7 @@ function Loader:Load(logLevel)
     self:LoadFiles()
 
     ---@type Utils
-    Utils = self:Get("/Github-Loading/Loader/10_Utils.lua")
+    Utils = self:Get("/Github-Loading/Loader/20_Utils.lua")
 
     self:setupLogger(logLevel)
 end
