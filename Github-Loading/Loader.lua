@@ -331,7 +331,7 @@ function Loader:LoadProgram(option, baseUrl, forceDownload)
 
     local package = PackageLoader:LoadPackage(option.Url, forceDownload)
 
-    local mainModule = package:GetModule(package.Name .. ".Main")
+    local mainModule = package:GetModule(package.Name .. ".Main") -- //TODO: rename to __main
     assert(mainModule, "Unable to get main module from option")
     assert(mainModule.IsRunnable, "main module from option is not runnable")
 
