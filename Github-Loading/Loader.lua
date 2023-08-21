@@ -270,7 +270,7 @@ end
 ---@nodiscard
 ---@return boolean diffrentVersionFound
 function Loader:CheckVersion()
-    local versionFilePath = self.loaderBasePath .. "/Github-Loading/Version.now.txt"
+    local versionFilePath = self.loaderBasePath .. "/Github-Loading/Version.current.txt"
     local OldVersionString = Utils.File.ReadAll(versionFilePath)
     local NewVersionString = self:Get("/Github-Loading/Version.latest")
     Utils.File.Write(versionFilePath, "w", NewVersionString, true)
