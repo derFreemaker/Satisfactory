@@ -70,8 +70,8 @@ function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard)
 end
 
 ---@param packageLoader Github_Loading.PackageLoader
-function PackageLoader.setGlobal(packageLoader)
-    _G.PackageLoader = packageLoader
+function PackageLoader:setGlobal()
+    _G.PackageLoader = self
 end
 
 ---@param packageName string
