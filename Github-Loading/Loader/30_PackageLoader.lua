@@ -69,7 +69,6 @@ function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard)
     }, metatable)
 end
 
----@param packageLoader Github_Loading.PackageLoader
 function PackageLoader:setGlobal()
     _G.PackageLoader = self
 end
