@@ -210,13 +210,6 @@ function Loader.new(loaderBaseUrl, loaderBasePath, forceDownload, internetCard)
 end
 
 
-function Loader:Download()
-    assert(downloadFiles(self.loaderBaseUrl, self.loaderBasePath, self.forceDownload, self.internetCard),
-        "Unable to download loader Files")
-end
-
-
-
 function Loader:LoadFiles()
     self.loadedLoaderFiles = loadFiles(self.loaderBasePath)
 end
@@ -262,6 +255,8 @@ end
 
 ---@param logLevel Github_Loading.Logger.LogLevel
 function Loader:Load(logLevel)
+    assert(downloadFiles(self.loaderBaseUrl, self.loaderBasePath, self.forceDownload, self.internetCard),
+        "Unable to download loader Files")
     self:LoadFiles()
 
     ---@type Utils
@@ -274,11 +269,18 @@ end
 ---@nodiscard
 ---@return boolean diffrentVersionFound
 function Loader:CheckVersion()
+    self.Logger:LogTrace("checking Version...")
     local versionFilePath = self.loaderBasePath .. "/Github-Loading/Version.current.txt"
     local OldVersionString = Utils.File.ReadAll(versionFilePath)
     local NewVersionString = self:Get("/Github-Loading/Version.latest")
     Utils.File.Write(versionFilePath, "w", NewVersionString, true)
-    return OldVersionString ~= NewVersionString
+    local diffrentVersionFound = OldVersionString ~= NewVersionString
+    if diffrentVersionFound then
+        self.Logger:LogInfo("found new Github Loader version: ".. NewVersionString)
+    else
+        self.Logger:LogDebug("Github Loader Version: ".. NewVersionString)
+    end
+    return diffrentVersionFound
 end
 
 
@@ -295,6 +297,7 @@ function Loader:LoadOption(option, extendOptionDetails)
         local optionObj = Option.new(name, url)
         table.insert(mappedOptions, optionObj)
     end
+    self.Logger:LogDebug("loaded Options")
     if option == nil then
         print("\nOptions:")
         for _, optionObj in ipairs(mappedOptions) do
@@ -318,6 +321,7 @@ function Loader:LoadOption(option, extendOptionDetails)
         computer.panic("Option: '" .. option .. "' not found")
         return {}
     end
+    self.Logger:LogDebug("found Option")
     return chosenOption
 end
 
@@ -332,19 +336,24 @@ function Loader:LoadProgram(option, baseUrl, forceDownload)
     PackageLoader = PackageLoader.new(baseUrl .. "/Packages", self.loaderBasePath .. "/Packages",
         self.Logger:subLogger("PackageLoader"), self.internetCard)
     PackageLoader:setGlobal()
+    self.Logger:LogDebug("setup PackageLoader")
 
     local package = PackageLoader:LoadPackage(option.Url, forceDownload)
 
     local mainModule = package:GetModule(package.Name .. ".__main")
     assert(mainModule, "Unable to get main module from option")
     assert(mainModule.IsRunnable, "main module from option is not runnable")
+    self.Logger:LogTrace("got main module")
 
     ---@type Github_Loading.Entities.Main
     local mainModuleData = mainModule:Load()
+    self.Logger:LogDebug("loaded main module")
 
     ---@type Github_Loading.Entities
     local Entities = self:Get("/Github-Loading/Loader/Entities")
-    return Entities.newMain(mainModuleData)
+    local mainModuleEntity = Entities.newMain(mainModuleData)
+    self.Logger:LogTrace("loaded Program")
+    return mainModuleEntity
 end
 
 
