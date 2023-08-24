@@ -431,7 +431,7 @@ end
 ---@return TClass
 function Class.CreateSubClass(class, classType, baseClass)
     baseClass = Utils.Table.Copy(baseClass)
-    if not Class.HasClassOfType(baseClass, "Object") then
+    if not Class.HasClassOfType(baseClass, "object") then
         error("base class argument is not a class", 2)
     end
     ---@type Utils.Class.Metatable
