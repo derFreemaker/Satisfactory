@@ -36,7 +36,7 @@ require = nil
 
 ---@class FicsIt_Networks.UUID : string
 
----@class FicsIt_Networks.Component : table
+---@class FicsIt_Networks.Component
 
 --#endregion
 
