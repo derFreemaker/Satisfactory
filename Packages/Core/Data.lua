@@ -449,12 +449,10 @@ function Listener:Listener(func, parent)
 end
 function Listener:Execute(...)
     local success, result = Utils.Function.InvokeProtected(self.func, self.parent, ...)
-    assert(success, "listener execution failed")
     return success, table.unpack(result)
 end
 function Listener:ExecuteDynamic(args)
     local success, results = Utils.Function.DynamicInvokeProtected(self.func, self.parent, args)
-    assert(success, "listener dynamic execution failed")
     return success, results
 end
 return Utils.Class.CreateClass(Listener, "Listener")
@@ -1057,6 +1055,9 @@ function Logger:LogTable(t, logLevel, maxLevel, properties)
 end
 function Logger:Clear()
     self.OnClear:Trigger()
+end
+function Logger:FreeLine(logLevel)
+    self:Log("", logLevel)
 end
 function Logger:LogTrace(message)
     if message == nil then return end
