@@ -114,7 +114,7 @@ function PackageLoader:LoadPackage(packageName, forceDownload)
     if success then
         ---@cast package Github_Loading.Package
         table.insert(self.Packages, package)
-        self.logger:LogDebug("")
+        self.logger:FreeLine()
         self.logger:LogDebug("loading required packages: ".. #package.RequiredPackages .."...")
         package:Load()
         self.logger:LogDebug("loaded required packages")

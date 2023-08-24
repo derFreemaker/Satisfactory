@@ -46,8 +46,10 @@ function Package:GetModule(moduleToGet)
 end
 
 function Package:Load()
-    for _, packageName in ipairs(self.RequiredPackages) do
-        self.PackageLoader:LoadPackage(packageName)
+    if #self.RequiredPackages ~= 0 then
+        for _, packageName in ipairs(self.RequiredPackages) do
+            self.PackageLoader:LoadPackage(packageName)
+        end
     end
 
     local eventsModule = self:GetModule(self.Namespace .. ".__events")
@@ -60,7 +62,7 @@ function Package:Load()
 
     -- ######## OnLoaded ######## --
     if type(eventsModuleLoaded.OnLoaded) == "function" then
-        eventsModuleLoaded.OnLoaded()
+        eventsModuleLoaded:OnLoaded()
     end
 end
 

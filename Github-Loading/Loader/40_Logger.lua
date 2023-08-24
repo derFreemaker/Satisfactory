@@ -156,6 +156,9 @@ function Logger:Clear()
     self.OnClear:Trigger()
 end
 
+function Logger:FreeLine()
+    self:Log("", 4)
+end
 
 ---@param message any
 function Logger:LogTrace(message)
