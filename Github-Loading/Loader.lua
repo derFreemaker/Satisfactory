@@ -18,7 +18,6 @@ local LoaderFiles = {
     { "Version.latest.txt" },
 }
 
-
 ---@param url string
 ---@param path string
 ---@param forceDownload boolean
@@ -104,7 +103,7 @@ local function downloadFiles(loaderBaseUrl, loaderBasePath, forceDownload, inter
     local function downloadFile(path)
         local url = loaderBaseUrl .. path
         path = loaderBasePath .. path
-        assert(internalDownload(url, path, forceDownload, internetCard), "Unable to download file: '".. path .."'")
+        assert(internalDownload(url, path, path:find("/Github-Loading/Version.latest.txt") ~= nil or forceDownload, internetCard), "Unable to download file: '".. path .."'")
         return true
     end
 

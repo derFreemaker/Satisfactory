@@ -48,14 +48,16 @@ function filesystem.open(path, mode) end
 
 --- Creates the folder path.
 ---@param path string folder path the function should create
+---@param all boolean? if true creates all sub folders from the path
 ---@return boolean success returns if it was able to create the directory
-function filesystem.createDir(path) end
+function filesystem.createDir(path, all) end
 
 
 --- Removes the filesystem object at the given path.
 ---@param path string path to the filesystem object
+---@param all boolean? if true deletes everything
 ---@return boolean success returns if it was able to remove the node
-function filesystem.remove(path) end
+function filesystem.remove(path, all) end
 
 
 --- Moves the filesystem object from the given path to the other given path.

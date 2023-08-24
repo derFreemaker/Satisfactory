@@ -58,8 +58,9 @@ end
 function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard)
     assert(not (not filesystem.exists(packagesPath) and not filesystem.createDir(packagesPath)), 
             "Unable to create folder for packages")
-    local metatable = PackageLoader
-    metatable.__index = PackageLoader
+    local metatable = {
+        __index = PackageLoader
+    }
     return setmetatable({
         Packages = {},
         packagesUrl = packagesUrl,
@@ -90,7 +91,7 @@ function PackageLoader:DownloadPackage(packageName, forceDownload)
     self.logger:LogDebug("downloading package: '" .. packageName .. "'...")
     forceDownload = forceDownload or false
     local path = self.packagesPath .. "/" .. packageName
-    assert(not (not filesystem.exists(path) and not filesystem.createDir(path)), "Unable to create folder for package: '" .. packageName .. "'")
+    assert(not (not filesystem.exists(path) and not filesystem.createDir(path, true)), "Unable to create folder for package: '" .. packageName .. "'")
     local success, package = self:internalDownloadPackage(self.packagesUrl .. "/" .. packageName, path, forceDownload)
     if not success or not package then
         return false
