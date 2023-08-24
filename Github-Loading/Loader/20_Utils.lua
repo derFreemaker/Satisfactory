@@ -226,6 +226,9 @@ local metatableMethods = {
 local function HideMembers(obj, metatable)
     metatable.HiddenMembers = {}
     for key, value in pairs(obj) do
+        if not metatable.HiddenMembers[key] then
+-- //TODO: complete
+        end
         metatable.HiddenMembers[key] = value
         obj[key] = nil
     end
