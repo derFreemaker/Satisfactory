@@ -88,7 +88,7 @@ end
 ---@param forceDownload boolean?
 ---@return boolean, Github_Loading.Package?
 function PackageLoader:DownloadPackage(packageName, forceDownload)
-    self.logger:LogDebug("downloading package: '" .. packageName .. "'...")
+    self.logger:LogTrace("downloading package: '" .. packageName .. "'...")
     forceDownload = forceDownload or false
     local path = self.packagesPath .. "/" .. packageName
     assert(not (not filesystem.exists(path) and not filesystem.createDir(path, true)), "Unable to create folder for package: '" .. packageName .. "'")
@@ -96,7 +96,7 @@ function PackageLoader:DownloadPackage(packageName, forceDownload)
     if not success or not package then
         return false
     end
-    self.logger:LogDebug("downloaded package: '" .. packageName .. "'")
+    self.logger:LogTrace("downloaded package: '" .. packageName .. "'")
     return true, package
 end
 
@@ -114,7 +114,7 @@ function PackageLoader:LoadPackage(packageName, forceDownload)
     if success then
         ---@cast package Github_Loading.Package
         table.insert(self.Packages, package)
-        self.logger:LogDebug("loading required packages...")
+        self.logger:LogDebug("\nloading required packages: ".. #package.RequiredPackages .."...")
         package:Load()
         self.logger:LogDebug("loaded required packages")
     else

@@ -22,13 +22,14 @@ function Package.new(info, packageData, packageLoader)
         modules[id] = Module.new(module)
     end
 
-    local metatable = Package
-    metatable.__index = Package
+    local metatable = {
+        __index = Package
+    }
     return setmetatable({
         Name = info.Name,
         Namespace = info.Namesapce,
         Version = info.Version or 0.01,
-        RequiredPackages = (info.RequiredPackages or {}),
+        RequiredPackages = info.RequiredPackages or {},
         Modules = modules,
         PackageLoader = packageLoader
     }, metatable)
