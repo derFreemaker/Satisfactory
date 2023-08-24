@@ -194,15 +194,16 @@ local Loader = {}
 ---@param internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
 ---@return Github_Loading.Loader
 function Loader.new(loaderBaseUrl, loaderBasePath, forceDownload, internetCard)
-    local loader = Loader
-    loader.__index = loader
+    local metatable = {
+        __index = Loader
+    }
     return setmetatable({
         loaderBaseUrl = loaderBaseUrl,
         loaderBasePath = loaderBasePath,
         forceDownload = forceDownload,
         internetCard = internetCard,
         loadedLoaderFiles = {}
-    }, loader)
+    }, metatable)
 end
 
 
@@ -278,7 +279,7 @@ function Loader:CheckVersion()
 end
 
 
----@param option string
+---@param option string?
 ---@param extendOptionDetails boolean
 ---@return Github_Loading.Option chosenOption
 function Loader:LoadOption(option, extendOptionDetails)
@@ -331,7 +332,7 @@ function Loader:LoadProgram(option, baseUrl, forceDownload)
 
     local package = PackageLoader:LoadPackage(option.Url, forceDownload)
 
-    local mainModule = package:GetModule(package.Name .. ".Main") -- //TODO: rename to __main
+    local mainModule = package:GetModule(package.Name .. ".__main")
     assert(mainModule, "Unable to get main module from option")
     assert(mainModule.IsRunnable, "main module from option is not runnable")
 

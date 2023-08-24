@@ -1,6 +1,6 @@
 local Event = require("Core.Event.Event")
 
----@class Core.Net.NetworkPort : Object
+---@class Core.Net.NetworkPort : object
 ---@field Port integer | "all"
 ---@field Events Dictionary<string, Core.Event>
 ---@field Logger Core.Logger

@@ -4,7 +4,7 @@ local Listener = require("Core.Event.Listener")
 local NetworkPort = require("Core.Net.NetworkPort")
 local NetworkContext = require("Core.Net.NetworkContext")
 
----@class Core.Net.NetworkClient : Object
+---@class Core.Net.NetworkClient : object
 ---@field Logger Core.Logger
 ---@field private ports Dictionary<integer | "all", Core.Net.NetworkPort>
 ---@field private networkCard FicsIt_Networks.Components.FINComputerMod.NetworkCard

@@ -4,7 +4,7 @@ local ApiHelper = require("Core.Api.ApiHelper")
 local StatusCodes = require("Core.Api.StatusCodes")
 local ApiResponseTemplates = require("Core.Api.Server.ApiResponseTemplates")
 
----@class Core.Api.Server.ApiController : Object
+---@class Core.Api.Server.ApiController : object
 ---@field Endpoints Dictionary<string, Core.Api.Server.ApiEndpoint>
 ---@field NetPort Core.Net.NetworkPort
 ---@field Logger Core.Logger

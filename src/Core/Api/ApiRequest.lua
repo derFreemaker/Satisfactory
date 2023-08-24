@@ -1,4 +1,4 @@
----@class Core.Api.ApiRequest : Object
+---@class Core.Api.ApiRequest : object
 ---@field Endpoint string
 ---@field Headers Dictionary<string, any>
 ---@field Body any

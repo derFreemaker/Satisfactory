@@ -3,9 +3,9 @@ local PackageData = {}
 -- ########## Test.RecieveServer ##########
 
 PackageData.MFYoiWSx = {
-    Namespace = "Test.RecieveServer.Main",
-    Name = "Main",
-    FullName = "Main.lua",
+    Namespace = "Test.RecieveServer.__main",
+    Name = "__main",
+    FullName = "__main.lua",
     IsRunnable = true,
     Data = function(...)
 local Listener = require("Core.Event.Listener")

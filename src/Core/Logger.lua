@@ -7,7 +7,7 @@ local Event = require("Core.Event.Event")
 ---|3 Warning
 ---|4 Error
 
----@class Core.Logger : Object
+---@class Core.Logger : object
 ---@field OnLog Core.Event
 ---@field OnClear Core.Event
 ---@field Name string

@@ -1,4 +1,4 @@
----@class Core.Listener : Object
+---@class Core.Listener : object
 ---@field private func function
 ---@field private parent any
 ---@overload fun(func: function, parent: any) : Core.Listener

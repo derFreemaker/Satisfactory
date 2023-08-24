@@ -1,6 +1,6 @@
 local ApiHelper = require("Core.Api.ApiHelper")
 
----@class Core.Api.Client.ApiClient : Object
+---@class Core.Api.Client.ApiClient : object
 ---@field ServerIPAddress string
 ---@field ServerPort integer
 ---@field ReturnPort integer

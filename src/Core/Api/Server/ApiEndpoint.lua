@@ -1,6 +1,6 @@
 local ApiResponseTemplates = require("Core.Api.Server.ApiResponseTemplates")
 
----@class Core.Api.Server.ApiEndpoint : Object
+---@class Core.Api.Server.ApiEndpoint : object
 ---@field private listener Core.Listener
 ---@overload fun(listener: Core.Listener) : Core.Api.Server.ApiEndpoint
 local ApiEndpoint = {}

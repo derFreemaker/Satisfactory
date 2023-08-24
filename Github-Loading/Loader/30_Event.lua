@@ -9,8 +9,9 @@ local Event = {}
 
 ---@return Github_Loading.Event
 function Event.new()
-    local metatable = Event
-    metatable.__index = Event
+    local metatable = {
+        __index = Event
+    }
     return setmetatable({
         funcs = {},
         onceFuncs = {}

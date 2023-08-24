@@ -17,13 +17,15 @@ Config = {}
 
 local BaseUrl = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/Module-Bundling"
 
+local showDriveUUID = true
+
 -- ########## Don't touch that ########## --
 local LoaderFilesUrl = BaseUrl .. "/Github-Loading"
 local LoaderUrl = LoaderFilesUrl .. "/Loader.lua"
 local LoaderFilesPath = "Loader"
 local LoaderPath = LoaderFilesPath .. "/Loader.lua"
 
----@type FicsIt_Networks.Components.FINComputerMod.FINInternetCard
+---@type FicsIt_Networks.Components.FINComputerMod.InternetCard_C
 local internetCard = computer.getPCIDevices(findClass("FINInternetCard"))[1]
 if not internetCard then
     computer.beep(0.2)
@@ -45,8 +47,9 @@ if drive:len() < 1 then
 end
 filesystem.mount("/dev/" .. drive, "/")
 
--- //TODO: debug message
-print("[Computer] DEBUG mounted filesystem on drive: " .. drive)
+if showDriveUUID then
+    print("[Computer] DEBUG mounted filesystem on drive: " .. drive)
+end
 
 ---@return boolean restart
 local function Run()

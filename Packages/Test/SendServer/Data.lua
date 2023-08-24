@@ -3,9 +3,9 @@ local PackageData = {}
 -- ########## Test.SendServer ##########
 
 PackageData.MFYoiWSx = {
-    Namespace = "Test.SendServer.Main",
-    Name = "Main",
-    FullName = "Main.lua",
+    Namespace = "Test.SendServer.__main",
+    Name = "__main",
+    FullName = "__main.lua",
     IsRunnable = true,
     Data = function(...)
 local EventPullAdapter = require("Core.Event.EventPullAdapter")

@@ -1,5 +1,5 @@
 local LoadedLoaderFiles = table.pack(...)[1]
----@type Object
+---@type object
 local Object = LoadedLoaderFiles["/Github-Loading/Loader/Object"][1]
 
 ---@class Utils
@@ -221,17 +221,27 @@ local metatableMethods = {
     __tostring = true,
     __gc = true
 }
+
 ---@param obj table
 ---@param metatable Utils.Class.Metatable
 local function HideMembers(obj, metatable)
+    ---@diagnostic disable-next-line
     metatable.HiddenMembers = {}
     for key, value in pairs(obj) do
         if not metatable.HiddenMembers[key] then
+            if type(value) == "function" then
+                local func = value
+                local function call(class, ...)
+                    return func(class, ...)
+                end
+                value = call
+            end
             metatable.HiddenMembers[key] = value
             obj[key] = nil
         end
     end
 end
+
 ---@param obj table
 ---@param metatable Utils.Class.Metatable
 local function ShowMembers(obj, metatable)
@@ -247,7 +257,7 @@ local function ShowMembers(obj, metatable)
 end
 
 
----@param class Object
+---@param class object
 ---@param key any
 local function index(class, key)
     ---@type Utils.Class.Metatable
@@ -290,7 +300,7 @@ local function AddBaseClass(baseClass, metatable)
 end
 
 
----@param class Object
+---@param class object
 ---@param key any
 ---@param value any
 local function newIndex(class, key, value)
@@ -337,10 +347,10 @@ end
 local function AddConstructor(metatable)
     local constructorKey = metatable.Type
 
-    ---@type fun(self: Object, ...: any, base: Object | nil)
+    ---@type fun(self: object, ...: any, base: object | nil)
     local constructor = metatable.HiddenMembers[constructorKey]
 
-    ---@param class Object
+    ---@param class object
     ---@param ... any
     local function construct(class, ...) ---@diagnostic disable-line: redefined-local
         class = CopyIfNotBaseClass(class)
@@ -401,12 +411,12 @@ end
 ---@param metatable Utils.Class.Metatable
 local function AddDeconstructor(metatable)
     local deconstructorKey = "_" .. metatable.Type
-    ---@type fun(class: Object)?
+    ---@type fun(class: object)?
     local deconstructor = metatable.HiddenMembers[deconstructorKey]
 
-    ---@param class Object
+    ---@param class object
     local function deconstruct(class)
-        ---@cast deconstructor fun(class: Object)
+        ---@cast deconstructor fun(class: object)
 
         ---@type Utils.Class.Metatable
         local classMetatable = getmetatable(class)
@@ -462,7 +472,7 @@ function Class.CreateClass(class, classType)
     return Class.CreateSubClass(class, classType, Object)
 end
 
----@param class Object
+---@param class object
 ---@param classType string
 ---@return boolean hasClassOfType
 function Class.HasClassOfType(class, classType)
@@ -477,8 +487,8 @@ function Class.HasClassOfType(class, classType)
     return false
 end
 
----@param class Object
----@return Object? base
+---@param class object
+---@return object? base
 function Class.GetBaseClass(class)
     ---@type Utils.Class.Metatable
     local classMetatable = getmetatable(class)

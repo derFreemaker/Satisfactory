@@ -1,4 +1,4 @@
----@class Core.Event : Object
+---@class Core.Event : object
 ---@field private funcs Core.Listener[]
 ---@field private onceFuncs Core.Listener[]
 ---@operator len() : integer

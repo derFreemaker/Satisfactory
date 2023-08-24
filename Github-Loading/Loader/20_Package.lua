@@ -11,7 +11,6 @@ local Module = LoadedLoaderFiles["/Github-Loading/Loader/Module"][1]
 ---@field Modules Dictionary<string, Github_Loading.Module>
 local Package = {}
 
-
 ---@param info table
 ---@param packageData table
 ---@param packageLoader Github_Loading.PackageLoader
@@ -28,7 +27,7 @@ function Package.new(info, packageData, packageLoader)
     return setmetatable({
         Name = info.Name,
         Namespace = info.Namesapce,
-        VERSION = info.Version or 0.01,
+        Version = info.Version or 0.01,
         RequiredPackages = (info.RequiredPackages or {}),
         Modules = modules,
         PackageLoader = packageLoader

@@ -1,6 +1,6 @@
 local Json = require("Core.Json")
 
----@class Core.Net.NetworkContext : Object
+---@class Core.Net.NetworkContext : object
 ---@field SignalName string
 ---@field SignalSender FicsIt_Networks.Components.Object
 ---@field SenderIPAddress string
