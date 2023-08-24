@@ -12,12 +12,13 @@ local Module = {}
 ---@param moduleData table
 ---@return Github_Loading.Module
 function Module.new(moduleData)
-    local metatable = Module
-    metatable.__index = Module
+    local metatable = {
+        __index = Module
+    }
     return setmetatable({
-        Namespace = moduleData.Namespace,
         Name = moduleData.Name,
         FullName = moduleData.FullName,
+        Namespace = moduleData.Namespace,
         IsRunnable = moduleData.IsRunnable,
         Data = moduleData.Data
     }, metatable)

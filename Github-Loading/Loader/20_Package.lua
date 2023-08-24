@@ -27,7 +27,7 @@ function Package.new(info, packageData, packageLoader)
     }
     return setmetatable({
         Name = info.Name,
-        Namespace = info.Namesapce,
+        Namespace = info.Namespace,
         Version = info.Version or 0.01,
         RequiredPackages = info.RequiredPackages or {},
         Modules = modules,

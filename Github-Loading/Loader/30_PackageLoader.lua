@@ -114,7 +114,7 @@ function PackageLoader:LoadPackage(packageName, forceDownload)
     if success then
         ---@cast package Github_Loading.Package
         table.insert(self.Packages, package)
-        self.logger:FreeLine()
+        self.logger:FreeLine(1)
         self.logger:LogDebug("loading required packages: ".. #package.RequiredPackages .."...")
         package:Load()
         self.logger:LogDebug("loaded required packages")
@@ -129,9 +129,9 @@ end
 ---@param moduleToGet string
 function PackageLoader:GetModule(moduleToGet)
     self.logger:LogDebug("geting module: '" .. moduleToGet .. "'")
-    local namespace = moduleToGet:find([[^(.+)\.+]])
+
     for _, package in ipairs(self.Packages) do
-        if (package.Namespace) == namespace then
+        if moduleToGet:find(package.Namespace) then
             local module = package:GetModule(moduleToGet)
             if module then
                 self.logger:LogDebug("geted module: '" .. moduleToGet .. "'")
@@ -141,6 +141,30 @@ function PackageLoader:GetModule(moduleToGet)
     end
 
     error("module could not be found: '" .. moduleToGet .. "'")
+
+    -- local length = 0
+    -- ---@type Github_Loading.Package?
+    -- local bestMatch = nil
+    -- for _, package in ipairs(self.Packages) do
+    --     local startPos, endPos = moduleToGet:find(package.Namespace)
+    --     if startPos == 0 then
+    --         if endPos > length then
+    --             bestMatch = package
+    --         end
+    --     end
+    -- end
+
+    -- if bestMatch == nil then
+    --     error("module could not be found: '" .. moduleToGet .. "'")
+    -- end
+
+    -- local package = bestMatch
+    -- local module = package:GetModule(moduleToGet)
+    -- if module then
+    --     self.logger:LogDebug("geted module: '".. moduleToGet .."'")
+    -- end
+
+    -- return module
 end
 
 ---@param moduleToGet string

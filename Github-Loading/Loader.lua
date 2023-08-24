@@ -342,7 +342,7 @@ function Loader:LoadProgram(option, baseUrl, forceDownload)
     local package = PackageLoader:LoadPackage(option.Url, forceDownload)
     self.Logger:LogTrace("loaded package from chosen Option: ".. option.Name)
 
-    local mainModule = package:GetModule(package.Name .. ".__main")
+    local mainModule = package:GetModule(package.Namespace .. ".__main")
     assert(mainModule, "Unable to get main module from option")
     assert(mainModule.IsRunnable, "main module from option is not runnable")
     self.Logger:LogTrace("got main module")

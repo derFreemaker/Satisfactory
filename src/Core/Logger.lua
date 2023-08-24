@@ -141,8 +141,9 @@ function Logger:Clear()
     self.OnClear:Trigger()
 end
 
-function Logger:FreeLine()
-    self:Log("", 4)
+---@param logLevel Github_Loading.Logger.LogLevel
+function Logger:FreeLine(logLevel)
+    self:Log("", logLevel)
 end
 
 ---@param message any
