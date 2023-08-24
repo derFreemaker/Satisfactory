@@ -3,6 +3,8 @@ local LoadedLoaderFiles = table.pack(...)[1]
 local Utils = LoadedLoaderFiles["/Github-Loading/Loader/Utils"][1]
 ---@type Github_Loading.Event
 local Event = LoadedLoaderFiles["/Github-Loading/Loader/Event"][1]
+---@type Github_Loading.Listener
+local Listener = LoadedLoaderFiles["/Github-Loading/Loader/Listener"][1]
 
 ---@alias Github_Loading.Logger.LogLevel
 ---|0 Trace
@@ -22,12 +24,11 @@ local Logger = {}
 ---@param node table
 ---@param maxLevel number?
 ---@param properties string[]?
----@param logFunc function
----@param logFuncParent table
+---@param logFunc Github_Loading.Listener
 ---@param level number?
 ---@param padding string?
 ---@return string[]
-function Logger.tableToLineTree(node, maxLevel, properties, logFunc, logFuncParent, level, padding)
+function Logger.tableToLineTree(node, maxLevel, properties, logFunc, level, padding)
     padding = padding or '     '
     maxLevel = maxLevel or 5
     level = level or 1
@@ -68,7 +69,7 @@ function Logger.tableToLineTree(node, maxLevel, properties, logFunc, logFuncPare
 
             if level < maxLevel then
                 ---@cast properties string[]
-                local childLines = Logger.tableToLineTree(node[k], maxLevel, properties, logFunc, logFuncParent,
+                local childLines = Logger.tableToLineTree(node[k], maxLevel, properties, logFunc,
                     level + 1,
                     padding .. (i == #keys and '    ' or '│   '))
                 for _, l in ipairs(childLines) do
@@ -83,16 +84,8 @@ function Logger.tableToLineTree(node, maxLevel, properties, logFunc, logFuncPare
     end
 
     if level == 1 then
-        if logFuncParent == nil then
-            for line in pairs(lines) do
-                logFunc(line)
-            end
-        elseif type(logFuncParent) ~= "table" then
-            error("logFuncParent was not a table", 2)
-        else
-            for line in pairs(lines) do
-                logFunc(logFuncParent, line)
-            end
+        for line in pairs(lines) do
+            logFunc:Execute(line)
         end
     end
 
@@ -103,8 +96,9 @@ end
 ---@param logLevel Github_Loading.Logger.LogLevel
 ---@return Github_Loading.Logger
 function Logger.new(name, logLevel)
-    local metatable = Logger
-    metatable.__index = Logger
+    local metatable = {
+        __index = Logger
+    }
     return setmetatable({
         LogLevel = logLevel,
         Name = (string.gsub(name, " ", "_") or ""),
@@ -117,8 +111,9 @@ end
 ---@return Github_Loading.Logger
 function Logger:subLogger(name)
     name = self.Name .. "." .. name
-    local metatable = Logger
-    metatable.__index = Logger
+    local metatable = {
+        __index = Logger
+    }
     return setmetatable({
         LogLevel = self.LogLevel,
         Name = name:gsub(" ", "_"),
@@ -143,7 +138,7 @@ function Logger:Log(message, logLevel)
         return
     end
 
-    message = "[" .. self.Name .. "] " .. message
+    message = "[" .. self.Name .. "] " .. tostring(message)
     self.OnLog:Trigger(message)
 end
 
@@ -154,7 +149,7 @@ end
 function Logger:LogTable(t, logLevel, maxLevel, properties)
     if table == nil or type(table) ~= "table" then return end
     local function log(message) self:Log(message, logLevel) end
-    Logger.tableToLineTree(table, maxLevel, properties, log, self)
+    Logger.tableToLineTree(table, maxLevel, properties, Listener.new(log, self))
 end
 
 function Logger:Clear()

@@ -128,18 +128,28 @@ local Table = {}
 ---@param t table
 ---@return table table
 function Table.Copy(t)
-    local copy = {}
-    for key, value in pairs(t) do
-        if type(value) == "table" then
-            value = Table.Copy(value)
+    local seen = {}
+
+    ---@param obj any?
+    ---@return any
+    local function copyTable(obj)
+        if obj == nil then return nil end
+        if seen[obj] then return seen[obj] end
+
+        local copy = {}
+        seen[obj] = copy
+        setmetatable(copy, copyTable(getmetatable(obj)))
+
+        for key, value in next, obj, nil do
+            key = (type(key) == "table") and copyTable(key) or key
+            value = (type(value) == "table") and copyTable(value) or value
+            copy[key] = value
         end
-        rawset(copy, key, value)
+
+        return copy
     end
-    local metatable = getmetatable(t)
-    if metatable then
-        metatable = Table.Copy(getmetatable(t))
-    end
-    return setmetatable(copy, metatable)
+
+    return copyTable(t)
 end
 
 --- removes all margins like table[1] = "1", table[2] = nil, table[3] = "3" -> table[2] would be removed meaning table[3] would be table[2] now and so on. Removes no named values (table["named"]). And sets n to number of cleaned results. Should only be used on arrays really.

@@ -17,7 +17,7 @@ Config = {}
 
 local BaseUrl = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/Module-Bundling"
 
-local showDriveUUID = true
+local showDriveUUID = false
 
 -- ########## Don't touch that ########## --
 local LoaderFilesUrl = BaseUrl .. "/Github-Loading"
@@ -95,5 +95,8 @@ local function Run()
 end
 
 repeat
-    local restart = Run()
-until not restart
+    local success, result = pcall(Run)
+    if not success then
+        print(result)
+    end
+until not result or type(result) ~= "boolean"
