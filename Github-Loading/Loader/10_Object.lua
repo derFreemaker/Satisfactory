@@ -35,7 +35,7 @@ end
 
 
 local metatable = {
-    Type = "Object",
+    Type = "object",
     HasBaseClass = false,
     HasDeconstructor = false,
     HasConstructor = false,
