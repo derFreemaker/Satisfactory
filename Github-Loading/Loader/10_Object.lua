@@ -22,6 +22,8 @@
 ---@field protected __ipairs (fun(self: Object) : (fun(iterator, t, startPoint) : key: any, value: any))? ipairs(self)
 ---@field protected __tostring (fun(self: Object) : string)? tostring(self)
 
+-- //TODO: change Object to object
+
 ---@class Object : Utils.Class.ObjectMetaMethods
 local Object = {}
 
