@@ -13,10 +13,9 @@ function Listener:Listener(func, parent)
 end
 
 ---@param ... any
----@return boolean success, any ...
+---@return boolean success, any result, any ...
 function Listener:Execute(...)
     local success, result = Utils.Function.InvokeProtected(self.func, self.parent, ...)
-    assert(success, "listener execution failed")
     return success, table.unpack(result)
 end
 
@@ -24,7 +23,6 @@ end
 ---@return boolean success, any[] results
 function Listener:ExecuteDynamic(args)
     local success, results = Utils.Function.DynamicInvokeProtected(self.func, self.parent, args)
-    assert(success, "listener dynamic execution failed")
     return success, results
 end
 
