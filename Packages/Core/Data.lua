@@ -58,6 +58,7 @@ function ApiController:onMessageRecieved(context)
     self.Logger:LogDebug("recieved request on endpoint: '" .. request.Endpoint .. "'")
     local endpoint = self:GetEndpoint(request.Endpoint)
     if endpoint == nil then
+        self.Logger:LogTrace("found no endpoint")
         if context.Header.ReturnPort then
             self.NetPort.NetClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort,
                 "Rest-Response", nil, ApiResponseTemplates.NotFound("Unable to find endpoint"))
@@ -66,8 +67,10 @@ function ApiController:onMessageRecieved(context)
     end
     local response = endpoint:Execute(request)
     if context.Header.ReturnPort then
-        self.NetPort.NetClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort,
-            "Rest-Response", nil, response:ExtractData())
+        self.NetPort.NetClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort, "Rest-Response", nil, response:ExtractData())
+        self.Logger:LogTrace("sended response")
+    else
+        self.Logger:LogTrace("sending no response")
     end
     if response.Headers.Code == StatusCodes.Status200OK then
         self.Logger:LogDebug("request finished successfully")
@@ -490,6 +493,8 @@ function NetworkClient:NetworkClient(logger, networkCard)
 end
 function NetworkClient:networkMessageRecieved(data)
     local context = NetworkContext(data)
+    self.Logger:LogTrace("extracted network context:")
+    self.Logger:LogTable(context, 0)
     self.Logger:LogDebug("recieved network message with event: '" .. context.EventName .. "' on port: '" .. context.Port .. "'")
     for i, port in pairs(self.ports) do
         if port.Port == context.Port or port.Port == "all" then

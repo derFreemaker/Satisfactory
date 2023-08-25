@@ -34,6 +34,8 @@ end
 ---@param data any[]
 function NetworkClient:networkMessageRecieved(data)
     local context = NetworkContext(data)
+    self.Logger:LogTrace("extracted network context:")
+    self.Logger:LogTable(context, 0)
     self.Logger:LogDebug("recieved network message with event: '" .. context.EventName .. "' on port: '" .. context.Port .. "'")
     for i, port in pairs(self.ports) do
         if port.Port == context.Port or port.Port == "all" then
