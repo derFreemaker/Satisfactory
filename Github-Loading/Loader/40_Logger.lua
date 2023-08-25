@@ -20,7 +20,6 @@ local Listener = LoadedLoaderFiles["/Github-Loading/Loader/Listener"][1]
 ---@field LogLevel number
 local Logger = {}
 
----@private
 ---@param node table
 ---@param maxLevel number?
 ---@param properties string[]?
@@ -28,7 +27,7 @@ local Logger = {}
 ---@param level number?
 ---@param padding string?
 ---@return string[]
-function Logger.tableToLineTree(node, maxLevel, properties, logFunc, level, padding)
+local function tableToLineTree(node, maxLevel, properties, logFunc, level, padding)
     padding = padding or '     '
     maxLevel = maxLevel or 5
     level = level or 1
@@ -69,9 +68,7 @@ function Logger.tableToLineTree(node, maxLevel, properties, logFunc, level, padd
 
             if level < maxLevel then
                 ---@cast properties string[]
-                local childLines = Logger.tableToLineTree(node[k], maxLevel, properties, logFunc,
-                    level + 1,
-                    padding .. (i == #keys and '    ' or '│   '))
+                local childLines = tableToLineTree(node[k], maxLevel, properties, logFunc, level + 1, padding .. (i == #keys and '    ' or '│   '))
                 for _, l in ipairs(childLines) do
                     table.insert(lines, l)
                 end
@@ -153,7 +150,7 @@ function Logger:LogTable(t, logLevel, maxLevel, properties)
 
     if table == nil or type(table) ~= "table" then return end
     local function log(message) self:Log(message, logLevel) end
-    Logger.tableToLineTree(table, maxLevel, properties, Listener.new(log, self))
+    tableToLineTree(table, maxLevel, properties, Listener.new(log, self))
 end
 
 function Logger:Clear()

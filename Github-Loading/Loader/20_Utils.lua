@@ -273,7 +273,7 @@ local function index(class, key)
     ---@type Utils.Class.Metatable
     local classMetatable = getmetatable(class)
     if classMetatable.ConstructorState == 1 then
-        error("cannot get values if class was not constructed", 2)
+        error("cannot get values if class: ".. classMetatable.Type .." was not constructed", 2)
     end
     local value
     if classMetatable.HasIndex then
@@ -317,7 +317,7 @@ local function newIndex(class, key, value)
     ---@type Utils.Class.Metatable
     local classMetatable = getmetatable(class)
     if classMetatable.ConstructorState == 1 then
-        error("cannot assign values if class was not constructed", 2)
+        error("cannot assign values if class: " .. classMetatable.Type .. " was not constructed", 2)
     end
     if classMetatable.HasNewIndex then
         classMetatable.__newindex = classMetatable.NewIndex

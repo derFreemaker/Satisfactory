@@ -76,6 +76,7 @@ end
 function EventPullAdapter:Run()
     self.logger:LogDebug("## started event pull loop ##")
     while true do
+        self.logger:LogTrace("## waiting for event pull ##")
         self:Wait()
     end
 end
