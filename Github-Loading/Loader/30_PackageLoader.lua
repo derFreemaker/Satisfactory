@@ -4,9 +4,9 @@ local Package = LoadedLoaderFiles["/Github-Loading/Loader/Package"][1]
 
 ---@class Github_Loading.PackageLoader
 ---@field Packages Github_Loading.Package[]
+---@field logger Github_Loading.Logger
 ---@field private packagesUrl string
 ---@field private packagesPath string
----@field private logger Github_Loading.Logger
 ---@field private internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
 local PackageLoader = {}
 
@@ -120,9 +120,7 @@ function PackageLoader:LoadPackage(packageName, forceDownload)
         ---@cast package Github_Loading.Package
         table.insert(self.Packages, package)
         self.logger:FreeLine(1)
-        self.logger:LogDebug("loading required packages: ".. #package.RequiredPackages .."...")
         package:Load()
-        self.logger:LogDebug("loaded required packages")
     else
         computer.panic("could not find or download package: '" .. packageName .. "'")
     end

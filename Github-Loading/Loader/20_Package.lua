@@ -69,9 +69,11 @@ end
 
 function Package:Load()
     if self.RequiredPackages and #self.RequiredPackages ~= 0 then
+        self.PackageLoader.logger:LogDebug("loading required packages: " .. #self.RequiredPackages .. "...")
         for _, packageName in ipairs(self.RequiredPackages) do
             self.PackageLoader:LoadPackage(packageName)
         end
+        self.PackageLoader.logger:LogDebug("loaded required packages")
     end
 
     local eventsModule = self:GetModule(self.Namespace .. ".__events")
