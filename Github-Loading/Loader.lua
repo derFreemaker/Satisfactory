@@ -247,8 +247,7 @@ function Loader:setupLogger(logLevel)
     self.Logger.OnLog:AddListener(Listener.new(logFile))
     self.Logger.OnClear:AddListener(Listener.new(clear))
     self.Logger:setErrorLogger()
-    self.Logger:Clear()
-    self.Logger:LogInfo("###### LOG START ######")
+    self.Logger:LogInfo("###### LOG START: ".. tostring(table.pack(computer.magicTime())[1]) .."######")
     self.Logger.OnLog:AddListener(Listener.new(logConsole))
 end
 
