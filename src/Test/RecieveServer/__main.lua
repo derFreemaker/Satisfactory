@@ -17,7 +17,7 @@ function Main:Test(request)
 end
 
 function Main:Configure()
-    self.eventPullAdapter = EventPullAdapter:Initialize(self.Logger)
+    self.eventPullAdapter = EventPullAdapter:Initialize(self.Logger:subLogger("EventPullAdapter"))
 
     local netClient = NetworkClient(self.Logger)
     local netPort = netClient:CreateNetworkPort(80)

@@ -1,3 +1,10 @@
+---@class Github_Loading.Module.Data
+---@field Namespace string
+---@field Name string
+---@field FullName string
+---@field IsRunnable boolean
+---@field Data Github_Loading.Module.LoadFunction | string
+
 ---@alias Github_Loading.Module.LoadFunction fun(...) : any
 
 ---@class Github_Loading.Module
@@ -9,7 +16,7 @@
 ---@field StoredData table
 local Module = {}
 
----@param moduleData table
+---@param moduleData Github_Loading.Module.Data
 ---@return Github_Loading.Module
 function Module.new(moduleData)
     local metatable = {

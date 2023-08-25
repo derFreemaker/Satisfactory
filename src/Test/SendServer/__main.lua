@@ -8,7 +8,7 @@ local ApiRequest = require("Core.Api.ApiRequest")
 local Main = {}
 
 function Main:Configure()
-    EventPullAdapter:Initialize(self.Logger)
+    EventPullAdapter:Initialize(self.Logger:subLogger("EventPullAdapter"))
 
     local netClient = NetworkClient(self.Logger)
     self.apiClient = ApiClient(Config.ServerIPAddress, Config.ServerPort, 1111, netClient)

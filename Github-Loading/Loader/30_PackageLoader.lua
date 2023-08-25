@@ -10,7 +10,6 @@ local Package = LoadedLoaderFiles["/Github-Loading/Loader/Package"][1]
 ---@field private internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
 local PackageLoader = {}
 
----@private
 ---@param url string
 ---@param path string
 ---@param forceDownload boolean
@@ -38,16 +37,22 @@ end
 function PackageLoader:internalDownloadPackage(url, path, forceDownload)
     local infoFileUrl = url .. "/Info.lua"
     local infoFilePath = filesystem.path(path, "Info.lua")
-    if not self:internalDownload(infoFileUrl, infoFilePath, forceDownload) then return false end
+    ---@type Github_Loading.Package.InfoFile?
+    local oldInfoContent = nil
+    if filesystem.exists(infoFilePath) then
+        oldInfoContent = filesystem.doFile(infoFilePath)
+    end
+    if not self:internalDownload(infoFileUrl, infoFilePath, true) then return false end
 
-    local dataFileUrl = url .. "/Data.lua"
-    local dataFilePath = filesystem.path(path, "Data.lua")
-    if not self:internalDownload(dataFileUrl, dataFilePath, forceDownload) then return false end
-
+    ---@type Github_Loading.Package.InfoFile
     local infoContent = filesystem.doFile(infoFilePath)
-    local dataContent = filesystem.doFile(dataFilePath)
+    local differentVersionFound = false
+    if oldInfoContent then
+        differentVersionFound = oldInfoContent.Version ~= infoContent.Version
+    end
 
-    return true, Package.new(infoContent, dataContent, self)
+    local forceDownloadData = differentVersionFound or forceDownload
+    return true, Package.new(infoContent, forceDownloadData, self)
 end
 
 ---@param packagesUrl string
@@ -56,8 +61,7 @@ end
 ---@param internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
 ---@return Github_Loading.PackageLoader
 function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard)
-    assert(not (not filesystem.exists(packagesPath) and not filesystem.createDir(packagesPath)), 
-            "Unable to create folder for packages")
+    assert(not (not filesystem.exists(packagesPath) and not filesystem.createDir(packagesPath)), "Unable to create folder for packages")
     local metatable = {
         __index = PackageLoader
     }
@@ -90,10 +94,11 @@ end
 function PackageLoader:DownloadPackage(packageName, forceDownload)
     self.logger:LogTrace("downloading package: '" .. packageName .. "'...")
     forceDownload = forceDownload or false
-    local path = self.packagesPath .. "/" .. packageName
-    assert(not (not filesystem.exists(path) and not filesystem.createDir(path, true)), "Unable to create folder for package: '" .. packageName .. "'")
-    local success, package = self:internalDownloadPackage(self.packagesUrl .. "/" .. packageName, path, forceDownload)
-    if not success or not package then
+    local packagePath = self.packagesPath .. "/" .. packageName
+    assert(not (not filesystem.exists(packagePath) and not filesystem.createDir(packagePath, true)), "Unable to create folder for package: '" .. packageName .. "'")
+    local packageUrl = self.packagesUrl .. "/" .. packageName
+    local success, package = self:internalDownloadPackage(packageUrl, packagePath, forceDownload)
+    if not success or not package or package:Download(packageUrl, packagePath) then
         return false
     end
     self.logger:LogTrace("downloaded package: '" .. packageName .. "'")
@@ -141,30 +146,6 @@ function PackageLoader:GetModule(moduleToGet)
     end
 
     error("module could not be found: '" .. moduleToGet .. "'")
-
-    -- local length = 0
-    -- ---@type Github_Loading.Package?
-    -- local bestMatch = nil
-    -- for _, package in ipairs(self.Packages) do
-    --     local startPos, endPos = moduleToGet:find(package.Namespace)
-    --     if startPos == 0 then
-    --         if endPos > length then
-    --             bestMatch = package
-    --         end
-    --     end
-    -- end
-
-    -- if bestMatch == nil then
-    --     error("module could not be found: '" .. moduleToGet .. "'")
-    -- end
-
-    -- local package = bestMatch
-    -- local module = package:GetModule(moduleToGet)
-    -- if module then
-    --     self.logger:LogDebug("geted module: '".. moduleToGet .."'")
-    -- end
-
-    -- return module
 end
 
 ---@param moduleToGet string

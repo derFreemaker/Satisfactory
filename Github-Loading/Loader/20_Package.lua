@@ -2,26 +2,27 @@ local LoadedLoaderFiles = table.pack(...)[1]
 ---@type Github_Loading.Module
 local Module = LoadedLoaderFiles["/Github-Loading/Loader/Module"][1]
 
+---@class Github_Loading.Package.InfoFile
+---@field Name string
+---@field Version string
+---@field Namespace string
+---@field RequiredPackages string[]?
+
 ---@class Github_Loading.Package
+---@field private forceDownload boolean
 ---@field private PackageLoader Github_Loading.PackageLoader
 ---@field Name string
 ---@field Namespace string
 ---@field Version number
----@field RequiredPackages string[]
+---@field RequiredPackages string[]?
 ---@field Modules Dictionary<string, Github_Loading.Module>
 local Package = {}
 
----@param info table
----@param packageData table
+---@param info Github_Loading.Package.InfoFile
+---@param forceDownload boolean
 ---@param packageLoader Github_Loading.PackageLoader
 ---@return Github_Loading.Package
-function Package.new(info, packageData, packageLoader)
-    ---@type Dictionary<string, Github_Loading.Module>
-    local modules = {}
-    for id, module in pairs(packageData) do
-        modules[id] = Module.new(module)
-    end
-
+function Package.new(info, forceDownload, packageLoader)
     local metatable = {
         __index = Package
     }
@@ -29,8 +30,8 @@ function Package.new(info, packageData, packageLoader)
         Name = info.Name,
         Namespace = info.Namespace,
         Version = info.Version or 0.01,
-        RequiredPackages = info.RequiredPackages or {},
-        Modules = modules,
+        RequiredPackages = info.RequiredPackages,
+        forceDownload = forceDownload,
         PackageLoader = packageLoader
     }, metatable)
 end
@@ -45,8 +46,29 @@ function Package:GetModule(moduleToGet)
     end
 end
 
+---@param url string
+---@param path string
+---@return boolean success
+function Package:Download(url, path)
+    local dataFileUrl = url .. "/Data.lua"
+    local dataFilePath = filesystem.path(path, "Data.lua")
+    if not self.PackageLoader:internalDownload(dataFileUrl, dataFilePath, self.forceDownload) then return false end
+
+    ---@type Dictionary<string, Github_Loading.Module.Data>
+    local dataContent = filesystem.doFile(dataFilePath)
+
+    ---@type Dictionary<string, Github_Loading.Module>
+    local modules = {}
+    for id, module in pairs(dataContent) do
+        modules[id] = Module.new(module)
+    end
+
+    self.Modules = modules
+    return true
+end
+
 function Package:Load()
-    if #self.RequiredPackages ~= 0 then
+    if self.RequiredPackages and #self.RequiredPackages ~= 0 then
         for _, packageName in ipairs(self.RequiredPackages) do
             self.PackageLoader:LoadPackage(packageName)
         end
