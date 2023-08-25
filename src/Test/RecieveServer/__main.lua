@@ -19,7 +19,7 @@ end
 function Main:Configure()
     self.eventPullAdapter = EventPullAdapter:Initialize(self.Logger:subLogger("EventPullAdapter"))
 
-    local netClient = NetworkClient(self.Logger)
+    local netClient = NetworkClient(self.Logger:subLogger("NetworkClient"))
     local netPort = netClient:CreateNetworkPort(80)
     netPort:OpenPort()
     self.Logger:LogInfo("opened Port: '".. netPort.Port .."'")

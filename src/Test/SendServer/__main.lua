@@ -10,7 +10,7 @@ local Main = {}
 function Main:Configure()
     EventPullAdapter:Initialize(self.Logger:subLogger("EventPullAdapter"))
 
-    local netClient = NetworkClient(self.Logger)
+    local netClient = NetworkClient(self.Logger:subLogger("NetworkClient"))
     self.apiClient = ApiClient(Config.ServerIPAddress, Config.ServerPort, 1111, netClient)
     self.Logger:LogInfo("setup ApiClient")
 end

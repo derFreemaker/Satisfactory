@@ -19,7 +19,7 @@ function ApiClient:ApiClient(serverIPAddress, serverPort, returnPort, netClient)
     self.ServerPort = serverPort
     self.ReturnPort = returnPort
     self.NetClient = netClient
-    self.Logger = netClient.Logger:create("ApiClient")
+    self.Logger = netClient.Logger:subLogger("ApiClient")
 end
 function ApiClient:request(request)
     self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, "Rest-Request", { ReturnPort = self.ReturnPort }, request:ExtractData())
@@ -50,12 +50,12 @@ local ApiController = {}
 function ApiController:ApiController(netPort)
     self.Endpoints = {}
     self.NetPort = netPort
-    self.Logger = netPort.Logger:create("ApiController")
+    self.Logger = netPort.Logger:subLogger("ApiController")
     netPort:AddListener("Rest-Request", Listener(self.onMessageRecieved, self))
 end
 function ApiController:onMessageRecieved(context)
-    self.Logger:LogDebug("recieved request on endpoint: '" .. context.EventName .. "'")
     local request = ApiHelper.NetworkContextToApiRequest(context)
+    self.Logger:LogDebug("recieved request on endpoint: '" .. request.Endpoint .. "'")
     local endpoint = self:GetEndpoint(request.Endpoint)
     if endpoint == nil then
         if context.Header.ReturnPort then
@@ -531,12 +531,12 @@ function NetworkClient:CreateNetworkPort(port)
     if networkPort ~= nil then
         return networkPort
     end
-    networkPort = NetworkPort(port, self.Logger:create("NetworkPort[".. port .."]"), self)
+    networkPort = NetworkPort(port, self.Logger:subLogger("NetworkPort[".. port .."]"), self)
     self.ports[port] = networkPort
     return networkPort
 end
 function NetworkClient:WaitForEvent(eventName, port)
-    local result = nil
+    local result
 
     local function set(context)
         result = context
@@ -1037,9 +1037,15 @@ function Logger:Logger(name, logLevel, onLog, onClear)
     self.OnLog = onLog or Event()
     self.OnClear = onClear or Event()
 end
-function Logger:create(name)
+function Logger:subLogger(name)
     name = self.Name .. "." .. name
-    return Logger(name, self.LogLevel, Utils.Table.Copy(self.OnLog), Utils.Table.Copy(self.OnClear))
+    local logger = Logger(name, self.LogLevel)
+    return self:CopyListenersTo(logger)
+end
+function Logger:CopyListenersTo(logger)
+    self.OnLog:CopyTo(logger.OnLog)
+    self.OnClear:CopyTo(logger.OnClear)
+    return logger
 end
 function Logger:Log(message, logLevel)
     if logLevel < self.LogLevel then
@@ -1049,6 +1055,9 @@ function Logger:Log(message, logLevel)
     self.OnLog:Trigger(message)
 end
 function Logger:LogTable(t, logLevel, maxLevel, properties)
+    if logLevel < self.LogLevel then
+        return
+    end
     if t == nil or type(t) ~= "table" then return end
     local function log(message) self:Log(message, logLevel) end
     Logger.tableToLineTree(t, maxLevel, properties, log, self)
