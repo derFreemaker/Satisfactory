@@ -432,6 +432,7 @@ end
 function EventPullAdapter:Run()
     self.logger:LogDebug("## started event pull loop ##")
     while true do
+        self.logger:LogTrace("## waiting for event pull ##")
         self:Wait()
     end
 end
@@ -970,7 +971,7 @@ PackageData.kyXCjvQy = {
     Data = function(...)
 local Event = require("Core.Event.Event")
 local Logger = {}
-function Logger.tableToLineTree(node, maxLevel, properties, logFunc, logFuncParent, level, padding)
+local function tableToLineTree(node, maxLevel, properties, logFunc, logFuncParent, level, padding)
     padding = padding or '     '
     maxLevel = maxLevel or 5
     level = level or 1
@@ -1008,9 +1009,7 @@ function Logger.tableToLineTree(node, maxLevel, properties, logFunc, logFuncPare
             table.insert(lines, line)
             if level < maxLevel then
 
-                local childLines = Logger.tableToLineTree(node[k], maxLevel, properties, logFunc, logFuncParent,
-                    level + 1,
-                    padding .. (i == #keys and '    ' or '│   '))
+                local childLines = tableToLineTree(node[k], maxLevel, properties, logFunc, logFuncParent, level + 1, padding .. (i == #keys and '    ' or '│   '))
                 for _, l in ipairs(childLines) do
                     table.insert(lines, l)
                 end
@@ -1065,7 +1064,7 @@ function Logger:LogTable(t, logLevel, maxLevel, properties)
     end
     if t == nil or type(t) ~= "table" then return end
     local function log(message) self:Log(message, logLevel) end
-    Logger.tableToLineTree(t, maxLevel, properties, log, self)
+    tableToLineTree(t, maxLevel, properties, log, self)
 end
 function Logger:Clear()
     self.OnClear:Trigger()
