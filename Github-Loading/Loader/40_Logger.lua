@@ -147,6 +147,10 @@ end
 ---@param maxLevel number?
 ---@param properties table?
 function Logger:LogTable(t, logLevel, maxLevel, properties)
+    if logLevel < self.LogLevel then
+        return
+    end
+
     if table == nil or type(table) ~= "table" then return end
     local function log(message) self:Log(message, logLevel) end
     Logger.tableToLineTree(table, maxLevel, properties, Listener.new(log, self))

@@ -18,14 +18,14 @@ local ApiController = {}
 function ApiController:ApiController(netPort)
     self.Endpoints = {}
     self.NetPort = netPort
-    self.Logger = netPort.Logger:create("ApiController")
+    self.Logger = netPort.Logger:subLogger("ApiController")
     netPort:AddListener("Rest-Request", Listener(self.onMessageRecieved, self))
 end
 
 ---@param context Core.Net.NetworkContext
 function ApiController:onMessageRecieved(context)
-    self.Logger:LogDebug("recieved request on endpoint: '" .. context.EventName .. "'")
     local request = ApiHelper.NetworkContextToApiRequest(context)
+    self.Logger:LogDebug("recieved request on endpoint: '" .. request.Endpoint .. "'")
     local endpoint = self:GetEndpoint(request.Endpoint)
     if endpoint == nil then
         if context.Header.ReturnPort then

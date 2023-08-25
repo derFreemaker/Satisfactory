@@ -19,7 +19,7 @@ function ApiClient:ApiClient(serverIPAddress, serverPort, returnPort, netClient)
     self.ServerPort = serverPort
     self.ReturnPort = returnPort
     self.NetClient = netClient
-    self.Logger = netClient.Logger:create("ApiClient")
+    self.Logger = netClient.Logger:subLogger("ApiClient")
 end
 
 ---@param request Core.Api.ApiRequest

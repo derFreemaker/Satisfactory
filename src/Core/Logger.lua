@@ -110,9 +110,18 @@ end
 
 ---@param name string
 ---@return Core.Logger
-function Logger:create(name)
+function Logger:subLogger(name)
     name = self.Name .. "." .. name
-    return Logger(name, self.LogLevel, Utils.Table.Copy(self.OnLog), Utils.Table.Copy(self.OnClear))
+    local logger = Logger(name, self.LogLevel)
+    return self:CopyListenersTo(logger)
+end
+
+---@param logger Core.Logger
+---@return Core.Logger logger
+function Logger:CopyListenersTo(logger)
+    self.OnLog:CopyTo(logger.OnLog)
+    self.OnClear:CopyTo(logger.OnClear)
+    return logger
 end
 
 ---@private
@@ -132,6 +141,10 @@ end
 ---@param maxLevel integer?
 ---@param properties string[]?
 function Logger:LogTable(t, logLevel, maxLevel, properties)
+    if logLevel < self.LogLevel then
+        return
+    end
+
     if t == nil or type(t) ~= "table" then return end
     local function log(message) self:Log(message, logLevel) end
     Logger.tableToLineTree(t, maxLevel, properties, log, self)

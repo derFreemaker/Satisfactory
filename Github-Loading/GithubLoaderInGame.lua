@@ -74,11 +74,9 @@ local function Run()
     assert(Loader, "Unable to load Github Loader")
 
     Loader = Loader.new(BaseUrl, LoaderFilesPath, loaderForceDownload, internetCard)
-    Loader:Download()
     Loader:Load(loaderLogLevel)
     local diffrentVersionFound = Loader:CheckVersion()
     if diffrentVersionFound then
-        Loader.Logger:LogInfo("new Github Loader version found")
         loaderForceDownload = true
         return true
     end

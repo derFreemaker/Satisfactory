@@ -94,7 +94,7 @@ function NetworkClient:CreateNetworkPort(port)
     if networkPort ~= nil then
         return networkPort
     end
-    networkPort = NetworkPort(port, self.Logger:create("NetworkPort[".. port .."]"), self)
+    networkPort = NetworkPort(port, self.Logger:subLogger("NetworkPort[".. port .."]"), self)
     self.ports[port] = networkPort
     return networkPort
 end
@@ -103,7 +103,7 @@ end
 ---@param port integer | "all"
 ---@return Core.Net.NetworkContext
 function NetworkClient:WaitForEvent(eventName, port)
-    local result = nil
+    local result
     ---@param context Core.Net.NetworkContext
     local function set(context)
         result = context
