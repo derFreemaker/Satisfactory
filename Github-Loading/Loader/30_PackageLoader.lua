@@ -98,7 +98,7 @@ function PackageLoader:DownloadPackage(packageName, forceDownload)
     assert(not (not filesystem.exists(packagePath) and not filesystem.createDir(packagePath, true)), "Unable to create folder for package: '" .. packageName .. "'")
     local packageUrl = self.packagesUrl .. "/" .. packageName
     local success, package = self:internalDownloadPackage(packageUrl, packagePath, forceDownload)
-    if not success or not package or package:Download(packageUrl, packagePath) then
+    if not success or not package or not package:Download(packageUrl, packagePath) then
         return false
     end
     self.logger:LogTrace("downloaded package: '" .. packageName .. "'")
