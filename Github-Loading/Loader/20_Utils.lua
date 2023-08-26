@@ -237,13 +237,14 @@ local function HideMembers(obj, metatable)
     metatable.HiddenMembers = {}
     for key, value in pairs(obj) do
         if not metatable.HiddenMembers[key] then
-            if type(value) == "function" then
-                local func = value
-                local function call(class, ...)
-                    return func(class, ...)
-                end
-                value = call
-            end
+            -- //TODO: maybe remove function wrapper
+            -- if type(value) == "function" then
+            --     local func = value
+            --     local function call(class, ...)
+            --         return func(class, ...)
+            --     end
+            --     value = call
+            -- end
             metatable.HiddenMembers[key] = value
             obj[key] = nil
         end
