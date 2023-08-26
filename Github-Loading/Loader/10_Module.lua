@@ -3,16 +3,14 @@
 ---@field Name string
 ---@field FullName string
 ---@field IsRunnable boolean
----@field Data Github_Loading.Module.LoadFunction | string
-
----@alias Github_Loading.Module.LoadFunction fun(...) : any
+---@field Data string
 
 ---@class Github_Loading.Module
 ---@field Name string
 ---@field FullName string
 ---@field Namespace string
 ---@field IsRunnable boolean
----@field Data Github_Loading.Module.LoadFunction | string
+---@field Data string
 ---@field StoredData table
 local Module = {}
 
@@ -39,7 +37,7 @@ function Module:Load(...)
     end
     local result
     if type(self.Data) == "function" then
-        result = table.pack(self.Data(...))
+        result = table.pack(load(self.Data, self.Namespace)(...))
     else
         result = table.pack(self.Data)
     end

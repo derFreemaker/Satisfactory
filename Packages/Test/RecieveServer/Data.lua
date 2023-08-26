@@ -7,7 +7,7 @@ PackageData.MFYoiWSx = {
     Name = "__main",
     FullName = "__main.lua",
     IsRunnable = true,
-    Data = function(...)
+    Data = [[
 local Task = require("Core.Task")
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local NetworkClient = require("Core.Net.NetworkClient")
@@ -32,7 +32,7 @@ function Main:Run()
     self.eventPullAdapter:Run()
 end
 return Main
-end
+]]
 }
 
 -- ########## Test.RecieveServer ########## --

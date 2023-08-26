@@ -11,7 +11,7 @@ PackageData.PksKdJNx = {
     Name = "ApiClient",
     FullName = "ApiClient.lua",
     IsRunnable = true,
-    Data = function(...)
+    Data = [[
 local ApiHelper = require("Core.Api.ApiHelper")
 local ApiClient = {}
 function ApiClient:ApiClient(serverIPAddress, serverPort, returnPort, netClient)
@@ -28,7 +28,7 @@ function ApiClient:request(request)
     return response
 end
 return Utils.Class.CreateClass(ApiClient, "ApiClient")
-end
+]]
 }
 
 -- ########## Core.Api.Client ########## --
@@ -40,7 +40,7 @@ PackageData.RONgYwHx = {
     Name = "ApiController",
     FullName = "ApiController.lua",
     IsRunnable = true,
-    Data = function(...)
+    Data = [[
 local Task = require("Core.Task")
 local ApiEndpoint = require("Core.Api.Server.ApiEndpoint")
 local ApiHelper = require("Core.Api.ApiHelper")
@@ -95,7 +95,7 @@ function ApiController:AddEndpoint(name, task)
     return self
 end
 return Utils.Class.CreateClass(ApiController, "ApiController")
-end
+]]
 }
 
 PackageData.seyrvpeX = {
@@ -103,7 +103,7 @@ PackageData.seyrvpeX = {
     Name = "ApiEndpoint",
     FullName = "ApiEndpoint.lua",
     IsRunnable = true,
-    Data = function(...)
+    Data = [[
 local ApiResponseTemplates = require("Core.Api.Server.ApiResponseTemplates")
 local ApiEndpoint = {}
 function ApiEndpoint:ApiEndpoint(task)
@@ -119,7 +119,7 @@ function ApiEndpoint:Execute(logger, request)
     return response
 end
 return Utils.Class.CreateClass(ApiEndpoint, "ApiEndpoint")
-end
+]]
 }
 
 PackageData.TtiCTjCx = {
@@ -127,7 +127,7 @@ PackageData.TtiCTjCx = {
     Name = "ApiResponseTemplates",
     FullName = "ApiResponseTemplates.lua",
     IsRunnable = true,
-    Data = function(...)
+    Data = [[
 local StatusCodes = require("Core.Api.StatusCodes")
 local ApiResponse = require("Core.Api.ApiResponse")
 local ApiResponseTemplates = {}
@@ -144,7 +144,7 @@ function ApiResponseTemplates.InternalServerError(message)
     return ApiResponse({ Code = StatusCodes.Status500InternalServerError, Message = message })
 end
 return ApiResponseTemplates
-end
+]]
 }
 
 -- ########## Core.Api.Server ########## --
@@ -154,7 +154,7 @@ PackageData.vISNqcZX = {
     Name = "ApiHelper",
     FullName = "ApiHelper.lua",
     IsRunnable = true,
-    Data = function(...)
+    Data = [[
 local ApiRequest = require("Core.Api.ApiRequest")
 local ApiResponse = require("Core.Api.ApiResponse")
 local Helper = {}
@@ -165,7 +165,7 @@ function Helper.NetworkContextToApiRequest(context)
     return ApiRequest(context.Body.Endpoint, context.Body.Headers, context.Body.Body)
 end
 return Helper
-end
+]]
 }
 
 PackageData.WXDYOWwx = {
@@ -173,7 +173,7 @@ PackageData.WXDYOWwx = {
     Name = "ApiRequest",
     FullName = "ApiRequest.lua",
     IsRunnable = true,
-    Data = function(...)
+    Data = [[
 local ApiRequest = {}
 function ApiRequest:ApiRequest(endpoint, headers, body)
     self.Endpoint = endpoint
@@ -188,7 +188,7 @@ function ApiRequest:ExtractData()
     }
 end
 return Utils.Class.CreateClass(ApiRequest, "ApiRequest")
-end
+]]
 }
 
 PackageData.xnnklPUX = {
@@ -196,7 +196,7 @@ PackageData.xnnklPUX = {
     Name = "ApiResponse",
     FullName = "ApiResponse.lua",
     IsRunnable = true,
-    Data = function(...)
+    Data = [[
 local StatusCodes = require("Core.Api.StatusCodes")
 local ApiResponse = {}
 function ApiResponse:ApiResponse(header, body)
@@ -211,7 +211,7 @@ function ApiResponse:ExtractData()
     }
 end
 return Utils.Class.CreateClass(ApiResponse, "ApiResponse")
-end
+]]
 }
 
 PackageData.YCXvIIrx = {
@@ -219,7 +219,7 @@ PackageData.YCXvIIrx = {
     Name = "StatusCodes",
     FullName = "StatusCodes.lua",
     IsRunnable = true,
-    Data = function(...)
+    Data = [[
 local StatusCodes = {
     StatusCode100Continue = 100,
     Status101SwitchingProtocols = 101,
@@ -296,7 +296,7 @@ local StatusCodes = {
     Status511NetworkAuthenticationRequired = 511,
 }
 return StatusCodes
-end
+]]
 }
 
 -- ########## Core.Api ########## --
@@ -308,7 +308,7 @@ PackageData.agsRDvly = {
     Name = "Event",
     FullName = "Event.lua",
     IsRunnable = true,
-    Data = function(...)
+    Data = [[
 local Event = {}
 function Event:Event()
     self.funcs = {}
@@ -375,7 +375,7 @@ function Event:CopyTo(event)
     return event
 end
 return Utils.Class.CreateClass(Event, "Event")
-end
+]]
 }
 
 PackageData.CwccbpJY = {
@@ -383,7 +383,7 @@ PackageData.CwccbpJY = {
     Name = "EventPullAdapter",
     FullName = "EventPullAdapter.lua",
     IsRunnable = true,
-    Data = function(...)
+    Data = [[
 local Event = require("Core.Event.Event")
 local EventPullAdapter = {}
 function EventPullAdapter:onEventPull(eventPullData)
@@ -450,7 +450,7 @@ function EventPullAdapter:Run()
     end
 end
 return EventPullAdapter
-end
+]]
 }
 
 -- ########## Core.Event ########## --
@@ -462,7 +462,7 @@ PackageData.EaxyWcDY = {
     Name = "NetworkClient",
     FullName = "NetworkClient.lua",
     IsRunnable = true,
-    Data = function(...)
+    Data = [[
 local Json = require("Core.Json")
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local Task = require("Core.Task")
@@ -557,7 +557,7 @@ function NetworkClient:BroadCastMessage(port, eventName, header, body)
     self.networkCard:broadcast(port, eventName, Json.encode(header or {}), Json.encode(body))
 end
 return Utils.Class.CreateClass(NetworkClient, "NetworkClient")
-end
+]]
 }
 
 PackageData.fphJtVby = {
@@ -565,7 +565,7 @@ PackageData.fphJtVby = {
     Name = "NetworkContext",
     FullName = "NetworkContext.lua",
     IsRunnable = true,
-    Data = function(...)
+    Data = [[
 local Json = require("Core.Json")
 local NetworkContext = {}
 function NetworkContext:NetworkContext(data)
@@ -578,7 +578,7 @@ function NetworkContext:NetworkContext(data)
     self.Body = Json.decode(data[7])
 end
 return Utils.Class.CreateClass(NetworkContext, "NetworkContext")
-end
+]]
 }
 
 PackageData.GFSURPyY = {
@@ -586,7 +586,7 @@ PackageData.GFSURPyY = {
     Name = "NetworkPort",
     FullName = "NetworkPort.lua",
     IsRunnable = true,
-    Data = function(...)
+    Data = [[
 local Event = require("Core.Event.Event")
 local NetworkPort = {}
 function NetworkPort:NetworkPort(port, logger, netClient)
@@ -641,7 +641,7 @@ function NetworkPort:ClosePort()
     end
 end
 return Utils.Class.CreateClass(NetworkPort, "NetworkPort")
-end
+]]
 }
 
 -- ########## Core.Net ########## --
@@ -651,7 +651,7 @@ PackageData.hUCfoIVy = {
     Name = "Json",
     FullName = "Json.lua",
     IsRunnable = true,
-    Data = function(...)
+    Data = [[
 local json = { _version = "0.1.2" }
 local encode
 local escape_char_map = {
@@ -948,7 +948,7 @@ function json.decode(str)
     return res
 end
 return json
-end
+]]
 }
 
 PackageData.JjmrMBtY = {
@@ -956,7 +956,7 @@ PackageData.JjmrMBtY = {
     Name = "Logger",
     FullName = "Logger.lua",
     IsRunnable = true,
-    Data = function(...)
+    Data = [[
 local Event = require("Core.Event.Event")
 local Logger = {}
 local function tableToLineTree(node, maxLevel, properties, level, padding)
@@ -1075,7 +1075,7 @@ function Logger:setErrorLogger()
     _G.__errorLogger = self
 end
 return Utils.Class.CreateClass(Logger, "Logger")
-end
+]]
 }
 
 PackageData.kyXCjvQy = {
@@ -1083,7 +1083,7 @@ PackageData.kyXCjvQy = {
     Name = "Task",
     FullName = "Task.lua",
     IsRunnable = true,
-    Data = function(...)
+    Data = [[
 local Task = {}
 function Task:invokeFunc(...)
     if self.parent then
@@ -1128,7 +1128,7 @@ function Task:LogError(logger)
     end
 end
 return Utils.Class.CreateClass(Task, "Task")
-end
+]]
 }
 
 -- ########## Core ########## --
