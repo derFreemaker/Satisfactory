@@ -87,11 +87,11 @@ function ApiController:GetEndpoint(endpointName)
     end
     return nil
 end
-function ApiController:AddEndpoint(name, listener)
+function ApiController:AddEndpoint(name, task)
     if self:GetEndpoint(name) ~= nil then
         error("Endpoint allready exists")
     end
-    self.Endpoints[name] = ApiEndpoint(listener)
+    self.Endpoints[name] = ApiEndpoint(task)
     return self
 end
 return Utils.Class.CreateClass(ApiController, "ApiController")

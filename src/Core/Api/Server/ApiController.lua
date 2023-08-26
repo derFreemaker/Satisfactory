@@ -62,13 +62,13 @@ function ApiController:GetEndpoint(endpointName)
 end
 
 ---@param name string
----@param listener Core.Task
+---@param task Core.Task
 ---@return Core.Api.Server.ApiController
-function ApiController:AddEndpoint(name, listener)
+function ApiController:AddEndpoint(name, task)
     if self:GetEndpoint(name) ~= nil then
         error("Endpoint allready exists")
     end
-    self.Endpoints[name] = ApiEndpoint(listener)
+    self.Endpoints[name] = ApiEndpoint(task)
     return self
 end
 

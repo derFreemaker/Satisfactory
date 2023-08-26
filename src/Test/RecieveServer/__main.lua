@@ -1,4 +1,4 @@
-local Listener = require("Core.Event.Listener")
+local Task = require("Core.Task")
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local NetworkClient = require("Core.Net.NetworkClient")
 local ApiController = require("Core.Api.Server.ApiController")
@@ -24,7 +24,7 @@ function Main:Configure()
     netPort:OpenPort()
     self.Logger:LogInfo("opened Port: '".. netPort.Port .."'")
     self.apiController = ApiController(netPort)
-    self.apiController:AddEndpoint("Test", Listener(self.Test, self))
+    self.apiController:AddEndpoint("Test", Task(self.Test, self))
     self.Logger:LogInfo("setup ApiController")
 end
 
