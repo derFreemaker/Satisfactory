@@ -65,19 +65,7 @@ function ApiController:onMessageRecieved(context)
         end
         return
     end
-    local response = endpoint:Execute(self.Logger:subLogger("Endpoint[".. request.Endpoint .."]"), request)
-    if context.Header.ReturnPort then
-        self.Logger:LogTrace("sending response...")
-        self.NetPort.NetClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort, "Rest-Response", nil, response:ExtractData())
-        self.Logger:LogTrace("sended response")
-    else
-        self.Logger:LogTrace("sending no response")
-    end
-    if response.Headers.Code == StatusCodes.Status200OK then
-        self.Logger:LogDebug("request finished successfully")
-    else
-        self.Logger:LogDebug("request finished with status code: ".. response.Headers.Code .." with message: '".. response.Headers.Message .."'")
-    end
+    endpoint:Execute(request, context, self.NetPort.NetClient)
 end
 function ApiController:GetEndpoint(endpointName)
     for name, endpoint in pairs(self.Endpoints) do
@@ -91,7 +79,7 @@ function ApiController:AddEndpoint(name, task)
     if self:GetEndpoint(name) ~= nil then
         error("Endpoint allready exists")
     end
-    self.Endpoints[name] = ApiEndpoint(task)
+    self.Endpoints[name] = ApiEndpoint(task, self.Logger:subLogger("ApiEndpoint[".. name .."]"))
     return self
 end
 return Utils.Class.CreateClass(ApiController, "ApiController")
@@ -105,18 +93,32 @@ PackageData.seyrvpeX = {
     IsRunnable = true,
     Data = [[
 local ApiResponseTemplates = require("Core.Api.Server.ApiResponseTemplates")
+local StatusCodes = require("Core.Api.StatusCodes")
 local ApiEndpoint = {}
-function ApiEndpoint:ApiEndpoint(task)
+function ApiEndpoint:ApiEndpoint(task, logger)
     self.task = task
+    self.logger = logger
 end
-function ApiEndpoint:Execute(logger, request)
+function ApiEndpoint:Execute(request, context, netClient)
     self.task:Execute(request)
+
     local response = self.task:GetResults()
     if not self.task:IsSuccess() then
-        self.task:LogError(logger)
-        return ApiResponseTemplates.InternalServerError(tostring(self.task:GetErrorObject()))
+        self.task:LogError(self.logger)
+        response = ApiResponseTemplates.InternalServerError(tostring(self.task:GetErrorObject()))
     end
-    return response
+    if context.Header.ReturnPort then
+        self.logger:LogTrace("sending response...")
+        netClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort, "Rest-Response", nil, response:ExtractData())
+        self.logger:LogTrace("sended response")
+    else
+        self.logger:LogTrace("sending no response")
+    end
+    if response.Headers.Message == nil then
+        self.logger:LogDebug("request finished with status code: " .. response.Headers.Code)
+    else
+        self.logger:LogDebug("request finished with status code: ".. response.Headers.Code .." with message: '".. response.Headers.Message .."'")
+    end
 end
 return Utils.Class.CreateClass(ApiEndpoint, "ApiEndpoint")
 ]]

@@ -35,19 +35,7 @@ function ApiController:onMessageRecieved(context)
         end
         return
     end
-    local response = endpoint:Execute(self.Logger:subLogger("Endpoint[".. request.Endpoint .."]"), request)
-    if context.Header.ReturnPort then
-        self.Logger:LogTrace("sending response...")
-        self.NetPort.NetClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort, "Rest-Response", nil, response:ExtractData())
-        self.Logger:LogTrace("sended response")
-    else
-        self.Logger:LogTrace("sending no response")
-    end
-    if response.Headers.Code == StatusCodes.Status200OK then
-        self.Logger:LogDebug("request finished successfully")
-    else
-        self.Logger:LogDebug("request finished with status code: ".. response.Headers.Code .." with message: '".. response.Headers.Message .."'")
-    end
+    endpoint:Execute(request, context, self.NetPort.NetClient)
 end
 
 ---@param endpointName string
@@ -68,7 +56,7 @@ function ApiController:AddEndpoint(name, task)
     if self:GetEndpoint(name) ~= nil then
         error("Endpoint allready exists")
     end
-    self.Endpoints[name] = ApiEndpoint(task)
+    self.Endpoints[name] = ApiEndpoint(task, self.Logger:subLogger("ApiEndpoint[".. name .."]"))
     return self
 end
 
