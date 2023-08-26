@@ -12,6 +12,7 @@ local Listener = LoadedLoaderFiles["/Github-Loading/Loader/Listener"][1]
 ---|2 Info
 ---|3 Warning
 ---|4 Error
+---|10 Write
 
 ---@class Github_Loading.Logger
 ---@field OnLog Github_Loading.Event
@@ -23,11 +24,10 @@ local Logger = {}
 ---@param node table
 ---@param maxLevel number?
 ---@param properties string[]?
----@param logFunc Github_Loading.Listener
 ---@param level number?
 ---@param padding string?
 ---@return string[]
-local function tableToLineTree(node, maxLevel, properties, logFunc, level, padding)
+local function tableToLineTree(node, maxLevel, properties, level, padding)
     padding = padding or '     '
     maxLevel = maxLevel or 5
     level = level or 1
@@ -68,7 +68,7 @@ local function tableToLineTree(node, maxLevel, properties, logFunc, level, paddi
 
             if level < maxLevel then
                 ---@cast properties string[]
-                local childLines = tableToLineTree(node[k], maxLevel, properties, logFunc, level + 1, padding .. (i == #keys and '    ' or '│   '))
+                local childLines = tableToLineTree(node[k], maxLevel, properties, level + 1, padding .. (i == #keys and '    ' or '│   '))
                 for _, l in ipairs(childLines) do
                     table.insert(lines, l)
                 end
@@ -78,12 +78,6 @@ local function tableToLineTree(node, maxLevel, properties, logFunc, level, paddi
         end
     else
         table.insert(lines, padding .. tostring(node))
-    end
-
-    if level == 1 then
-        for line in pairs(lines) do
-            logFunc:Execute(line)
-        end
     end
 
     return lines
@@ -127,7 +121,6 @@ function Logger:CopyListenersTo(logger)
     return logger
 end
 
----@private
 ---@param message string
 ---@param logLevel Github_Loading.Logger.LogLevel
 function Logger:Log(message, logLevel)
@@ -141,16 +134,17 @@ end
 
 ---@param t table
 ---@param logLevel Github_Loading.Logger.LogLevel
----@param maxLevel number?
----@param properties table?
+---@param maxLevel integer?
+---@param properties string[]?
 function Logger:LogTable(t, logLevel, maxLevel, properties)
     if logLevel < self.LogLevel then
         return
     end
 
-    if table == nil or type(table) ~= "table" then return end
-    local function log(message) self:Log(message, logLevel) end
-    tableToLineTree(table, maxLevel, properties, Listener.new(log, self))
+    if t == nil or type(t) ~= "table" then return end
+    for _, line in ipairs(tableToLineTree(t, maxLevel, properties)) do
+        self:Log(line, logLevel)
+    end
 end
 
 function Logger:Clear()
