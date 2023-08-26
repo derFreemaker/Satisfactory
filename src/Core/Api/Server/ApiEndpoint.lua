@@ -11,10 +11,11 @@ function ApiEndpoint:ApiEndpoint(listener)
     self.listener = listener
 end
 
+---@param logger Core.Logger?
 ---@param request Core.Api.ApiRequest
 ---@return Core.Api.ApiResponse response
-function ApiEndpoint:Execute(request)
-    local success, response = self.listener:ExecuteDynamic({ request })
+function ApiEndpoint:Execute(logger, request)
+    local success, response = self.listener:ExecuteDynamic(logger, { request })
     if not success then
         return ApiResponseTemplates.InternalServerError(response[1])
     end

@@ -35,8 +35,9 @@ function ApiController:onMessageRecieved(context)
         end
         return
     end
-    local response = endpoint:Execute(request)
+    local response = endpoint:Execute(self.Logger:subLogger("Endpoint[".. request.Endpoint .."]"), request)
     if context.Header.ReturnPort then
+        self.Logger:LogTrace("sending response...")
         self.NetPort.NetClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort, "Rest-Response", nil, response:ExtractData())
         self.Logger:LogTrace("sended response")
     else

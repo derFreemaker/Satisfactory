@@ -11,27 +11,34 @@ local Listener = {}
 ---@param parent any
 ---@return Github_Loading.Listener
 function Listener.new(func, parent)
-    local metatable = Listener
-    metatable.__index = Listener
+    local metatable = {
+        __index = Listener
+    }
     return setmetatable({
         func = func,
         parent = parent
     }, metatable)
 end
 
+---@param logger Github_Loading.Logger?
 ---@param ... any
 ---@return boolean success, any ...
-function Listener:Execute(...)
-    local success, result = Utils.Function.InvokeProtected(self.func, self.parent, ...)
-    assert(success, "listener execution failed")
-    return success, table.unpack(result)
+function Listener:Execute(logger, ...)
+    local thread, success, results = Utils.Function.InvokeProtected(self.func, self.parent, ...)
+    if not success and logger then
+        logger:LogError("execution error: \n" .. debug.traceback(thread, results[1]) .. debug.traceback():sub(17))
+    end
+    return success, table.unpack(results)
 end
 
+---@param logger Github_Loading.Logger?
 ---@param args any[]
 ---@return boolean success, any[] results
-function Listener:ExecuteDynamic(args)
-    local success, results = Utils.Function.DynamicInvokeProtected(self.func, self.parent, args)
-    assert(success, "listener dynamic execution failed")
+function Listener:ExecuteDynamic(logger, args)
+    local thread, success, results = Utils.Function.DynamicInvokeProtected(self.func, self.parent, args)
+    if not success and logger then
+        logger:LogError("execution error: \n" .. debug.traceback(thread, results[1]) .. debug.traceback():sub(17))
+    end
     return success, results
 end
 

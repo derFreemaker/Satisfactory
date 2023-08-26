@@ -27,26 +27,28 @@ function Event:AddListenerOnce(listener)
 end
 Event.Once = Event.AddListenerOnce
 
+---@param logger Core.Logger?
 ---@param ... any
-function Event:Trigger(...)
+function Event:Trigger(logger, ...)
     for _, listener in ipairs(self.funcs) do
-        listener:Execute(...)
+        listener:Execute(logger, ...)
     end
 
     for _, listener in ipairs(self.onceFuncs) do
-        listener:Execute(...)
+        listener:Execute(logger, ...)
     end
     self.OnceFuncs = {}
 end
 
+---@param logger Core.Logger?
 ---@param args table
-function Event:TriggerDynamic(args)
+function Event:TriggerDynamic(logger, args)
     for _, listener in ipairs(self.funcs) do
-        listener:ExecuteDynamic(args)
+        listener:ExecuteDynamic(logger, args)
     end
 
     for _, listener in ipairs(self.onceFuncs) do
-        listener:ExecuteDynamic(args)
+        listener:ExecuteDynamic(logger, args)
     end
     self.OnceFuncs = {}
 end

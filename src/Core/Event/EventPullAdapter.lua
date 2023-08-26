@@ -13,7 +13,7 @@ function EventPullAdapter:onEventPull(eventPullData)
     local removeEvent = {}
     for name, event in pairs(self.events) do
         if name == eventPullData[1] then
-            event:Trigger(eventPullData)
+            event:Trigger(self.logger, eventPullData)
         end
         if #event:Listeners() == 0 then
             table.insert(removeEvent, name)
@@ -75,7 +75,7 @@ function EventPullAdapter:Wait(timeout)
         return
     end
     self.logger:LogDebug("signalName: '".. eventPullData[1] .."' was recieved")
-    self.OnEventPull:Trigger(eventPullData)
+    self.OnEventPull:Trigger(self.logger, eventPullData)
     self:onEventPull(eventPullData)
 end
 

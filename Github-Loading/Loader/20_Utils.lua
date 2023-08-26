@@ -19,16 +19,20 @@ local Function = {}
 ---@param func function
 ---@param parent any
 ---@param ... any
----@return boolean success, any[] returns
+---@return thread thread, boolean success, any[] returns
 function Function.InvokeProtected(func, parent, ...)
+    local function invokeFunc(...)
+        coroutine.yield(func(...))
+    end
+    local thread = coroutine.create(invokeFunc)
     local results
     if parent ~= nil then
-        results = table.pack(pcall(func, parent, ...))
+        results = table.pack(coroutine.resume(thread, parent, ...))
     else
-        results = table.pack(pcall(func, ...))
+        results = table.pack(coroutine.resume(thread, ...))
     end
     local success = Utils.Table.Retrive(results, 1)
-    return success, results
+    return thread, success, results
 end
 
 ---@param func function
@@ -48,16 +52,9 @@ end
 ---@param func function
 ---@param parent any
 ---@param args any[]
----@return boolean success, any[] returns
+---@return thread thread, boolean success, any[] returns
 function Function.DynamicInvokeProtected(func, parent, args)
-    local results
-    if parent ~= nil then
-        results = table.pack(pcall(func, parent, table.unpack(args)))
-    else
-        results = table.pack(pcall(func, table.unpack(args)))
-    end
-    local success = Utils.Table.Retrive(results, 1)
-    return success, results
+    return Function.InvokeProtected(func, parent, table.unpack(args))
 end
 
 Utils.Function = Function

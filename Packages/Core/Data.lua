@@ -65,8 +65,9 @@ function ApiController:onMessageRecieved(context)
         end
         return
     end
-    local response = endpoint:Execute(request)
+    local response = endpoint:Execute(self.Logger:subLogger("Endpoint[".. request.Endpoint .."]"), request)
     if context.Header.ReturnPort then
+        self.Logger:LogTrace("sending response...")
         self.NetPort.NetClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort, "Rest-Response", nil, response:ExtractData())
         self.Logger:LogTrace("sended response")
     else
@@ -108,8 +109,8 @@ local ApiEndpoint = {}
 function ApiEndpoint:ApiEndpoint(listener)
     self.listener = listener
 end
-function ApiEndpoint:Execute(request)
-    local success, response = self.listener:ExecuteDynamic({ request })
+function ApiEndpoint:Execute(logger, request)
+    local success, response = self.listener:ExecuteDynamic(logger, { request })
     if not success then
         return ApiResponseTemplates.InternalServerError(response[1])
     end
@@ -321,21 +322,21 @@ function Event:AddListenerOnce(listener)
     return self
 end
 Event.Once = Event.AddListenerOnce
-function Event:Trigger(...)
+function Event:Trigger(logger, ...)
     for _, listener in ipairs(self.funcs) do
-        listener:Execute(...)
+        listener:Execute(logger, ...)
     end
     for _, listener in ipairs(self.onceFuncs) do
-        listener:Execute(...)
+        listener:Execute(logger, ...)
     end
     self.OnceFuncs = {}
 end
-function Event:TriggerDynamic(args)
+function Event:TriggerDynamic(logger, args)
     for _, listener in ipairs(self.funcs) do
-        listener:ExecuteDynamic(args)
+        listener:ExecuteDynamic(logger, args)
     end
     for _, listener in ipairs(self.onceFuncs) do
-        listener:ExecuteDynamic(args)
+        listener:ExecuteDynamic(logger, args)
     end
     self.OnceFuncs = {}
 end
@@ -384,7 +385,7 @@ function EventPullAdapter:onEventPull(eventPullData)
     local removeEvent = {}
     for name, event in pairs(self.events) do
         if name == eventPullData[1] then
-            event:Trigger(eventPullData)
+            event:Trigger(self.logger, eventPullData)
         end
         if #event:Listeners() == 0 then
             table.insert(removeEvent, name)
@@ -432,7 +433,7 @@ function EventPullAdapter:Wait(timeout)
         return
     end
     self.logger:LogDebug("signalName: '".. eventPullData[1] .."' was recieved")
-    self.OnEventPull:Trigger(eventPullData)
+    self.OnEventPull:Trigger(self.logger, eventPullData)
     self:onEventPull(eventPullData)
 end
 function EventPullAdapter:Run()
@@ -457,12 +458,18 @@ function Listener:Listener(func, parent)
     self.func = func
     self.parent = parent
 end
-function Listener:Execute(...)
-    local success, result = Utils.Function.InvokeProtected(self.func, self.parent, ...)
-    return success, table.unpack(result)
+function Listener:Execute(logger, ...)
+    local thread, success, results = Utils.Function.InvokeProtected(self.func, self.parent, ...)
+    if not success and logger then
+        logger:LogError("execution error: \n" .. debug.traceback(thread, results[1]) .. debug.traceback():sub(17))
+    end
+    return success, table.unpack(results)
 end
-function Listener:ExecuteDynamic(args)
-    local success, results = Utils.Function.DynamicInvokeProtected(self.func, self.parent, args)
+function Listener:ExecuteDynamic(logger, args)
+    local thread, success, results = Utils.Function.DynamicInvokeProtected(self.func, self.parent, args)
+    if not success and logger then
+        logger:LogError("execution error: \n" .. debug.traceback(thread, results[1]) .. debug.traceback():sub(17))
+    end
     return success, results
 end
 return Utils.Class.CreateClass(Listener, "Listener")
@@ -500,8 +507,6 @@ function NetworkClient:NetworkClient(logger, networkCard)
 end
 function NetworkClient:networkMessageRecieved(data)
     local context = NetworkContext(data)
-    self.Logger:LogTrace("extracted network context:")
-    self.Logger:LogTable(context, 0)
     self.Logger:LogDebug("recieved network message with event: '" .. context.EventName .. "' on port: '" .. context.Port .. "'")
     for i, port in pairs(self.ports) do
         if port.Port == context.Port or port.Port == "all" then
@@ -1049,7 +1054,7 @@ function Logger:Log(message, logLevel)
         return
     end
     message = "[" .. self.Name .. "] " .. message
-    self.OnLog:Trigger(message)
+    self.OnLog:Trigger(nil, message)
 end
 function Logger:LogTable(t, logLevel, maxLevel, properties)
     if logLevel < self.LogLevel then
@@ -1067,7 +1072,7 @@ function Logger:FreeLine(logLevel)
     if logLevel < self.LogLevel then
         return
     end
-    self.OnLog:Trigger("")
+    self.OnLog:Trigger(self, "")
 end
 function Logger:LogTrace(message)
     if message == nil then return end

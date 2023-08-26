@@ -114,7 +114,7 @@ function Logger:Log(message, logLevel)
     end
 
     message = "[" .. self.Name .. "] " .. message
-    self.OnLog:Trigger(message)
+    self.OnLog:Trigger(nil, message)
 end
 
 ---@param t table
@@ -142,7 +142,7 @@ function Logger:FreeLine(logLevel)
         return
     end
 
-    self.OnLog:Trigger("")
+    self.OnLog:Trigger(self, "")
 end
 
 ---@param message any
