@@ -36,7 +36,7 @@ function Module:Load(...)
         return table.unpack(self.StoredData)
     end
     local result
-    if type(self.Data) == "function" then
+    if self.IsRunnable then
         result = table.pack(load(self.Data, self.Namespace)(...))
     else
         result = table.pack(self.Data)
