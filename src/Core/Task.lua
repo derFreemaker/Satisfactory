@@ -24,7 +24,6 @@ end
 function Task:Task(func, parent)
     self.func = func
     self.parent = parent
-    self.thread = coroutine.create(self.invokeFunc)
 end
 
 ---@return boolean
@@ -57,6 +56,7 @@ end
 ---@param ... any parameters
 ---@return any ... results
 function Task:Execute(...)
+    self.thread = coroutine.create(self.invokeFunc)
     self.success, self.results = extractData(coroutine.resume(self.thread, self, ...))
     self.noError, self.errorObject = coroutine.close(self.thread)
     return table.unpack(self.results)
@@ -65,6 +65,7 @@ end
 ---@param args any[] parameters
 ---@return any[] returns
 function Task:ExecuteDynamic(args)
+    self.thread = coroutine.create(self.invokeFunc)
     self.success, self.results = extractData(coroutine.resume(self.thread, self, table.unpack(args)))
     self.noError, self.errorObject = coroutine.close(self.thread)
     return self.results
