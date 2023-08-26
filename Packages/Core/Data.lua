@@ -421,8 +421,14 @@ function EventPullAdapter:AddListenerOnce(signalName, listener)
     return self
 end
 function EventPullAdapter:Wait(timeout)
-    local eventPullData = table.pack(event.pull(timeout))
-    if #eventPullData == 0 then
+
+    local eventPullData = nil
+    if timeout == nil then
+        eventPullData = table.pack(event.pull())
+    else
+        eventPullData = table.pack(event.pull(timeout))
+    end
+    if not eventPullData or #eventPullData == 0 then
         return
     end
     self.logger:LogDebug("signalName: '".. eventPullData[1] .."' was recieved")
@@ -1070,7 +1076,10 @@ function Logger:Clear()
     self.OnClear:Trigger()
 end
 function Logger:FreeLine(logLevel)
-    self:Log("", logLevel)
+    if logLevel < self.LogLevel then
+        return
+    end
+    self.OnLog:Trigger("")
 end
 function Logger:LogTrace(message)
     if message == nil then return end

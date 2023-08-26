@@ -62,10 +62,16 @@ function EventPullAdapter:AddListenerOnce(signalName, listener)
     return self
 end
 
----@param timeout number | nil
+---@param timeout number?
 function EventPullAdapter:Wait(timeout)
-    local eventPullData = table.pack(event.pull(timeout))
-    if #eventPullData == 0 then
+    ---@type table?
+    local eventPullData = nil
+    if timeout == nil then
+        eventPullData = table.pack(event.pull())
+    else
+        eventPullData = table.pack(event.pull(timeout))
+    end
+    if not eventPullData or #eventPullData == 0 then
         return
     end
     self.logger:LogDebug("signalName: '".. eventPullData[1] .."' was recieved")

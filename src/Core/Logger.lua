@@ -151,9 +151,13 @@ function Logger:Clear()
     self.OnClear:Trigger()
 end
 
----@param logLevel Github_Loading.Logger.LogLevel
+---@param logLevel Core.Logger.LogLevel
 function Logger:FreeLine(logLevel)
-    self:Log("", logLevel)
+    if logLevel < self.LogLevel then
+        return
+    end
+
+    self.OnLog:Trigger("")
 end
 
 ---@param message any
