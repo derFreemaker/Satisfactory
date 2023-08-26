@@ -1,23 +1,25 @@
 local ApiResponseTemplates = require("Core.Api.Server.ApiResponseTemplates")
 
 ---@class Core.Api.Server.ApiEndpoint : object
----@field private listener Core.Listener
----@overload fun(listener: Core.Listener) : Core.Api.Server.ApiEndpoint
+---@field private task Core.Task
+---@overload fun(task: Core.Task) : Core.Api.Server.ApiEndpoint
 local ApiEndpoint = {}
 
 ---@private
----@param listener Core.Listener
-function ApiEndpoint:ApiEndpoint(listener)
-    self.listener = listener
+---@param task Core.Task
+function ApiEndpoint:ApiEndpoint(task)
+    self.task = task
 end
 
 ---@param logger Core.Logger?
 ---@param request Core.Api.ApiRequest
 ---@return Core.Api.ApiResponse response
 function ApiEndpoint:Execute(logger, request)
-    local success, response = self.listener:ExecuteDynamic(logger, { request })
-    if not success then
-        return ApiResponseTemplates.InternalServerError(response[1])
+    self.task:Execute(request)
+    local response = self.task:GetResults()
+    if not self.task:IsSuccess() then
+        self.task:LogError(logger)
+        return ApiResponseTemplates.InternalServerError(tostring(self.task:GetErrorObject()))
     end
     return response
 end

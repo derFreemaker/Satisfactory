@@ -62,7 +62,7 @@ function ApiController:GetEndpoint(endpointName)
 end
 
 ---@param name string
----@param listener Core.Listener
+---@param listener Core.Task
 ---@return Core.Api.Server.ApiController
 function ApiController:AddEndpoint(name, listener)
     if self:GetEndpoint(name) ~= nil then

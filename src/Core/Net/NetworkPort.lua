@@ -23,7 +23,7 @@ function NetworkPort:Execute(context)
     self.Logger:LogTrace("got triggered with event: '".. context.EventName .."'")
     for name, event in pairs(self.Events) do
         if name == context.EventName or name == "all" then
-            event:Trigger(context)
+            event:Trigger(self.Logger, context)
         end
         if #event == 0 then
             self.Events[name] = nil
@@ -46,7 +46,7 @@ function NetworkPort:GetEvent(eventName)
 end
 
 ---@param onRecivedEventName string | "all"
----@param listener Core.Listener
+---@param listener Core.Task
 ---@return Core.Net.NetworkPort
 function NetworkPort:AddListener(onRecivedEventName, listener)
     local event = self:GetEvent(onRecivedEventName)
@@ -56,7 +56,7 @@ end
 NetworkPort.On = NetworkPort.AddListener
 
 ---@param onRecivedEventName string | "all"
----@param listener Core.Listener
+---@param listener Core.Task
 ---@return Core.Net.NetworkPort
 function NetworkPort:AddListenerOnce(onRecivedEventName, listener)
     local event = self:GetEvent(onRecivedEventName)

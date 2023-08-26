@@ -1,6 +1,6 @@
 ---@class Core.Event : object
----@field private funcs Core.Listener[]
----@field private onceFuncs Core.Listener[]
+---@field private funcs Core.Task[]
+---@field private onceFuncs Core.Task[]
 ---@operator len() : integer
 ---@overload fun() : Core.Event
 local Event = {}
@@ -11,18 +11,18 @@ function Event:Event()
     self.onceFuncs = {}
 end
 
----@param listener Core.Listener
+---@param task Core.Task
 ---@return Core.Event
-function Event:AddListener(listener)
-    table.insert(self.funcs, listener)
+function Event:AddListener(task)
+    table.insert(self.funcs, task)
     return self
 end
 Event.On = Event.AddListener
 
----@param listener Core.Listener
+---@param task Core.Task
 ---@return Core.Event
-function Event:AddListenerOnce(listener)
-    table.insert(self.onceFuncs, listener)
+function Event:AddListenerOnce(task)
+    table.insert(self.onceFuncs, task)
     return self
 end
 Event.Once = Event.AddListenerOnce
@@ -30,12 +30,14 @@ Event.Once = Event.AddListenerOnce
 ---@param logger Core.Logger?
 ---@param ... any
 function Event:Trigger(logger, ...)
-    for _, listener in ipairs(self.funcs) do
-        listener:Execute(logger, ...)
+    for _, task in ipairs(self.funcs) do
+        task:Execute(...)
+        task:LogError(logger)
     end
 
-    for _, listener in ipairs(self.onceFuncs) do
-        listener:Execute(logger, ...)
+    for _, task in ipairs(self.onceFuncs) do
+        task:Execute(...)
+        task:LogError(logger)
     end
     self.OnceFuncs = {}
 end
@@ -43,12 +45,14 @@ end
 ---@param logger Core.Logger?
 ---@param args table
 function Event:TriggerDynamic(logger, args)
-    for _, listener in ipairs(self.funcs) do
-        listener:ExecuteDynamic(logger, args)
+    for _, task in ipairs(self.funcs) do
+        task:ExecuteDynamic(args)
+        task:LogError(logger)
     end
 
-    for _, listener in ipairs(self.onceFuncs) do
-        listener:ExecuteDynamic(logger, args)
+    for _, task in ipairs(self.onceFuncs) do
+        task:ExecuteDynamic(args)
+        task:LogError(logger)
     end
     self.OnceFuncs = {}
 end
@@ -57,22 +61,22 @@ end
 ---|"Permanent"
 ---|"Once"
 
----@return Dictionary<Core.Event.Mode, Core.Listener[]>
+---@return Dictionary<Core.Event.Mode, Core.Task[]>
 function Event:Listeners()
-    ---@type Core.Listener[]
-    local permanentListeners = {}
-    for _, listener in ipairs(self.funcs) do
-        table.insert(permanentListeners, listener)
+    ---@type Core.Task[]
+    local permanentTask = {}
+    for _, task in ipairs(self.funcs) do
+        table.insert(permanentTask, task)
     end
 
-    ---@type Core.Listener[]
-    local onceListeners = {}
-    for _, listener in ipairs(self.onceFuncs) do
-        table.insert(onceListeners, listener)
+    ---@type Core.Task[]
+    local onceTask = {}
+    for _, task in ipairs(self.onceFuncs) do
+        table.insert(onceTask, task)
     end
     return {
-        Permanent = permanentListeners,
-        Once = onceListeners
+        Permanent = permanentTask,
+        Once = onceTask
     }
 end
 

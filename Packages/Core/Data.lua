@@ -106,13 +106,15 @@ PackageData.seyrvpeX = {
     Data = function(...)
 local ApiResponseTemplates = require("Core.Api.Server.ApiResponseTemplates")
 local ApiEndpoint = {}
-function ApiEndpoint:ApiEndpoint(listener)
-    self.listener = listener
+function ApiEndpoint:ApiEndpoint(task)
+    self.task = task
 end
 function ApiEndpoint:Execute(logger, request)
-    local success, response = self.listener:ExecuteDynamic(logger, { request })
-    if not success then
-        return ApiResponseTemplates.InternalServerError(response[1])
+    self.task:Execute(request)
+    local response = self.task:GetResults()
+    if not self.task:IsSuccess() then
+        self.task:LogError(logger)
+        return ApiResponseTemplates.InternalServerError(tostring(self.task:GetErrorObject()))
     end
     return response
 end
@@ -312,48 +314,52 @@ function Event:Event()
     self.funcs = {}
     self.onceFuncs = {}
 end
-function Event:AddListener(listener)
-    table.insert(self.funcs, listener)
+function Event:AddListener(task)
+    table.insert(self.funcs, task)
     return self
 end
 Event.On = Event.AddListener
-function Event:AddListenerOnce(listener)
-    table.insert(self.onceFuncs, listener)
+function Event:AddListenerOnce(task)
+    table.insert(self.onceFuncs, task)
     return self
 end
 Event.Once = Event.AddListenerOnce
 function Event:Trigger(logger, ...)
-    for _, listener in ipairs(self.funcs) do
-        listener:Execute(logger, ...)
+    for _, task in ipairs(self.funcs) do
+        task:Execute(...)
+        task:LogError(logger)
     end
-    for _, listener in ipairs(self.onceFuncs) do
-        listener:Execute(logger, ...)
+    for _, task in ipairs(self.onceFuncs) do
+        task:Execute(...)
+        task:LogError(logger)
     end
     self.OnceFuncs = {}
 end
 function Event:TriggerDynamic(logger, args)
-    for _, listener in ipairs(self.funcs) do
-        listener:ExecuteDynamic(logger, args)
+    for _, task in ipairs(self.funcs) do
+        task:ExecuteDynamic(args)
+        task:LogError(logger)
     end
-    for _, listener in ipairs(self.onceFuncs) do
-        listener:ExecuteDynamic(logger, args)
+    for _, task in ipairs(self.onceFuncs) do
+        task:ExecuteDynamic(args)
+        task:LogError(logger)
     end
     self.OnceFuncs = {}
 end
 function Event:Listeners()
 
-    local permanentListeners = {}
-    for _, listener in ipairs(self.funcs) do
-        table.insert(permanentListeners, listener)
+    local permanentTask = {}
+    for _, task in ipairs(self.funcs) do
+        table.insert(permanentTask, task)
     end
 
-    local onceListeners = {}
-    for _, listener in ipairs(self.onceFuncs) do
-        table.insert(onceListeners, listener)
+    local onceTask = {}
+    for _, task in ipairs(self.onceFuncs) do
+        table.insert(onceTask, task)
     end
     return {
-        Permanent = permanentListeners,
-        Once = onceListeners
+        Permanent = permanentTask,
+        Once = onceTask
     }
 end
 function Event:__len()
@@ -387,7 +393,7 @@ function EventPullAdapter:onEventPull(eventPullData)
         if name == eventPullData[1] then
             event:Trigger(self.logger, eventPullData)
         end
-        if #event:Listeners() == 0 then
+        if #event == 0 then
             table.insert(removeEvent, name)
         end
     end
@@ -411,14 +417,14 @@ function EventPullAdapter:GetEvent(signalName)
     self.events[signalName] = event
     return event
 end
-function EventPullAdapter:AddListener(signalName, listener)
+function EventPullAdapter:AddListener(signalName, task)
     local event = self:GetEvent(signalName)
-    event:AddListener(listener)
+    event:AddListener(task)
     return self
 end
-function EventPullAdapter:AddListenerOnce(signalName, listener)
+function EventPullAdapter:AddListenerOnce(signalName, task)
     local event = self:GetEvent(signalName)
-    event:AddListenerOnce(listener)
+    event:AddListenerOnce(task)
     return self
 end
 function EventPullAdapter:Wait(timeout)
@@ -447,40 +453,11 @@ return EventPullAdapter
 end
 }
 
-PackageData.dLNnyigy = {
-    Namespace = "Core.Event.Listener",
-    Name = "Listener",
-    FullName = "Listener.lua",
-    IsRunnable = true,
-    Data = function(...)
-local Listener = {}
-function Listener:Listener(func, parent)
-    self.func = func
-    self.parent = parent
-end
-function Listener:Execute(logger, ...)
-    local thread, success, results = Utils.Function.InvokeProtected(self.func, self.parent, ...)
-    if not success and logger then
-        logger:LogError("execution error: \n" .. debug.traceback(thread, results[1]) .. debug.traceback():sub(17))
-    end
-    return success, table.unpack(results)
-end
-function Listener:ExecuteDynamic(logger, args)
-    local thread, success, results = Utils.Function.DynamicInvokeProtected(self.func, self.parent, args)
-    if not success and logger then
-        logger:LogError("execution error: \n" .. debug.traceback(thread, results[1]) .. debug.traceback():sub(17))
-    end
-    return success, results
-end
-return Utils.Class.CreateClass(Listener, "Listener")
-end
-}
-
 -- ########## Core.Event ########## --
 
 -- ########## Core.Net ##########
 
-PackageData.fphJtVby = {
+PackageData.EaxyWcDY = {
     Namespace = "Core.Net.NetworkClient",
     Name = "NetworkClient",
     FullName = "NetworkClient.lua",
@@ -583,7 +560,7 @@ return Utils.Class.CreateClass(NetworkClient, "NetworkClient")
 end
 }
 
-PackageData.GFSURPyY = {
+PackageData.fphJtVby = {
     Namespace = "Core.Net.NetworkContext",
     Name = "NetworkContext",
     FullName = "NetworkContext.lua",
@@ -604,7 +581,7 @@ return Utils.Class.CreateClass(NetworkContext, "NetworkContext")
 end
 }
 
-PackageData.hUCfoIVy = {
+PackageData.GFSURPyY = {
     Namespace = "Core.Net.NetworkPort",
     Name = "NetworkPort",
     FullName = "NetworkPort.lua",
@@ -622,7 +599,7 @@ function NetworkPort:Execute(context)
     self.Logger:LogTrace("got triggered with event: '".. context.EventName .."'")
     for name, event in pairs(self.Events) do
         if name == context.EventName or name == "all" then
-            event:Trigger(context)
+            event:Trigger(self.Logger, context)
         end
         if #event == 0 then
             self.Events[name] = nil
@@ -669,7 +646,7 @@ end
 
 -- ########## Core.Net ########## --
 
-PackageData.JjmrMBtY = {
+PackageData.hUCfoIVy = {
     Namespace = "Core.Json",
     Name = "Json",
     FullName = "Json.lua",
@@ -974,7 +951,7 @@ return json
 end
 }
 
-PackageData.kyXCjvQy = {
+PackageData.JjmrMBtY = {
     Namespace = "Core.Logger",
     Name = "Logger",
     FullName = "Logger.lua",
@@ -1098,6 +1075,58 @@ function Logger:setErrorLogger()
     _G.__errorLogger = self
 end
 return Utils.Class.CreateClass(Logger, "Logger")
+end
+}
+
+PackageData.kyXCjvQy = {
+    Namespace = "Core.Task",
+    Name = "Task",
+    FullName = "Task.lua",
+    IsRunnable = true,
+    Data = function(...)
+local Task = {}
+function Task:invokeFunc(...)
+    if self.parent then
+        return coroutine.yield(self.func(self.parent, ...))
+    end
+    return coroutine.yield(self.func(...))
+end
+function Task:Task(func, parent)
+    self.func = func
+    self.parent = parent
+    self.thread = coroutine.create(self.invokeFunc)
+end
+function Task:IsSuccess()
+    return self.success
+end
+function Task:GetResults()
+    return table.unpack(self.results)
+end
+function Task:GetResultsArray()
+    return self.results
+end
+function Task:GetErrorObject()
+    return self.errorObject
+end
+local function extractData(success, ...)
+    return success, { ... }
+end
+function Task:Execute(...)
+    self.success, self.results = extractData(coroutine.resume(self.thread, self, ...))
+    self.noError, self.errorObject = coroutine.close(self.thread)
+    return table.unpack(self.results)
+end
+function Task:ExecuteDynamic(args)
+    self.success, self.results = extractData(coroutine.resume(self.thread, self, table.unpack(args)))
+    self.noError, self.errorObject = coroutine.close(self.thread)
+    return self.results
+end
+function Task:LogError(logger)
+    if not self.noError and logger then
+        logger:LogError("execution error: \n" .. debug.traceback(self.thread, self.errorObject) .. debug.traceback():sub(17))
+    end
+end
+return Utils.Class.CreateClass(Task, "Task")
 end
 }
 

@@ -59,7 +59,7 @@ end
 
 ---@param onRecivedEventName (string | "all")?
 ---@param onRecivedPort (integer | "all")?
----@param listener Core.Listener
+---@param listener Core.Task
 ---@return Core.Net.NetworkClient
 function NetworkClient:AddListener(onRecivedEventName, onRecivedPort, listener)
     onRecivedEventName = onRecivedEventName or "all"
@@ -73,7 +73,7 @@ NetworkClient.On = NetworkClient.AddListener
 
 ---@param onRecivedEventName (string | "all")?
 ---@param onRecivedPort (integer | "all")?
----@param listener Core.Listener
+---@param listener Core.Task
 ---@return Core.Net.NetworkClient
 function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listener)
     onRecivedEventName = onRecivedEventName or "all"
