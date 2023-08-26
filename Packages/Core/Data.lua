@@ -41,7 +41,7 @@ PackageData.RONgYwHx = {
     FullName = "ApiController.lua",
     IsRunnable = true,
     Data = function(...)
-local Listener = require("Core.Event.Listener")
+local Task = require("Core.Task")
 local ApiEndpoint = require("Core.Api.Server.ApiEndpoint")
 local ApiHelper = require("Core.Api.ApiHelper")
 local StatusCodes = require("Core.Api.StatusCodes")
@@ -51,7 +51,7 @@ function ApiController:ApiController(netPort)
     self.Endpoints = {}
     self.NetPort = netPort
     self.Logger = netPort.Logger:subLogger("ApiController")
-    netPort:AddListener("Rest-Request", Listener(self.onMessageRecieved, self))
+    netPort:AddListener("Rest-Request", Task(self.onMessageRecieved, self))
 end
 function ApiController:onMessageRecieved(context)
     local request = ApiHelper.NetworkContextToApiRequest(context)
@@ -465,7 +465,7 @@ PackageData.EaxyWcDY = {
     Data = function(...)
 local Json = require("Core.Json")
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
-local Listener = require("Core.Event.Listener")
+local Task = require("Core.Task")
 local NetworkPort = require("Core.Net.NetworkPort")
 local NetworkContext = require("Core.Net.NetworkContext")
 local NetworkClient = {}
@@ -480,7 +480,7 @@ function NetworkClient:NetworkClient(logger, networkCard)
     self.ports = {}
     self.networkCard = networkCard
     event.listen(networkCard)
-    EventPullAdapter:AddListener("NetworkMessage", Listener(self.networkMessageRecieved, self))
+    EventPullAdapter:AddListener("NetworkMessage", Task(self.networkMessageRecieved, self))
 end
 function NetworkClient:networkMessageRecieved(data)
     local context = NetworkContext(data)
@@ -535,7 +535,7 @@ function NetworkClient:WaitForEvent(eventName, port)
     local function set(context)
         result = context
     end
-    self:AddListenerOnce(eventName, port, Listener(set))
+    self:AddListenerOnce(eventName, port, Task(set))
     repeat
         EventPullAdapter:Wait()
     until result ~= nil

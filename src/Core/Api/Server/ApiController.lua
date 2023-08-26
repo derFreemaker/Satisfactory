@@ -1,6 +1,6 @@
 -- //TODO: more log messages for debuging
 
-local Listener = require("Core.Event.Listener")
+local Task = require("Core.Task")
 local ApiEndpoint = require("Core.Api.Server.ApiEndpoint")
 local ApiHelper = require("Core.Api.ApiHelper")
 local StatusCodes = require("Core.Api.StatusCodes")
@@ -19,7 +19,7 @@ function ApiController:ApiController(netPort)
     self.Endpoints = {}
     self.NetPort = netPort
     self.Logger = netPort.Logger:subLogger("ApiController")
-    netPort:AddListener("Rest-Request", Listener(self.onMessageRecieved, self))
+    netPort:AddListener("Rest-Request", Task(self.onMessageRecieved, self))
 end
 
 ---@param context Core.Net.NetworkContext

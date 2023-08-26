@@ -6,7 +6,7 @@
 ---@field private results any[]
 ---@field private noError boolean
 ---@field private errorObject any
----@overload fun(func: function, obj: table) : Core.Task
+---@overload fun(func: function, parent: table?) : Core.Task
 local Task = {}
 
 ---@private
