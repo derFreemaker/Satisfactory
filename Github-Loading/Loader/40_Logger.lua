@@ -113,11 +113,20 @@ function Logger:subLogger(name)
     }, metatable)
 end
 
----@param logger Github_Loading.Logger | Core.Logger
----@return Github_Loading.Logger | Core.Logger logger
+---@param logger Github_Loading.Logger
+---@return Github_Loading.Logger logger
 function Logger:CopyListenersTo(logger)
     self.OnLog:CopyTo(logger.OnLog)
     self.OnClear:CopyTo(logger.OnClear)
+    return logger
+end
+
+---@param Task Core.Task | fun(func: function, parent: table?) : Core.Task
+---@param logger Core.Logger
+---@return Core.Logger logger
+function Logger:CopyListenersToCoreEvent(Task, logger)
+    self.OnLog:CopyToCoreEvent(Task, logger.OnLog)
+    self.OnClear:CopyToCoreEvent(Task, logger.OnClear)
     return logger
 end
 

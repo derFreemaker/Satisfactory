@@ -20,6 +20,12 @@ function Listener.new(func, parent)
     }, metatable)
 end
 
+---@param Task Core.Task | fun(func: function, parent: table?) : Core.Task
+---@return Core.Task task
+function Listener:convertToTask(Task)
+    return Task(self.func, self.parent)
+end
+
 ---@param logger Github_Loading.Logger?
 ---@param ... any
 ---@return boolean success, any ...

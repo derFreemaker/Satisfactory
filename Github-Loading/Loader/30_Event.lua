@@ -76,14 +76,27 @@ function Event:Listeners()
     return clone
 end
 
----@param event Github_Loading.Event | Core.Event
----@return Github_Loading.Event | Core.Event event
+---@param event Github_Loading.Event
+---@return Github_Loading.Event event
 function Event:CopyTo(event)
     for _, listener in ipairs(self.funcs) do
         event:AddListener(listener)
     end
     for _, listener in ipairs(self.onceFuncs) do
         event:AddListenerOnce(listener)
+    end
+    return event
+end
+
+---@param Task Core.Task | fun(func: function, parent: table?) : Core.Task
+---@param event Core.Event
+---@return Core.Event
+function Event:CopyToCoreEvent(Task, event)
+    for _, listener in ipairs(self.funcs) do
+        event:AddListener(listener:convertToTask(Task))
+    end
+    for _, listener in ipairs(self.onceFuncs) do
+        event:AddListenerOnce(listener:convertToTask(Task))
     end
     return event
 end
