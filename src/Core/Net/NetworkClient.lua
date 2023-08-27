@@ -103,6 +103,7 @@ end
 ---@param port integer | "all"
 ---@return Core.Net.NetworkContext
 function NetworkClient:WaitForEvent(eventName, port)
+    self.Logger:LogDebug("waiting for event: '".. eventName .."' on port: ".. port)
     local result
     ---@param context Core.Net.NetworkContext
     local function set(context)

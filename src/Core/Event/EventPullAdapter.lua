@@ -64,6 +64,7 @@ end
 
 ---@param timeout number?
 function EventPullAdapter:Wait(timeout)
+    self.logger:LogTrace("## waiting for event pull ##")
     ---@type table?
     local eventPullData = nil
     if timeout == nil then
@@ -74,7 +75,7 @@ function EventPullAdapter:Wait(timeout)
     if not eventPullData or #eventPullData == 0 then
         return
     end
-    self.logger:LogDebug("signalName: '".. eventPullData[1] .."' was recieved")
+    self.logger:LogDebug("event with signalName: '".. eventPullData[1] .."' was recieved")
     self.OnEventPull:Trigger(self.logger, eventPullData)
     self:onEventPull(eventPullData)
 end
@@ -82,7 +83,6 @@ end
 function EventPullAdapter:Run()
     self.logger:LogDebug("## started event pull loop ##")
     while true do
-        self.logger:LogTrace("## waiting for event pull ##")
         self:Wait()
     end
 end

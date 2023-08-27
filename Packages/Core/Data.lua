@@ -100,6 +100,7 @@ function ApiEndpoint:ApiEndpoint(task, logger)
     self.logger = logger
 end
 function ApiEndpoint:Execute(request, context, netClient)
+    self.logger:LogTrace("executing...")
     self.task:Execute(request)
 
     local response = self.task:GetResults()
@@ -430,6 +431,7 @@ function EventPullAdapter:AddListenerOnce(signalName, task)
     return self
 end
 function EventPullAdapter:Wait(timeout)
+    self.logger:LogTrace("## waiting for event pull ##")
 
     local eventPullData = nil
     if timeout == nil then
@@ -440,14 +442,13 @@ function EventPullAdapter:Wait(timeout)
     if not eventPullData or #eventPullData == 0 then
         return
     end
-    self.logger:LogDebug("signalName: '".. eventPullData[1] .."' was recieved")
+    self.logger:LogDebug("event with signalName: '".. eventPullData[1] .."' was recieved")
     self.OnEventPull:Trigger(self.logger, eventPullData)
     self:onEventPull(eventPullData)
 end
 function EventPullAdapter:Run()
     self.logger:LogDebug("## started event pull loop ##")
     while true do
-        self.logger:LogTrace("## waiting for event pull ##")
         self:Wait()
     end
 end
@@ -532,6 +533,7 @@ function NetworkClient:CreateNetworkPort(port)
     return networkPort
 end
 function NetworkClient:WaitForEvent(eventName, port)
+    self.Logger:LogDebug("waiting for event: '".. eventName .."' on port: ".. port)
     local result
 
     local function set(context)

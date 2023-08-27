@@ -19,6 +19,7 @@ end
 ---@param context Core.Net.NetworkContext
 ---@param netClient Core.Net.NetworkClient
 function ApiEndpoint:Execute(request, context, netClient)
+    self.logger:LogTrace("executing...")
     self.task:Execute(request)
     ---@type Core.Api.ApiResponse
     local response = self.task:GetResults()
