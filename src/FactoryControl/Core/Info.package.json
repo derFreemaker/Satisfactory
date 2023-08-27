@@ -1,4 +1,5 @@
 {
   "Version": 0.1,
-  "RequiredPackages": [ "Core" ]
+  "Namespace": "FactoryControl.Core",
+  "RequiredPackages": ["Core"]
 }

@@ -1,11 +1,11 @@
 local PackageData = {}
 
--- ########## Server ##########
+-- ########## FactoryControl.Server ##########
 
--- ########## Server.Endpoints ##########
+-- ########## FactoryControl.Server.Endpoints ##########
 
 PackageData.UgmxnoSZ = {
-    Namespace = "Server.Endpoints.ControllerEndpoints",
+    Namespace = "FactoryControl.Server.Endpoints.ControllerEndpoints",
     Name = "ControllerEndpoints",
     FullName = "ControllerEndpoints.lua",
     IsRunnable = true,
@@ -19,10 +19,10 @@ return Utils.Class.CreateSubClass(ControllerEndpoints, "ControllerEndpoints", Re
 ]]
 }
 
--- ########## Server.Endpoints ########## --
+-- ########## FactoryControl.Server.Endpoints ########## --
 
 PackageData.vvWJKhpz = {
-    Namespace = "Server.__main",
+    Namespace = "FactoryControl.Server.__main",
     Name = "__main",
     FullName = "__main.lua",
     IsRunnable = true,
@@ -49,6 +49,6 @@ return Main
 ]]
 }
 
--- ########## Server ########## --
+-- ########## FactoryControl.Server ########## --
 
 return PackageData

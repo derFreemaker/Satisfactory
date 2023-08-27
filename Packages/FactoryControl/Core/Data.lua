@@ -1,9 +1,9 @@
 local PackageData = {}
 
--- ########## Core ##########
+-- ########## FactoryControl.Core ##########
 
 PackageData.rmhQUIAz = {
-    Namespace = "Core.FactoryControlApiClient",
+    Namespace = "FactoryControl.Core.FactoryControlApiClient",
     Name = "FactoryControlApiClient",
     FullName = "FactoryControlApiClient.lua",
     IsRunnable = true,
@@ -25,6 +25,6 @@ return Utils.Class.CreateClass(FactoryControlRestApiClient, "FactoryControlRestA
 ]]
 }
 
--- ########## Core ########## --
+-- ########## FactoryControl.Core ########## --
 
 return PackageData

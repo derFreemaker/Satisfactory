@@ -29,7 +29,7 @@ function RestApiController:onMessageRecieved(context)
         self.Logger:LogTrace("found no endpoint")
         if context.Header.ReturnPort then
             self.NetPort.NetClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort,
-                "Rest-Response", nil, RestApiResponseTemplates.NotFound("Unable to find endpoint"))
+                "Rest-Response", nil, RestApiResponseTemplates.NotFound("Unable to find endpoint"):ExtractData())
         end
         return
     end
@@ -56,7 +56,7 @@ function RestApiController:AddEndpoint(method , name, task)
     if self:GetEndpoint(method, name) ~= nil then
         error("Endpoint allready exists")
     end
-    self.Endpoints[name] = RestApiEndpoint(task, self.Logger:subLogger("RestApiEndpoint[".. name .."]"))
+    self.Endpoints[method .. "__" .. name] = RestApiEndpoint(task, self.Logger:subLogger("RestApiEndpoint[" .. name .. "]"))
     return self
 end
 

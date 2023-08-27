@@ -143,7 +143,7 @@ function PackageLoader:GetModule(moduleToGet)
         end
     end
 
-    error("module could not be found: '" .. moduleToGet .. "'")
+    error("module could not be found: '" .. moduleToGet .. "'", 2)
 end
 
 ---@param moduleToGet string

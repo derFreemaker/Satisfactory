@@ -1,9 +1,9 @@
 local PackageData = {}
 
--- ########## Controller ##########
+-- ########## FactoryControl.Controller ##########
 
 PackageData.oHMuZVFz = {
-    Namespace = "Controller.__main",
+    Namespace = "FactoryControl.Controller.__main",
     Name = "__main",
     FullName = "__main.lua",
     IsRunnable = true,
@@ -24,6 +24,6 @@ return Main
 ]]
 }
 
--- ########## Controller ########## --
+-- ########## FactoryControl.Controller ########## --
 
 return PackageData
