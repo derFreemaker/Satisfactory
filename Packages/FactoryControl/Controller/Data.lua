@@ -10,8 +10,10 @@ PackageData.oHMuZVFz = {
     Data = [[
 local NetworkClient = require("Core.Net.NetworkClient")
 local FactoryControlRestApiClient = require("FactoryControl.Core.FactoryControlApiClient")
+local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local Main = {}
 function Main:Configure()
+    EventPullAdapter:Initialize(self.Logger:subLogger("EventPullAdapter"))
     local netClient = NetworkClient(self.Logger:subLogger("NetworkClient"))
     self.apiClient = FactoryControlRestApiClient(netClient)
     self.Logger:LogDebug("setup apiClient")
