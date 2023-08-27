@@ -17,10 +17,10 @@ FactoryControlServer.SetupFilesTree = {
             { "NetworkContext.lua" }
         },
         {
-            "Api",
-            { "ApiController.lua" },
-            { "ApiClient.lua" },
-            { "ApiEndpoint.lua" }
+            "RestApi",
+            { "RestApiController.lua" },
+            { "RestApiClient.lua" },
+            { "RestApiEndpoint.lua" }
         },
         { "Listener.lua" },
         { "Event.lua" },

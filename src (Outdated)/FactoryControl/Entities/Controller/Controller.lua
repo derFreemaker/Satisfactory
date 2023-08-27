@@ -1,7 +1,7 @@
 local ControllerData = require("FactoryControl.Entities.Controller.ControllerData")
 
 ---@class Controller
----@field private FactoryControlApiClient FactoryControlApiClient
+---@field private FactoryControlRestApiClient FactoryControlRestApiClient
 ---@field IPAddress string
 ---@field Name string
 ---@field Category string
@@ -11,23 +11,23 @@ Controller.__index = Controller
 ---@param ipAddress string
 ---@param name string
 ---@param category string
----@param factoryControlApiClient FactoryControlApiClient
+---@param factoryControlRestApiClient FactoryControlRestApiClient
 ---@return Controller
-function Controller.new(ipAddress, name, category, factoryControlApiClient)
+function Controller.new(ipAddress, name, category, factoryControlRestApiClient)
     return setmetatable({
         IPAddress = ipAddress,
         Name = name,
         Category = category,
-        FactoryControlApiClient = factoryControlApiClient
+        FactoryControlRestApiClient = factoryControlRestApiClient
     }, Controller)
 end
 
 ---@param extractedData ControllerData
----@param factoryControlApiClient FactoryControlApiClient
+---@param factoryControlRestApiClient FactoryControlRestApiClient
 ---@return Controller
-function Controller.newWithControllerData(extractedData, factoryControlApiClient)
+function Controller.newWithControllerData(extractedData, factoryControlRestApiClient)
     local instance = setmetatable(extractedData, Controller)
-    instance.FactoryControlApiClient = factoryControlApiClient
+    instance.FactoryControlRestApiClient = factoryControlRestApiClient
     ---@cast instance Controller
     return instance
 end

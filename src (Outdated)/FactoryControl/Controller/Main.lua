@@ -17,10 +17,10 @@ FactoryControlController.SetupFilesTree = {
             { "NetworkContext.lua" }
         },
         {
-            "Api",
-            { "ApiController.lua" },
-            { "ApiClient.lua" },
-            { "ApiEndpoint.lua" }
+            "RestApi",
+            { "RestApiController.lua" },
+            { "RestApiClient.lua" },
+            { "RestApiEndpoint.lua" }
         },
         { "Listener.lua" },
         { "Event.lua" },
@@ -38,13 +38,13 @@ FactoryControlController.SetupFilesTree = {
             }
         },
         {
-            "FCApiClient",
-            { "FCApiClient.lua" }
+            "FCRestApiClient",
+            { "FCRestApiClient.lua" }
         }
     }
 }
 
-FactoryControlController.FactoryControlApiClient = {}
+FactoryControlController.FactoryControlRestApiClient = {}
 
 function FactoryControlController:Configure()
     require("libs.EventPullAdapter"):Initialize(self.Logger)
@@ -52,17 +52,17 @@ function FactoryControlController:Configure()
     if netClient == nil then
         error("netClient was nil")
     end
-    local apiClient = require("libs.Api.ApiClient").new(
+    local apiClient = require("libs.RestApi.RestApiClient").new(
         netClient,
         Config.ServerIPAddress,
         Config.ServerPort,
         Config.ReturnPort)
-    self.FactoryControlApiClient = require("FactoryControl.FCApiClient.FCApiClient").new(apiClient)
+    self.FactoryControlRestApiClient = require("FactoryControl.FCRestApiClient.FCRestApiClient").new(apiClient)
 end
 
 function FactoryControlController:Run()
     self.Logger:LogInfo("adding controller...")
-    local result = self.FactoryControlApiClient:CreateController({
+    local result = self.FactoryControlRestApiClient:CreateController({
         IPAddress = "TestIPAddress",
         Name = "Test",
         Category = "Test"

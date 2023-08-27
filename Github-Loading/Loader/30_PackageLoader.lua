@@ -108,10 +108,10 @@ end
 ---@param packageName string
 ---@return Github_Loading.Package
 function PackageLoader:LoadPackage(packageName, forceDownload)
-    self.logger:LogDebug("loading package: '" .. packageName .. "'...")
+    self.logger:LogTrace("loading package: '" .. packageName .. "'...")
     local package = self:GetPackage(packageName)
     if package then
-        self.logger:LogDebug("found package: '" .. packageName .. "'")
+        self.logger:LogTrace("found package: '" .. packageName .. "'")
         return package
     end
 

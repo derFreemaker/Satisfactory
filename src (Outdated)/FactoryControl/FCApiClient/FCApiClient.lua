@@ -1,22 +1,22 @@
----@class FactoryControlApiClient
----@field ApiClient ApiClient
+---@class FactoryControlRestApiClient
+---@field RestApiClient RestApiClient
 ---@field Logger Logger
-local FactoryControlApiClient = {}
-FactoryControlApiClient.__index = FactoryControlApiClient
+local FactoryControlRestApiClient = {}
+FactoryControlRestApiClient.__index = FactoryControlRestApiClient
 
----@param apiClient ApiClient
----@return FactoryControlApiClient
-function FactoryControlApiClient.new(apiClient)
+---@param apiClient RestApiClient
+---@return FactoryControlRestApiClient
+function FactoryControlRestApiClient.new(apiClient)
     return setmetatable({
-        ApiClient = apiClient,
-        Logger = apiClient.Logger:create("FactoryControlApiClient")
-    }, FactoryControlApiClient)
+        RestApiClient = apiClient,
+        Logger = apiClient.Logger:create("FactoryControlRestApiClient")
+    }, FactoryControlRestApiClient)
 end
 
 ---@param controllerData ControllerData
 ---@return ControllerData | nil, boolean
-function FactoryControlApiClient:CreateController(controllerData)
-    local result = self.ApiClient:request("CreateController", {ControllerData=controllerData})
+function FactoryControlRestApiClient:CreateController(controllerData)
+    local result = self.RestApiClient:request("CreateController", {ControllerData=controllerData})
     if not result.Body.Success then
         return nil, result.Body.Success
     end
@@ -25,8 +25,8 @@ end
 
 ---@param controllerIPAddress string
 ---@return boolean, boolean
-function FactoryControlApiClient:RemoveController(controllerIPAddress)
-    local result = self.ApiClient:request("RemoveController", {ControllerIPAddress=controllerIPAddress})
+function FactoryControlRestApiClient:RemoveController(controllerIPAddress)
+    local result = self.RestApiClient:request("RemoveController", {ControllerIPAddress=controllerIPAddress})
     if not result.Body.Success then
         return false, result.Body.Success
     end
@@ -35,8 +35,8 @@ end
 
 ---@param controllerIPAddress string
 ---@return ControllerData[] | nil, boolean
-function FactoryControlApiClient:GetController(controllerIPAddress)
-    local result = self.ApiClient:request("GetController", {ControllerIPAddress=controllerIPAddress})
+function FactoryControlRestApiClient:GetController(controllerIPAddress)
+    local result = self.RestApiClient:request("GetController", {ControllerIPAddress=controllerIPAddress})
     if not result.Body.Success then
         return nil, result.Body.Success
     end
@@ -44,8 +44,8 @@ function FactoryControlApiClient:GetController(controllerIPAddress)
 end
 
 ---@return ControllerData[] | nil, boolean
-function FactoryControlApiClient:GetControllers()
-    local result = self.ApiClient:request("GetControllers")
+function FactoryControlRestApiClient:GetControllers()
+    local result = self.RestApiClient:request("GetControllers")
     if not result.Body.Success then
         return nil, result.Body.Success
     end
@@ -54,12 +54,12 @@ end
 
 ---@param category string
 ---@return ControllerData[] | nil, boolean
-function FactoryControlApiClient:GetControllersFromCategory(category)
-    local result = self.ApiClient:request("GetControllersFromCategory", {Category=category})
+function FactoryControlRestApiClient:GetControllersFromCategory(category)
+    local result = self.RestApiClient:request("GetControllersFromCategory", {Category=category})
     if not result.Body.Success then
         return nil, result.Body.Success
     end
     return result.Body.Result, result.Body.Success
 end
 
-return FactoryControlApiClient
+return FactoryControlRestApiClient

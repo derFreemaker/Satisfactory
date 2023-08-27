@@ -2,311 +2,9 @@ local PackageData = {}
 
 -- ########## Core ##########
 
--- ########## Core.Api ##########
-
--- ########## Core.Api.Client ##########
-
-PackageData.PksKdJNx = {
-    Namespace = "Core.Api.Client.ApiClient",
-    Name = "ApiClient",
-    FullName = "ApiClient.lua",
-    IsRunnable = true,
-    Data = [[
-local ApiHelper = require("Core.Api.ApiHelper")
-local ApiClient = {}
-function ApiClient:ApiClient(serverIPAddress, serverPort, returnPort, netClient)
-    self.ServerIPAddress = serverIPAddress
-    self.ServerPort = serverPort
-    self.ReturnPort = returnPort
-    self.NetClient = netClient
-    self.Logger = netClient.Logger:subLogger("ApiClient")
-end
-function ApiClient:request(request)
-    self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, "Rest-Request", { ReturnPort = self.ReturnPort }, request:ExtractData())
-    local context = self.NetClient:WaitForEvent("Rest-Response", self.ReturnPort)
-    local response = ApiHelper.NetworkContextToApiResponse(context)
-    return response
-end
-return Utils.Class.CreateClass(ApiClient, "ApiClient")
-]]
-}
-
--- ########## Core.Api.Client ########## --
-
--- ########## Core.Api.Server ##########
-
-PackageData.RONgYwHx = {
-    Namespace = "Core.Api.Server.ApiController",
-    Name = "ApiController",
-    FullName = "ApiController.lua",
-    IsRunnable = true,
-    Data = [[
-local Task = require("Core.Task")
-local ApiEndpoint = require("Core.Api.Server.ApiEndpoint")
-local ApiHelper = require("Core.Api.ApiHelper")
-local StatusCodes = require("Core.Api.StatusCodes")
-local ApiResponseTemplates = require("Core.Api.Server.ApiResponseTemplates")
-local ApiController = {}
-function ApiController:ApiController(netPort)
-    self.Endpoints = {}
-    self.NetPort = netPort
-    self.Logger = netPort.Logger:subLogger("ApiController")
-    netPort:AddListener("Rest-Request", Task(self.onMessageRecieved, self))
-end
-function ApiController:onMessageRecieved(context)
-    local request = ApiHelper.NetworkContextToApiRequest(context)
-    self.Logger:LogDebug("recieved request on endpoint: '" .. request.Endpoint .. "'")
-    local endpoint = self:GetEndpoint(request.Endpoint)
-    if endpoint == nil then
-        self.Logger:LogTrace("found no endpoint")
-        if context.Header.ReturnPort then
-            self.NetPort.NetClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort,
-                "Rest-Response", nil, ApiResponseTemplates.NotFound("Unable to find endpoint"))
-        end
-        return
-    end
-    endpoint:Execute(request, context, self.NetPort.NetClient)
-end
-function ApiController:GetEndpoint(endpointName)
-    for name, endpoint in pairs(self.Endpoints) do
-        if name == endpointName then
-            return endpoint
-        end
-    end
-    return nil
-end
-function ApiController:AddEndpoint(name, task)
-    if self:GetEndpoint(name) ~= nil then
-        error("Endpoint allready exists")
-    end
-    self.Endpoints[name] = ApiEndpoint(task, self.Logger:subLogger("ApiEndpoint[".. name .."]"))
-    return self
-end
-return Utils.Class.CreateClass(ApiController, "ApiController")
-]]
-}
-
-PackageData.seyrvpeX = {
-    Namespace = "Core.Api.Server.ApiEndpoint",
-    Name = "ApiEndpoint",
-    FullName = "ApiEndpoint.lua",
-    IsRunnable = true,
-    Data = [[
-local ApiResponseTemplates = require("Core.Api.Server.ApiResponseTemplates")
-local StatusCodes = require("Core.Api.StatusCodes")
-local ApiEndpoint = {}
-function ApiEndpoint:ApiEndpoint(task, logger)
-    self.task = task
-    self.logger = logger
-end
-function ApiEndpoint:Execute(request, context, netClient)
-    self.logger:LogTrace("executing...")
-    self.task:Execute(request)
-
-    local response = self.task:GetResults()
-    if not self.task:IsSuccess() then
-        self.task:LogError(self.logger)
-        response = ApiResponseTemplates.InternalServerError(tostring(self.task:GetErrorObject()))
-    end
-    if context.Header.ReturnPort then
-        self.logger:LogTrace("sending response to '" .. context.SenderIPAddress .. "' on port: " .. context.Header.ReturnPort .. "...")
-        netClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort, "Rest-Response", nil, response:ExtractData())
-        self.logger:LogTrace("sended response")
-    else
-        self.logger:LogTrace("sending no response")
-    end
-    if response.Headers.Message == nil then
-        self.logger:LogDebug("request finished with status code: " .. response.Headers.Code)
-    else
-        self.logger:LogDebug("request finished with status code: ".. response.Headers.Code .." with message: '".. response.Headers.Message .."'")
-    end
-end
-return Utils.Class.CreateClass(ApiEndpoint, "ApiEndpoint")
-]]
-}
-
-PackageData.TtiCTjCx = {
-    Namespace = "Core.Api.Server.ApiResponseTemplates",
-    Name = "ApiResponseTemplates",
-    FullName = "ApiResponseTemplates.lua",
-    IsRunnable = true,
-    Data = [[
-local StatusCodes = require("Core.Api.StatusCodes")
-local ApiResponse = require("Core.Api.ApiResponse")
-local ApiResponseTemplates = {}
-function ApiResponseTemplates.Ok(value)
-    return ApiResponse({ Code = StatusCodes.Status200OK }, value)
-end
-function ApiResponseTemplates.BadRequest(message)
-    return ApiResponse({ Code = StatusCodes.Status400BadRequest, Message = message })
-end
-function ApiResponseTemplates.NotFound(message)
-    return ApiResponse({ Code = StatusCodes.Status404NotFound, Message = message })
-end
-function ApiResponseTemplates.InternalServerError(message)
-    return ApiResponse({ Code = StatusCodes.Status500InternalServerError, Message = message })
-end
-return ApiResponseTemplates
-]]
-}
-
--- ########## Core.Api.Server ########## --
-
-PackageData.vISNqcZX = {
-    Namespace = "Core.Api.ApiHelper",
-    Name = "ApiHelper",
-    FullName = "ApiHelper.lua",
-    IsRunnable = true,
-    Data = [[
-local ApiRequest = require("Core.Api.ApiRequest")
-local ApiResponse = require("Core.Api.ApiResponse")
-local Helper = {}
-function Helper.NetworkContextToApiResponse(context)
-    return ApiResponse(context.Body.Headers, context.Body.Body)
-end
-function Helper.NetworkContextToApiRequest(context)
-    return ApiRequest(context.Body.Endpoint, context.Body.Headers, context.Body.Body)
-end
-return Helper
-]]
-}
-
-PackageData.WXDYOWwx = {
-    Namespace = "Core.Api.ApiRequest",
-    Name = "ApiRequest",
-    FullName = "ApiRequest.lua",
-    IsRunnable = true,
-    Data = [[
-local ApiRequest = {}
-function ApiRequest:ApiRequest(endpoint, headers, body)
-    self.Endpoint = endpoint
-    self.Headers = headers or {}
-    self.Body = body
-end
-function ApiRequest:ExtractData()
-    return {
-        Endpoint = self.Endpoint,
-        Headers = self.Headers,
-        Body = self.Body
-    }
-end
-return Utils.Class.CreateClass(ApiRequest, "ApiRequest")
-]]
-}
-
-PackageData.xnnklPUX = {
-    Namespace = "Core.Api.ApiResponse",
-    Name = "ApiResponse",
-    FullName = "ApiResponse.lua",
-    IsRunnable = true,
-    Data = [[
-local StatusCodes = require("Core.Api.StatusCodes")
-local ApiResponse = {}
-function ApiResponse:ApiResponse(header, body)
-    self.Headers = header or {}
-    self.Body = body
-    self.WasSuccessfull = self.Headers.Code == StatusCodes.Status200OK
-end
-function ApiResponse:ExtractData()
-    return {
-        Headers = self.Headers,
-        Body = self.Body
-    }
-end
-return Utils.Class.CreateClass(ApiResponse, "ApiResponse")
-]]
-}
-
-PackageData.YCXvIIrx = {
-    Namespace = "Core.Api.StatusCodes",
-    Name = "StatusCodes",
-    FullName = "StatusCodes.lua",
-    IsRunnable = true,
-    Data = [[
-local StatusCodes = {
-    StatusCode100Continue = 100,
-    Status101SwitchingProtocols = 101,
-    Status102Processing = 102,
-    Status200OK = 200,
-    Status201Created = 201,
-    Status202Accepted = 202,
-    Status203NonAuthoritative = 203,
-    Status204NoContent = 204,
-    Status205ResetContent = 205,
-    Status206PartialContent = 206,
-    Status207MultiStatus = 207,
-    Status208AlreadyReported = 208,
-    Status226IMUsed = 226,
-    Status300MultipleChoices = 300,
-    Status301MovedPermanently = 301,
-    Status302Found = 302,
-    Status303SeeOther = 303,
-    Status304NotModified = 304,
-    Status305UseProxy = 305,
-
-    Status306SwitchProxy = 306,
-    Status307TemporaryRedirect = 307,
-    Status308PermanentRedirect = 308,
-    Status400BadRequest = 400,
-    Status401Unauthorized = 401,
-    Status402PaymentRequired = 402,
-    Status403Forbidden = 403,
-    Status404NotFound = 404,
-    Status405MethodNotAllowed = 405,
-    Status406NotAcceptable = 406,
-    Status407ProxyAuthenticationRequired = 407,
-    Status408RequestTimeout = 408,
-    Status409Conflict = 409,
-    Status410Gone = 410,
-    Status411LengthRequired = 411,
-    Status412PreconditionFailed = 412,
-
-    Status413RequestEntityTooLarge = 413,
-
-    Status413PayloadTooLarge = 413,
-
-    Status414RequestUriTooLong = 414,
-
-    Status414UriTooLong = 414,
-    Status415UnsupportedMediaType = 415,
-
-    Status416RequestedRangeNotSatisfiable = 416,
-
-    Status416RangeNotSatisfiable = 416,
-    Status417ExpectationFailed = 417,
-    Status418ImATeapot = 418,
-
-    Status419AuthenticationTimeout = 419,
-    Status421MisdirectedRequest = 421,
-    Status422UnprocessableEntity = 422,
-    Status423Locked = 423,
-    Status424FailedDependency = 424,
-    Status426UpgradeRequired = 426,
-    Status428PreconditionRequired = 428,
-    Status429TooManyRequests = 429,
-    Status431RequestHeaderFieldsTooLarge = 431,
-    Status451UnavailableForLegalReasons = 451,
-    Status500InternalServerError = 500,
-    Status501NotImplemented = 501,
-    Status502BadGateway = 502,
-    Status503ServiceUnavailable = 503,
-    Status504GatewayTimeout = 504,
-    Status505HttpVersionNotsupported = 505,
-    Status506VariantAlsoNegotiates = 506,
-    Status507InsufficientStorage = 507,
-    Status508LoopDetected = 508,
-    Status510NotExtended = 510,
-    Status511NetworkAuthenticationRequired = 511,
-}
-return StatusCodes
-]]
-}
-
--- ########## Core.Api ########## --
-
 -- ########## Core.Event ##########
 
-PackageData.agsRDvly = {
+PackageData.oVIzFPpX = {
     Namespace = "Core.Event.Event",
     Name = "Event",
     FullName = "Event.lua",
@@ -381,7 +79,7 @@ return Utils.Class.CreateClass(Event, "Event")
 ]]
 }
 
-PackageData.CwccbpJY = {
+PackageData.PksKdJNx = {
     Namespace = "Core.Event.EventPullAdapter",
     Name = "EventPullAdapter",
     FullName = "EventPullAdapter.lua",
@@ -460,7 +158,7 @@ return EventPullAdapter
 
 -- ########## Core.Net ##########
 
-PackageData.EaxyWcDY = {
+PackageData.RONgYwHx = {
     Namespace = "Core.Net.NetworkClient",
     Name = "NetworkClient",
     FullName = "NetworkClient.lua",
@@ -567,7 +265,7 @@ return Utils.Class.CreateClass(NetworkClient, "NetworkClient")
 ]]
 }
 
-PackageData.fphJtVby = {
+PackageData.seyrvpeX = {
     Namespace = "Core.Net.NetworkContext",
     Name = "NetworkContext",
     FullName = "NetworkContext.lua",
@@ -588,7 +286,7 @@ return Utils.Class.CreateClass(NetworkContext, "NetworkContext")
 ]]
 }
 
-PackageData.GFSURPyY = {
+PackageData.TtiCTjCx = {
     Namespace = "Core.Net.NetworkPort",
     Name = "NetworkPort",
     FullName = "NetworkPort.lua",
@@ -653,7 +351,365 @@ return Utils.Class.CreateClass(NetworkPort, "NetworkPort")
 
 -- ########## Core.Net ########## --
 
+-- ########## Core.RestApi ##########
+
+-- ########## Core.RestApi.Client ##########
+
+PackageData.xnnklPUX = {
+    Namespace = "Core.RestApi.Client.RestApiClient",
+    Name = "RestApiClient",
+    FullName = "RestApiClient.lua",
+    IsRunnable = true,
+    Data = [[
+local RestApiHelper = require("Core.RestApi.RestApiHelper")
+local RestApiClient = {}
+function RestApiClient:RestApiClient(serverIPAddress, serverPort, returnPort, netClient)
+    self.ServerIPAddress = serverIPAddress
+    self.ServerPort = serverPort
+    self.ReturnPort = returnPort
+    self.NetClient = netClient
+    self.Logger = netClient.Logger:subLogger("RestApiClient")
+end
+function RestApiClient:request(request)
+    self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, "Rest-Request", { ReturnPort = self.ReturnPort }, request:ExtractData())
+    local context = self.NetClient:WaitForEvent("Rest-Response", self.ReturnPort)
+    local response = RestApiHelper.NetworkContextToRestApiResponse(context)
+    return response
+end
+return Utils.Class.CreateClass(RestApiClient, "RestApiClient")
+]]
+}
+
+-- ########## Core.RestApi.Client ########## --
+
+-- ########## Core.RestApi.Server ##########
+
+PackageData.zRIGgCOY = {
+    Namespace = "Core.RestApi.Server.RestApiController",
+    Name = "RestApiController",
+    FullName = "RestApiController.lua",
+    IsRunnable = true,
+    Data = [[
+local Task = require("Core.Task")
+local RestApiEndpoint = require("Core.RestApi.Server.RestApiEndpoint")
+local RestApiHelper = require("Core.RestApi.RestApiHelper")
+local RestApiResponseTemplates = require("Core.RestApi.Server.RestApiResponseTemplates")
+local RestApiMethod = require("Core.RestApi.RestApiMethod")
+local RestApiController = {}
+function RestApiController:RestApiController(netPort)
+    self.Endpoints = {}
+    self.NetPort = netPort
+    self.Logger = netPort.Logger:subLogger("RestApiController")
+    netPort:AddListener("Rest-Request", Task(self.onMessageRecieved, self))
+end
+function RestApiController:onMessageRecieved(context)
+    local request = RestApiHelper.NetworkContextToRestApiRequest(context)
+    self.Logger:LogDebug("recieved request on endpoint: '" .. request.Endpoint .. "'")
+    local endpoint = self:GetEndpoint(request.Method, request.Endpoint)
+    if endpoint == nil then
+        self.Logger:LogTrace("found no endpoint")
+        if context.Header.ReturnPort then
+            self.NetPort.NetClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort,
+                "Rest-Response", nil, RestApiResponseTemplates.NotFound("Unable to find endpoint"))
+        end
+        return
+    end
+    endpoint:Execute(request, context, self.NetPort.NetClient)
+end
+function RestApiController:GetEndpoint(method, endpointName)
+    for name, endpoint in pairs(self.Endpoints) do
+        if name == method .."__".. endpointName then
+            return endpoint
+        end
+    end
+    return nil
+end
+function RestApiController:AddEndpoint(method , name, task)
+    if self:GetEndpoint(method, name) ~= nil then
+        error("Endpoint allready exists")
+    end
+    self.Endpoints[name] = RestApiEndpoint(task, self.Logger:subLogger("RestApiEndpoint[".. name .."]"))
+    return self
+end
+function RestApiController:AddRestApiEndpointBase(endpointBase)
+    for name, func in pairs(endpointBase) do
+        if type(name) == "string" and type(func) == "function" then
+            local method, endpointName = name:match("^(.+)__(.+)$")
+            if method ~= nil and endpointBase ~= nil and RestApiMethod[method] == method then
+                self:AddEndpoint(method, endpointName, Task(func, endpointBase))
+            end
+        end
+    end
+end
+return Utils.Class.CreateClass(RestApiController, "RestApiController")
+]]
+}
+
+PackageData.agsRDvly = {
+    Namespace = "Core.RestApi.Server.RestApiEndpoint",
+    Name = "RestApiEndpoint",
+    FullName = "RestApiEndpoint.lua",
+    IsRunnable = true,
+    Data = [[
+local RestApiResponseTemplates = require("Core.RestApi.Server.RestApiResponseTemplates")
+local RestApiEndpoint = {}
+function RestApiEndpoint:RestApiEndpoint(task, logger)
+    self.task = task
+    self.logger = logger
+end
+function RestApiEndpoint:Execute(request, context, netClient)
+    self.logger:LogTrace("executing...")
+    self.task:Execute(request)
+
+    local response = self.task:GetResults()
+    if not self.task:IsSuccess() then
+        self.task:LogError(self.logger)
+        response = RestApiResponseTemplates.InternalServerError(tostring(self.task:GetErrorObject()))
+    end
+    if context.Header.ReturnPort then
+        self.logger:LogTrace("sending response to '" .. context.SenderIPAddress .. "' on port: " .. context.Header.ReturnPort .. "...")
+        netClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort, "Rest-Response", nil, response:ExtractData())
+    else
+        self.logger:LogTrace("sending no response")
+    end
+    if response.Headers.Message == nil then
+        self.logger:LogDebug("request finished with status code: " .. response.Headers.Code)
+    else
+        self.logger:LogDebug("request finished with status code: " .. response.Headers.Code .. " with message: '" .. response.Headers.Message .. "'")
+    end
+end
+return Utils.Class.CreateClass(RestApiEndpoint, "RestApiEndpoint")
+]]
+}
+
+PackageData.CwccbpJY = {
+    Namespace = "Core.RestApi.Server.RestApiEndpointBase",
+    Name = "RestApiEndpointBase",
+    FullName = "RestApiEndpointBase.lua",
+    IsRunnable = true,
+    Data = [[
+local RestApiResponseTemplates = require("Core.RestApi.Server.RestApiResponseTemplates")
+local RestApiEndpointBase = {}
+RestApiEndpointBase.Templates = {}
+function RestApiEndpointBase.Templates:Ok(value)
+    return RestApiResponseTemplates.Ok(value)
+end
+function RestApiEndpointBase.Templates:BadRequest(message)
+    return RestApiResponseTemplates.BadRequest(message)
+end
+function RestApiEndpointBase.Templates:NotFound(message)
+    return RestApiResponseTemplates.NotFound(message)
+end
+function RestApiEndpointBase.Templates:InternalServerError(message)
+    return RestApiResponseTemplates.InternalServerError(message)
+end
+return Utils.Class.CreateClass(RestApiEndpointBase, "RestApiControllerBase")
+]]
+}
+
+PackageData.dLNnyigy = {
+    Namespace = "Core.RestApi.Server.RestApiResponseTemplates",
+    Name = "RestApiResponseTemplates",
+    FullName = "RestApiResponseTemplates.lua",
+    IsRunnable = true,
+    Data = [[
+local StatusCodes = require("Core.RestApi.StatusCodes")
+local RestApiResponse = require("Core.RestApi.RestApiResponse")
+local RestApiResponseTemplates = {}
+function RestApiResponseTemplates.Ok(value)
+    return RestApiResponse({ Code = StatusCodes.Status200OK }, value)
+end
+function RestApiResponseTemplates.BadRequest(message)
+    return RestApiResponse({ Code = StatusCodes.Status400BadRequest, Message = message })
+end
+function RestApiResponseTemplates.NotFound(message)
+    return RestApiResponse({ Code = StatusCodes.Status404NotFound, Message = message })
+end
+function RestApiResponseTemplates.InternalServerError(message)
+    return RestApiResponse({ Code = StatusCodes.Status500InternalServerError, Message = message })
+end
+return RestApiResponseTemplates
+]]
+}
+
+-- ########## Core.RestApi.Server ########## --
+
+PackageData.EaxyWcDY = {
+    Namespace = "Core.RestApi.RestApiHelper",
+    Name = "RestApiHelper",
+    FullName = "RestApiHelper.lua",
+    IsRunnable = true,
+    Data = [[
+local RestApiRequest = require("Core.RestApi.RestApiRequest")
+local RestApiResponse = require("Core.RestApi.RestApiResponse")
+local Helper = {}
+function Helper.NetworkContextToRestApiResponse(context)
+    return RestApiResponse(context.Body.Headers, context.Body.Body)
+end
+function Helper.NetworkContextToRestApiRequest(context)
+    return RestApiRequest(context.Body.Method, context.Body.Endpoint, context.Body.Headers, context.Body.Body)
+end
+return Helper
+]]
+}
+
+PackageData.fphJtVby = {
+    Namespace = "Core.RestApi.RestApiMethod",
+    Name = "RestApiMethod",
+    FullName = "RestApiMethod.lua",
+    IsRunnable = true,
+    Data = [[
+local RestApiMethods = {
+    GET = "GET",
+    HEAD = "HEAD",
+    POST = "POST",
+    PUT = "PUT",
+    CREATE = "CREATE",
+    DELETE = "DELETE",
+    CONNECT = "CONNECT",
+    OPTIONS = "OPTIONS",
+    TRACE = "TRACE",
+    PATCH = "PATCH"
+}
+return RestApiMethods
+]]
+}
+
+PackageData.GFSURPyY = {
+    Namespace = "Core.RestApi.RestApiRequest",
+    Name = "RestApiRequest",
+    FullName = "RestApiRequest.lua",
+    IsRunnable = true,
+    Data = [[
+local RestApiRequest = {}
+function RestApiRequest:RestApiRequest(method, endpoint, headers, body)
+    self.Method = method
+    self.Endpoint = endpoint
+    self.Headers = headers or {}
+    self.Body = body
+end
+function RestApiRequest:ExtractData()
+    return {
+        Method = self.Method,
+        Endpoint = self.Endpoint,
+        Headers = self.Headers,
+        Body = self.Body
+    }
+end
+return Utils.Class.CreateClass(RestApiRequest, "RestApiRequest")
+]]
+}
+
 PackageData.hUCfoIVy = {
+    Namespace = "Core.RestApi.RestApiResponse",
+    Name = "RestApiResponse",
+    FullName = "RestApiResponse.lua",
+    IsRunnable = true,
+    Data = [[
+local RestApiResponse = {}
+function RestApiResponse:RestApiResponse(header, body)
+    self.Headers = header or {}
+    self.Body = body
+    self.WasSuccessfull = self.Headers.Code < 300
+end
+function RestApiResponse:ExtractData()
+    return {
+        Headers = self.Headers,
+        Body = self.Body
+    }
+end
+return Utils.Class.CreateClass(RestApiResponse, "RestApiResponse")
+]]
+}
+
+PackageData.JjmrMBtY = {
+    Namespace = "Core.RestApi.StatusCodes",
+    Name = "StatusCodes",
+    FullName = "StatusCodes.lua",
+    IsRunnable = true,
+    Data = [[
+local StatusCodes = {
+    StatusCode100Continue = 100,
+    Status101SwitchingProtocols = 101,
+    Status102Processing = 102,
+    Status200OK = 200,
+    Status201Created = 201,
+    Status202Accepted = 202,
+    Status203NonAuthoritative = 203,
+    Status204NoContent = 204,
+    Status205ResetContent = 205,
+    Status206PartialContent = 206,
+    Status207MultiStatus = 207,
+    Status208AlreadyReported = 208,
+    Status226IMUsed = 226,
+    Status300MultipleChoices = 300,
+    Status301MovedPermanently = 301,
+    Status302Found = 302,
+    Status303SeeOther = 303,
+    Status304NotModified = 304,
+    Status305UseProxy = 305,
+
+    Status306SwitchProxy = 306,
+    Status307TemporaryRedirect = 307,
+    Status308PermanentRedirect = 308,
+    Status400BadRequest = 400,
+    Status401Unauthorized = 401,
+    Status402PaymentRequired = 402,
+    Status403Forbidden = 403,
+    Status404NotFound = 404,
+    Status405MethodNotAllowed = 405,
+    Status406NotAcceptable = 406,
+    Status407ProxyAuthenticationRequired = 407,
+    Status408RequestTimeout = 408,
+    Status409Conflict = 409,
+    Status410Gone = 410,
+    Status411LengthRequired = 411,
+    Status412PreconditionFailed = 412,
+
+    Status413RequestEntityTooLarge = 413,
+
+    Status413PayloadTooLarge = 413,
+
+    Status414RequestUriTooLong = 414,
+
+    Status414UriTooLong = 414,
+    Status415UnsupportedMediaType = 415,
+
+    Status416RequestedRangeNotSatisfiable = 416,
+
+    Status416RangeNotSatisfiable = 416,
+    Status417ExpectationFailed = 417,
+    Status418ImATeapot = 418,
+
+    Status419AuthenticationTimeout = 419,
+    Status421MisdirectedRequest = 421,
+    Status422UnprocessableEntity = 422,
+    Status423Locked = 423,
+    Status424FailedDependency = 424,
+    Status426UpgradeRequired = 426,
+    Status428PreconditionRequired = 428,
+    Status429TooManyRequests = 429,
+    Status431RequestHeaderFieldsTooLarge = 431,
+    Status451UnavailableForLegalReasons = 451,
+    Status500InternalServerError = 500,
+    Status501NotImplemented = 501,
+    Status502BadGateway = 502,
+    Status503ServiceUnavailable = 503,
+    Status504GatewayTimeout = 504,
+    Status505HttpVersionNotsupported = 505,
+    Status506VariantAlsoNegotiates = 506,
+    Status507InsufficientStorage = 507,
+    Status508LoopDetected = 508,
+    Status510NotExtended = 510,
+    Status511NetworkAuthenticationRequired = 511,
+}
+return StatusCodes
+]]
+}
+
+-- ########## Core.RestApi ########## --
+
+PackageData.kyXCjvQy = {
     Namespace = "Core.Json",
     Name = "Json",
     FullName = "Json.lua",
@@ -958,7 +1014,7 @@ return json
 ]]
 }
 
-PackageData.JjmrMBtY = {
+PackageData.LOHNHonY = {
     Namespace = "Core.Logger",
     Name = "Logger",
     FullName = "Logger.lua",
@@ -1085,7 +1141,7 @@ return Utils.Class.CreateClass(Logger, "Logger")
 ]]
 }
 
-PackageData.kyXCjvQy = {
+PackageData.mdrYeiKz = {
     Namespace = "Core.Task",
     Name = "Task",
     FullName = "Task.lua",

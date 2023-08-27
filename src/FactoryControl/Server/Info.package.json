@@ -1,0 +1,5 @@
+{
+  "Name": "FactoryControlServer",
+  "Version": 0.1,
+  "RequiredPackages": [ "Core", "FactoryControl/Core" ]
+}

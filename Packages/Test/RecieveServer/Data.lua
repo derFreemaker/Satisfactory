@@ -2,7 +2,7 @@ local PackageData = {}
 
 -- ########## Test.RecieveServer ##########
 
-PackageData.MFYoiWSx = {
+PackageData.yarfFUjz = {
     Namespace = "Test.RecieveServer.__main",
     Name = "__main",
     FullName = "__main.lua",
@@ -11,22 +11,21 @@ PackageData.MFYoiWSx = {
 local Task = require("Core.Task")
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local NetworkClient = require("Core.Net.NetworkClient")
-local ApiController = require("Core.Api.Server.ApiController")
-local ApiResponseTemplates = require("Core.Api.Server.ApiResponseTemplates")
+local RestApiController = require("Core.RestApi.Server.RestApiController")
+local RestApiResponseTemplates = require("Core.RestApi.Server.RestApiResponseTemplates")
 local Main = {}
 function Main:Test(request)
     self.Logger:LogInfo("got to endpoint")
-    return ApiResponseTemplates.Ok(true)
+    return RestApiResponseTemplates.Ok(true)
 end
 function Main:Configure()
     self.eventPullAdapter = EventPullAdapter:Initialize(self.Logger:subLogger("EventPullAdapter"))
     local netClient = NetworkClient(self.Logger:subLogger("NetworkClient"))
     local netPort = netClient:CreateNetworkPort(80)
     netPort:OpenPort()
-    self.Logger:LogInfo("opened Port: '".. netPort.Port .."'")
-    self.apiController = ApiController(netPort)
-    self.apiController:AddEndpoint("Test", Task(self.Test, self))
-    self.Logger:LogInfo("setup ApiController")
+    self.apiController = RestApiController(netPort)
+    self.apiController:AddEndpoint("GET", "Test", Task(self.Test, self))
+    self.Logger:LogDebug("setup RestApiController")
 end
 function Main:Run()
     self.eventPullAdapter:Run()

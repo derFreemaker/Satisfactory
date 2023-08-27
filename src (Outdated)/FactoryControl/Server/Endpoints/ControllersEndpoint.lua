@@ -1,10 +1,10 @@
 local DatabaseAccessLayer = require("FactoryControl.Server.Data.DAL")
-local ApiController = require("libs.Api.ApiController")
+local RestApiController = require("libs.RestApi.RestApiController")
 local Listener = require("libs.Listener")
 
 ---@class ControllersEndpoint
 ---@field private databaseAccessLayer DatabaseAccessLayer
----@field private apiController ApiController
+---@field private apiController RestApiController
 ---@---@field private logger Logger
 local ControllersEndpoint = {}
 ControllersEndpoint.__index = ControllersEndpoint
@@ -14,7 +14,7 @@ ControllersEndpoint.__index = ControllersEndpoint
 function ControllersEndpoint:Configure(netPort, logger)
     self.logger = logger:create("ControllersEndpoint")
     self.databaseAccessLayer = DatabaseAccessLayer
-    self.apiController = ApiController.new(netPort)
+    self.apiController = RestApiController.new(netPort)
         :AddEndpoint("CreateController", Listener.new(self.CreateController, self))
         :AddEndpoint("DeleteController", Listener.new(self.DeleteController, self))
         :AddEndpoint("GetController", Listener.new(self.GetController, self))
