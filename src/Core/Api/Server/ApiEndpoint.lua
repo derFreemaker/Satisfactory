@@ -28,7 +28,7 @@ function ApiEndpoint:Execute(request, context, netClient)
         response = ApiResponseTemplates.InternalServerError(tostring(self.task:GetErrorObject()))
     end
     if context.Header.ReturnPort then
-        self.logger:LogTrace("sending response...")
+        self.logger:LogTrace("sending response to '" .. context.SenderIPAddress .. "' on port: " .. context.Header.ReturnPort .. "...")
         netClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort, "Rest-Response", nil, response:ExtractData())
         self.logger:LogTrace("sended response")
     else

@@ -39,7 +39,7 @@ function NetworkClient:networkMessageRecieved(data)
         if port.Port == context.Port or port.Port == "all" then
             port:Execute(context)
         end
-        if #port.Events == 0 then
+        if Utils.Table.Count(port.Events) == 0 then
             port:ClosePort()
             self.ports[i] = nil
         end
@@ -60,28 +60,28 @@ end
 ---@param onRecivedEventName (string | "all")?
 ---@param onRecivedPort (integer | "all")?
 ---@param listener Core.Task
----@return Core.Net.NetworkClient
+---@return Core.Net.NetworkPort
 function NetworkClient:AddListener(onRecivedEventName, onRecivedPort, listener)
     onRecivedEventName = onRecivedEventName or "all"
     onRecivedPort = onRecivedPort or "all"
 
     local networkPort = self:GetNetworkPort(onRecivedPort) or self:CreateNetworkPort(onRecivedPort)
     networkPort:AddListener(onRecivedEventName, listener)
-    return self
+    return networkPort
 end
 NetworkClient.On = NetworkClient.AddListener
 
 ---@param onRecivedEventName (string | "all")?
 ---@param onRecivedPort (integer | "all")?
 ---@param listener Core.Task
----@return Core.Net.NetworkClient
+---@return Core.Net.NetworkPort
 function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listener)
     onRecivedEventName = onRecivedEventName or "all"
     onRecivedPort = onRecivedPort or "all"
 
     local networkPort = self:GetNetworkPort(onRecivedPort) or self:CreateNetworkPort(onRecivedPort)
     networkPort:AddListener(onRecivedEventName, listener)
-    return self
+    return networkPort
 end
 NetworkClient.Once = NetworkClient.AddListenerOnce
 
@@ -109,7 +109,7 @@ function NetworkClient:WaitForEvent(eventName, port)
     local function set(context)
         result = context
     end
-    self:AddListenerOnce(eventName, port, Task(set))
+    self:AddListenerOnce(eventName, port, Task(set)):OpenPort()
     repeat
         EventPullAdapter:Wait()
     until result ~= nil
@@ -119,15 +119,18 @@ end
 ---@param port integer
 function NetworkClient:OpenPort(port)
     self.networkCard:open(port)
+    self.Logger:LogTrace("opened Port: " .. port)
 end
 
 ---@param port integer
 function NetworkClient:ClosePort(port)
     self.networkCard:close(port)
+    self.Logger:LogTrace("closed Port: " .. port)
 end
 
 function NetworkClient:CloseAllPorts()
     self.networkCard:closeAll()
+    self.Logger:LogTrace("closed all Ports")
 end
 
 ---@param ipAddress string

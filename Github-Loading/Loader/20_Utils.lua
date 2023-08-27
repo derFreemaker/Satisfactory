@@ -196,6 +196,16 @@ function Table.Retrive(t, index)
     return value
 end
 
+---@param t table
+---@return integer count
+function Table.Count(t)
+    local count = 0
+    for _, _ in pairs(t) do
+        count = count + 1
+    end
+    return count
+end
+
 Utils.Table = Table
 ---@class Utils.Class
 local Class = {}

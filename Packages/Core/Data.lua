@@ -109,7 +109,7 @@ function ApiEndpoint:Execute(request, context, netClient)
         response = ApiResponseTemplates.InternalServerError(tostring(self.task:GetErrorObject()))
     end
     if context.Header.ReturnPort then
-        self.logger:LogTrace("sending response...")
+        self.logger:LogTrace("sending response to '" .. context.SenderIPAddress .. "' on port: " .. context.Header.ReturnPort .. "...")
         netClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort, "Rest-Response", nil, response:ExtractData())
         self.logger:LogTrace("sended response")
     else
@@ -492,7 +492,7 @@ function NetworkClient:networkMessageRecieved(data)
         if port.Port == context.Port or port.Port == "all" then
             port:Execute(context)
         end
-        if #port.Events == 0 then
+        if Utils.Table.Count(port.Events) == 0 then
             port:ClosePort()
             self.ports[i] = nil
         end
@@ -511,7 +511,7 @@ function NetworkClient:AddListener(onRecivedEventName, onRecivedPort, listener)
     onRecivedPort = onRecivedPort or "all"
     local networkPort = self:GetNetworkPort(onRecivedPort) or self:CreateNetworkPort(onRecivedPort)
     networkPort:AddListener(onRecivedEventName, listener)
-    return self
+    return networkPort
 end
 NetworkClient.On = NetworkClient.AddListener
 function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listener)
@@ -519,7 +519,7 @@ function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listen
     onRecivedPort = onRecivedPort or "all"
     local networkPort = self:GetNetworkPort(onRecivedPort) or self:CreateNetworkPort(onRecivedPort)
     networkPort:AddListener(onRecivedEventName, listener)
-    return self
+    return networkPort
 end
 NetworkClient.Once = NetworkClient.AddListenerOnce
 function NetworkClient:CreateNetworkPort(port)
@@ -539,7 +539,7 @@ function NetworkClient:WaitForEvent(eventName, port)
     local function set(context)
         result = context
     end
-    self:AddListenerOnce(eventName, port, Task(set))
+    self:AddListenerOnce(eventName, port, Task(set)):OpenPort()
     repeat
         EventPullAdapter:Wait()
     until result ~= nil
@@ -547,12 +547,15 @@ function NetworkClient:WaitForEvent(eventName, port)
 end
 function NetworkClient:OpenPort(port)
     self.networkCard:open(port)
+    self.Logger:LogTrace("opened Port: " .. port)
 end
 function NetworkClient:ClosePort(port)
     self.networkCard:close(port)
+    self.Logger:LogTrace("closed Port: " .. port)
 end
 function NetworkClient:CloseAllPorts()
     self.networkCard:closeAll()
+    self.Logger:LogTrace("closed all Ports")
 end
 function NetworkClient:SendMessage(ipAddress, port, eventName, header, body)
     self.networkCard:send(ipAddress, port, eventName, Json.encode(header or {}), Json.encode(body))
