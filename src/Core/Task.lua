@@ -73,15 +73,14 @@ function Task:ExecuteDynamic(args)
 end
 
 function Task:Close()
+    if self.closed than return end
     self.noError, self.errorObject = coroutine.close(self.thread)
     self.closed = true
 end
 
 ---@param logger Core.Logger?
 function Task:LogError(logger)
-    if not self.closed then
-        self:Close()
-    end
+    self:Close()
     if not self.noError and logger then
         logger:LogError("execution error: \n" .. debug.traceback(self.thread, self.errorObject) .. debug.traceback():sub(17))
     end
