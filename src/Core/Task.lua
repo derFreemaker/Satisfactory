@@ -3,6 +3,7 @@
 ---@field private parent table
 ---@field private thread thread
 ---@field private success boolean
+---@field private closed boolean
 ---@field private results any[]
 ---@field private noError boolean
 ---@field private errorObject any
@@ -19,11 +20,13 @@ function Task:invokeFunc(...)
     return coroutine.yield(self.func(...))
 end
 
+---@private
 ---@param func function
 ---@param parent table
 function Task:Task(func, parent)
     self.func = func
     self.parent = parent
+    self.closed = false
 end
 
 ---@return boolean
@@ -58,7 +61,6 @@ end
 function Task:Execute(...)
     self.thread = coroutine.create(self.invokeFunc)
     self.success, self.results = extractData(coroutine.resume(self.thread, self, ...))
-    self.noError, self.errorObject = coroutine.close(self.thread)
     return table.unpack(self.results)
 end
 
@@ -67,12 +69,19 @@ end
 function Task:ExecuteDynamic(args)
     self.thread = coroutine.create(self.invokeFunc)
     self.success, self.results = extractData(coroutine.resume(self.thread, self, table.unpack(args)))
-    self.noError, self.errorObject = coroutine.close(self.thread)
     return self.results
+end
+
+function Task:Close()
+    self.noError, self.errorObject = coroutine.close(self.thread)
+    self.closed = true
 end
 
 ---@param logger Core.Logger?
 function Task:LogError(logger)
+    if not self.closed then
+        self:Close()
+    end
     if not self.noError and logger then
         logger:LogError("execution error: \n" .. debug.traceback(self.thread, self.errorObject) .. debug.traceback():sub(17))
     end
