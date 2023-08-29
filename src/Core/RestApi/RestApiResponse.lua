@@ -25,4 +25,9 @@ function RestApiResponse:ExtractData()
     }
 end
 
+---@param context Core.Net.NetworkContext
+function RestApiResponse.Static__CreateFromNetworkContext(context)
+    return RestApiResponse(context.Body.Headers, context.Body.Body)
+end
+
 return Utils.Class.CreateClass(RestApiResponse, "RestApiResponse")

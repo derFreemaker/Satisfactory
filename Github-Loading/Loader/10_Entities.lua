@@ -72,8 +72,8 @@ return Entities
 ---@field __unm (fun(self: object) : any)? -(self)
 ---@field __bnot (fun(self: object) : any)?  ~(self)
 ---@field __len (fun(self: object) : any)? #(self)
----@field __pairs (fun(t):(fun(iterator,t,startPoint):key: any, value: any))? pairs(self)
----@field __ipairs (fun(t):(fun(iterator,t,startPoint):key: any, value: any))? ipairs(self)
+---@field __pairs (fun(t: table) : ((fun(t: table, key: any) : key: any, value: any), t: table, startKey: any))? pairs(self)
+---@field __ipairs (fun(t: table) : ((fun(t: table, key: number) : key: number, value: any), t: table, startKey: number))? ipairs(self)
 ---@field __tostring (fun(t):string)? tostring(self)
 ---@field __index fun(class, key) : any
 ---@field __newindex fun(class, key, value)
@@ -91,7 +91,9 @@ return Entities
 ---@field HasConstructor boolean
 ---@field ConstructorState Utils.Class.ConstructorState
 ---@field HasDeconstructor boolean
----@field HiddenMembers Utils.Class.MetaMethods | table
+---@field MetaMethods Utils.Class.MetaMethods
+---@field Functions Dictionary<string, function>
+---@field Properties Dictionary<string, any>
 ---@field Index (fun(class, key):any)?
 ---@field HasIndex boolean
 ---@field NewIndex (fun(class, key, value))?

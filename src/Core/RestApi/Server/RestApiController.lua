@@ -1,8 +1,8 @@
 local Task = require("Core.Task")
 local RestApiEndpoint = require("Core.RestApi.Server.RestApiEndpoint")
-local RestApiHelper = require("Core.RestApi.RestApiHelper")
 local RestApiResponseTemplates = require("Core.RestApi.Server.RestApiResponseTemplates")
 local RestApiMethod = require("Core.RestApi.RestApiMethod")
+local RestApiRequest = require("Core.RestApi.RestApiRequest")
 
 ---@class Core.RestApi.Server.RestApiController : object
 ---@field Endpoints Dictionary<string, Core.RestApi.Server.RestApiEndpoint>
@@ -22,7 +22,7 @@ end
 
 ---@param context Core.Net.NetworkContext
 function RestApiController:onMessageRecieved(context)
-    local request = RestApiHelper.NetworkContextToRestApiRequest(context)
+    local request = RestApiRequest.Static__CreateFromNetworkContext(context)
     self.Logger:LogDebug("recieved request on endpoint: '" .. request.Endpoint .. "'")
     local endpoint = self:GetEndpoint(request.Method, request.Endpoint)
     if endpoint == nil then

@@ -1,4 +1,4 @@
-local RestApiHelper = require("Core.RestApi.RestApiHelper")
+local RestApiResponse = require("Core.RestApi.RestApiResponse")
 
 ---@class Core.RestApi.Client.RestApiClient : object
 ---@field ServerIPAddress string
@@ -27,7 +27,7 @@ end
 function RestApiClient:request(request)
     self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, "Rest-Request", { ReturnPort = self.ReturnPort }, request:ExtractData())
     local context = self.NetClient:WaitForEvent("Rest-Response", self.ReturnPort)
-    local response = RestApiHelper.NetworkContextToRestApiResponse(context)
+    local response = RestApiResponse.Static__CreateFromNetworkContext(context)
     return response
 end
 

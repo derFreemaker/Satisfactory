@@ -141,7 +141,7 @@ function Table.Copy(t)
         for key, value in next, obj, nil do
             key = (type(key) == "table") and copyTable(key) or key
             value = (type(value) == "table") and copyTable(value) or value
-            copy[key] = value
+            rawset(copy, key, value)
         end
 
         return copy
@@ -206,6 +206,18 @@ function Table.Count(t)
     return count
 end
 
+---@param t table
+---@param value any
+---@return boolean
+function Table.Contains(t, value)
+    for _, tValue in pairs(t) do
+        if value == tValue then
+            return true
+        end
+    end
+    return false
+end
+
 Utils.Table = Table
 ---@class Utils.Class
 local Class = {}
@@ -240,41 +252,62 @@ local metatableMethods = {
     __gc = true
 }
 
----@param obj table
+---@param class table
 ---@param metatable Utils.Class.Metatable
-local function HideMembers(obj, metatable)
+local function HideMembers(class, metatable)
     ---@diagnostic disable-next-line
-    metatable.HiddenMembers = {}
-    for key, value in pairs(obj) do
-        if not metatable.HiddenMembers[key] then
-            -- //TODO: maybe remove function wrapper
-            -- if type(value) == "function" then
-            --     local func = value
-            --     local function call(class, ...)
-            --         return func(class, ...)
-            --     end
-            --     value = call
-            -- end
-            metatable.HiddenMembers[key] = value
-            obj[key] = nil
-        end
-    end
-end
-
----@param obj table
----@param metatable Utils.Class.Metatable
-local function ShowMembers(obj, metatable)
-    for key, value in pairs(metatable.HiddenMembers) do
+    metatable.MetaMethods = {}
+    metatable.Functions = {}
+    metatable.Properties = {}
+    for key, value in pairs(class) do
         if metatableMethods[key] then
-            metatable[key] = value
+            metatable.MetaMethods[key] = value
+            class[key] = nil
+        elseif type(value) == "function" then
+            if type(key) == "string" and not key:find("^Static__") then
+                metatable.Functions[key] = value
+                class[key] = nil
+            end
         else
-            rawset(obj, key, value)
+            metatable.Properties[key] = value
+            class[key] = nil
         end
     end
-    metatable.HiddenMembers = nil
-    setmetatable(obj, metatable)
 end
 
+---@param class table
+---@param metatable Utils.Class.Metatable
+local function ShowMembers(class, metatable)
+    for key, value in pairs(metatable.MetaMethods) do
+        metatable[key] = value
+    end
+    for key, value in pairs(metatable.Functions) do
+        rawset(class, key, value)
+    end
+    for key, value in pairs(metatable.Properties) do
+        rawset(class, key, value)
+    end
+    metatable.MetaMethods = nil
+    metatable.Functions = nil
+    metatable.Properties = nil
+    setmetatable(class, metatable)
+end
+
+local overrideMetaMethods = {
+    "__pairs",
+    "__ipairs",
+}
+---@param metatable Utils.Class.Metatable
+local function OverrideMetaMethods(metatable)
+    for _, metaMethod in pairs(overrideMetaMethods) do
+        if not metatable.MetaMethods[metaMethod] then
+            local function throwError()
+                error("can not use: '".. metaMethod .."' on class type: '".. metatable.Type .."'", 2)
+            end
+            metatable.MetaMethods[metaMethod] = throwError
+        end
+    end
+end
 
 ---@param class object
 ---@param key any
@@ -306,10 +339,10 @@ local function AddBaseClass(baseClass, metatable)
     baseClassMetatable.IsBaseClass = true
     metatable.HasBaseClass = true
 
-    local __index = metatable.HiddenMembers.__index
+    local __index = metatable.MetaMethods.__index
     if type(__index) == "function" then
         metatable.Index = __index
-        metatable.HiddenMembers.__index = nil
+        metatable.MetaMethods.__index = nil
         metatable.HasIndex = true
     else
         metatable.HasIndex = false
@@ -338,10 +371,10 @@ local function newIndex(class, key, value)
 end
 ---@param metatable Utils.Class.Metatable
 local function AddNewIndex(metatable)
-    local __newindex = metatable.HiddenMembers.__newindex
+    local __newindex = metatable.MetaMethods.__newindex
     if type(__newindex) == "function" then
         metatable.NewIndex = __newindex
-        metatable.HiddenMembers.__newindex = nil
+        metatable.MetaMethods.__newindex = nil
         metatable.HasNewIndex = true
     else
         metatable.HasNewIndex = false
@@ -367,7 +400,7 @@ local function AddConstructor(metatable)
     local constructorKey = metatable.Type
 
     ---@type fun(self: object, ...: any, base: object | nil)
-    local constructor = metatable.HiddenMembers[constructorKey]
+    local constructor = metatable.Functions[constructorKey]
 
     ---@param class object
     ---@param ... any
@@ -412,7 +445,7 @@ local function AddConstructor(metatable)
     metatable.ConstructorState = 1
     if type(constructor) == "function" then
         metatable.HasConstructor = true
-        metatable.HiddenMembers[constructorKey] = nil
+        metatable.Functions[constructorKey] = nil
         return
     end
 
@@ -431,7 +464,7 @@ end
 local function AddDeconstructor(metatable)
     local deconstructorKey = "_" .. metatable.Type
     ---@type fun(class: object)?
-    local deconstructor = metatable.HiddenMembers[deconstructorKey]
+    local deconstructor = metatable.Functions[deconstructorKey]
 
     ---@param class object
     local function deconstruct(class)
@@ -445,8 +478,8 @@ local function AddDeconstructor(metatable)
     end
 
     if type(deconstructor) == "function" then
-        metatable.HiddenMembers[deconstructorKey] = nil
-        metatable.HiddenMembers.__gc = deconstruct
+        metatable.Functions[deconstructorKey] = nil
+        metatable.MetaMethods.__gc = deconstruct
         metatable.HasDeconstructor = true
         return
     end
@@ -476,6 +509,7 @@ function Class.CreateSubClass(class, classType, baseClass)
     classMetatable.IsBaseClass = false
     ---@cast class table
     HideMembers(class, classMetatable)
+    OverrideMetaMethods(classMetatable)
     AddNewIndex(classMetatable)
     AddBaseClass(baseClass, classMetatable)
     AddDeconstructor(classMetatable)

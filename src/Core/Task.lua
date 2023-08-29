@@ -73,7 +73,7 @@ function Task:ExecuteDynamic(args)
 end
 
 function Task:Close()
-    if self.closed than return end
+    if self.closed then return end
     self.noError, self.errorObject = coroutine.close(self.thread)
     self.closed = true
 end
