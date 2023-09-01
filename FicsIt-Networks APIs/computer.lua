@@ -84,5 +84,7 @@ function computer.magicTime() end
 
 
 --- This function allows you to get all installed PCI-Devices in a computer of a given type.
+---@generic TPCIDevice
 ---@param type FicsIt_Networks.Class
+---@return TPCIDevice[]
 function computer.getPCIDevices(type) end
