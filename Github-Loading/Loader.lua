@@ -3,16 +3,24 @@ local LoaderFiles = {
     "Github-Loading",
     {
         "Loader",
+        {
+            "Utils",
+            { "10_File.lua" },
+            { "10_Function.lua" },
+            { "10_Object.lua" },
+            { "10_String.lua" },
+            { "10_Table.lua" },
+            { "20_Class.lua" },
+            { "30_Index.lua" }
+            },
         { "10_Entities.lua" },
         { "10_Module.lua" },
-        { "10_Object.lua" },
         { "10_Option.lua" },
-        { "20_Package.lua" },
-        { "20_Utils.lua" },
-        { "30_Event.lua" },
-        { "30_Listener.lua" },
-        { "30_PackageLoader.lua" },
-        { "40_Logger.lua" },
+        { "30_Package.lua" },
+        { "50_Event.lua" },
+        { "50_Listener.lua" },
+        { "70_Logger.lua" },
+        { "100_PackageLoader.lua" },
     },
     { "00_Options.lua" },
     { "Version.latest.txt" },
@@ -260,7 +268,7 @@ function Loader:Load(logLevel)
     self:LoadFiles()
 
     ---@type Utils
-    Utils = self:Get("/Github-Loading/Loader/Utils")
+    Utils = self:Get("/Github-Loading/Loader/Utils/Index")
 
     self:setupLogger(logLevel)
 end

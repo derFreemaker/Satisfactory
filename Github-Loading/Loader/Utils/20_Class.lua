@@ -1,224 +1,11 @@
 local LoadedLoaderFiles = table.pack(...)[1]
 ---@type object
-local Object = LoadedLoaderFiles["/Github-Loading/Loader/Object"][1]
+local Object = LoadedLoaderFiles["/Github-Loading/Loader/Utils/Object"][1]
+---@type Utils.String
+local String = LoadedLoaderFiles["/Github-Loading/Loader/Uitls/String"][1]
+---@type Utils.Table
+local Table = LoadedLoaderFiles["/Github-Loading/Loader/Utils/Table"][1]
 
----@class Utils
-local Utils = {}
-
----@param ms number defines how long the function will wait in Milliseconds
-function Utils.Sleep(ms)
-    if type(ms) ~= "number" then error("ms was not a number", 1) end
-    local startTime = computer.millis()
-    local endTime = startTime + ms
-    while startTime <= endTime do startTime = computer.millis() end
-end
-
----@class Utils.Function
-local Function = {}
-
----@param func function
----@param parent any
----@param args any[]
----@return any[] returns
-function Function.DynamicInvoke(func, parent, args)
-    local results
-    if parent ~= nil then
-        results = table.pack(func(parent, table.unpack(args)))
-    else
-        results = table.pack(func(table.unpack(args)))
-    end
-    return results
-end
-
----@param func function
----@param parent any
----@param ... any
----@return thread thread, boolean success, any[] returns
-function Function.InvokeProtected(func, parent, ...)
-    local function invokeFunc(...)
-        coroutine.yield(func(...))
-    end
-    local thread = coroutine.create(invokeFunc)
-    local results
-    if parent ~= nil then
-        results = table.pack(coroutine.resume(thread, parent, ...))
-    else
-        results = table.pack(coroutine.resume(thread, ...))
-    end
-    coroutine.close(thread)
-    local success = Utils.Table.Retrive(results, 1)
-    return thread, success, results
-end
-
----@param func function
----@param parent any
----@param args any[]
----@return thread thread, boolean success, any[] returns
-function Function.DynamicInvokeProtected(func, parent, args)
-    return Function.InvokeProtected(func, parent, table.unpack(args))
-end
-
-Utils.Function = Function
----@class Utils.File
-local File = {}
-
----@alias Utils.File.writeModes
----|"w" write -> file stream can read and write creates the file if it doesn’t exist
----|"a" end of file -> file stream can read and write cursor is set to the end of file
----|"+r" truncate -> file stream can read and write all previous data in file gets dropped
----|"+a" append -> file stream can read the full file but can only write to the end of the existing file
-
----@param path string
----@param mode Utils.File.writeModes
----@param data string?
----@param createPath boolean?
-function File.Write(path, mode, data, createPath)
-    data = data or ""
-    createPath = createPath or false
-
-    local fileName = filesystem.path(3, path)
-    local folderPath = path:gsub(fileName, "")
-    if not filesystem.exists(folderPath) then
-        if not createPath then
-            error("folder does not exists: '" .. folderPath .. "'", 2)
-        end
-        filesystem.createDir(folderPath)
-    end
-
-    local file = filesystem.open(path, mode)
-    file:write(data)
-    file:close()
-end
-
----@param path string
----@return string?
-function File.ReadAll(path)
-    if not filesystem.exists(path) then
-        return nil
-    end
-    local file = filesystem.open(path, "r")
-    local str = ""
-    while true do
-        local buf = file:read(8192)
-        if not buf then
-            break
-        end
-        str = str .. buf
-    end
-    file:close()
-    return str
-end
-
----@param path string
-function File.Clear(path)
-    if not filesystem.exists(path) then
-        return
-    end
-    local file = filesystem.open(path, "w")
-    file:write("")
-    file:close()
-end
-
-Utils.File = File
----@class Utils.Table
-local Table = {}
-
----@param t table
----@return table table
-function Table.Copy(t)
-    local seen = {}
-
-    ---@param obj any?
-    ---@return any
-    local function copyTable(obj)
-        if obj == nil then return nil end
-        if seen[obj] then return seen[obj] end
-
-        local copy = {}
-        seen[obj] = copy
-        setmetatable(copy, copyTable(getmetatable(obj)))
-
-        for key, value in next, obj, nil do
-            key = (type(key) == "table") and copyTable(key) or key
-            value = (type(value) == "table") and copyTable(value) or value
-            rawset(copy, key, value)
-        end
-
-        return copy
-    end
-
-    return copyTable(t)
-end
-
---- removes all margins like table[1] = "1", table[2] = nil, table[3] = "3" -> table[2] would be removed meaning table[3] would be table[2] now and so on. Removes no named values (table["named"]). And sets n to number of cleaned results. Should only be used on arrays really.
----@generic T
----@param t T[]
----@return T[] table cleaned table
----@return integer numberOfCleanedValues
-function Table.Clean(t)
-    ---@generic T
-    ---@param tableToLook T[]
-    ---@param index integer
-    ---@return integer
-    local function findNearestNilValueDownward(tableToLook, index)
-        if tableToLook[index] == nil then
-            return index
-        end
-        return findNearestNilValueDownward(tableToLook, index - 1)
-    end
-
-    local numberOfCleanedValues = 0
-    for index = 1, #t, 1 do
-        local value = t[index]
-        if index ~= 1 and type(index) == "number" then
-            local nearestNilValue = findNearestNilValueDownward(t, index)
-            t[nearestNilValue] = value
-            t[index] = nil
-            numberOfCleanedValues = numberOfCleanedValues + 1
-        elseif value ~= nil and type(index) == "number" then
-            numberOfCleanedValues = numberOfCleanedValues + 1
-        end
-    end
-    return t, numberOfCleanedValues
-end
-
---- Gets the value out of the array at specifyed index if not nil.
---- And fills the removed value by sorting the array.
---- Uses ```Table.Clean``` so ```t.n``` will be used.
----@generic T
----@param t T[]
----@param index integer
----@return T value
-function Table.Retrive(t, index)
-    local value = t[index]
-    t[index] = nil
-    t = Table.Clean(t)
-    return value
-end
-
----@param t table
----@return integer count
-function Table.Count(t)
-    local count = 0
-    for _, _ in pairs(t) do
-        count = count + 1
-    end
-    return count
-end
-
----@param t table
----@param value any
----@return boolean
-function Table.Contains(t, value)
-    for _, tValue in pairs(t) do
-        if value == tValue then
-            return true
-        end
-    end
-    return false
-end
-
-Utils.Table = Table
 ---@class Utils.Class
 local Class = {}
 Class.SearchValueInBase = {}
@@ -254,23 +41,39 @@ local metatableMethods = {
 
 ---@param class table
 ---@param metatable Utils.Class.Metatable
+---@param key string
+---@param value any
+local function hasStringKey(class, metatable, key, value)
+    local splittedKey = String.Split(key, "__")
+    if not Table.Contains(splittedKey, "Static") then
+        if type(value) == "function" then
+            metatable.Functions[key] = value
+            class[key] = nil
+        else
+            metatable.Properties[key] = value
+            class[key] = nil
+        end
+    end
+end
+
+---@param class table
+---@param metatable Utils.Class.Metatable
 local function HideMembers(class, metatable)
     ---@diagnostic disable-next-line
     metatable.MetaMethods = {}
     metatable.Functions = {}
     metatable.Properties = {}
     for key, value in pairs(class) do
-        if metatableMethods[key] then
-            metatable.MetaMethods[key] = value
-            class[key] = nil
-        elseif type(value) == "function" then
-            if type(key) == "string" and not key:find("^Static__") then
+        if type(key) == "string" then
+            hasStringKey(class, metatable, key, value)
+        else
+            if type(value) == "function" then
                 metatable.Functions[key] = value
                 class[key] = nil
+            else
+                metatable.Properties[key] = value
+                class[key] = nil
             end
-        else
-            metatable.Properties[key] = value
-            class[key] = nil
         end
     end
 end
@@ -293,6 +96,7 @@ local function ShowMembers(class, metatable)
     setmetatable(class, metatable)
 end
 
+
 local overrideMetaMethods = {
     "__pairs",
     "__ipairs",
@@ -302,12 +106,13 @@ local function OverrideMetaMethods(metatable)
     for _, metaMethod in pairs(overrideMetaMethods) do
         if not metatable.MetaMethods[metaMethod] then
             local function throwError()
-                error("can not use: '".. metaMethod .."' on class type: '".. metatable.Type .."'", 2)
+                error("can not use: '" .. metaMethod .. "' on class type: '" .. metatable.Type .. "'", 2)
             end
             metatable.MetaMethods[metaMethod] = throwError
         end
     end
 end
+
 
 ---@param class object
 ---@param key any
@@ -315,7 +120,7 @@ local function index(class, key)
     ---@type Utils.Class.Metatable
     local classMetatable = getmetatable(class)
     if classMetatable.ConstructorState == 1 then
-        error("cannot get values if class: ".. classMetatable.Type .." was not constructed", 2)
+        error("cannot get values if class: " .. classMetatable.Type .. " was not constructed", 2)
     end
     local value
     if classMetatable.HasIndex then
@@ -330,6 +135,7 @@ local function index(class, key)
     value = baseClass[key]
     return value
 end
+
 ---@param baseClass table
 ---@param metatable Utils.Class.Metatable
 local function AddBaseClass(baseClass, metatable)
@@ -369,6 +175,7 @@ local function newIndex(class, key, value)
     end
     rawset(class, key, value)
 end
+
 ---@param metatable Utils.Class.Metatable
 local function AddNewIndex(metatable)
     local __newindex = metatable.MetaMethods.__newindex
@@ -395,6 +202,7 @@ local function CopyIfNotBaseClass(class)
     end
     return Utils.Table.Copy(class)
 end
+
 ---@param metatable Utils.Class.Metatable
 local function AddConstructor(metatable)
     local constructorKey = metatable.Type
@@ -425,7 +233,8 @@ local function AddConstructor(metatable)
                 end
                 if baseClassMetatable.ConstructorState ~= 3 then
                     error(
-                    "base class from class: '" .. classMetatable.Type .. "' did not get constructed or didn't finish", 2)
+                        "base class from class: '" .. classMetatable.Type .. "' did not get constructed or didn't finish",
+                        2)
                 end
             elseif classMetatable.HasConstructor and not baseClassMetatable.HasConstructor then
                 baseClass = baseClass()
@@ -518,6 +327,7 @@ function Class.CreateSubClass(class, classType, baseClass)
     return class
 end
 
+
 ---@generic TClass
 ---@param class TClass
 ---@param classType string
@@ -525,6 +335,7 @@ end
 function Class.CreateClass(class, classType)
     return Class.CreateSubClass(class, classType, Object)
 end
+
 
 ---@param class object
 ---@param classType string
@@ -541,6 +352,7 @@ function Class.HasClassOfType(class, classType)
     return false
 end
 
+
 ---@param class object
 ---@return object? base
 function Class.GetBaseClass(class)
@@ -552,6 +364,5 @@ function Class.GetBaseClass(class)
     return nil
 end
 
-Utils.Class = Class
 
-return Utils
+return Class
