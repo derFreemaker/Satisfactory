@@ -7,6 +7,12 @@
 ---@class FicsIt_Networks.Computer.Api
 computer = {}
 
+--- Returns the current memory usage
+--- ### Not in Documentation. ###
+---@return integer usage
+---@return integer capacity
+function computer.getMemory() end
+
 --- Returns the current computer case
 --- Not sure what it does. "https://github.com/Panakotta00/FicsIt-Networks/blob/659a65dbe0e56cdbee2f225bdbb3a9d988b35657/Source/FicsItNetworks/FicsItKernel/Processor/Lua/LuaComputerAPI.cpp#L20"
 --- ### Not in Documentation. ###
