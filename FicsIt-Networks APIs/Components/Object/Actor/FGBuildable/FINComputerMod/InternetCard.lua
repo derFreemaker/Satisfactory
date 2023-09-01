@@ -6,6 +6,7 @@ local InternetCard = {}
 
 
 ---@alias FicsIt_Networks.Components.FINComputerMod.FINInternetCard.HttpMethods
+---|"CREATE"
 ---|"GET"
 ---|"HEAD"
 ---|"POST"
