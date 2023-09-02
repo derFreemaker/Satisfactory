@@ -146,6 +146,7 @@ local function ShowMembers(class, metatable)
     for key, value in pairs(metatable.Properties) do
         rawset(class, key, value)
     end
+    metatable.Properties = nil
     setmetatable(class, metatable)
 end
 
