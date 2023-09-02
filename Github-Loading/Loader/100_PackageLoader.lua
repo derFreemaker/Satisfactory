@@ -1,6 +1,9 @@
 local LoadedLoaderFiles = table.pack(...)[1]
 ---@type Github_Loading.Package
 local Package = LoadedLoaderFiles["/Github-Loading/Loader/Package"][1]
+---@type Utils
+local Utils = LoadedLoaderFiles["/Github-Loading/Loader/Utils"][1]
+
 
 ---@class Github_Loading.PackageLoader
 ---@field Packages Github_Loading.Package[]
@@ -15,19 +18,7 @@ local PackageLoader = {}
 ---@param forceDownload boolean
 ---@return boolean
 function PackageLoader:internalDownload(url, path, forceDownload)
-    if forceDownload == nil then forceDownload = false end
-    if filesystem.exists(path) and not forceDownload then
-        return true
-    end
-    self.logger:LogTrace("downloading '" .. path .. "' from: '" .. url .. "'...")
-    local req = self.internetCard:request(url, "GET", "")
-    local code, data = req:await()
-    if code ~= 200 or data == nil then return false end
-    local file = filesystem.open(path, "w")
-    file:write(data)
-    file:close()
-    self.logger:LogTrace("downloaded '" .. path .. "' from: '" .. url .. "'")
-    return true
+    return Utils.DownloadToFile(url, path, forceDownload, self.internetCard, self.logger)
 end
 
 ---@param url string

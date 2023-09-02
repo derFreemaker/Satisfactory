@@ -12,19 +12,34 @@ function Utils.Sleep(ms)
 end
 
 ---@param url string
+---@param internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+---@param logger (Github_Loading.Logger | Core.Logger)?
+---@return boolean success, string? data
+function Utils.Download(url, internetCard, logger)
+    if logger then logger:LogTrace("downloading from: '" .. url .. "'...") end
+    local req = internetCard:request(url, "GET", "")
+    repeat until req:canGet()
+    local code, data = req:get()
+    if code ~= 200 or data == nil then return false, nil end
+    if logger then logger:LogTrace("downloaded from: '" .. url .. "'") end
+    return true, data
+end
+
+---@param url string
 ---@param path string
 ---@param forceDownload boolean
 ---@param internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+---@param logger (Github_Loading.Logger | Core.Logger)?
 ---@return boolean
-function Utils.Download(url, path, forceDownload, internetCard)
+function Utils.DownloadToFile(url, path, forceDownload, internetCard, logger)
     if forceDownload == nil then forceDownload = false end
     if filesystem.exists(path) and not forceDownload then
         return true
     end
-    local req = internetCard:request(url, "GET", "")
-    repeat until req:canGet()
-    local code, data = req:get()
-    if code ~= 200 or data == nil then return false end
+    local success, data = Utils.Download(url, internetCard, logger)
+    if not success or not data then
+        return false
+    end
     local file = filesystem.open(path, "w")
     if file == nil then
         return false
