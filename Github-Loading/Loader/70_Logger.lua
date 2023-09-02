@@ -93,9 +93,9 @@ function log(...)
     local message
     for i, arg in pairs(args) do
         if i == 1 then
-            message = tostring(arg)
+            message = tostring(arg) or "nil"
         else
-            message = message .. " " .. tostring(arg)
+            message = message .. " " .. (tostring(arg) or "nil")
         end
     end
     if _G.__errorLogger then
