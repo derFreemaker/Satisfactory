@@ -533,6 +533,9 @@ function RestApiEndpointBase:__pairs()
         if type(newKey) == "string" and type(value) == "function" then
             return newKey, value
         end
+        if newKey == nil and value == nil then
+            return nil, nil
+        end
         return iterator(tbl, newKey)
     end
     return iterator, self, nil
