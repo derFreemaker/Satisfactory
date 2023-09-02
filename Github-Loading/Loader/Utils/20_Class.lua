@@ -2,7 +2,7 @@ local LoadedLoaderFiles = table.pack(...)[1]
 ---@type object
 local Object = LoadedLoaderFiles["/Github-Loading/Loader/Utils/Object"][1]
 ---@type Utils.String
-local String = LoadedLoaderFiles["/Github-Loading/Loader/Uitls/String"][1]
+local String = LoadedLoaderFiles["/Github-Loading/Loader/Utils/String"][1]
 ---@type Utils.Table
 local Table = LoadedLoaderFiles["/Github-Loading/Loader/Utils/Table"][1]
 
