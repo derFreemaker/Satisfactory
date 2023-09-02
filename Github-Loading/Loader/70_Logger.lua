@@ -87,9 +87,8 @@ function Logger:setErrorLogger()
     _G.__errorLogger = self
 end
 
-local printFunc = print
 ---@param ... any
-function NewPrint(...)
+function log(...)
     local args = { ... }
     local message
     for i, arg in pairs(args) do
@@ -100,12 +99,9 @@ function NewPrint(...)
         end
     end
     if _G.__errorLogger then
-        pcall(_G.__errorLogger.Log, _G.__errorLogger, "[PRINT]: " .. message, 10)
+        pcall(_G.__errorLogger.Log, _G.__errorLogger, "[LOG]: " .. message, 10)
     end
-    printFunc(...)
 end
-
-print = NewPrint
 
 local errorFunc = error
 ---@param message string
@@ -207,10 +203,7 @@ function Logger:Log(message, logLevel)
     end
 
     message = "[" .. self.Name .. "] " .. tostring(message)
-    
-    print = printFunc
     self.OnLog:Trigger(nil, message)
-    print = NewPrint
 end
 
 ---@param t table
