@@ -18,8 +18,8 @@
 ---@field protected __unm (fun(self: object) : any)? -(self)
 ---@field protected __bnot (fun(self: object) : any)?  ~(self)
 ---@field protected __len (fun(self: object) : any)? #(self)
----@field protected __pairs (fun(self: object) : (fun(iterator, t, startPoint) : key: any, value: any))? pairs(self)
----@field protected __ipairs (fun(self: object) : (fun(iterator, t, startPoint) : key: any, value: any))? ipairs(self)
+---@field protected __pairs (fun(self: object) : ((fun(self: object, key: any) : key: any, value: any), self: object, startPoint: any))? pairs(self)
+---@field protected __ipairs (fun(self: object) : ((fun(self: object, key: integer) : key: integer, value: any), self: object, startPoint: integer))? ipairs(self)
 ---@field protected __tostring (fun(self: object) : string)? tostring(self)
 ---@field protected __call (function)? self()
 ---@field protected __gc (fun())? called on garbage collection

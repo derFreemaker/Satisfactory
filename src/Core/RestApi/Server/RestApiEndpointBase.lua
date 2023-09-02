@@ -4,6 +4,20 @@ local RestApiResponseTemplates = require("Core.RestApi.Server.RestApiResponseTem
 ---@field protected Templates Core.RestApi.Server.RestApiEndpointBase.RestApiResponseTemplates
 local RestApiEndpointBase = {}
 
+---@return fun(self: object, key: any) : key: any, value: any
+---@return Core.RestApi.Server.RestApiEndpointBase tbl
+---@return any startPoint
+function RestApiEndpointBase:__pairs()
+    local function iterator(tbl, key)
+        local _, value = next(tbl, key)
+        if type(value) == "function" then
+            return value
+        end
+        return iterator(tbl, key)
+    end
+    return iterator, self, nil
+end
+
 ---@class Core.RestApi.Server.RestApiEndpointBase.RestApiResponseTemplates
 RestApiEndpointBase.Templates = {}
 

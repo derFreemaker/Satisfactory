@@ -104,15 +104,22 @@ end
 local overrideMetaMethods = {
     "__pairs",
     "__ipairs",
+    "__len",
 }
 ---@param metatable Utils.Class.Metatable
 local function OverrideMetaMethods(metatable)
     for _, metaMethod in pairs(overrideMetaMethods) do
         if not metatable.MetaMethods[metaMethod] then
-            local function throwError()
-                error("can not use: '" .. metaMethod .. "' on class type: '" .. metatable.Type .. "'", 2)
+            ---@type Utils.Class.Metatable
+            local baseClassMetatable = getmetatable(metatable.Base)
+            local baseClassMetaMethod = baseClassMetatable.MetaMethods[metaMethod]
+            if not baseClassMetaMethod then
+                local function throwError()
+                    error("can not use: '" .. metaMethod .. "' on class type: '" .. metatable.Type .. "'", 2)
+                end
+                metatable.MetaMethods[metaMethod] = throwError
             end
-            metatable.MetaMethods[metaMethod] = throwError
+            metatable.MetaMethods[metaMethod] = baseClassMetaMethod
         end
     end
 end
