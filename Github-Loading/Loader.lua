@@ -37,7 +37,8 @@ local function internalDownload(url, path, forceDownload, internetCard)
         return true
     end
     local req = internetCard:request(url, "GET", "")
-    local code, data = req:await()
+    repeat until req:canGet()
+    local code, data = req:get()
     if code ~= 200 or data == nil then return false end
     local file = filesystem.open(path, "w")
     if file == nil then

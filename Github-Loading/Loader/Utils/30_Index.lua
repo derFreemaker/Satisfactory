@@ -11,6 +11,29 @@ function Utils.Sleep(ms)
     while startTime <= endTime do startTime = computer.millis() end
 end
 
+---@param url string
+---@param path string
+---@param forceDownload boolean
+---@param internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+---@return boolean
+function Utils.Download(url, path, forceDownload, internetCard)
+    if forceDownload == nil then forceDownload = false end
+    if filesystem.exists(path) and not forceDownload then
+        return true
+    end
+    local req = internetCard:request(url, "GET", "")
+    repeat until req:canGet()
+    local code, data = req:get()
+    if code ~= 200 or data == nil then return false end
+    local file = filesystem.open(path, "w")
+    if file == nil then
+        return false
+    end
+    file:write(data)
+    file:close()
+    return true
+end
+
 ---@type Utils.String
 Utils.String = LoadedLoaderFiles["/Github-Loading/Loader/Utils/String"][1]
 

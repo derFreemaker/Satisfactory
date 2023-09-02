@@ -59,7 +59,8 @@ local function Run()
     if not filesystem.exists(LoaderPath) or loaderForceDownload then
         print("[Computer] INFO downloading Github Loader...")
         local req = internetCard:request(LoaderUrl, "GET", "")
-        local _, libdata = req:await()
+        repeat until req:canGet()
+        local _, libdata = req:get()
         ---@cast libdata string
         local file = filesystem.open(LoaderPath, "w")
         assert(file, "Unable to open file: '" .. LoaderPath .. "'")
