@@ -181,8 +181,12 @@ local function loadFiles(loaderBasePath)
     for _, num in ipairs(loadOrder) do
         for _, path in pairs(loadEntries[num]) do
             local loadedFile = table.pack(filesystem.loadFile(loaderBasePath .. path)(loadedLoaderFiles))
-            local folderPath, filename = path:match("^(.+/)%d+_(.+)%..+$")
-            loadedLoaderFiles[folderPath .. filename] = loadedFile
+            local folderPath, filename = path:match("^(.+)/%d+_(.+)%..+$")
+            if filename == "Index" then
+                loadedLoaderFiles[folderPath] = loadedFile
+            else
+                loadedLoaderFiles[folderPath .. "/" .. filename] = loadedFile
+            end
         end
     end
 
@@ -268,7 +272,7 @@ function Loader:Load(logLevel)
     self:LoadFiles()
 
     ---@type Utils
-    Utils = self:Get("/Github-Loading/Loader/Utils/Index")
+    Utils = self:Get("/Github-Loading/Loader/Utils")
 
     self:setupLogger(logLevel)
 end
