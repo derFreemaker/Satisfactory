@@ -58,7 +58,8 @@ local metatable = {
     end,
     HiddenMembers = {},
     MetaMethods = {},
-    Functions = {}
+    Functions = {},
+    Properties = {}
 }
 
 for key, value in pairs(Object) do
