@@ -9,11 +9,11 @@ local RestApiEndpointBase = {}
 ---@return any startPoint
 function RestApiEndpointBase:__pairs()
     local function iterator(tbl, key)
-        local _, value = next(tbl, key)
-        if type(value) == "function" then
-            return value
+        local newKey, value = next(tbl, key)
+        if type(newKey) == "string" and type(value) == "function" then
+            return newKey, value
         end
-        return iterator(tbl, key)
+        return iterator(tbl, newKey)
     end
     return iterator, self, nil
 end

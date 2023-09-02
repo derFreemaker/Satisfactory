@@ -342,7 +342,7 @@ end
 ---@param option Github_Loading.Option
 ---@param baseUrl string
 ---@param forceDownload boolean
----@return Github_Loading.Entities.Main program
+---@return Github_Loading.Entities.Main program, Github_Loading.Package package
 function Loader:LoadProgram(option, baseUrl, forceDownload)
     ---@type Github_Loading.PackageLoader
     local PackageLoader = self:Get("/Github-Loading/Loader/PackageLoader")
@@ -370,16 +370,17 @@ function Loader:LoadProgram(option, baseUrl, forceDownload)
     local Entities = self:Get("/Github-Loading/Loader/Entities")
     local mainModuleEntity = Entities.newMain(mainModuleData)
     self.Logger:LogTrace("loaded Program")
-    return mainModuleEntity
+    return mainModuleEntity, package
 end
 
 
 ---@param program Github_Loading.Entities.Main
+---@param package Github_Loading.Package
 ---@param logLevel Github_Loading.Logger.LogLevel
-function Loader:Configure(program, logLevel)
+function Loader:Configure(program, package, logLevel)
     self.Logger:LogTrace("configuring program...")
     local Logger = require("Core.Logger")
-    program.Logger = Logger("Program", logLevel)
+    program.Logger = Logger(package.Name, logLevel)
     local Task = require("Core.Task")
     self.Logger:CopyListenersToCoreEvent(Task, program.Logger)
     program.Logger:setErrorLogger()

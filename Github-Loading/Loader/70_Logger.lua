@@ -205,6 +205,24 @@ function Logger.setErrorLogger(logger)
     _G.__errorLogger = logger
 end
 
+local printFunc = print
+---@param ... any
+function print(...)
+    local args = { ... }
+    local message
+    for i, arg in pairs(args) do
+        if i == 1 then
+            message = tostring(arg)
+        else
+            message = message .. " " .. tostring(arg)
+        end
+    end
+    if _G.__errorLogger then
+        pcall(_G.__errorLogger.Log, _G.__errorLogger, "[PRINT]: ".. message, 10)
+    end
+    return printFunc(...)
+end
+
 local errorFunc = error
 ---@param message string
 ---@param level integer?
@@ -212,7 +230,7 @@ function error(message, level)
     message = message or "no error message"
     level = level or 1
     level = level + 1
-    if __errorLogger then
+    if _G.__errorLogger then
         local debugInfo = debug.getinfo(level)
         local errorMessage = debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
         errorMessage = debug.traceback(errorMessage, level + 1)
@@ -229,7 +247,7 @@ local asserFunc = assert
 ---@return T, any ...
 function assert(condition, message, ...)
     message = message or "assertation failed"
-    if not condition and __errorLogger then
+    if not condition and _G.__errorLogger then
         local debugInfo = debug.getinfo(2)
         local errorMessage = debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
         errorMessage = debug.traceback(errorMessage, 3)
@@ -241,7 +259,7 @@ end
 local panicFunc = computer.panic
 ---@param errorMsg string
 function computer.panic(errorMsg) ---@diagnostic disable-line
-    if __errorLogger then
+    if _G.__errorLogger then
         local debugInfo = debug.getinfo(2)
         local errorMessage = "PANIC!: " .. debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. errorMsg
         errorMessage = debug.traceback(errorMessage, 3)

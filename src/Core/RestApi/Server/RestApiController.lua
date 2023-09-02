@@ -59,6 +59,7 @@ function RestApiController:AddEndpoint(method , name, task)
         error("Endpoint allready exists")
     end
     self.Endpoints[method .. "__" .. name] = RestApiEndpoint(task, self.logger:subLogger("RestApiEndpoint[" .. name .. "]"))
+    self.logger:LogTrace("Added endpoint: '" .. name .. "'")
     return self
 end
 

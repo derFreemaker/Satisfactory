@@ -14,6 +14,7 @@ local Endpoints = {}
 ---@private
 ---@param logger Core.Logger
 function Endpoints:__call(logger)
+    logger:LogTrace("setting up DNS Server endpoints...")
     local netClient = NetworkClient(logger:subLogger("NetworkClient"))
     local netPort = netClient:CreateNetworkPort(80)
     self.apiController = RestApiController(netPort, logger:subLogger("ApiController"))

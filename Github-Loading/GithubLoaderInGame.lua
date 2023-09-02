@@ -84,10 +84,10 @@ local function Run()
 
     -- ######## load option ######## --
     local chosenOption = Loader:LoadOption(option, showExtendOptionDetails)
-    local program = Loader:LoadProgram(chosenOption, BaseUrl, programForceDownload)
+    local program, package = Loader:LoadProgram(chosenOption, BaseUrl, programForceDownload)
 
     -- ######## start Program ######## --
-    Loader:Configure(program, programLogLevel)
+    Loader:Configure(program, package, programLogLevel)
     Loader:Run(program)
 
     return false

@@ -123,7 +123,7 @@ end
 
 ---@param moduleToGet string
 function PackageLoader:GetModule(moduleToGet)
-    self.logger:LogDebug("geting module: '" .. moduleToGet .. "'")
+    self.logger:LogTrace("geting module: '" .. moduleToGet .. "'")
 
     for _, package in ipairs(self.Packages) do
         if moduleToGet:find(package.Namespace) then
