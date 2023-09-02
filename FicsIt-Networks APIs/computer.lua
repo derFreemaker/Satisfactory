@@ -7,6 +7,8 @@
 ---@class FicsIt_Networks.Computer.Api
 computer = {}
 
+---@deprecated
+--- ### Experimental Only ###
 --- Returns the current memory usage
 --- ### Not in Documentation. ###
 ---@return integer usage

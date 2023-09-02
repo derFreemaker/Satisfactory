@@ -34,6 +34,8 @@ function Actor:getInventories() end
 function Actor:getNetworkConnectors() end
 
 
+---@deprecated
+--- ### Experimental Only ###
 --- Returns the components that make-up this actor.
 ---@param componentType FicsIt_Networks.Components.ActorComponent The class will be used as filter.
 ---@return FicsIt_Networks.Components.ActorComponent components The components of this actor.
