@@ -93,8 +93,12 @@ local function Run()
 end
 
 repeat
-    local success, result = pcall(Run)
+    local thread = coroutine.create(function()
+        coroutine.yield(Run())
+    end)
+    local success, result = coroutine.resume(thread)
     if not success then
-        print(result)
+        print(debug.traceback(thread, result))
     end
+    coroutine.close(thread)
 until not result or type(result) ~= "boolean"
