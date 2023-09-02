@@ -6,6 +6,58 @@ local String = LoadedLoaderFiles["/Github-Loading/Loader/Utils/String"][1]
 ---@type Utils.Table
 local Table = LoadedLoaderFiles["/Github-Loading/Loader/Utils/Table"][1]
 
+
+---@class Utils.Class.MetaMethods
+---@field __call (fun(self: object, ...) : ...)?
+---@field __gc fun(self: object)?
+---@field __add (fun(self: object, other: any) : any)? (self) + (value)
+---@field __sub (fun(self: object, other: any) : any)? (self) - (value)
+---@field __mul (fun(self: object, other: any) : any)? (self) * (value)
+---@field __div (fun(self: object, other: any) : any)? (self) / (value)
+---@field __mod (fun(self: object, other: any) : any)? (self) % (value)
+---@field __pow (fun(self: object, other: any) : any)? (self) ^ (value)
+---@field __idiv (fun(self: object, other: any) : any)? (self) // (value)
+---@field __band (fun(self: object, other: any) : any)? (self) & (value)
+---@field __bor (fun(self: object, other: any) : any)? (self) | (value)
+---@field __bxor (fun(self: object, other: any) : any)? (self) ~ (value)
+---@field __shl (fun(self: object, other: any) : any)? (self) << (value)
+---@field __shr (fun(self: object, other: any) : any)? (self) >> (value)
+---@field __concat (fun(self: object, other: any) : any)? (self) .. (value)
+---@field __eq (fun(self: object, other: any) : any)? (self) == (value)
+---@field __lt (fun(t1: any, t2: any) : any)? (self) < (value)
+---@field __le (fun(t1: any, t2: any) : any)? (self) <= (value)
+---@field __unm (fun(self: object) : any)? -(self)
+---@field __bnot (fun(self: object) : any)?  ~(self)
+---@field __len (fun(self: object) : any)? #(self)
+---@field __pairs (fun(t: table) : ((fun(t: table, key: any) : key: any, value: any), t: table, startKey: any))? pairs(self)
+---@field __ipairs (fun(t: table) : ((fun(t: table, key: number) : key: number, value: any), t: table, startKey: number))? ipairs(self)
+---@field __tostring (fun(t):string)? tostring(self)
+---@field __index fun(class, key) : any
+---@field __newindex fun(class, key, value)
+
+---@alias Utils.Class.ConstructorState
+---|1 building
+---|2 waiting
+---|3 running
+---|4 finished
+
+---@class Utils.Class.Metatable : Utils.Class.MetaMethods
+---@field Type string
+---@field Base object
+---@field HasBaseClass boolean
+---@field IsBaseClass boolean
+---@field HasConstructor boolean
+---@field ConstructorState Utils.Class.ConstructorState
+---@field HasDeconstructor boolean
+---@field MetaMethods Utils.Class.MetaMethods
+---@field Functions Dictionary<string, function>
+---@field Properties Dictionary<string, any>
+---@field Index (fun(class, key):any)?
+---@field HasIndex boolean
+---@field NewIndex (fun(class, key, value))?
+---@field HasNewIndex boolean
+
+
 ---@class Utils.Class
 local Class = {}
 Class.SearchValueInBase = {}
@@ -130,8 +182,12 @@ end
 local function index(class, key)
     ---@type Utils.Class.Metatable
     local classMetatable = getmetatable(class)
-    if classMetatable.ConstructorState == 1 then
-        error("cannot get values if class: " .. classMetatable.Type .. " was not constructed", 2)
+    if classMetatable.ConstructorState < 3 then
+        if classMetatable.ConstructorState == 1 then
+            return rawget(class, key)
+        elseif classMetatable.ConstructorState == 2 then
+            error("cannot get values if class: " .. classMetatable.Type .. " was not constructed", 2)
+        end
     end
     local value
     if classMetatable.HasIndex then
@@ -175,8 +231,12 @@ end
 local function newIndex(class, key, value)
     ---@type Utils.Class.Metatable
     local classMetatable = getmetatable(class)
-    if classMetatable.ConstructorState == 1 then
-        error("cannot assign values if class: " .. classMetatable.Type .. " was not constructed", 2)
+    if classMetatable.ConstructorState < 3 then
+        if classMetatable.ConstructorState == 1 then
+            rawset(class, key, value)
+        elseif classMetatable.ConstructorState == 2 then
+            error("cannot assign values if class: " .. classMetatable.Type .. " was not constructed", 2)
+        end
     end
     if classMetatable.HasNewIndex then
         classMetatable.__newindex = classMetatable.NewIndex
@@ -226,7 +286,7 @@ local function AddConstructor(metatable)
         ---@type Utils.Class.Metatable
         local classMetatable = getmetatable(class)
         classMetatable.__call = nil
-        classMetatable.ConstructorState = 2
+        classMetatable.ConstructorState = 3
         ShowMembers(class, classMetatable)
 
         if classMetatable.HasBaseClass then
@@ -240,10 +300,8 @@ local function AddConstructor(metatable)
                 else
                     constructor(class, ..., baseClass)
                 end
-                if baseClassMetatable.ConstructorState ~= 3 then
-                    error(
-                        "base class from class: '" .. classMetatable.Type .. "' did not get constructed or didn't finish",
-                        2)
+                if baseClassMetatable.ConstructorState ~= 4 then
+                    error("base class from class: '" .. classMetatable.Type .. "' did not get constructed or didn't finish", 2)
                 end
             elseif classMetatable.HasConstructor and not baseClassMetatable.HasConstructor then
                 baseClass = baseClass()
@@ -255,12 +313,11 @@ local function AddConstructor(metatable)
             constructor(class, ...)
         end
 
-        classMetatable.ConstructorState = 3
+        classMetatable.ConstructorState = 4
         return class
     end
 
     metatable.__call = construct
-    metatable.ConstructorState = 1
     if type(constructor) == "function" then
         metatable.HasConstructor = true
         metatable.MetaMethods.__call = nil
@@ -324,13 +381,15 @@ function Class.CreateClass(class, classType, baseClass)
     end
     classMetatable.Type = classType
     classMetatable.IsBaseClass = false
+    classMetatable.ConstructorState = 1
     ---@cast class table
     HideMembers(class, classMetatable)
-    OverrideMetaMethods(classMetatable)
     AddNewIndex(classMetatable)
     AddBaseClass(baseClass, classMetatable)
     AddDeconstructor(classMetatable)
     AddConstructor(classMetatable)
+    OverrideMetaMethods(classMetatable)
+    classMetatable.ConstructorState = 2
     setmetatable(class, classMetatable)
     return class
 end
