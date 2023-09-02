@@ -5,13 +5,13 @@
 ---@field Headers Core.RestApi.RestApiResponse.Header | Dictionary<string, any>
 ---@field Body any
 ---@field WasSuccessfull boolean
----@overload fun(header: (Core.RestApi.RestApiResponse.Header | Dictionary<string, any>)?, body: any) : Core.RestApi.RestApiResponse
+---@overload fun(body: any, header: (Core.RestApi.RestApiResponse.Header | Dictionary<string, any>)?) : Core.RestApi.RestApiResponse
 local RestApiResponse = {}
 
 ---@private
----@param header (Core.RestApi.RestApiResponse.Header | Dictionary<string, any>)?
 ---@param body any
-function RestApiResponse:__call(header, body)
+---@param header (Core.RestApi.RestApiResponse.Header | Dictionary<string, any>)?
+function RestApiResponse:__call(body, header)
     self.Headers = header or {}
     self.Body = body
     self.WasSuccessfull = self.Headers.Code < 300

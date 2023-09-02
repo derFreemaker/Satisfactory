@@ -30,6 +30,13 @@ function NetworkClient:__call(logger, networkCard)
     EventPullAdapter:AddListener("NetworkMessage", Task(self.networkMessageRecieved, self))
 end
 
+---@return string
+function NetworkClient:GetId()
+    local splittedPrint = Utils.String.Split(tostring(self.networkCard), " ")
+    local id = splittedPrint[#splittedPrint]
+    return id
+end
+
 ---@private
 ---@param data any[]
 function NetworkClient:networkMessageRecieved(data)
@@ -101,8 +108,9 @@ end
 
 ---@param eventName string | "all"
 ---@param port integer | "all"
----@return Core.Net.NetworkContext
-function NetworkClient:WaitForEvent(eventName, port)
+---@param timeout number?
+---@return Core.Net.NetworkContext?
+function NetworkClient:WaitForEvent(eventName, port, timeout)
     self.Logger:LogDebug("waiting for event: '".. eventName .."' on port: ".. port)
     local result
     ---@param context Core.Net.NetworkContext
@@ -111,7 +119,9 @@ function NetworkClient:WaitForEvent(eventName, port)
     end
     self:AddListenerOnce(eventName, port, Task(set)):OpenPort()
     repeat
-        EventPullAdapter:Wait()
+        if not EventPullAdapter:Wait(timeout) then
+            break
+        end
     until result ~= nil
     return result
 end
@@ -136,18 +146,18 @@ end
 ---@param ipAddress string
 ---@param port integer
 ---@param eventName string
----@param header Dictionary<string, any>?
 ---@param body any
-function NetworkClient:SendMessage(ipAddress, port, eventName, header, body)
-    self.networkCard:send(ipAddress, port, eventName, Json.encode(header or {}), Json.encode(body))
+---@param header Dictionary<string, any>?
+function NetworkClient:SendMessage(ipAddress, port, eventName, body, header)
+    self.networkCard:send(ipAddress, port, eventName, Json.encode(body), Json.encode(header or {}))
 end
 
 ---@param port integer
 ---@param eventName string
----@param header Dictionary<string, any>?
 ---@param body any
-function NetworkClient:BroadCastMessage(port, eventName, header, body)
-    self.networkCard:broadcast(port, eventName, Json.encode(header or {}), Json.encode(body))
+---@param header Dictionary<string, any>?
+function NetworkClient:BroadCastMessage(port, eventName, body, header)
+    self.networkCard:broadcast(port, eventName, Json.encode(body), Json.encode(header or {}))
 end
 
 return Utils.Class.CreateClass(NetworkClient, "Core.Net.NetworkClient")

@@ -1,6 +1,9 @@
 return {
-    TestRecieveServer = "Test/RecieveServer",
-    TestSendServer = "Test/SendServer",
-    FactoryControlServer = "FactoryControl/Server",
-    FactoryControlController = "FactoryControl/Controller"
+    DNSServer = "DNS.Server",
+
+    FactoryControlServer = "FactoryControl.Server",
+    FactoryControlController = "FactoryControl.Controller",
+
+    TestRecieveServer = "Test.RecieveServer",
+    TestSendServer = "Test.SendServer",
 }

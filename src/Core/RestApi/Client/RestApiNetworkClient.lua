@@ -27,7 +27,10 @@ end
 ---@return Core.RestApi.RestApiResponse response
 function RestApiClient:request(request)
     self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, "Rest-Request", { ReturnPort = self.ReturnPort }, request:ExtractData())
-    local context = self.NetClient:WaitForEvent("Rest-Response", self.ReturnPort)
+    local context = self.NetClient:WaitForEvent("Rest-Response", self.ReturnPort, 5)
+    if not context then
+        return RestApiResponse(nil, { Code = 408 })
+    end
     local response = RestApiResponse.Static__CreateFromNetworkContext(context)
     return response
 end

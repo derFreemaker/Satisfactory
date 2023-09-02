@@ -1,6 +1,6 @@
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local NetworkClient = require("Core.Net.NetworkClient")
-local RestApiNetworkClient = require("src.Core.RestApi.Client.RestApiNetworkClient")
+local RestApiNetworkClient = require("Core.RestApi.Client.RestApiNetworkClient")
 local RestApiRequest = require("Core.RestApi.RestApiRequest")
 
 ---@class Test.SendServer.Main : Github_Loading.Entities.Main

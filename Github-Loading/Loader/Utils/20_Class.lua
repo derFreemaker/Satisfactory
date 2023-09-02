@@ -297,9 +297,10 @@ end
 ---@generic TBaseClass
 ---@param class TClass
 ---@param classType string
----@param baseClass TBaseClass
+---@param baseClass TBaseClass?
 ---@return TClass
-function Class.CreateSubClass(class, classType, baseClass)
+function Class.CreateClass(class, classType, baseClass)
+    baseClass = baseClass or Object
     baseClass = Utils.Table.Copy(baseClass)
     if not Class.HasClassOfType(baseClass, "object") then
         error("base class argument is not a class", 2)
@@ -322,15 +323,6 @@ function Class.CreateSubClass(class, classType, baseClass)
     AddConstructor(classMetatable)
     setmetatable(class, classMetatable)
     return class
-end
-
-
----@generic TClass
----@param class TClass
----@param classType string
----@return TClass
-function Class.CreateClass(class, classType)
-    return Class.CreateSubClass(class, classType, Object)
 end
 
 

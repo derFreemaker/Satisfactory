@@ -63,6 +63,7 @@ function EventPullAdapter:AddListenerOnce(signalName, task)
 end
 
 ---@param timeout number?
+---@return boolean gotEvent
 function EventPullAdapter:Wait(timeout)
     self.logger:LogTrace("## waiting for event pull ##")
     ---@type table?
@@ -72,12 +73,13 @@ function EventPullAdapter:Wait(timeout)
     else
         eventPullData = table.pack(event.pull(timeout))
     end
-    if not eventPullData or #eventPullData == 0 then
-        return
+    if eventPullData.n == 1 then
+        return false
     end
     self.logger:LogDebug("event with signalName: '".. eventPullData[1] .."' was recieved")
     self.OnEventPull:Trigger(self.logger, eventPullData)
     self:onEventPull(eventPullData)
+    return true
 end
 
 function EventPullAdapter:Run()

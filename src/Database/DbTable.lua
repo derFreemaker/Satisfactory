@@ -44,16 +44,22 @@ function DbTable:Save()
 end
 
 ---@param key string | number
----@return table value
-function DbTable:Get(key)
-    return self.data[key]
-end
-
----@param key string | number
 ---@param value table
 function DbTable:Set(key, value)
     self.data[key] = value
     self:Save()
+end
+
+---@param key string | number
+function DbTable:Delete(key)
+    self.data[key] = nil
+    self:Save()
+end
+
+---@param key string | number
+---@return table value
+function DbTable:Get(key)
+    return self.data[key]
 end
 
 ---@private

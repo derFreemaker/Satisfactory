@@ -1,4 +1,4 @@
-local RestApiNetworkClient = require("src.Core.RestApi.Client.RestApiNetworkClient")
+local RestApiNetworkClient = require("Core.RestApi.Client.RestApiNetworkClient")
 local RestApiRequest = require("Core.RestApi.RestApiRequest")
 
 ---@class FactoryControl.Core.FactoryControlRestApiClient : object

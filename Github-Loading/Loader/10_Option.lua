@@ -7,12 +7,10 @@ local Option = {}
 ---@param url string
 ---@return Github_Loading.Option
 function Option.new(name, url)
-    local metatable = Option
-    metatable.__index = Option
     return setmetatable({
         Name = name,
         Url = url
-    }, Option)
+    }, { __index = Option })
 end
 
 ---@param extended boolean

@@ -76,6 +76,13 @@ function NetworkPort:AddListenerOnce(onRecivedEventName, listener)
 end
 NetworkPort.Once = NetworkPort.AddListenerOnce
 
+---@param eventName string
+---@param timeout number?
+---@return Core.Net.NetworkContext?
+function NetworkPort:WaitForEvent(eventName, timeout)
+    return self.netClient:WaitForEvent(eventName, self.Port, timeout)
+end
+
 function NetworkPort:OpenPort()
     local port = self.Port
     if type(port) == "number" then
@@ -88,6 +95,31 @@ function NetworkPort:ClosePort()
     if type(port) == "number" then
         self.netClient:ClosePort(port)
     end
+end
+
+---@param ipAddress string
+---@param eventName string
+---@param body any
+---@param header Dictionary<string, any>?
+function NetworkPort:SendMessage(ipAddress, eventName, body, header)
+    local port = self.Port
+    if port == "all" then
+        error("Unable to send a message over all ports")
+    end
+    ---@cast port integer
+    self.netClient:SendMessage(ipAddress, port, eventName, body, header)
+end
+
+---@param eventName string
+---@param body any
+---@param header Dictionary<string, any>?
+function NetworkPort:BroadCastMessage(eventName, body, header)
+    local port = self.Port
+    if port == "all" then
+        error("Unable to broadcast a message over all ports")
+    end
+    ---@cast port integer
+    self.netClient:BroadCastMessage(port, eventName, body, header)
 end
 
 return Utils.Class.CreateClass(NetworkPort, "Core.Net.NetworkPort")

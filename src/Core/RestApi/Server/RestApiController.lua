@@ -21,6 +21,7 @@ function RestApiController:__call(netPort, logger)
     netPort:AddListener("Rest-Request", Task(self.onMessageRecieved, self))
 end
 
+---@private
 ---@param context Core.Net.NetworkContext
 function RestApiController:onMessageRecieved(context)
     local request = RestApiRequest.Static__CreateFromNetworkContext(context)
