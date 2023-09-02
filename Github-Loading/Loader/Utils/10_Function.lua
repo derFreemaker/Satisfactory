@@ -15,6 +15,12 @@ function Function.DynamicInvoke(func, parent, args)
     return results
 end
 
+---@param success boolean
+---@param ... any
+---@return boolean success, table data
+local function extractSuccess(success, ...)
+    return success, { ... }
+end
 ---@param func function
 ---@param parent any
 ---@param ... any
@@ -31,8 +37,8 @@ function Function.InvokeProtected(func, parent, ...)
         results = table.pack(coroutine.resume(thread, ...))
     end
     coroutine.close(thread)
-    local success = Utils.Table.Retrive(results, 1)
-    return thread, success, results
+    local success, filteredResults = extractSuccess(table.unpack(results))
+    return thread, success, filteredResults
 end
 
 ---@param func function
