@@ -9,7 +9,7 @@ local RestApiEndpoint = {}
 ---@private
 ---@param task Core.Task
 ---@param logger Core.Logger
-function RestApiEndpoint:RestApiEndpoint(task, logger)
+function RestApiEndpoint:__call(task, logger)
     self.task = task
     self.logger = logger
 end

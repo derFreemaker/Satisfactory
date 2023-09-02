@@ -12,7 +12,7 @@ local DbTable = {}
 ---@param name string
 ---@param path Core.Path
 ---@param logger Core.Logger
-function DbTable:DbTable(name, path, logger)
+function DbTable:__call(name, path, logger)
     self.name = name
     self.path = path
     self.logger = logger

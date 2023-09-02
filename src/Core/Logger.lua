@@ -83,7 +83,7 @@ end
 ---@param logLevel Core.Logger.LogLevel
 ---@param onLog Core.Event?
 ---@param onClear Core.Event?
-function Logger:Logger(name, logLevel, onLog, onClear)
+function Logger:__call(name, logLevel, onLog, onClear)
     self.logLevel = logLevel
     self.Name = (string.gsub(name, " ", "_") or "")
     self.OnLog = onLog or Event()

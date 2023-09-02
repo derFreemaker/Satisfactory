@@ -21,6 +21,8 @@
 ---@field protected __pairs (fun(self: object) : (fun(iterator, t, startPoint) : key: any, value: any))? pairs(self)
 ---@field protected __ipairs (fun(self: object) : (fun(iterator, t, startPoint) : key: any, value: any))? ipairs(self)
 ---@field protected __tostring (fun(self: object) : string)? tostring(self)
+---@field protected __call (function)? self()
+---@field protected __gc (fun())? called on garbage collection
 
 ---@class object : Utils.Class.ObjectMetaMethods
 local Object = {}

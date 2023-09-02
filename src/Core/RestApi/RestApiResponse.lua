@@ -11,7 +11,7 @@ local RestApiResponse = {}
 ---@private
 ---@param header (Core.RestApi.RestApiResponse.Header | Dictionary<string, any>)?
 ---@param body any
-function RestApiResponse:RestApiResponse(header, body)
+function RestApiResponse:__call(header, body)
     self.Headers = header or {}
     self.Body = body
     self.WasSuccessfull = self.Headers.Code < 300

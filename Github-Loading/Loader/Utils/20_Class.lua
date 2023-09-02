@@ -36,7 +36,8 @@ local metatableMethods = {
     __pairs = true,
     __ipairs = true,
     __tostring = true,
-    __gc = true
+    __gc = true,
+    __call = true
 }
 
 ---@param class table
@@ -205,10 +206,8 @@ end
 
 ---@param metatable Utils.Class.Metatable
 local function AddConstructor(metatable)
-    local constructorKey = metatable.Type
-
     ---@type fun(self: object, ...: any, base: object | nil)
-    local constructor = metatable.Functions[constructorKey]
+    local constructor = metatable.MetaMethods.__call
 
     ---@param class object
     ---@param ... any
@@ -254,7 +253,7 @@ local function AddConstructor(metatable)
     metatable.ConstructorState = 1
     if type(constructor) == "function" then
         metatable.HasConstructor = true
-        metatable.Functions[constructorKey] = nil
+        metatable.MetaMethods.__call = nil
         return
     end
 
@@ -271,9 +270,8 @@ end
 
 ---@param metatable Utils.Class.Metatable
 local function AddDeconstructor(metatable)
-    local deconstructorKey = "_" .. metatable.Type
     ---@type fun(class: object)?
-    local deconstructor = metatable.Functions[deconstructorKey]
+    local deconstructor = metatable.MetaMethods.__gc
 
     ---@param class object
     local function deconstruct(class)
@@ -287,7 +285,6 @@ local function AddDeconstructor(metatable)
     end
 
     if type(deconstructor) == "function" then
-        metatable.Functions[deconstructorKey] = nil
         metatable.MetaMethods.__gc = deconstruct
         metatable.HasDeconstructor = true
         return

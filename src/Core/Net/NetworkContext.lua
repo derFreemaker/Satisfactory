@@ -13,7 +13,7 @@ local NetworkContext = {}
 
 ---@private
 ---@param data any[]
-function NetworkContext:NetworkContext(data)
+function NetworkContext:__call(data)
     self.SignalName = data[1]
     self.SignalSender = data[2]
     self.SenderIPAddress = data[3]

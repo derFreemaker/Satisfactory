@@ -2,7 +2,7 @@
 ---@overload fun() : DNS.Endpoints
 local Endpoints = {}
 
-function Endpoints:Endpoints()
+function Endpoints:__call()
     
 end
 

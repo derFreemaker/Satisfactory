@@ -14,7 +14,7 @@ local NetworkClient = {}
 ---@private
 ---@param logger Core.Logger
 ---@param networkCard FicsIt_Networks.Components.FINComputerMod.NetworkCard?
-function NetworkClient:NetworkClient(logger, networkCard)
+function NetworkClient:__call(logger, networkCard)
     if networkCard == nil then
         networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
         if networkCard == nil then

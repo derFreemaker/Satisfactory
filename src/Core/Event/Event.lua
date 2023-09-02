@@ -6,7 +6,7 @@
 local Event = {}
 
 ---@private
-function Event:Event()
+function Event:__call()
     self.funcs = {}
     self.onceFuncs = {}
 end
