@@ -207,7 +207,7 @@ end
 
 local printFunc = print
 ---@param ... any
-function print(...)
+function NewPrint(...)
     local args = { ... }
     local message
     for i, arg in pairs(args) do
@@ -218,10 +218,13 @@ function print(...)
         end
     end
     if _G.__errorLogger then
+        print = printFunc
         pcall(_G.__errorLogger.Log, _G.__errorLogger, "[PRINT]: ".. message, 10)
+        print = NewPrint
     end
     return printFunc(...)
 end
+print = NewPrint
 
 local errorFunc = error
 ---@param message string
