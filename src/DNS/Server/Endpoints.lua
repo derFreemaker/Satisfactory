@@ -69,4 +69,4 @@ function Endpoints:GET__AddressWithId(request)
 end
 
 
-return Utils.Class.CreateClass(Endpoints, "DNS.Endpoints", require("Core.RestApi.Server.RestApiEndpointBase"))
+return Utils.Class.CreateClass(Endpoints, "DNS.Server.Endpoints", require("Core.RestApi.Server.RestApiEndpointBase"))

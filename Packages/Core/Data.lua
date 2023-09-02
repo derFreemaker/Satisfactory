@@ -526,6 +526,16 @@ PackageData.CwccbpJY = {
     Data = [[
 local RestApiResponseTemplates = require("Core.RestApi.Server.RestApiResponseTemplates")
 local RestApiEndpointBase = {}
+function RestApiEndpointBase:__pairs()
+    local function iterator(tbl, key)
+        local _, value = next(tbl, key)
+        if type(value) == "function" then
+            return value
+        end
+        return iterator(tbl, key)
+    end
+    return iterator, self, nil
+end
 RestApiEndpointBase.Templates = {}
 function RestApiEndpointBase.Templates:Ok(value)
     return RestApiResponseTemplates.Ok(value)

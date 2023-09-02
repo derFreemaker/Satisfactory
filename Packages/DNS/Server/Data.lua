@@ -97,7 +97,7 @@ function Endpoints:GET__AddressWithId(request)
     end
     return self.Templates:Ok(address:ExtractData())
 end
-return Utils.Class.CreateClass(Endpoints, "DNS.Endpoints", require("Core.RestApi.Server.RestApiEndpointBase"))
+return Utils.Class.CreateClass(Endpoints, "DNS.Server.Endpoints", require("Core.RestApi.Server.RestApiEndpointBase"))
 ]]
 }
 
