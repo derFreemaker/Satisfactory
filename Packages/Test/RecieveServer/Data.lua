@@ -2,7 +2,7 @@ local PackageData = {}
 
 -- ########## Test.RecieveServer ##########
 
-PackageData.yarfFUjz = {
+PackageData.OfgeWgyB = {
     Namespace = "Test.RecieveServer.__main",
     Name = "__main",
     FullName = "__main.lua",
@@ -23,7 +23,7 @@ function Main:Configure()
     local netClient = NetworkClient(self.Logger:subLogger("NetworkClient"))
     local netPort = netClient:CreateNetworkPort(80)
     netPort:OpenPort()
-    self.apiController = RestApiController(netPort)
+    self.apiController = RestApiController(netPort, self.Logger:subLogger("RestApiController"))
     self.apiController:AddEndpoint("GET", "Test", Task(self.Test, self))
     self.Logger:LogDebug("setup RestApiController")
 end

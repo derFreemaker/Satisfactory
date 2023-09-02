@@ -2,7 +2,7 @@ local PackageData = {}
 
 -- ########## Test.SendServer ##########
 
-PackageData.AEMBAHeA = {
+PackageData.QKAARTsB = {
     Namespace = "Test.SendServer.__main",
     Name = "__main",
     FullName = "__main.lua",
@@ -10,13 +10,13 @@ PackageData.AEMBAHeA = {
     Data = [[
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local NetworkClient = require("Core.Net.NetworkClient")
-local RestApiClient = require("Core.RestApi.Client.RestApiClient")
+local RestApiNetworkClient = require("Core.RestApi.Client.RestApiNetworkClient")
 local RestApiRequest = require("Core.RestApi.RestApiRequest")
 local Main = {}
 function Main:Configure()
     EventPullAdapter:Initialize(self.Logger:subLogger("EventPullAdapter"))
     local netClient = NetworkClient(self.Logger:subLogger("NetworkClient"))
-    self.apiClient = RestApiClient(Config.ServerIPAddress, Config.ServerPort, 1111, netClient)
+    self.apiClient = RestApiNetworkClient(Config.ServerIPAddress, Config.ServerPort, 1111, netClient, self.Logger:subLogger("RestApiClient"))
     self.Logger:LogInfo("setup RestApiClient")
 end
 function Main:Run()

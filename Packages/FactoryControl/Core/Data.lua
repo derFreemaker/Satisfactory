@@ -2,17 +2,21 @@ local PackageData = {}
 
 -- ########## FactoryControl.Core ##########
 
-PackageData.rmhQUIAz = {
+-- ########## FactoryControl.Core.Entities ##########
+
+-- ########## FactoryControl.Core.Entities ########## --
+
+PackageData.HsWQlUOA = {
     Namespace = "FactoryControl.Core.FactoryControlApiClient",
     Name = "FactoryControlApiClient",
     FullName = "FactoryControlApiClient.lua",
     IsRunnable = true,
     Data = [[
-local RestApiClient = require("Core.RestApi.Client.RestApiClient")
+local RestApiNetworkClient = require("Core.RestApi.Client.RestApiNetworkClient")
 local RestApiRequest = require("Core.RestApi.RestApiRequest")
 local FactoryControlRestApiClient = {}
-function FactoryControlRestApiClient:FactoryControlRestApiClient(netClient)
-    self.restApiClient = RestApiClient(Config.ServerIPAddress, Config.ServerPort, 1111, netClient)
+function FactoryControlRestApiClient:__call(netClient, logger)
+    self.restApiClient = RestApiNetworkClient(Config.ServerIPAddress, Config.ServerPort, 1111, netClient, self.logger:subLogger("RestApiClient"))
 end
 function FactoryControlRestApiClient:request(method, endpoint, headers, body)
     return self.restApiClient:request(RestApiRequest(method, endpoint, headers, body))

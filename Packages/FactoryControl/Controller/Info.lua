@@ -4,6 +4,6 @@ return {
     Namespace = "FactoryControl.Controller",
     RequiredPackages = {
         "Core",
-        "FactoryControl/Core"
+        "FactoryControl.Core"
     },
 }

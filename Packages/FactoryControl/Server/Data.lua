@@ -4,7 +4,7 @@ local PackageData = {}
 
 -- ########## FactoryControl.Server.Endpoints ##########
 
-PackageData.UgmxnoSZ = {
+PackageData.llbxDAga = {
     Namespace = "FactoryControl.Server.Endpoints.ControllerEndpoints",
     Name = "ControllerEndpoints",
     FullName = "ControllerEndpoints.lua",
@@ -21,7 +21,7 @@ return Utils.Class.CreateSubClass(ControllerEndpoints, "ControllerEndpoints", Re
 
 -- ########## FactoryControl.Server.Endpoints ########## --
 
-PackageData.vvWJKhpz = {
+PackageData.MBLIbtDA = {
     Namespace = "FactoryControl.Server.__main",
     Name = "__main",
     FullName = "__main.lua",
@@ -37,7 +37,7 @@ function Main:Configure()
     local netClient = NetworkClient(self.Logger:subLogger("NetworkClient"))
     local netPort = netClient:CreateNetworkPort(80)
     netPort:OpenPort()
-    self.apiController = RestApiController(netPort)
+    self.apiController = RestApiController(netPort, self.Logger:subLogger("RestApiController"))
     self.apiController:AddRestApiEndpointBase(ControllerEndpoints())
     self.Logger:LogDebug("setup endpoints")
 end

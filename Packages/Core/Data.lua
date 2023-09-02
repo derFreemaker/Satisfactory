@@ -11,7 +11,7 @@ PackageData.oVIzFPpX = {
     IsRunnable = true,
     Data = [[
 local Event = {}
-function Event:Event()
+function Event:__call()
     self.funcs = {}
     self.onceFuncs = {}
 end
@@ -75,7 +75,7 @@ function Event:CopyTo(event)
     end
     return event
 end
-return Utils.Class.CreateClass(Event, "Event")
+return Utils.Class.CreateClass(Event, "Core.Event")
 ]]
 }
 
@@ -137,12 +137,13 @@ function EventPullAdapter:Wait(timeout)
     else
         eventPullData = table.pack(event.pull(timeout))
     end
-    if not eventPullData or #eventPullData == 0 then
-        return
+    if eventPullData.n == 1 then
+        return false
     end
     self.logger:LogDebug("event with signalName: '".. eventPullData[1] .."' was recieved")
     self.OnEventPull:Trigger(self.logger, eventPullData)
     self:onEventPull(eventPullData)
+    return true
 end
 function EventPullAdapter:Run()
     self.logger:LogDebug("## started event pull loop ##")
@@ -170,7 +171,7 @@ local Task = require("Core.Task")
 local NetworkPort = require("Core.Net.NetworkPort")
 local NetworkContext = require("Core.Net.NetworkContext")
 local NetworkClient = {}
-function NetworkClient:NetworkClient(logger, networkCard)
+function NetworkClient:__call(logger, networkCard)
     if networkCard == nil then
         networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
         if networkCard == nil then
@@ -183,6 +184,11 @@ function NetworkClient:NetworkClient(logger, networkCard)
     event.listen(networkCard)
     EventPullAdapter:AddListener("NetworkMessage", Task(self.networkMessageRecieved, self))
 end
+function NetworkClient:GetId()
+    local splittedPrint = Utils.String.Split(tostring(self.networkCard), " ")
+    local id = splittedPrint[#splittedPrint]
+    return id
+end
 function NetworkClient:networkMessageRecieved(data)
     local context = NetworkContext(data)
     self.Logger:LogDebug("recieved network message with event: '" .. context.EventName .. "' on port: '" .. context.Port .. "'")
@@ -190,7 +196,7 @@ function NetworkClient:networkMessageRecieved(data)
         if port.Port == context.Port or port.Port == "all" then
             port:Execute(context)
         end
-        if Utils.Table.Count(port.Events) == 0 then
+        if Utils.Table.Count(port:GetEvents()) == 0 then
             port:ClosePort()
             self.ports[i] = nil
         end
@@ -230,7 +236,7 @@ function NetworkClient:CreateNetworkPort(port)
     self.ports[port] = networkPort
     return networkPort
 end
-function NetworkClient:WaitForEvent(eventName, port)
+function NetworkClient:WaitForEvent(eventName, port, timeout)
     self.Logger:LogDebug("waiting for event: '".. eventName .."' on port: ".. port)
     local result
 
@@ -239,7 +245,9 @@ function NetworkClient:WaitForEvent(eventName, port)
     end
     self:AddListenerOnce(eventName, port, Task(set)):OpenPort()
     repeat
-        EventPullAdapter:Wait()
+        if not EventPullAdapter:Wait(timeout) then
+            break
+        end
     until result ~= nil
     return result
 end
@@ -255,13 +263,13 @@ function NetworkClient:CloseAllPorts()
     self.networkCard:closeAll()
     self.Logger:LogTrace("closed all Ports")
 end
-function NetworkClient:SendMessage(ipAddress, port, eventName, header, body)
-    self.networkCard:send(ipAddress, port, eventName, Json.encode(header or {}), Json.encode(body))
+function NetworkClient:SendMessage(ipAddress, port, eventName, body, header)
+    self.networkCard:send(ipAddress, port, eventName, Json.encode(body), Json.encode(header or {}))
 end
-function NetworkClient:BroadCastMessage(port, eventName, header, body)
-    self.networkCard:broadcast(port, eventName, Json.encode(header or {}), Json.encode(body))
+function NetworkClient:BroadCastMessage(port, eventName, body, header)
+    self.networkCard:broadcast(port, eventName, Json.encode(body), Json.encode(header or {}))
 end
-return Utils.Class.CreateClass(NetworkClient, "NetworkClient")
+return Utils.Class.CreateClass(NetworkClient, "Core.Net.NetworkClient")
 ]]
 }
 
@@ -273,7 +281,7 @@ PackageData.seyrvpeX = {
     Data = [[
 local Json = require("Core.Json")
 local NetworkContext = {}
-function NetworkContext:NetworkContext(data)
+function NetworkContext:__call(data)
     self.SignalName = data[1]
     self.SignalSender = data[2]
     self.SenderIPAddress = data[3]
@@ -282,7 +290,7 @@ function NetworkContext:NetworkContext(data)
     self.Header = Json.decode(data[6])
     self.Body = Json.decode(data[7])
 end
-return Utils.Class.CreateClass(NetworkContext, "NetworkContext")
+return Utils.Class.CreateClass(NetworkContext, "Core.Net.NetworkContext")
 ]]
 }
 
@@ -294,31 +302,37 @@ PackageData.TtiCTjCx = {
     Data = [[
 local Event = require("Core.Event.Event")
 local NetworkPort = {}
-function NetworkPort:NetworkPort(port, logger, netClient)
+function NetworkPort:__call(port, logger, netClient)
     self.Port = port
-    self.Events = {}
-    self.Logger = logger
-    self.NetClient = netClient
+    self.events = {}
+    self.logger = logger
+    self.netClient = netClient
+end
+function NetworkPort:GetEvents()
+    return Utils.Table.Copy(self.events)
+end
+function NetworkPort:GetNetClient()
+    return self.netClient
 end
 function NetworkPort:Execute(context)
-    self.Logger:LogTrace("got triggered with event: '".. context.EventName .."'")
-    for name, event in pairs(self.Events) do
+    self.logger:LogTrace("got triggered with event: '".. context.EventName .."'")
+    for name, event in pairs(self.events) do
         if name == context.EventName or name == "all" then
-            event:Trigger(self.Logger, context)
+            event:Trigger(self.logger, context)
         end
         if #event == 0 then
-            self.Events[name] = nil
+            self.events[name] = nil
         end
     end
 end
 function NetworkPort:GetEvent(eventName)
-    for name, event in pairs(self.Events) do
+    for name, event in pairs(self.events) do
         if name == eventName then
             return event
         end
     end
     local event = Event()
-    self.Events[eventName] = event
+    self.events[eventName] = event
     return event
 end
 function NetworkPort:AddListener(onRecivedEventName, listener)
@@ -333,19 +347,38 @@ function NetworkPort:AddListenerOnce(onRecivedEventName, listener)
     return self
 end
 NetworkPort.Once = NetworkPort.AddListenerOnce
+function NetworkPort:WaitForEvent(eventName, timeout)
+    return self.netClient:WaitForEvent(eventName, self.Port, timeout)
+end
 function NetworkPort:OpenPort()
     local port = self.Port
     if type(port) == "number" then
-        self.NetClient:OpenPort(port)
+        self.netClient:OpenPort(port)
     end
 end
 function NetworkPort:ClosePort()
     local port = self.Port
     if type(port) == "number" then
-        self.NetClient:ClosePort(port)
+        self.netClient:ClosePort(port)
     end
 end
-return Utils.Class.CreateClass(NetworkPort, "NetworkPort")
+function NetworkPort:SendMessage(ipAddress, eventName, body, header)
+    local port = self.Port
+    if port == "all" then
+        error("Unable to send a message over all ports")
+    end
+
+    self.netClient:SendMessage(ipAddress, port, eventName, body, header)
+end
+function NetworkPort:BroadCastMessage(eventName, body, header)
+    local port = self.Port
+    if port == "all" then
+        error("Unable to broadcast a message over all ports")
+    end
+
+    self.netClient:BroadCastMessage(port, eventName, body, header)
+end
+return Utils.Class.CreateClass(NetworkPort, "Core.Net.NetworkPort")
 ]]
 }
 
@@ -356,27 +389,30 @@ return Utils.Class.CreateClass(NetworkPort, "NetworkPort")
 -- ########## Core.RestApi.Client ##########
 
 PackageData.xnnklPUX = {
-    Namespace = "Core.RestApi.Client.RestApiClient",
-    Name = "RestApiClient",
-    FullName = "RestApiClient.lua",
+    Namespace = "Core.RestApi.Client.RestApiNetworkClient",
+    Name = "RestApiNetworkClient",
+    FullName = "RestApiNetworkClient.lua",
     IsRunnable = true,
     Data = [[
-local RestApiHelper = require("Core.RestApi.RestApiHelper")
+local RestApiResponse = require("Core.RestApi.RestApiResponse")
 local RestApiClient = {}
-function RestApiClient:RestApiClient(serverIPAddress, serverPort, returnPort, netClient)
+function RestApiClient:__call(serverIPAddress, serverPort, returnPort, netClient, logger)
     self.ServerIPAddress = serverIPAddress
     self.ServerPort = serverPort
     self.ReturnPort = returnPort
     self.NetClient = netClient
-    self.Logger = netClient.Logger:subLogger("RestApiClient")
+    self.Logger = logger
 end
 function RestApiClient:request(request)
     self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, "Rest-Request", { ReturnPort = self.ReturnPort }, request:ExtractData())
-    local context = self.NetClient:WaitForEvent("Rest-Response", self.ReturnPort)
-    local response = RestApiHelper.NetworkContextToRestApiResponse(context)
+    local context = self.NetClient:WaitForEvent("Rest-Response", self.ReturnPort, 5)
+    if not context then
+        return RestApiResponse(nil, { Code = 408 })
+    end
+    local response = RestApiResponse.Static__CreateFromNetworkContext(context)
     return response
 end
-return Utils.Class.CreateClass(RestApiClient, "RestApiClient")
+return Utils.Class.CreateClass(RestApiClient, "Core.RestApi.Client.RestApiNetworkClient")
 ]]
 }
 
@@ -392,29 +428,29 @@ PackageData.zRIGgCOY = {
     Data = [[
 local Task = require("Core.Task")
 local RestApiEndpoint = require("Core.RestApi.Server.RestApiEndpoint")
-local RestApiHelper = require("Core.RestApi.RestApiHelper")
 local RestApiResponseTemplates = require("Core.RestApi.Server.RestApiResponseTemplates")
 local RestApiMethod = require("Core.RestApi.RestApiMethod")
+local RestApiRequest = require("Core.RestApi.RestApiRequest")
 local RestApiController = {}
-function RestApiController:RestApiController(netPort)
+function RestApiController:__call(netPort, logger)
     self.Endpoints = {}
-    self.NetPort = netPort
-    self.Logger = netPort.Logger:subLogger("RestApiController")
+    self.netPort = netPort
+    self.logger = logger
     netPort:AddListener("Rest-Request", Task(self.onMessageRecieved, self))
 end
 function RestApiController:onMessageRecieved(context)
-    local request = RestApiHelper.NetworkContextToRestApiRequest(context)
-    self.Logger:LogDebug("recieved request on endpoint: '" .. request.Endpoint .. "'")
+    local request = RestApiRequest.Static__CreateFromNetworkContext(context)
+    self.logger:LogDebug("recieved request on endpoint: '" .. request.Endpoint .. "'")
     local endpoint = self:GetEndpoint(request.Method, request.Endpoint)
     if endpoint == nil then
-        self.Logger:LogTrace("found no endpoint")
+        self.logger:LogTrace("found no endpoint")
         if context.Header.ReturnPort then
-            self.NetPort.NetClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort,
+            self.netPort:GetNetClient():SendMessage(context.SenderIPAddress, context.Header.ReturnPort,
                 "Rest-Response", nil, RestApiResponseTemplates.NotFound("Unable to find endpoint"):ExtractData())
         end
         return
     end
-    endpoint:Execute(request, context, self.NetPort.NetClient)
+    endpoint:Execute(request, context, self.netPort:GetNetClient())
 end
 function RestApiController:GetEndpoint(method, endpointName)
     for name, endpoint in pairs(self.Endpoints) do
@@ -428,20 +464,20 @@ function RestApiController:AddEndpoint(method , name, task)
     if self:GetEndpoint(method, name) ~= nil then
         error("Endpoint allready exists")
     end
-    self.Endpoints[method .. "__" .. name] = RestApiEndpoint(task, self.Logger:subLogger("RestApiEndpoint[" .. name .. "]"))
+    self.Endpoints[method .. "__" .. name] = RestApiEndpoint(task, self.logger:subLogger("RestApiEndpoint[" .. name .. "]"))
     return self
 end
-function RestApiController:AddRestApiEndpointBase(endpointBase)
-    for name, func in pairs(endpointBase) do
+function RestApiController:AddRestApiEndpointBase(endpoint)
+    for name, func in pairs(endpoint) do
         if type(name) == "string" and type(func) == "function" then
             local method, endpointName = name:match("^(.+)__(.+)$")
-            if method ~= nil and endpointBase ~= nil and RestApiMethod[method] == method then
-                self:AddEndpoint(method, endpointName, Task(func, endpointBase))
+            if method ~= nil and endpoint ~= nil and RestApiMethod[method] then
+                self:AddEndpoint(method, endpointName, Task(func, endpoint))
             end
         end
     end
 end
-return Utils.Class.CreateClass(RestApiController, "RestApiController")
+return Utils.Class.CreateClass(RestApiController, "Core.RestApi.Server.RestApiController")
 ]]
 }
 
@@ -453,7 +489,7 @@ PackageData.agsRDvly = {
     Data = [[
 local RestApiResponseTemplates = require("Core.RestApi.Server.RestApiResponseTemplates")
 local RestApiEndpoint = {}
-function RestApiEndpoint:RestApiEndpoint(task, logger)
+function RestApiEndpoint:__call(task, logger)
     self.task = task
     self.logger = logger
 end
@@ -478,7 +514,7 @@ function RestApiEndpoint:Execute(request, context, netClient)
         self.logger:LogDebug("request finished with status code: " .. response.Headers.Code .. " with message: '" .. response.Headers.Message .. "'")
     end
 end
-return Utils.Class.CreateClass(RestApiEndpoint, "RestApiEndpoint")
+return Utils.Class.CreateClass(RestApiEndpoint, "Core.RestApi.Server.RestApiEndpoint")
 ]]
 }
 
@@ -503,7 +539,7 @@ end
 function RestApiEndpointBase.Templates:InternalServerError(message)
     return RestApiResponseTemplates.InternalServerError(message)
 end
-return Utils.Class.CreateClass(RestApiEndpointBase, "RestApiControllerBase")
+return Utils.Class.CreateClass(RestApiEndpointBase, "Core.RestApi.Server.RestApiControllerBase")
 ]]
 }
 
@@ -535,25 +571,6 @@ return RestApiResponseTemplates
 -- ########## Core.RestApi.Server ########## --
 
 PackageData.EaxyWcDY = {
-    Namespace = "Core.RestApi.RestApiHelper",
-    Name = "RestApiHelper",
-    FullName = "RestApiHelper.lua",
-    IsRunnable = true,
-    Data = [[
-local RestApiRequest = require("Core.RestApi.RestApiRequest")
-local RestApiResponse = require("Core.RestApi.RestApiResponse")
-local Helper = {}
-function Helper.NetworkContextToRestApiResponse(context)
-    return RestApiResponse(context.Body.Headers, context.Body.Body)
-end
-function Helper.NetworkContextToRestApiRequest(context)
-    return RestApiRequest(context.Body.Method, context.Body.Endpoint, context.Body.Headers, context.Body.Body)
-end
-return Helper
-]]
-}
-
-PackageData.fphJtVby = {
     Namespace = "Core.RestApi.RestApiMethod",
     Name = "RestApiMethod",
     FullName = "RestApiMethod.lua",
@@ -575,14 +592,14 @@ return RestApiMethods
 ]]
 }
 
-PackageData.GFSURPyY = {
+PackageData.fphJtVby = {
     Namespace = "Core.RestApi.RestApiRequest",
     Name = "RestApiRequest",
     FullName = "RestApiRequest.lua",
     IsRunnable = true,
     Data = [[
 local RestApiRequest = {}
-function RestApiRequest:RestApiRequest(method, endpoint, headers, body)
+function RestApiRequest:__call(method, endpoint, body, headers)
     self.Method = method
     self.Endpoint = endpoint
     self.Headers = headers or {}
@@ -596,18 +613,21 @@ function RestApiRequest:ExtractData()
         Body = self.Body
     }
 end
-return Utils.Class.CreateClass(RestApiRequest, "RestApiRequest")
+function RestApiRequest.Static__CreateFromNetworkContext(context)
+    return RestApiRequest(context.Body.Method, context.Body.Endpoint, context.Body.Body, context.Body.Headers)
+end
+return Utils.Class.CreateClass(RestApiRequest, "Core.RestApi.RestApiRequest")
 ]]
 }
 
-PackageData.hUCfoIVy = {
+PackageData.GFSURPyY = {
     Namespace = "Core.RestApi.RestApiResponse",
     Name = "RestApiResponse",
     FullName = "RestApiResponse.lua",
     IsRunnable = true,
     Data = [[
 local RestApiResponse = {}
-function RestApiResponse:RestApiResponse(header, body)
+function RestApiResponse:__call(body, header)
     self.Headers = header or {}
     self.Body = body
     self.WasSuccessfull = self.Headers.Code < 300
@@ -618,11 +638,14 @@ function RestApiResponse:ExtractData()
         Body = self.Body
     }
 end
-return Utils.Class.CreateClass(RestApiResponse, "RestApiResponse")
+function RestApiResponse.Static__CreateFromNetworkContext(context)
+    return RestApiResponse(context.Body.Headers, context.Body.Body)
+end
+return Utils.Class.CreateClass(RestApiResponse, "Core.RestApi.RestApiResponse")
 ]]
 }
 
-PackageData.JjmrMBtY = {
+PackageData.hUCfoIVy = {
     Namespace = "Core.RestApi.StatusCodes",
     Name = "StatusCodes",
     FullName = "StatusCodes.lua",
@@ -709,7 +732,7 @@ return StatusCodes
 
 -- ########## Core.RestApi ########## --
 
-PackageData.kyXCjvQy = {
+PackageData.JjmrMBtY = {
     Namespace = "Core.Json",
     Name = "Json",
     FullName = "Json.lua",
@@ -1014,7 +1037,7 @@ return json
 ]]
 }
 
-PackageData.LOHNHonY = {
+PackageData.kyXCjvQy = {
     Namespace = "Core.Logger",
     Name = "Logger",
     FullName = "Logger.lua",
@@ -1073,15 +1096,15 @@ local function tableToLineTree(node, maxLevel, properties, level, padding)
     end
     return lines
 end
-function Logger:Logger(name, logLevel, onLog, onClear)
-    self.LogLevel = logLevel
+function Logger:__call(name, logLevel, onLog, onClear)
+    self.logLevel = logLevel
     self.Name = (string.gsub(name, " ", "_") or "")
     self.OnLog = onLog or Event()
     self.OnClear = onClear or Event()
 end
 function Logger:subLogger(name)
     name = self.Name .. "." .. name
-    local logger = Logger(name, self.LogLevel)
+    local logger = Logger(name, self.logLevel)
     return self:CopyListenersTo(logger)
 end
 function Logger:CopyListenersTo(logger)
@@ -1090,14 +1113,14 @@ function Logger:CopyListenersTo(logger)
     return logger
 end
 function Logger:Log(message, logLevel)
-    if logLevel < self.LogLevel then
+    if logLevel < self.logLevel then
         return
     end
     message = "[" .. self.Name .. "] " .. message
     self.OnLog:Trigger(nil, message)
 end
 function Logger:LogTable(t, logLevel, maxLevel, properties)
-    if logLevel < self.LogLevel then
+    if logLevel < self.logLevel then
         return
     end
     if t == nil or type(t) ~= "table" then return end
@@ -1109,7 +1132,7 @@ function Logger:Clear()
     self.OnClear:Trigger()
 end
 function Logger:FreeLine(logLevel)
-    if logLevel < self.LogLevel then
+    if logLevel < self.logLevel then
         return
     end
     self.OnLog:Trigger(self, "")
@@ -1137,7 +1160,181 @@ end
 function Logger:setErrorLogger()
     _G.__errorLogger = self
 end
-return Utils.Class.CreateClass(Logger, "Logger")
+return Utils.Class.CreateClass(Logger, "Core.Logger")
+]]
+}
+
+PackageData.LOHNHonY = {
+    Namespace = "Core.Path",
+    Name = "Path",
+    FullName = "Path.lua",
+    IsRunnable = true,
+    Data = [[
+local Path = {}
+function Path.Static__IsNode(path)
+    if path:find("/") then
+        return false
+    end
+    if path:find("\\") then
+        return false
+    end
+    if path:find("|") then
+        return false
+    end
+    return true
+end
+function Path:__call(path)
+    if not path or path == "" then
+        self.path = ""
+        return
+    end
+    self.path = path:gsub("\\", "/")
+end
+function Path:GetPath()
+    return self.path
+end
+function Path:Append(node)
+    local pos = self.path:len() - self.path:reverse():find("/")
+    if node == "." or node == ".." or Path.Static__IsNode(node) then
+        if pos ~= self.path:len() - 1 then
+            self.path = self.path .. "/"
+        end
+        self.path = self.path .. node
+    elseif node == "/" then
+        self.path = self.path .. node
+    end
+    return self
+end
+function Path:GetRoot()
+    local str = self:Relative().path
+    local slash = str:find("/")
+    return str:sub(0, slash)
+end
+function Path:GetParentFolderPath()
+    local pos = self.path:reverse():find("/")
+    if not pos then
+        return Path()
+    end
+    local path = self.path:sub(0, self.path:len() - pos)
+    return Path(path)
+end
+function Path:IsSingle()
+    local pos = self.path:find("/", 1)
+    return (pos == 0 and self.path:len() > 0 and self.path ~= "/")
+end
+function Path:IsAbsolute()
+    return self.path:sub(0, 1) == "/"
+end
+function Path:IsEmpty()
+    return (self.path:len() == 1 and self:IsAbsolute()) or self.path:len() == 0
+end
+function Path:IsRoot()
+    return self.path == "/"
+end
+function Path:IsDir()
+    local reversedPath = self.path:reverse()
+    return reversedPath:sub(0, 1) == "/"
+end
+function Path:StartsWith(other)
+    if other:IsAbsolute() then
+        other = other:Absolute()
+    else
+        other = other:Relative()
+    end
+    return self.path:sub(0, other.path:len()) == other.path
+end
+function Path:GetFileName()
+    local slash = (self.path:reverse():find("/") or 0) - 2
+    if slash == nil or slash == -2 then
+        return self.path
+    end
+    return self.path:sub(self.path:len() - slash)
+end
+function Path:GetFileExtension()
+    local name = self:GetFileName()
+    local pos = (name:reverse():find("%.") or 0) - 1
+    if pos == nil or pos == -1 then
+        return ""
+    end
+    return name:sub(name:len() - pos)
+end
+function Path:GetFileStem()
+    local name = self:GetFileName()
+    local pos = (name:reverse():find("%.") or 0)
+    local lenght = name:len()
+    if pos == lenght then
+        return name
+    end
+    return name:sub(0, lenght - pos)
+end
+function Path:Normalize()
+    local newPath = Path()
+    if self:IsAbsolute() then
+        newPath.path = "/"
+    end
+    local posStart = 0
+    local posEnd = self.path:find("/", posStart)
+    while true do
+        local node = self.path:sub(posStart, posEnd - 1)
+        posStart = posEnd + 1
+        if node == "." then
+        elseif node == ".." then
+            local pos = newPath.path:len() - newPath.path:reverse():find("/")
+            if pos == nil then
+                newPath.path = ""
+            else
+                newPath.path = newPath.path:sub(pos)
+            end
+            if newPath.path:len() < 1 and self:IsAbsolute() then
+                newPath.path = "/"
+            end
+        elseif Path.Static__IsNode(node) then
+            if newPath.path:len() > 0 and newPath.path:reverse():find("/") ~= 1 then
+                newPath.path = newPath.path .. "/"
+            end
+            newPath.path = newPath.path .. node
+        end
+        if posEnd == self.path:len() + 1 then
+            break
+        end
+        local newPosEnd = self.path:find("/", posStart)
+        if newPosEnd == nil then
+            posStart = posEnd + 1
+            newPosEnd = self.path:len() + 1
+        end
+        posEnd = newPosEnd
+    end
+    return newPath
+end
+function Path:Absolute()
+    if self:IsAbsolute() then
+        return Path(self:Normalize().path)
+    end
+    return Path("/" .. self:Normalize().path)
+end
+function Path:Relative()
+    if self:IsAbsolute() then
+        return Path(self:Normalize().path:sub(1))
+    end
+    return self:Normalize()
+end
+function Path:Extend(pathExtension)
+    local path = self.path
+    local pos = path:len() - path:reverse():find("/")
+    if pathExtension == "." or pathExtension == ".." or Path.Static__IsNode(pathExtension) then
+        if pos ~= path:len() - 1 then
+            path = path .. "/"
+        end
+        path = path .. pathExtension
+    elseif pathExtension == "/" then
+        path = path .. pathExtension
+    end
+    return Path(path)
+end
+function Path:Copy()
+    return Path(self.path)
+end
+return Utils.Class.CreateClass(Path, "Core.Path")
 ]]
 }
 
@@ -1154,9 +1351,10 @@ function Task:invokeFunc(...)
     end
     return coroutine.yield(self.func(...))
 end
-function Task:Task(func, parent)
+function Task:__call(func, parent)
     self.func = func
     self.parent = parent
+    self.closed = false
 end
 function Task:IsSuccess()
     return self.success
@@ -1176,21 +1374,25 @@ end
 function Task:Execute(...)
     self.thread = coroutine.create(self.invokeFunc)
     self.success, self.results = extractData(coroutine.resume(self.thread, self, ...))
-    self.noError, self.errorObject = coroutine.close(self.thread)
     return table.unpack(self.results)
 end
 function Task:ExecuteDynamic(args)
     self.thread = coroutine.create(self.invokeFunc)
     self.success, self.results = extractData(coroutine.resume(self.thread, self, table.unpack(args)))
-    self.noError, self.errorObject = coroutine.close(self.thread)
     return self.results
 end
+function Task:Close()
+    if self.closed then return end
+    self.noError, self.errorObject = coroutine.close(self.thread)
+    self.closed = true
+end
 function Task:LogError(logger)
+    self:Close()
     if not self.noError and logger then
         logger:LogError("execution error: \n" .. debug.traceback(self.thread, self.errorObject) .. debug.traceback():sub(17))
     end
 end
-return Utils.Class.CreateClass(Task, "Task")
+return Utils.Class.CreateClass(Task, "Core.Task")
 ]]
 }
 

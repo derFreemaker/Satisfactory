@@ -2,7 +2,7 @@ local PackageData = {}
 
 -- ########## FactoryControl.Controller ##########
 
-PackageData.oHMuZVFz = {
+PackageData.eyRiSnwa = {
     Namespace = "FactoryControl.Controller.__main",
     Name = "__main",
     FullName = "__main.lua",
@@ -15,7 +15,7 @@ local Main = {}
 function Main:Configure()
     EventPullAdapter:Initialize(self.Logger:subLogger("EventPullAdapter"))
     local netClient = NetworkClient(self.Logger:subLogger("NetworkClient"))
-    self.apiClient = FactoryControlRestApiClient(netClient)
+    self.apiClient = FactoryControlRestApiClient(netClient, self.Logger:subLogger("ApiClient"))
     self.Logger:LogDebug("setup apiClient")
 end
 function Main:Run()
