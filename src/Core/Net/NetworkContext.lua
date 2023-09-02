@@ -23,4 +23,4 @@ function NetworkContext:NetworkContext(data)
     self.Body = Json.decode(data[7])
 end
 
-return Utils.Class.CreateClass(NetworkContext, "NetworkContext")
+return Utils.Class.CreateClass(NetworkContext, "Core.Net.NetworkContext")

@@ -1,15 +1,17 @@
-local RestApiClient = require("Core.RestApi.Client.RestApiClient")
+local RestApiNetworkClient = require("src.Core.RestApi.Client.RestApiNetworkClient")
 local RestApiRequest = require("Core.RestApi.RestApiRequest")
 
 ---@class FactoryControl.Core.FactoryControlRestApiClient : object
 ---@field private restApiClient Core.RestApi.Client.RestApiClient
----@overload fun(netClient: Core.Net.NetworkClient) : FactoryControl.Core.FactoryControlRestApiClient
+---@field private logger Core.Logger
+---@overload fun(netClient: Core.Net.NetworkClient, logger: Core.Logger) : FactoryControl.Core.FactoryControlRestApiClient
 local FactoryControlRestApiClient = {}
 
 ---@private
 ---@param netClient Core.Net.NetworkClient
-function FactoryControlRestApiClient:FactoryControlRestApiClient(netClient)
-    self.restApiClient = RestApiClient(Config.ServerIPAddress, Config.ServerPort, 1111, netClient)
+---@param logger Core.Logger
+function FactoryControlRestApiClient:FactoryControlRestApiClient(netClient, logger)
+    self.restApiClient = RestApiNetworkClient(Config.ServerIPAddress, Config.ServerPort, 1111, netClient, self.logger:subLogger("RestApiClient"))
 end
 
 ---@private

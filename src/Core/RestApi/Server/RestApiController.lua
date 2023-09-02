@@ -6,34 +6,35 @@ local RestApiRequest = require("Core.RestApi.RestApiRequest")
 
 ---@class Core.RestApi.Server.RestApiController : object
 ---@field Endpoints Dictionary<string, Core.RestApi.Server.RestApiEndpoint>
----@field NetPort Core.Net.NetworkPort
----@field Logger Core.Logger
----@overload fun(netPort: Core.Net.NetworkPort) : Core.RestApi.Server.RestApiController
+---@field private netPort Core.Net.NetworkPort
+---@field private logger Core.Logger
+---@overload fun(netPort: Core.Net.NetworkPort, logger: Core.Logger) : Core.RestApi.Server.RestApiController
 local RestApiController = {}
 
 ---@private
 ---@param netPort Core.Net.NetworkPort
-function RestApiController:RestApiController(netPort)
+---@param logger Core.Logger
+function RestApiController:RestApiController(netPort, logger)
     self.Endpoints = {}
-    self.NetPort = netPort
-    self.Logger = netPort.Logger:subLogger("RestApiController")
+    self.netPort = netPort
+    self.logger = logger
     netPort:AddListener("Rest-Request", Task(self.onMessageRecieved, self))
 end
 
 ---@param context Core.Net.NetworkContext
 function RestApiController:onMessageRecieved(context)
     local request = RestApiRequest.Static__CreateFromNetworkContext(context)
-    self.Logger:LogDebug("recieved request on endpoint: '" .. request.Endpoint .. "'")
+    self.logger:LogDebug("recieved request on endpoint: '" .. request.Endpoint .. "'")
     local endpoint = self:GetEndpoint(request.Method, request.Endpoint)
     if endpoint == nil then
-        self.Logger:LogTrace("found no endpoint")
+        self.logger:LogTrace("found no endpoint")
         if context.Header.ReturnPort then
-            self.NetPort.NetClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort,
+            self.netPort:GetNetClient():SendMessage(context.SenderIPAddress, context.Header.ReturnPort,
                 "Rest-Response", nil, RestApiResponseTemplates.NotFound("Unable to find endpoint"):ExtractData())
         end
         return
     end
-    endpoint:Execute(request, context, self.NetPort.NetClient)
+    endpoint:Execute(request, context, self.netPort:GetNetClient())
 end
 
 ---@param method Core.RestApi.RestApiMethod
@@ -56,20 +57,20 @@ function RestApiController:AddEndpoint(method , name, task)
     if self:GetEndpoint(method, name) ~= nil then
         error("Endpoint allready exists")
     end
-    self.Endpoints[method .. "__" .. name] = RestApiEndpoint(task, self.Logger:subLogger("RestApiEndpoint[" .. name .. "]"))
+    self.Endpoints[method .. "__" .. name] = RestApiEndpoint(task, self.logger:subLogger("RestApiEndpoint[" .. name .. "]"))
     return self
 end
 
----@param endpointBase Core.RestApi.Server.RestApiEndpointBase
-function RestApiController:AddRestApiEndpointBase(endpointBase)
-    for name, func in pairs(endpointBase) do
+---@param endpoint Core.RestApi.Server.RestApiEndpointBase
+function RestApiController:AddRestApiEndpointBase(endpoint)
+    for name, func in pairs(endpoint) do
         if type(name) == "string" and type(func) == "function" then
             local method, endpointName = name:match("^(.+)__(.+)$")
-            if method ~= nil and endpointBase ~= nil and RestApiMethod[method] == method then
-                self:AddEndpoint(method, endpointName, Task(func, endpointBase))
+            if method ~= nil and endpoint ~= nil and RestApiMethod[method] then
+                self:AddEndpoint(method, endpointName, Task(func, endpoint))
             end
         end
     end
 end
 
-return Utils.Class.CreateClass(RestApiController, "RestApiController")
+return Utils.Class.CreateClass(RestApiController, "Core.RestApi.Server.RestApiController")

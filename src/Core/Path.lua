@@ -1,5 +1,4 @@
 ---@class Core.Path
----@field private sepperatorPattern string
 ---@field private path string
 ---@overload fun(path: string?) : Core.Path
 local Path = {}
@@ -22,7 +21,6 @@ end
 ---@private
 ---@param path string?
 function Path:Path(path)
-    self.sepperatorPattern = "[\\\\\\/\\|]"
     if not path or path == "" then
         self.path = ""
         return
@@ -214,4 +212,4 @@ function Path:Copy()
     return Path(self.path)
 end
 
-return Utils.Class.CreateClass(Path, "Path")
+return Utils.Class.CreateClass(Path, "Core.Path")

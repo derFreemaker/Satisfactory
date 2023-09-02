@@ -1,7 +1,7 @@
 local RestApiResponseTemplates = require("Core.RestApi.Server.RestApiResponseTemplates")
 
 ---@class Core.RestApi.Server.RestApiEndpointBase : object
----@field Templates Core.RestApi.Server.RestApiEndpointBase.RestApiResponseTemplates
+---@field protected Templates Core.RestApi.Server.RestApiEndpointBase.RestApiResponseTemplates
 local RestApiEndpointBase = {}
 
 ---@class Core.RestApi.Server.RestApiEndpointBase.RestApiResponseTemplates
@@ -31,4 +31,4 @@ function RestApiEndpointBase.Templates:InternalServerError(message)
     return RestApiResponseTemplates.InternalServerError(message)
 end
 
-return Utils.Class.CreateClass(RestApiEndpointBase, "RestApiControllerBase")
+return Utils.Class.CreateClass(RestApiEndpointBase, "Core.RestApi.Server.RestApiControllerBase")

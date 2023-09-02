@@ -2,8 +2,9 @@ local Event = require("Core.Event.Event")
 
 ---@class Core.Net.NetworkPort : object
 ---@field Port integer | "all"
----@field Events Dictionary<string, Core.Event>
----@field Logger Core.Logger
+---@field private events Dictionary<string, Core.Event>
+---@field private netClient Core.Net.NetworkClient
+---@field private logger Core.Logger
 ---@overload fun(port: integer | "all", logger: Core.Logger, netClient: Core.Net.NetworkClient) : Core.Net.NetworkPort
 local NetworkPort = {}
 
@@ -13,20 +14,30 @@ local NetworkPort = {}
 ---@param netClient Core.Net.NetworkClient
 function NetworkPort:NetworkPort(port, logger, netClient)
     self.Port = port
-    self.Events = {}
-    self.Logger = logger
-    self.NetClient = netClient
+    self.events = {}
+    self.logger = logger
+    self.netClient = netClient
+end
+
+---@return Dictionary<string, Core.Event>
+function NetworkPort:GetEvents()
+    return Utils.Table.Copy(self.events)
+end
+
+---@return Core.Net.NetworkClient
+function NetworkPort:GetNetClient()
+    return self.netClient
 end
 
 ---@param context Core.Net.NetworkContext
 function NetworkPort:Execute(context)
-    self.Logger:LogTrace("got triggered with event: '".. context.EventName .."'")
-    for name, event in pairs(self.Events) do
+    self.logger:LogTrace("got triggered with event: '".. context.EventName .."'")
+    for name, event in pairs(self.events) do
         if name == context.EventName or name == "all" then
-            event:Trigger(self.Logger, context)
+            event:Trigger(self.logger, context)
         end
         if #event == 0 then
-            self.Events[name] = nil
+            self.events[name] = nil
         end
     end
 end
@@ -35,13 +46,13 @@ end
 ---@param eventName string | "all"
 ---@return Core.Event
 function NetworkPort:GetEvent(eventName)
-    for name, event in pairs(self.Events) do
+    for name, event in pairs(self.events) do
         if name == eventName then
             return event
         end
     end
     local event = Event()
-    self.Events[eventName] = event
+    self.events[eventName] = event
     return event
 end
 
@@ -68,15 +79,15 @@ NetworkPort.Once = NetworkPort.AddListenerOnce
 function NetworkPort:OpenPort()
     local port = self.Port
     if type(port) == "number" then
-        self.NetClient:OpenPort(port)
+        self.netClient:OpenPort(port)
     end
 end
 
 function NetworkPort:ClosePort()
     local port = self.Port
     if type(port) == "number" then
-        self.NetClient:ClosePort(port)
+        self.netClient:ClosePort(port)
     end
 end
 
-return Utils.Class.CreateClass(NetworkPort, "NetworkPort")
+return Utils.Class.CreateClass(NetworkPort, "Core.Net.NetworkPort")

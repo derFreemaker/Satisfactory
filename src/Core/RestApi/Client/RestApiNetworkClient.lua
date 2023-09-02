@@ -6,7 +6,7 @@ local RestApiResponse = require("Core.RestApi.RestApiResponse")
 ---@field ReturnPort integer
 ---@field NetClient Core.Net.NetworkClient
 ---@field Logger Core.Logger
----@overload fun(serverIPAddress: string, serverPort: integer, returnPort: integer, netClient: Core.Net.NetworkClient) : Core.RestApi.Client.RestApiClient
+---@overload fun(serverIPAddress: string, serverPort: integer, returnPort: integer, netClient: Core.Net.NetworkClient, logger: Core.Logger) : Core.RestApi.Client.RestApiClient
 local RestApiClient = {}
 
 ---@private
@@ -14,12 +14,13 @@ local RestApiClient = {}
 ---@param serverPort integer
 ---@param returnPort integer
 ---@param netClient Core.Net.NetworkClient
-function RestApiClient:RestApiClient(serverIPAddress, serverPort, returnPort, netClient)
+---@param logger Core.Logger
+function RestApiClient:RestApiClient(serverIPAddress, serverPort, returnPort, netClient, logger)
     self.ServerIPAddress = serverIPAddress
     self.ServerPort = serverPort
     self.ReturnPort = returnPort
     self.NetClient = netClient
-    self.Logger = netClient.Logger:subLogger("RestApiClient")
+    self.Logger = logger
 end
 
 ---@param request Core.RestApi.RestApiRequest
@@ -31,4 +32,4 @@ function RestApiClient:request(request)
     return response
 end
 
-return Utils.Class.CreateClass(RestApiClient, "RestApiClient")
+return Utils.Class.CreateClass(RestApiClient, "Core.RestApi.Client.RestApiNetworkClient")

@@ -12,7 +12,7 @@ local Event = require("Core.Event.Event")
 ---@field OnLog Core.Event
 ---@field OnClear Core.Event
 ---@field Name string
----@field LogLevel Core.Logger.LogLevel
+---@field private logLevel Core.Logger.LogLevel
 ---@overload fun(name: string, logLevel: Core.Logger.LogLevel, onLog: Core.Event?, onClear: Core.Event?) : Core.Logger
 local Logger = {}
 
@@ -84,7 +84,7 @@ end
 ---@param onLog Core.Event?
 ---@param onClear Core.Event?
 function Logger:Logger(name, logLevel, onLog, onClear)
-    self.LogLevel = logLevel
+    self.logLevel = logLevel
     self.Name = (string.gsub(name, " ", "_") or "")
     self.OnLog = onLog or Event()
     self.OnClear = onClear or Event()
@@ -94,7 +94,7 @@ end
 ---@return Core.Logger
 function Logger:subLogger(name)
     name = self.Name .. "." .. name
-    local logger = Logger(name, self.LogLevel)
+    local logger = Logger(name, self.logLevel)
     return self:CopyListenersTo(logger)
 end
 
@@ -109,7 +109,7 @@ end
 ---@param message string
 ---@param logLevel Core.Logger.LogLevel
 function Logger:Log(message, logLevel)
-    if logLevel < self.LogLevel then
+    if logLevel < self.logLevel then
         return
     end
 
@@ -122,7 +122,7 @@ end
 ---@param maxLevel integer?
 ---@param properties string[]?
 function Logger:LogTable(t, logLevel, maxLevel, properties)
-    if logLevel < self.LogLevel then
+    if logLevel < self.logLevel then
         return
     end
 
@@ -138,7 +138,7 @@ end
 
 ---@param logLevel Core.Logger.LogLevel
 function Logger:FreeLine(logLevel)
-    if logLevel < self.LogLevel then
+    if logLevel < self.logLevel then
         return
     end
 
@@ -180,4 +180,4 @@ function Logger:setErrorLogger()
     _G.__errorLogger = self
 end
 
-return Utils.Class.CreateClass(Logger, "Logger")
+return Utils.Class.CreateClass(Logger, "Core.Logger")

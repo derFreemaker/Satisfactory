@@ -14,7 +14,7 @@ function Main:Configure()
     local netClient = NetworkClient(self.Logger:subLogger("NetworkClient"))
     local netPort = netClient:CreateNetworkPort(80)
     netPort:OpenPort()
-    self.apiController = RestApiController(netPort)
+    self.apiController = RestApiController(netPort, self.Logger:subLogger("RestApiController"))
     self.apiController:AddRestApiEndpointBase(ControllerEndpoints())
     self.Logger:LogDebug("setup endpoints")
 end

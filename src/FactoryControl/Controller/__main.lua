@@ -10,7 +10,7 @@ function Main:Configure()
     EventPullAdapter:Initialize(self.Logger:subLogger("EventPullAdapter"))
 
     local netClient = NetworkClient(self.Logger:subLogger("NetworkClient"))
-    self.apiClient = FactoryControlRestApiClient(netClient)
+    self.apiClient = FactoryControlRestApiClient(netClient, self.Logger:subLogger("ApiClient"))
     self.Logger:LogDebug("setup apiClient")
 end
 

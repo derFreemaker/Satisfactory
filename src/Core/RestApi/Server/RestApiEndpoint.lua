@@ -39,4 +39,4 @@ function RestApiEndpoint:Execute(request, context, netClient)
     end
 end
 
-return Utils.Class.CreateClass(RestApiEndpoint, "RestApiEndpoint")
+return Utils.Class.CreateClass(RestApiEndpoint, "Core.RestApi.Server.RestApiEndpoint")

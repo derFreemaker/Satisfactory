@@ -5,7 +5,7 @@ local NetworkPort = require("Core.Net.NetworkPort")
 local NetworkContext = require("Core.Net.NetworkContext")
 
 ---@class Core.Net.NetworkClient : object
----@field Logger Core.Logger
+---@field private Logger Core.Logger
 ---@field private ports Dictionary<integer | "all", Core.Net.NetworkPort>
 ---@field private networkCard FicsIt_Networks.Components.FINComputerMod.NetworkCard
 ---@overload fun(logger: Core.Logger, networkCard: FicsIt_Networks.Components.FINComputerMod.NetworkCard?) : Core.Net.NetworkClient
@@ -39,7 +39,7 @@ function NetworkClient:networkMessageRecieved(data)
         if port.Port == context.Port or port.Port == "all" then
             port:Execute(context)
         end
-        if Utils.Table.Count(port.Events) == 0 then
+        if Utils.Table.Count(port:GetEvents()) == 0 then
             port:ClosePort()
             self.ports[i] = nil
         end
@@ -150,4 +150,4 @@ function NetworkClient:BroadCastMessage(port, eventName, header, body)
     self.networkCard:broadcast(port, eventName, Json.encode(header or {}), Json.encode(body))
 end
 
-return Utils.Class.CreateClass(NetworkClient, "NetworkClient")
+return Utils.Class.CreateClass(NetworkClient, "Core.Net.NetworkClient")

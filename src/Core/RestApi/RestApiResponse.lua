@@ -30,4 +30,4 @@ function RestApiResponse.Static__CreateFromNetworkContext(context)
     return RestApiResponse(context.Body.Headers, context.Body.Body)
 end
 
-return Utils.Class.CreateClass(RestApiResponse, "RestApiResponse")
+return Utils.Class.CreateClass(RestApiResponse, "Core.RestApi.RestApiResponse")

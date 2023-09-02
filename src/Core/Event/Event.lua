@@ -98,4 +98,4 @@ function Event:CopyTo(event)
     return event
 end
 
-return Utils.Class.CreateClass(Event, "Event")
+return Utils.Class.CreateClass(Event, "Core.Event")

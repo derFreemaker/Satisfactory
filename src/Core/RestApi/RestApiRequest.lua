@@ -33,4 +33,4 @@ function RestApiRequest.Static__CreateFromNetworkContext(context)
     return RestApiRequest(context.Body.Method, context.Body.Endpoint, context.Body.Headers, context.Body.Body)
 end
 
-return Utils.Class.CreateClass(RestApiRequest, "RestApiRequest")
+return Utils.Class.CreateClass(RestApiRequest, "Core.RestApi.RestApiRequest")
