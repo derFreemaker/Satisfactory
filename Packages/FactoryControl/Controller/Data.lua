@@ -2,7 +2,7 @@ local PackageData = {}
 
 -- ########## FactoryControl.Controller ##########
 
-PackageData.eyRiSnwa = {
+PackageData.MFYoiWSx = {
     Namespace = "FactoryControl.Controller.__main",
     Name = "__main",
     FullName = "__main.lua",

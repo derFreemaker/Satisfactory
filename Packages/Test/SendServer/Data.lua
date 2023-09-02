@@ -2,7 +2,7 @@ local PackageData = {}
 
 -- ########## Test.SendServer ##########
 
-PackageData.QKAARTsB = {
+PackageData.MFYoiWSx = {
     Namespace = "Test.SendServer.__main",
     Name = "__main",
     FullName = "__main.lua",

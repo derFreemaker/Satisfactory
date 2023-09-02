@@ -1,4 +1,4 @@
-local DNSEndpoints = require("DNS.Endpoints")
+local DNSEndpoints = require("DNS.Server.Endpoints")
 local NetworkClient = require("Core.Net.NetworkClient")
 local Task = require("Core.Task")
 
@@ -22,9 +22,9 @@ function Main:Configure()
     local netClient = NetworkClient(dnsLogger:subLogger("NetworkClient"))
     self.netPort = netClient:CreateNetworkPort(53)
     self.netPort:AddListener("GetDNSServerAddress", Task(self.GetDNSServerAddress, self))
-
     self.netPort:OpenPort()
-    self.endpoints = DNSEndpoints(self.Logger:subLogger("DNS.Endpoints"))
+
+    self.endpoints = DNSEndpoints(self.Logger:subLogger("Endpoints"))
 end
 
 function Main:Run()

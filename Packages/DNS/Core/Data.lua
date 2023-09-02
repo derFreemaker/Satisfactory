@@ -6,7 +6,7 @@ local PackageData = {}
 
 -- ########## DNS.Core.Entities.Address ##########
 
-PackageData.vvWJKhpz = {
+PackageData.PksKdJNx = {
     Namespace = "DNS.Core.Entities.Address.Address",
     Name = "Address",
     FullName = "Address.lua",
@@ -33,7 +33,7 @@ return Utils.Class.CreateClass(Address, "DNS.Entities.Address")
 ]]
 }
 
-PackageData.XKHUhbMZ = {
+PackageData.qzdVACkX = {
     Namespace = "DNS.Core.Entities.Address.Create",
     Name = "Create",
     FullName = "Create.lua",

@@ -2,7 +2,7 @@ local PackageData = {}
 
 -- ########## Test.RecieveServer ##########
 
-PackageData.OfgeWgyB = {
+PackageData.MFYoiWSx = {
     Namespace = "Test.RecieveServer.__main",
     Name = "__main",
     FullName = "__main.lua",

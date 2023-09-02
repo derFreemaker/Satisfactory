@@ -6,7 +6,7 @@ local PackageData = {}
 
 -- ########## FactoryControl.Core.Entities ########## --
 
-PackageData.HsWQlUOA = {
+PackageData.oVIzFPpX = {
     Namespace = "FactoryControl.Core.FactoryControlApiClient",
     Name = "FactoryControlApiClient",
     FullName = "FactoryControlApiClient.lua",

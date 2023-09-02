@@ -4,7 +4,7 @@ local PackageData = {}
 
 -- ########## FactoryControl.Server.Endpoints ##########
 
-PackageData.llbxDAga = {
+PackageData.oVIzFPpX = {
     Namespace = "FactoryControl.Server.Endpoints.ControllerEndpoints",
     Name = "ControllerEndpoints",
     FullName = "ControllerEndpoints.lua",
@@ -21,7 +21,7 @@ return Utils.Class.CreateSubClass(ControllerEndpoints, "ControllerEndpoints", Re
 
 -- ########## FactoryControl.Server.Endpoints ########## --
 
-PackageData.MBLIbtDA = {
+PackageData.PksKdJNx = {
     Namespace = "FactoryControl.Server.__main",
     Name = "__main",
     FullName = "__main.lua",

@@ -2,7 +2,7 @@ local PackageData = {}
 
 -- ########## DNS.Server ##########
 
-PackageData.ZpbqcOHZ = {
+PackageData.MFYoiWSx = {
     Namespace = "DNS.Server.AddressDatabase",
     Name = "AddressDatabase",
     FullName = "AddressDatabase.lua",
@@ -51,7 +51,7 @@ return Utils.Class.CreateClass(AddressDatabase, "DNS.Server.AddressDatabase")
 ]]
 }
 
-PackageData.AEMBAHeA = {
+PackageData.oVIzFPpX = {
     Namespace = "DNS.Server.Endpoints",
     Name = "Endpoints",
     FullName = "Endpoints.lua",
@@ -101,13 +101,13 @@ return Utils.Class.CreateClass(Endpoints, "DNS.Endpoints", require("Core.RestApi
 ]]
 }
 
-PackageData.bTwMXABa = {
+PackageData.PksKdJNx = {
     Namespace = "DNS.Server.__main",
     Name = "__main",
     FullName = "__main.lua",
     IsRunnable = true,
     Data = [[
-local DNSEndpoints = require("DNS.Endpoints")
+local DNSEndpoints = require("DNS.Server.Endpoints")
 local NetworkClient = require("Core.Net.NetworkClient")
 local Task = require("Core.Task")
 local Main = {}
@@ -123,7 +123,7 @@ function Main:Configure()
     self.netPort = netClient:CreateNetworkPort(53)
     self.netPort:AddListener("GetDNSServerAddress", Task(self.GetDNSServerAddress, self))
     self.netPort:OpenPort()
-    self.endpoints = DNSEndpoints(self.Logger:subLogger("DNS.Endpoints"))
+    self.endpoints = DNSEndpoints(self.Logger:subLogger("Endpoints"))
 end
 function Main:Run()
     self.eventPullAdapter:Run()

@@ -2,7 +2,7 @@ local PackageData = {}
 
 -- ########## DNS.Client ##########
 
-PackageData.rmhQUIAz = {
+PackageData.MFYoiWSx = {
     Namespace = "DNS.Client.DNSClient",
     Name = "DNSClient",
     FullName = "DNSClient.lua",
