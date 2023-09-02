@@ -22,6 +22,7 @@ function Endpoints:__call(logger)
     self.apiController:AddRestApiEndpointBase(self)
     self.logger = logger
     netPort:OpenPort()
+    logger:LogDebug("setup DNS Server endpoints")
 end
 
 
