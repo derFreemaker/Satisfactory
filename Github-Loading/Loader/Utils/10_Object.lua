@@ -46,18 +46,27 @@ local metatable = {
         local metatable = getmetatable(obj)
         metatable.__call = nil
         metatable.ConstructorState = 2
-        for key, value in pairs(metatable.HiddenMembers) do
+        for key, value in pairs(metatable.Functions) do
             obj[key] = value
         end
-        metatable.HiddenMembers = nil
+        for key, value in pairs(metatable.Properties) do
+            obj[key] = value
+        end
+        metatable.Properties = nil
         metatable.ConstructorState = 3
         return obj
     end,
-    HiddenMembers = {}
+    HiddenMembers = {},
+    MetaMethods = {},
+    Functions = {}
 }
 
 for key, value in pairs(Object) do
-    metatable.HiddenMembers[key] = value
+    if type(value) == "function" then
+        metatable.Functions[key] = value
+    else
+        metatable.Properties[key] = value
+    end
     Object[key] = nil
 end
 
