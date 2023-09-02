@@ -78,6 +78,10 @@ local function tableToLineTree(node, maxLevel, properties, level, padding)
     return lines
 end
 
+function Logger:setErrorLogger()
+    _G.__errorLogger = self
+end
+
 ---@private
 ---@param name string
 ---@param logLevel Core.Logger.LogLevel
@@ -173,11 +177,6 @@ end
 function Logger:LogError(message)
     if message == nil then return end
     self:Log("ERROR " .. tostring(message), 4)
-end
-
-
-function Logger:setErrorLogger()
-    _G.__errorLogger = self
 end
 
 return Utils.Class.CreateClass(Logger, "Core.Logger")

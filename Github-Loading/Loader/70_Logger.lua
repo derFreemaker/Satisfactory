@@ -83,6 +83,75 @@ local function tableToLineTree(node, maxLevel, properties, level, padding)
     return lines
 end
 
+function Logger:setErrorLogger()
+    _G.__errorLogger = self
+end
+
+local printFunc = print
+---@param ... any
+function NewPrint(...)
+    local args = { ... }
+    local message
+    for i, arg in pairs(args) do
+        if i == 1 then
+            message = tostring(arg)
+        else
+            message = message .. " " .. tostring(arg)
+        end
+    end
+    if _G.__errorLogger then
+        pcall(_G.__errorLogger.Log, _G.__errorLogger, "[PRINT]: " .. message, 10)
+    end
+    printFunc(...)
+end
+
+print = NewPrint
+
+local errorFunc = error
+---@param message string
+---@param level integer?
+function error(message, level)
+    message = message or "no error message"
+    level = level or 1
+    level = level + 1
+    if _G.__errorLogger then
+        local debugInfo = debug.getinfo(level)
+        local errorMessage = debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
+        errorMessage = debug.traceback(errorMessage, level + 1)
+        pcall(_G.__errorLogger.LogError, _G.__errorLogger, errorMessage)
+    end
+    errorFunc(message, level)
+end
+
+local asserFunc = assert
+---@generic T
+---@param condition T
+---@param message? any
+---@param ... any
+---@return T, any ...
+function assert(condition, message, ...)
+    message = message or "assertation failed"
+    if not condition and _G.__errorLogger then
+        local debugInfo = debug.getinfo(2)
+        local errorMessage = debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
+        errorMessage = debug.traceback(errorMessage, 3)
+        pcall(_G.__errorLogger.LogError, _G.__errorLogger, errorMessage)
+    end
+    return asserFunc(condition, message, ...)
+end
+
+local panicFunc = computer.panic
+---@param errorMsg string
+function computer.panic(errorMsg) ---@diagnostic disable-line
+    if _G.__errorLogger then
+        local debugInfo = debug.getinfo(2)
+        local errorMessage = "PANIC!: " .. debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. errorMsg
+        errorMessage = debug.traceback(errorMessage, 3)
+        pcall(_G.__errorLogger.LogError, _G.__errorLogger, errorMessage)
+    end
+    return panicFunc(errorMsg)
+end
+
 ---@param name string
 ---@param logLevel Github_Loading.Logger.LogLevel
 ---@return Github_Loading.Logger
@@ -138,7 +207,10 @@ function Logger:Log(message, logLevel)
     end
 
     message = "[" .. self.Name .. "] " .. tostring(message)
+    
+    print = printFunc
     self.OnLog:Trigger(nil, message)
+    print = NewPrint
 end
 
 ---@param t table
@@ -197,78 +269,6 @@ end
 function Logger:LogError(message)
     if message == nil then return end
     self:Log("ERROR " .. tostring(message), 4)
-end
-
-
----@param logger Github_Loading.Logger
-function Logger.setErrorLogger(logger)
-    _G.__errorLogger = logger
-end
-
-local printFunc = print
----@param ... any
-function NewPrint(...)
-    local args = { ... }
-    local message
-    for i, arg in pairs(args) do
-        if i == 1 then
-            message = tostring(arg)
-        else
-            message = message .. " " .. tostring(arg)
-        end
-    end
-    if _G.__errorLogger then
-        print = printFunc
-        pcall(_G.__errorLogger.Log, _G.__errorLogger, "[PRINT]: ".. message, 10)
-        print = NewPrint
-    end
-    return printFunc(...)
-end
-print = NewPrint
-
-local errorFunc = error
----@param message string
----@param level integer?
-function error(message, level)
-    message = message or "no error message"
-    level = level or 1
-    level = level + 1
-    if _G.__errorLogger then
-        local debugInfo = debug.getinfo(level)
-        local errorMessage = debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
-        errorMessage = debug.traceback(errorMessage, level + 1)
-        pcall(_G.__errorLogger.LogError, _G.__errorLogger, errorMessage)
-    end
-    return errorFunc(message, level)
-end
-
-local asserFunc = assert
----@generic T
----@param condition T
----@param message? any
----@param ... any
----@return T, any ...
-function assert(condition, message, ...)
-    message = message or "assertation failed"
-    if not condition and _G.__errorLogger then
-        local debugInfo = debug.getinfo(2)
-        local errorMessage = debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
-        errorMessage = debug.traceback(errorMessage, 3)
-        pcall(_G.__errorLogger.LogError, _G.__errorLogger, errorMessage)
-    end
-    return asserFunc(condition, message, ...)
-end
-
-local panicFunc = computer.panic
----@param errorMsg string
-function computer.panic(errorMsg) ---@diagnostic disable-line
-    if _G.__errorLogger then
-        local debugInfo = debug.getinfo(2)
-        local errorMessage = "PANIC!: " .. debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. errorMsg
-        errorMessage = debug.traceback(errorMessage, 3)
-        pcall(_G.__errorLogger.LogError, _G.__errorLogger, errorMessage)
-    end
-    return panicFunc(errorMsg)
 end
 
 return Logger
