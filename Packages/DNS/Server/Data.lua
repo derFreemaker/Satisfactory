@@ -62,6 +62,7 @@ local RestApiController = require("Core.RestApi.Server.RestApiController")
 local AddressDatabase = require("DNS.Server.AddressDatabase")
 local Endpoints = {}
 function Endpoints:__call(logger)
+    logger:LogTrace("setting up DNS Server endpoints...")
     local netClient = NetworkClient(logger:subLogger("NetworkClient"))
     local netPort = netClient:CreateNetworkPort(80)
     self.apiController = RestApiController(netPort, logger:subLogger("ApiController"))

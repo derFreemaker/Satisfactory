@@ -465,6 +465,7 @@ function RestApiController:AddEndpoint(method , name, task)
         error("Endpoint allready exists")
     end
     self.Endpoints[method .. "__" .. name] = RestApiEndpoint(task, self.logger:subLogger("RestApiEndpoint[" .. name .. "]"))
+    self.logger:LogTrace("Added endpoint: '" .. name .. "'")
     return self
 end
 function RestApiController:AddRestApiEndpointBase(endpoint)
@@ -528,11 +529,11 @@ local RestApiResponseTemplates = require("Core.RestApi.Server.RestApiResponseTem
 local RestApiEndpointBase = {}
 function RestApiEndpointBase:__pairs()
     local function iterator(tbl, key)
-        local _, value = next(tbl, key)
-        if type(value) == "function" then
-            return value
+        local newKey, value = next(tbl, key)
+        if type(newKey) == "string" and type(value) == "function" then
+            return newKey, value
         end
-        return iterator(tbl, key)
+        return iterator(tbl, newKey)
     end
     return iterator, self, nil
 end
@@ -1106,6 +1107,9 @@ local function tableToLineTree(node, maxLevel, properties, level, padding)
     end
     return lines
 end
+function Logger:setErrorLogger()
+    _G.__errorLogger = self
+end
 function Logger:__call(name, logLevel, onLog, onClear)
     self.logLevel = logLevel
     self.Name = (string.gsub(name, " ", "_") or "")
@@ -1166,9 +1170,6 @@ end
 function Logger:LogError(message)
     if message == nil then return end
     self:Log("ERROR " .. tostring(message), 4)
-end
-function Logger:setErrorLogger()
-    _G.__errorLogger = self
 end
 return Utils.Class.CreateClass(Logger, "Core.Logger")
 ]]
