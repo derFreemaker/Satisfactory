@@ -12,6 +12,7 @@ local Main = {}
 function Main:GetDNSServerAddress(context)
     local netClient = self.netPort:GetNetClient()
     local id = netClient:GetId()
+    self.Logger:LogDebug(context.SenderIPAddress .. " requested DNS Server IP Address")
     netClient:SendMessage(context.SenderIPAddress, 53, "ReturnDNSServerAddress", id)
 end
 
@@ -23,6 +24,7 @@ function Main:Configure()
     self.netPort = netClient:CreateNetworkPort(53)
     self.netPort:AddListener("GetDNSServerAddress", Task(self.GetDNSServerAddress, self))
     self.netPort:OpenPort()
+    self.Logger:LogDebug("setup get DNS Server IP Address")
 
     self.endpoints = DNSEndpoints(self.Logger:subLogger("Endpoints"))
 end
