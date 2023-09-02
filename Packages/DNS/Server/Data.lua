@@ -130,6 +130,7 @@ function Main:Configure()
     self.endpoints = DNSEndpoints(self.Logger:subLogger("Endpoints"))
 end
 function Main:Run()
+    self.Logger:LogInfo("started DNS Server")
     self.eventPullAdapter:Run()
 end
 return Main

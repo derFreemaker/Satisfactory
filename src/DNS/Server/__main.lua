@@ -30,6 +30,7 @@ function Main:Configure()
 end
 
 function Main:Run()
+    self.Logger:LogInfo("started DNS Server")
     self.eventPullAdapter:Run()
 end
 
