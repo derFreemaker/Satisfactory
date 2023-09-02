@@ -47,7 +47,10 @@ local metatableMethods = {
 local function hasStringKey(class, metatable, key, value)
     local splittedKey = String.Split(key, "__")
     if not Table.Contains(splittedKey, "Static") then
-        if type(value) == "function" then
+        if metatableMethods[key] then
+            metatable.MetaMethods[key] = value
+            class[key] = nil
+        elseif type(value) == "function" then
             metatable.Functions[key] = value
             class[key] = nil
         else
