@@ -1,11 +1,14 @@
 {
-    "Lua.diagnostics.globals": [
-        "computer",
-        "findClass",
-        "component",
-        "event",
-        "filesystem",
-        "InternetCard",
-        "ModuleLoader"
-    ]
+  "Lua.diagnostics.globals": [
+    "event",
+    "findClass",
+    "Config",
+    "component",
+    "filesystem",
+    "computer",
+    "findStruct",
+    "findItem",
+    "log"
+  ],
+  "Lua.completion.autoRequire": false
 }
