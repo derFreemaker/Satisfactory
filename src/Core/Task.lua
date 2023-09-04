@@ -72,6 +72,9 @@ function Task:ExecuteDynamic(args)
     return self.results
 end
 
+-- //TODO: resume function
+-- //TODO: resumeDynamic function
+
 function Task:Close()
     if self.closed then return end
     self.noError, self.errorObject = coroutine.close(self.thread)
