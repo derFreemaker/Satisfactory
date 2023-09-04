@@ -8,9 +8,9 @@ local Function = {}
 function Function.DynamicInvoke(func, parent, args)
     local results
     if parent ~= nil then
-        results = table.pack(func(parent, table.unpack(args)))
+        results = {func(parent, table.unpack(args))}
     else
-        results = table.pack(func(table.unpack(args)))
+        results = {func(table.unpack(args))}
     end
     return results
 end
@@ -32,9 +32,9 @@ function Function.InvokeProtected(func, parent, ...)
     local thread = coroutine.create(invokeFunc)
     local results
     if parent ~= nil then
-        results = table.pack(coroutine.resume(thread, parent, ...))
+        results = {coroutine.resume(thread, parent, ...)}
     else
-        results = table.pack(coroutine.resume(thread, ...))
+        results = {coroutine.resume(thread, ...)}
     end
     coroutine.close(thread)
     local success, filteredResults = extractSuccess(table.unpack(results))
