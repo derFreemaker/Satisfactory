@@ -72,13 +72,44 @@ function Task:ExecuteDynamic(args)
     return self.results
 end
 
--- //TODO: resume function
--- //TODO: resumeDynamic function
+---@param ... any parameters
+---@return any ... results
+function Task:Resume(...)
+    if self.thread == nil then
+        error("cannot resume not executed task")
+    end
+    if coroutine.status(self.thread) == "running" or coroutine.status(self.thread) == "dead" then
+        error("cannot resume dead or running task")
+    end
+    self.success, self.results = extractData(coroutine.resume(self.thread, self, ...))
+    return table.unpack(self.results)
+end
+
+---@param args any[] parameters
+---@return any[] returns
+function Task:ResumeDynamic(args)
+    if self.thread == nil then
+        error("cannot resume not executed task")
+    end
+    if coroutine.status(self.thread) == "running" or coroutine.status(self.thread) == "dead" then
+        error("cannot resume dead or running task")
+    end
+    self.success, self.results = extractData(coroutine.resume(self.thread, self, table.unpack(args)))
+    return self.results
+end
 
 function Task:Close()
     if self.closed then return end
     self.noError, self.errorObject = coroutine.close(self.thread)
     self.closed = true
+end
+
+---@return "not created" | "dead" | "normal" | "running" | "suspended"
+function Task:State()
+    if self.thread == nil then
+        return "not created"
+    end
+    return coroutine.status(self.thread);
 end
 
 ---@param logger Core.Logger?
