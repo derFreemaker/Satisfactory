@@ -1395,10 +1395,36 @@ function Task:ExecuteDynamic(args)
     self.success, self.results = extractData(coroutine.resume(self.thread, self, table.unpack(args)))
     return self.results
 end
+function Task:Resume(...)
+    if self.thread == nil then
+        error("cannot resume not executed task")
+    end
+    if coroutine.status(self.thread) == "running" or coroutine.status(self.thread) == "dead" then
+        error("cannot resume dead or running task")
+    end
+    self.success, self.results = extractData(coroutine.resume(self.thread, self, ...))
+    return table.unpack(self.results)
+end
+function Task:ResumeDynamic(args)
+    if self.thread == nil then
+        error("cannot resume not executed task")
+    end
+    if coroutine.status(self.thread) == "running" or coroutine.status(self.thread) == "dead" then
+        error("cannot resume dead or running task")
+    end
+    self.success, self.results = extractData(coroutine.resume(self.thread, self, table.unpack(args)))
+    return self.results
+end
 function Task:Close()
     if self.closed then return end
     self.noError, self.errorObject = coroutine.close(self.thread)
     self.closed = true
+end
+function Task:State()
+    if self.thread == nil then
+        return "not created"
+    end
+    return coroutine.status(self.thread);
 end
 function Task:LogError(logger)
     self:Close()

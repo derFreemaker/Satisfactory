@@ -1,0 +1,32 @@
+local PackageData = {}
+
+-- ########## Test.Http ##########
+
+PackageData.MFYoiWSx = {
+    Namespace = "Test.Http.__main",
+    Name = "__main",
+    FullName = "__main.lua",
+    IsRunnable = true,
+    Data = [[
+local NetworkClient = require("Core.Net.NetworkClient")
+local DNSClient = require("DNS.Client.DNSClient")
+local Main = {}
+function Main:Configure()
+    self.netClient = NetworkClient(self.Logger:subLogger("NetworkClient"))
+    self.dnsClient = DNSClient(self.netClient, self.Logger:subLogger("DNS_Client"))
+end
+function Main:Run()
+    local domain = "factoryControl.de"
+    local createdAddress = self.dnsClient:CreateAddress(domain, self.netClient:GetId())
+    assert(createdAddress, "unable to create address on dns server")
+    local getedAddress = self.dnsClient:GetWithAddress(domain)
+    assert(getedAddress, "unable to get address from dns server")
+    log(getedAddress.Address, getedAddress.Id)
+end
+return Main
+]]
+}
+
+-- ########## Test.Http ########## --
+
+return PackageData

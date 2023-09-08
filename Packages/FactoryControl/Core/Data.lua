@@ -2,11 +2,7 @@ local PackageData = {}
 
 -- ########## FactoryControl.Core ##########
 
--- ########## FactoryControl.Core.Entities ##########
-
--- ########## FactoryControl.Core.Entities ########## --
-
-PackageData.oVIzFPpX = {
+PackageData.MFYoiWSx = {
     Namespace = "FactoryControl.Core.FactoryControlApiClient",
     Name = "FactoryControlApiClient",
     FullName = "FactoryControlApiClient.lua",

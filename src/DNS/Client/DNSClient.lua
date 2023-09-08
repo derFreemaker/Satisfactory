@@ -6,17 +6,18 @@ local CreateAddress = require("DNS.Core.Entities.Addresss.Create")
 
 
 ---@class DNS.Client : object
+---@field private networkClient Core.Net.NetworkClient
 ---@field private apiClient Core.RestApi.Client.RestApiClient
 ---@field private logger Core.Logger
+---@overload fun(networkClient: Core.Net.NetworkClient, logger: Core.Logger) : DNS.Client
 local DNSClient = {}
 
 
+---@private
 ---@param networkClient Core.Net.NetworkClient
 ---@param logger Core.Logger
 function DNSClient:__call(networkClient, logger)
-    local serverIPAddress = self:Static__GetServerAddress(networkClient)
-    self.apiClient = ApiClient(serverIPAddress, 80, 80, networkClient, logger:subLogger("ApiClient"))
-
+    self.networkClient = networkClient
     self.logger = logger
 end
 
@@ -29,18 +30,35 @@ function DNSClient:Static__GetServerAddress(networkClient)
     netPort:BroadCastMessage("GetDNSServerAddress", nil, nil)
     ---@type Core.Net.NetworkContext?
     local response
+    local try
     repeat
-        response = netPort:WaitForEvent("ReturnDNSServerAddress", 5)
-    until response ~= nil
+        try = try + 1
+        response = netPort:WaitForEvent("ReturnDNSServerAddress", 10)
+    until response ~= nil or try == 10
+    if try == 10 then
+        error("unable to get dns server address")
+    end
     ---@cast response Core.Net.NetworkContext
     return response.Body
 end
 
 
+---@private
+function DNSClient:Check()
+    if self.apiClient then
+        return
+    end
+
+    local serverIPAddress = self:Static__GetServerAddress(self.networkClient)
+    self.apiClient = ApiClient(serverIPAddress, 80, 80, self.networkClient, self.logger:subLogger("ApiClient"))
+end
+
 ---@param address string
 ---@param id string
 ---@return boolean success
 function DNSClient:CreateAddress(address, id)
+    self:Check()
+
     local createAddress = CreateAddress(address, id)
 
     local request = ApiRequest("CREATE", "Address", createAddress:ExtractData())
@@ -56,6 +74,8 @@ end
 ---@param address string
 ---@return boolean success
 function DNSClient:DeleteAddress(address)
+    self:Check()
+
     local request = ApiRequest("DELETE", "Address", address)
     local response = self.apiClient:request(request)
 
@@ -69,6 +89,8 @@ end
 ---@param address string
 ---@return DNS.Core.Entities.Address? address
 function DNSClient:GetWithAddress(address)
+    self:Check()
+
     local request = ApiRequest("GET", "AddressWithAddress", address)
     local response = self.apiClient:request(request)
 
@@ -82,6 +104,8 @@ end
 ---@param id string
 ---@return DNS.Core.Entities.Address? address
 function DNSClient:GetWithId(id)
+    self:Check()
+
     local request = ApiRequest("GET", "AddressWithId", id)
     local response = self.apiClient:request(request)
 
