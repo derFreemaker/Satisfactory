@@ -7,7 +7,7 @@ local CreateAddress = {}
 ---@private
 ---@param address string
 ---@param id string
-function CreateAddress:__call(address, id)
+function CreateAddress:__init(address, id)
     self.Address = address
     self.Id = id
 end

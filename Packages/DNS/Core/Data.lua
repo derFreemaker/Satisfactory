@@ -13,7 +13,7 @@ PackageData.PksKdJNx = {
     IsRunnable = true,
     Data = [[
 local Address = {}
-function Address:__call(address, id)
+function Address:__init(address, id)
     self.Address = address
     self.Id = id
 end
@@ -40,7 +40,7 @@ PackageData.qzdVACkX = {
     IsRunnable = true,
     Data = [[
 local CreateAddress = {}
-function CreateAddress:__call(address, id)
+function CreateAddress:__init(address, id)
     self.Address = address
     self.Id = id
 end

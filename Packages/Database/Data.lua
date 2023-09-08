@@ -10,7 +10,7 @@ PackageData.MFYoiWSx = {
     Data = [[
 local Json = require("Core.Json")
 local DbTable = {}
-function DbTable:__call(name, path, logger)
+function DbTable:__init(name, path, logger)
     self.name = name
     self.path = path
     self.logger = logger

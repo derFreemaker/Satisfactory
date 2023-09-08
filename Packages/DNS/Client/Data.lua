@@ -13,7 +13,7 @@ local ApiRequest = require("Core.RestApi.RestApiRequest")
 local Address = require("DNS.Core.Entities.Addresss.Address")
 local CreateAddress = require("DNS.Core.Entities.Addresss.Create")
 local DNSClient = {}
-function DNSClient:__call(networkClient, logger)
+function DNSClient:__init(networkClient, logger)
     self.networkClient = networkClient
     self.logger = logger
 end

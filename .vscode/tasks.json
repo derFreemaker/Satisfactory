@@ -6,7 +6,7 @@
         {
             "label": "bundle All",
             "type": "shell",
-            "command": ".\\bundleAll.bat"
+            "command": ".\\bundle.bat ."
         }
     ]
 }

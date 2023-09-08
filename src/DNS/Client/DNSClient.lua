@@ -16,7 +16,7 @@ local DNSClient = {}
 ---@private
 ---@param networkClient Core.Net.NetworkClient
 ---@param logger Core.Logger
-function DNSClient:__call(networkClient, logger)
+function DNSClient:__init(networkClient, logger)
     self.networkClient = networkClient
     self.logger = logger
 end

@@ -12,7 +12,7 @@ local DbTable = require("Database.DbTable")
 local Path = require("Core.Path")
 local Address = require("DNS.Core.Entities.Address.Address")
 local AddressDatabase = {}
-function AddressDatabase:__call(logger)
+function AddressDatabase:__init(logger)
     self.dbTable = DbTable("Addresses", Path("/Database/Addresses.db"), logger:subLogger("DbTable"))
 end
 function AddressDatabase:Create(createAddress)
@@ -61,7 +61,7 @@ local NetworkClient = require("Core.Net.NetworkClient")
 local RestApiController = require("Core.RestApi.Server.RestApiController")
 local AddressDatabase = require("DNS.Server.AddressDatabase")
 local Endpoints = {}
-function Endpoints:__call(logger)
+function Endpoints:__init(logger)
     logger:LogTrace("setting up DNS Server endpoints...")
     local netClient = NetworkClient(logger:subLogger("NetworkClient"))
     local netPort = netClient:CreateNetworkPort(80)

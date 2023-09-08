@@ -11,7 +11,7 @@ PackageData.oVIzFPpX = {
     IsRunnable = true,
     Data = [[
 local Event = {}
-function Event:__call()
+function Event:__init()
     self.funcs = {}
     self.onceFuncs = {}
 end
@@ -171,7 +171,7 @@ local Task = require("Core.Task")
 local NetworkPort = require("Core.Net.NetworkPort")
 local NetworkContext = require("Core.Net.NetworkContext")
 local NetworkClient = {}
-function NetworkClient:__call(logger, networkCard)
+function NetworkClient:__init(logger, networkCard)
     if networkCard == nil then
         networkCard = computer.getPCIDevices(findClass("NetworkCard"))[1]
         if networkCard == nil then
@@ -281,7 +281,7 @@ PackageData.seyrvpeX = {
     Data = [[
 local Json = require("Core.Json")
 local NetworkContext = {}
-function NetworkContext:__call(data)
+function NetworkContext:__init(data)
     self.SignalName = data[1]
     self.SignalSender = data[2]
     self.SenderIPAddress = data[3]
@@ -302,7 +302,7 @@ PackageData.TtiCTjCx = {
     Data = [[
 local Event = require("Core.Event.Event")
 local NetworkPort = {}
-function NetworkPort:__call(port, logger, netClient)
+function NetworkPort:__init(port, logger, netClient)
     self.Port = port
     self.events = {}
     self.logger = logger
@@ -396,7 +396,7 @@ PackageData.xnnklPUX = {
     Data = [[
 local RestApiResponse = require("Core.RestApi.RestApiResponse")
 local RestApiClient = {}
-function RestApiClient:__call(serverIPAddress, serverPort, returnPort, netClient, logger)
+function RestApiClient:__init(serverIPAddress, serverPort, returnPort, netClient, logger)
     self.ServerIPAddress = serverIPAddress
     self.ServerPort = serverPort
     self.ReturnPort = returnPort
@@ -432,7 +432,7 @@ local RestApiResponseTemplates = require("Core.RestApi.Server.RestApiResponseTem
 local RestApiMethod = require("Core.RestApi.RestApiMethod")
 local RestApiRequest = require("Core.RestApi.RestApiRequest")
 local RestApiController = {}
-function RestApiController:__call(netPort, logger)
+function RestApiController:__init(netPort, logger)
     self.Endpoints = {}
     self.netPort = netPort
     self.logger = logger
@@ -490,7 +490,7 @@ PackageData.agsRDvly = {
     Data = [[
 local RestApiResponseTemplates = require("Core.RestApi.Server.RestApiResponseTemplates")
 local RestApiEndpoint = {}
-function RestApiEndpoint:__call(task, logger)
+function RestApiEndpoint:__init(task, logger)
     self.task = task
     self.logger = logger
 end
@@ -613,7 +613,7 @@ PackageData.fphJtVby = {
     IsRunnable = true,
     Data = [[
 local RestApiRequest = {}
-function RestApiRequest:__call(method, endpoint, body, headers)
+function RestApiRequest:__init(method, endpoint, body, headers)
     self.Method = method
     self.Endpoint = endpoint
     self.Headers = headers or {}
@@ -641,7 +641,7 @@ PackageData.GFSURPyY = {
     IsRunnable = true,
     Data = [[
 local RestApiResponse = {}
-function RestApiResponse:__call(body, header)
+function RestApiResponse:__init(body, header)
     self.Headers = header or {}
     self.Body = body
     self.WasSuccessfull = self.Headers.Code < 300
@@ -1113,7 +1113,7 @@ end
 function Logger:setErrorLogger()
     _G.__errorLogger = self
 end
-function Logger:__call(name, logLevel, onLog, onClear)
+function Logger:__init(name, logLevel, onLog, onClear)
     self.logLevel = logLevel
     self.Name = (string.gsub(name, " ", "_") or "")
     self.OnLog = onLog or Event()
@@ -1197,7 +1197,7 @@ function Path.Static__IsNode(path)
     end
     return true
 end
-function Path:__call(path)
+function Path:__init(path)
     if not path or path == "" then
         self.path = ""
         return
@@ -1365,7 +1365,7 @@ function Task:invokeFunc(...)
     end
     return coroutine.yield(self.func(...))
 end
-function Task:__call(func, parent)
+function Task:__init(func, parent)
     self.func = func
     self.parent = parent
     self.closed = false

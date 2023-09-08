@@ -11,7 +11,7 @@ local AddressDatabase = {}
 
 ---@private
 ---@param logger Core.Logger
-function AddressDatabase:__call(logger)
+function AddressDatabase:__init(logger)
     self.dbTable = DbTable("Addresses", Path("/Database/Addresses.db"), logger:subLogger("DbTable"))
 end
 

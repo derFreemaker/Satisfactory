@@ -23,7 +23,7 @@ end
 ---@private
 ---@param func function
 ---@param parent table
-function Task:__call(func, parent)
+function Task:__init(func, parent)
     self.func = func
     self.parent = parent
     self.closed = false

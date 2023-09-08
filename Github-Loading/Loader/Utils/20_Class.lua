@@ -8,6 +8,7 @@ local Table = LoadedLoaderFiles["/Github-Loading/Loader/Utils/Table"][1]
 
 
 ---@class Utils.Class.MetaMethods
+---@field __init (fun(self: object, ...) : ...)?
 ---@field __call (fun(self: object, ...) : ...)?
 ---@field __gc fun(self: object)?
 ---@field __add (fun(self: object, other: any) : any)? (self) + (value)
@@ -89,7 +90,8 @@ local metatableMethods = {
     __ipairs = true,
     __tostring = true,
     __gc = true,
-    __call = true
+    __call = true,
+    __init = true
 }
 
 ---@param class table
@@ -275,7 +277,7 @@ end
 ---@param metatable Utils.Class.Metatable
 local function AddConstructor(metatable)
     ---@type fun(self: object, ...: any, base: object | nil)
-    local constructor = metatable.MetaMethods.__call
+    local constructor = metatable.MetaMethods.__init
 
     ---@param class object
     ---@param ... any
@@ -318,7 +320,7 @@ local function AddConstructor(metatable)
     metatable.__call = construct
     if type(constructor) == "function" then
         metatable.HasConstructor = true
-        metatable.MetaMethods.__call = nil
+        metatable.MetaMethods.__init = nil
         return
     end
 
