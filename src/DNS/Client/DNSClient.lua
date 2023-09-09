@@ -1,8 +1,8 @@
 local ApiClient = require("Core.RestApi.Client.RestApiNetworkClient")
 local ApiRequest = require("Core.RestApi.RestApiRequest")
 
-local Address = require("DNS.Core.Entities.Addresss.Address")
-local CreateAddress = require("DNS.Core.Entities.Addresss.Create")
+local Address = require("DNS.Core.Entities.Address.Address")
+local CreateAddress = require("DNS.Core.Entities.Address.Create")
 
 
 ---@class DNS.Client : object
