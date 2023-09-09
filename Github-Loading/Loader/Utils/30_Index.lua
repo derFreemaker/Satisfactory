@@ -1,4 +1,4 @@
-local LoadedLoaderFiles = table.pack(...)[1]
+local LoadedLoaderFiles = ({ ... })[1]
 
 ---@class Utils
 local Utils = {}

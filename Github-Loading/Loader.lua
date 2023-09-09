@@ -181,7 +181,7 @@ local function loadFiles(loaderBasePath)
     table.sort(loadOrder)
     for _, num in ipairs(loadOrder) do
         for _, path in pairs(loadEntries[num]) do
-            local loadedFile = table.pack(filesystem.loadFile(loaderBasePath .. path)(loadedLoaderFiles))
+            local loadedFile = { filesystem.loadFile(loaderBasePath .. path)(loadedLoaderFiles) }
             local folderPath, filename = path:match("^(.+)/%d+_(.+)%..+$")
             if filename == "Index" then
                 loadedLoaderFiles[folderPath] = loadedFile
@@ -261,7 +261,7 @@ function Loader:setupLogger(logLevel)
     self.Logger.OnClear:AddListener(Listener.new(clear))
     self.Logger:setErrorLogger()
     self.Logger:Clear()
-    self.Logger:Log("###### LOG START: ".. tostring(table.pack(computer.magicTime())[2]) .." ######", 10)
+    self.Logger:Log("###### LOG START: ".. tostring(({ computer.magicTime() })[2]) .." ######", 10)
     self.Logger.OnLog:AddListener(Listener.new(logConsole))
 end
 

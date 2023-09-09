@@ -1,4 +1,4 @@
-local LoadedLoaderFiles = table.pack(...)[1]
+local LoadedLoaderFiles = ({ ... })[1]
 ---@type Utils
 local Utils = LoadedLoaderFiles["/Github-Loading/Loader/Utils"][1]
 
