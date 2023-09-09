@@ -8,13 +8,14 @@ PackageData.MFYoiWSx = {
     FullName = "DNSClient.lua",
     IsRunnable = true,
     Data = [[
+local NetworkClient = require("Core.Net.NetworkClient")
 local ApiClient = require("Core.RestApi.Client.RestApiNetworkClient")
 local ApiRequest = require("Core.RestApi.RestApiRequest")
 local Address = require("DNS.Core.Entities.Address.Address")
 local CreateAddress = require("DNS.Core.Entities.Address.Create")
 local DNSClient = {}
 function DNSClient:__init(networkClient, logger)
-    self.networkClient = networkClient
+    self.networkClient = networkClient or NetworkClient(logger:subLogger("NetworkClient"))
     self.logger = logger
 end
 function DNSClient:Static__GetServerAddress(networkClient)

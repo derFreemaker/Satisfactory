@@ -1,3 +1,4 @@
+local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local NetworkClient = require("Core.Net.NetworkClient")
 local DNSClient = require("DNS.Client.DNSClient")
 
@@ -6,10 +7,10 @@ local DNSClient = require("DNS.Client.DNSClient")
 ---@field private dnsClient DNS.Client
 local Main = {}
 
-
 function Main:Configure()
-    self.netClient = NetworkClient(self.Logger:subLogger("NetworkClient"))
+    EventPullAdapter:Initialize(self.Logger:subLogger("EventPullAdapter"))
 
+    self.netClient = NetworkClient(self.Logger:subLogger("NetworkClient"))
     self.dnsClient = DNSClient(self.netClient, self.Logger:subLogger("DNS_Client"))
 end
 

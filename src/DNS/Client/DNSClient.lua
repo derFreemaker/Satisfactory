@@ -1,3 +1,4 @@
+local NetworkClient = require("Core.Net.NetworkClient")
 local ApiClient = require("Core.RestApi.Client.RestApiNetworkClient")
 local ApiRequest = require("Core.RestApi.RestApiRequest")
 
@@ -14,10 +15,10 @@ local DNSClient = {}
 
 
 ---@private
----@param networkClient Core.Net.NetworkClient
+---@param networkClient Core.Net.NetworkClient?
 ---@param logger Core.Logger
 function DNSClient:__init(networkClient, logger)
-    self.networkClient = networkClient
+    self.networkClient = networkClient or NetworkClient(logger:subLogger("NetworkClient"))
     self.logger = logger
 end
 
