@@ -423,8 +423,8 @@ function NetworkContext:__init(data)
     self.SenderIPAddress = data[3]
     self.Port = data[4]
     self.EventName = data[5]
-    self.Header = Json.decode(data[6])
-    self.Body = Json.decode(data[7])
+    self.Header = Json.decode(data[7] or "null")
+    self.Body = Json.decode(data[6] or "null")
 end
 
 return Utils.Class.CreateClass(NetworkContext, "Core.Net.NetworkContext")
