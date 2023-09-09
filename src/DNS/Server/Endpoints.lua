@@ -13,7 +13,7 @@ local Endpoints = {}
 
 ---@private
 ---@param logger Core.Logger
-function Endpoints:__call(logger)
+function Endpoints:__init(logger)
     logger:LogTrace("setting up DNS Server endpoints...")
     local netClient = NetworkClient(logger:subLogger("NetworkClient"))
     local netPort = netClient:CreateNetworkPort(80)

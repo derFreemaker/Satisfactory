@@ -11,7 +11,7 @@ local RestApiRequest = {}
 ---@param endpoint string
 ---@param body any
 ---@param headers Dictionary<string, any>?
-function RestApiRequest:__call(method, endpoint, body, headers)
+function RestApiRequest:__init(method, endpoint, body, headers)
     self.Method = method
     self.Endpoint = endpoint
     self.Headers = headers or {}

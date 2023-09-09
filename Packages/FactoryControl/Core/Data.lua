@@ -2,11 +2,7 @@ local PackageData = {}
 
 -- ########## FactoryControl.Core ##########
 
--- ########## FactoryControl.Core.Entities ##########
-
--- ########## FactoryControl.Core.Entities ########## --
-
-PackageData.oVIzFPpX = {
+PackageData.MFYoiWSx = {
     Namespace = "FactoryControl.Core.FactoryControlApiClient",
     Name = "FactoryControlApiClient",
     FullName = "FactoryControlApiClient.lua",
@@ -15,7 +11,7 @@ PackageData.oVIzFPpX = {
 local RestApiNetworkClient = require("Core.RestApi.Client.RestApiNetworkClient")
 local RestApiRequest = require("Core.RestApi.RestApiRequest")
 local FactoryControlRestApiClient = {}
-function FactoryControlRestApiClient:__call(netClient, logger)
+function FactoryControlRestApiClient:__init(netClient, logger)
     self.restApiClient = RestApiNetworkClient(Config.ServerIPAddress, Config.ServerPort, 1111, netClient, self.logger:subLogger("RestApiClient"))
 end
 function FactoryControlRestApiClient:request(method, endpoint, headers, body)

@@ -12,7 +12,7 @@ local NetworkPort = {}
 ---@param port integer | "all"
 ---@param logger Core.Logger
 ---@param netClient Core.Net.NetworkClient
-function NetworkPort:__call(port, logger, netClient)
+function NetworkPort:__init(port, logger, netClient)
     self.Port = port
     self.events = {}
     self.logger = logger

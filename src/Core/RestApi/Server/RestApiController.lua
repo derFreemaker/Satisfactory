@@ -14,7 +14,7 @@ local RestApiController = {}
 ---@private
 ---@param netPort Core.Net.NetworkPort
 ---@param logger Core.Logger
-function RestApiController:__call(netPort, logger)
+function RestApiController:__init(netPort, logger)
     self.Endpoints = {}
     self.netPort = netPort
     self.logger = logger

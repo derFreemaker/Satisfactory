@@ -20,7 +20,7 @@ end
 
 ---@private
 ---@param path string?
-function Path:__call(path)
+function Path:__init(path)
     if not path or path == "" then
         self.path = ""
         return

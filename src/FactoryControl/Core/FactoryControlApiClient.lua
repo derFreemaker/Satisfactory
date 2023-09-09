@@ -10,7 +10,7 @@ local FactoryControlRestApiClient = {}
 ---@private
 ---@param netClient Core.Net.NetworkClient
 ---@param logger Core.Logger
-function FactoryControlRestApiClient:__call(netClient, logger)
+function FactoryControlRestApiClient:__init(netClient, logger)
     self.restApiClient = RestApiNetworkClient(Config.ServerIPAddress, Config.ServerPort, 1111, netClient, self.logger:subLogger("RestApiClient"))
 end
 

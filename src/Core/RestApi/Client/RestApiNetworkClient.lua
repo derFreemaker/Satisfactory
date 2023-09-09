@@ -15,7 +15,7 @@ local RestApiClient = {}
 ---@param returnPort integer
 ---@param netClient Core.Net.NetworkClient
 ---@param logger Core.Logger
-function RestApiClient:__call(serverIPAddress, serverPort, returnPort, netClient, logger)
+function RestApiClient:__init(serverIPAddress, serverPort, returnPort, netClient, logger)
     self.ServerIPAddress = serverIPAddress
     self.ServerPort = serverPort
     self.ReturnPort = returnPort
