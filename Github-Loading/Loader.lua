@@ -113,7 +113,7 @@ local function downloadFiles(loaderBaseUrl, loaderBasePath, forceDownload, inter
         local url = loaderBaseUrl .. path
         path = loaderBasePath .. path
         local downloadAnyway = false
-        if path:find("Version.latest.txt") then
+        if path:find("Version.latest.txt") or path:find("00_Options.lua") then
             downloadAnyway = true
         end
         assert(internalDownload(url, path, downloadAnyway or forceDownload, internetCard), "Unable to download file: '".. path .."'")

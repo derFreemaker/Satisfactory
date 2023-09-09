@@ -7,6 +7,11 @@
             "label": "bundle All",
             "type": "shell",
             "command": ".\\bundle.bat ."
+        },
+        {
+            "label": "open FicsIt files",
+            "type": "shell",
+            "command": "code %localappdata%\\FactoryGame\\Saved\\SaveGames\\Computers"
         }
     ]
 }
