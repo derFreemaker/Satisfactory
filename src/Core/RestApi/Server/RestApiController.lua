@@ -24,7 +24,7 @@ end
 ---@private
 ---@param context Core.Net.NetworkContext
 function RestApiController:onMessageRecieved(context)
-    local request = RestApiRequest.Static__CreateFromNetworkContext(context)
+    local request = context:ToApiRequest()
     self.logger:LogDebug("recieved request on endpoint: '" .. request.Endpoint .. "'")
     local endpoint = self:GetEndpoint(request.Method, request.Endpoint)
     if endpoint == nil then

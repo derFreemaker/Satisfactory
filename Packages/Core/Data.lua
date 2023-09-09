@@ -403,6 +403,8 @@ PackageData.seyrvpeX = {
     IsRunnable = true,
     Data = [[
 local Json = require("Core.Json")
+local RestApiRequest = require("Core.RestApi.RestApiRequest")
+local RestApiResponse = require("Core.RestApi.RestApiResponse")
 
 ---@class Core.Net.NetworkContext : object
 ---@field SignalName string
@@ -425,6 +427,16 @@ function NetworkContext:__init(data)
     self.EventName = data[5]
     self.Header = Json.decode(data[7] or "null")
     self.Body = Json.decode(data[6] or "null")
+end
+
+---@return Core.RestApi.RestApiRequest
+function NetworkContext:ToApiRequest()
+    return RestApiRequest(self.Body.Method, self.Body.Endpoint, self.Body.Body, self.Body.Headers)
+end
+
+---@return Core.RestApi.RestApiResponse
+function NetworkContext:ToApiResponse()
+    return RestApiResponse(self.Body.Headers, self.Body.Body)
 end
 
 return Utils.Class.CreateClass(NetworkContext, "Core.Net.NetworkContext")
@@ -610,7 +622,7 @@ function RestApiClient:request(request)
     if not context then
         return RestApiResponse(nil, { Code = 408 })
     end
-    local response = RestApiResponse.Static__CreateFromNetworkContext(context)
+    local response = context:ToApiResponse()
     return response
 end
 
@@ -654,7 +666,7 @@ end
 ---@private
 ---@param context Core.Net.NetworkContext
 function RestApiController:onMessageRecieved(context)
-    local request = RestApiRequest.Static__CreateFromNetworkContext(context)
+    local request = context:ToApiRequest()
     self.logger:LogDebug("recieved request on endpoint: '" .. request.Endpoint .. "'")
     local endpoint = self:GetEndpoint(request.Method, request.Endpoint)
     if endpoint == nil then
@@ -922,11 +934,6 @@ function RestApiRequest:ExtractData()
     }
 end
 
----@param context Core.Net.NetworkContext
-function RestApiRequest.Static__CreateFromNetworkContext(context)
-    return RestApiRequest(context.Body.Method, context.Body.Endpoint, context.Body.Body, context.Body.Headers)
-end
-
 return Utils.Class.CreateClass(RestApiRequest, "Core.RestApi.RestApiRequest")
 ]]
 }
@@ -962,11 +969,6 @@ function RestApiResponse:ExtractData()
         Headers = self.Headers,
         Body = self.Body
     }
-end
-
----@param context Core.Net.NetworkContext
-function RestApiResponse.Static__CreateFromNetworkContext(context)
-    return RestApiResponse(context.Body.Headers, context.Body.Body)
 end
 
 return Utils.Class.CreateClass(RestApiResponse, "Core.RestApi.RestApiResponse")

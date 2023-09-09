@@ -31,7 +31,7 @@ function RestApiClient:request(request)
     if not context then
         return RestApiResponse(nil, { Code = 408 })
     end
-    local response = RestApiResponse.Static__CreateFromNetworkContext(context)
+    local response = context:ToApiResponse()
     return response
 end
 

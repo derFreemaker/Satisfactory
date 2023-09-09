@@ -1,4 +1,6 @@
 local Json = require("Core.Json")
+local RestApiRequest = require("Core.RestApi.RestApiRequest")
+local RestApiResponse = require("Core.RestApi.RestApiResponse")
 
 ---@class Core.Net.NetworkContext : object
 ---@field SignalName string
@@ -21,6 +23,16 @@ function NetworkContext:__init(data)
     self.EventName = data[5]
     self.Header = Json.decode(data[7] or "null")
     self.Body = Json.decode(data[6] or "null")
+end
+
+---@return Core.RestApi.RestApiRequest
+function NetworkContext:ToApiRequest()
+    return RestApiRequest(self.Body.Method, self.Body.Endpoint, self.Body.Body, self.Body.Headers)
+end
+
+---@return Core.RestApi.RestApiResponse
+function NetworkContext:ToApiResponse()
+    return RestApiResponse(self.Body.Headers, self.Body.Body)
 end
 
 return Utils.Class.CreateClass(NetworkContext, "Core.Net.NetworkContext")
