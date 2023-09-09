@@ -31,7 +31,7 @@ function DNSClient:Static__GetServerAddress(networkClient)
     netPort:BroadCastMessage("GetDNSServerAddress", nil, nil)
     ---@type Core.Net.NetworkContext?
     local response
-    local try
+    local try = 0
     repeat
         try = try + 1
         response = netPort:WaitForEvent("ReturnDNSServerAddress", 10)
