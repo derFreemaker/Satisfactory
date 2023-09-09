@@ -27,13 +27,21 @@ end
 function Main:Run()
     local domain = "factoryControl.de"
 
+    self.Logger:LogDebug("getting dns server address...")
+    self.dnsClient:GetDNSServerAddressIfNeeded()
+    self.Logger:LogInfo("got dns server address")
+
+    self.Logger:LogDebug("creating address on server...")
     local createdAddress = self.dnsClient:CreateAddress(domain, self.netClient:GetId())
     assert(createdAddress, "unable to create address on dns server")
+    self.Logger:LogInfo("created address on server")
 
+    self.Logger:LogDebug("getting address back from server...")
     local getedAddress = self.dnsClient:GetWithAddress(domain)
     assert(getedAddress, "unable to get address from dns server")
+    self.Logger:LogInfo("got address back from server...")
 
-    log(getedAddress.Address, getedAddress.Id)
+    log(getedAddress.Address, getedAddress.Id, " -> ", self.netClient:GetId())
 end
 
 return Main

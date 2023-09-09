@@ -93,15 +93,15 @@ local AddressDatabase = require("DNS.Server.AddressDatabase")
 ---@field private apiController Core.RestApi.Server.RestApiController
 ---@field private addressDatabase DNS.Server.AddressDatabase
 ---@field private logger Core.Logger
----@overload fun(logger: Core.Logger) : DNS.Endpoints
+---@overload fun(netClient: Core.Net.NetworkClient, logger: Core.Logger) : DNS.Endpoints
 local Endpoints = {}
 
 
 ---@private
+---@param netClient Core.Net.NetworkClient
 ---@param logger Core.Logger
-function Endpoints:__init(logger)
+function Endpoints:__init(netClient, logger)
     logger:LogTrace("setting up DNS Server endpoints...")
-    local netClient = NetworkClient(logger:subLogger("NetworkClient"))
     local netPort = netClient:CreateNetworkPort(80)
     self.apiController = RestApiController(netPort, logger:subLogger("ApiController"))
     self.addressDatabase = AddressDatabase(logger:subLogger("AddressDatabase"))
@@ -195,7 +195,7 @@ function Main:Configure()
     self.netPort:OpenPort()
     self.Logger:LogDebug("setup get DNS Server IP Address")
 
-    self.endpoints = DNSEndpoints(self.Logger:subLogger("Endpoints"))
+    self.endpoints = DNSEndpoints(netClient, self.Logger:subLogger("Endpoints"))
 end
 
 function Main:Run()
