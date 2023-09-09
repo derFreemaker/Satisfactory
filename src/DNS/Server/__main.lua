@@ -26,7 +26,7 @@ function Main:Configure()
     self.netPort:OpenPort()
     self.Logger:LogDebug("setup get DNS Server IP Address")
 
-    self.endpoints = DNSEndpoints(self.Logger:subLogger("Endpoints"))
+    self.endpoints = DNSEndpoints(netClient, self.Logger:subLogger("Endpoints"))
 end
 
 function Main:Run()

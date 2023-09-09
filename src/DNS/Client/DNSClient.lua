@@ -44,8 +44,7 @@ function DNSClient:Static__GetServerAddress(networkClient)
 end
 
 
----@private
-function DNSClient:Check()
+function DNSClient:GetDNSServerAddressIfNeeded()
     if self.apiClient then
         return
     end
@@ -54,11 +53,12 @@ function DNSClient:Check()
     self.apiClient = ApiClient(serverIPAddress, 80, 80, self.networkClient, self.logger:subLogger("ApiClient"))
 end
 
+
 ---@param address string
 ---@param id string
 ---@return boolean success
 function DNSClient:CreateAddress(address, id)
-    self:Check()
+    self:GetDNSServerAddressIfNeeded()
 
     local createAddress = CreateAddress(address, id)
 
@@ -75,7 +75,7 @@ end
 ---@param address string
 ---@return boolean success
 function DNSClient:DeleteAddress(address)
-    self:Check()
+    self:GetDNSServerAddressIfNeeded()
 
     local request = ApiRequest("DELETE", "Address", address)
     local response = self.apiClient:request(request)
@@ -90,7 +90,7 @@ end
 ---@param address string
 ---@return DNS.Core.Entities.Address? address
 function DNSClient:GetWithAddress(address)
-    self:Check()
+    self:GetDNSServerAddressIfNeeded()
 
     local request = ApiRequest("GET", "AddressWithAddress", address)
     local response = self.apiClient:request(request)
@@ -105,7 +105,7 @@ end
 ---@param id string
 ---@return DNS.Core.Entities.Address? address
 function DNSClient:GetWithId(id)
-    self:Check()
+    self:GetDNSServerAddressIfNeeded()
 
     local request = ApiRequest("GET", "AddressWithId", id)
     local response = self.apiClient:request(request)

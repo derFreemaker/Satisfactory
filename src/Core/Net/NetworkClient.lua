@@ -5,6 +5,7 @@ local NetworkPort = require("Core.Net.NetworkPort")
 local NetworkContext = require("Core.Net.NetworkContext")
 
 ---@class Core.Net.NetworkClient : object
+---@field private id string?
 ---@field private Logger Core.Logger
 ---@field private ports Dictionary<integer | "all", Core.Net.NetworkPort>
 ---@field private networkCard FicsIt_Networks.Components.FINComputerMod.NetworkCard
@@ -32,9 +33,13 @@ end
 
 ---@return string
 function NetworkClient:GetId()
+    if self.id then
+        return self.id
+    end
+
     local splittedPrint = Utils.String.Split(tostring(self.networkCard), " ")
-    local id = splittedPrint[#splittedPrint]
-    return id
+    self.id = splittedPrint[#splittedPrint]
+    return self.id
 end
 
 ---@private

@@ -401,7 +401,7 @@ function Loader:Run(program)
     local thread, success, results = Utils.Function.InvokeProtected(program.Run, program)
     self.Logger:setErrorLogger()
     if not success then
-        error("execution error in main: \n" .. debug.traceback(thread, results[1]))
+        log("execution error in main: \n" .. debug.traceback(thread, results[1]))
     end
     if results[1] == "$%not found%$" then
         error("no main run function found")
