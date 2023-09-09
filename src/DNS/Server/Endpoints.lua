@@ -1,4 +1,3 @@
-local NetworkClient = require("Core.Net.NetworkClient")
 local RestApiController = require("Core.RestApi.Server.RestApiController")
 local AddressDatabase = require("DNS.Server.AddressDatabase")
 

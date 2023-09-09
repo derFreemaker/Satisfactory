@@ -54,13 +54,14 @@ function DNSClient:Static__GetServerAddress(networkClient)
 end
 
 
+---@return string id
 function DNSClient:GetDNSServerAddressIfNeeded()
-    if self.apiClient then
-        return
+    if not self.apiClient then
+        local serverIPAddress = self:Static__GetServerAddress(self.networkClient)
+        self.apiClient = ApiClient(serverIPAddress, 80, 80, self.networkClient, self.logger:subLogger("ApiClient"))
     end
 
-    local serverIPAddress = self:Static__GetServerAddress(self.networkClient)
-    self.apiClient = ApiClient(serverIPAddress, 80, 80, self.networkClient, self.logger:subLogger("ApiClient"))
+    return self.apiClient.ServerIPAddress
 end
 
 

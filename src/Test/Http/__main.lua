@@ -18,8 +18,8 @@ function Main:Run()
     local domain = "factoryControl.de"
 
     self.Logger:LogDebug("getting dns server address...")
-    self.dnsClient:GetDNSServerAddressIfNeeded()
-    self.Logger:LogInfo("got dns server address")
+    local dnsServerAddress = self.dnsClient:GetDNSServerAddressIfNeeded()
+    self.Logger:LogInfo("got dns server address: ".. dnsServerAddress)
 
     self.Logger:LogDebug("creating address on server...")
     local createdAddress = self.dnsClient:CreateAddress(domain, self.netClient:GetId())

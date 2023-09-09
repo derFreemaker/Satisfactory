@@ -4,8 +4,8 @@ local RestApiResponse = require("Core.RestApi.RestApiResponse")
 ---@field ServerIPAddress string
 ---@field ServerPort integer
 ---@field ReturnPort integer
----@field NetClient Core.Net.NetworkClient
----@field Logger Core.Logger
+---@field private NetClient Core.Net.NetworkClient
+---@field private logger Core.Logger
 ---@overload fun(serverIPAddress: string, serverPort: integer, returnPort: integer, netClient: Core.Net.NetworkClient, logger: Core.Logger) : Core.RestApi.Client.RestApiClient
 local RestApiClient = {}
 
@@ -20,7 +20,7 @@ function RestApiClient:__init(serverIPAddress, serverPort, returnPort, netClient
     self.ServerPort = serverPort
     self.ReturnPort = returnPort
     self.NetClient = netClient
-    self.Logger = logger
+    self.logger = logger
 end
 
 ---@param request Core.RestApi.RestApiRequest
