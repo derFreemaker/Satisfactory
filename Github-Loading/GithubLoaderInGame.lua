@@ -15,7 +15,7 @@ local programForceDownload = false
 -- to define any config variables
 Config = {}
 
-local BaseUrl = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main"
+local BaseUrl = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/staging"
 
 local showDriveUUID = false
 
