@@ -1,9 +1,11 @@
 local DNSEndpoints = require("DNS.Server.Endpoints")
 local NetworkClient = require("Core.Net.NetworkClient")
 local Task = require("Core.Task")
+local RestApiController = require("Core.RestApi.Server.RestApiController")
 
 ---@class DNS.Main : Github_Loading.Entities.Main
 ---@field private eventPullAdapter Core.EventPullAdapter
+---@field private apiController Core.RestApi.Server.RestApiController
 ---@field private netPort Core.Net.NetworkPort
 ---@field private endpoints DNS.Endpoints
 local Main = {}
@@ -24,9 +26,16 @@ function Main:Configure()
     self.netPort = netClient:CreateNetworkPort(53)
     self.netPort:AddListener("GetDNSServerAddress", Task(self.GetDNSServerAddress, self))
     self.netPort:OpenPort()
-    self.Logger:LogDebug("setup get DNS Server IP Address")
+    self.Logger:LogDebug("setup Get DNS Server IP Address")
 
-    self.endpoints = DNSEndpoints(netClient, self.Logger:subLogger("Endpoints"))
+    self.Logger:LogTrace("setting up DNS Server endpoints...")
+    local endpointLogger = self.Logger:subLogger("Endpoints")
+    local netPort = netClient:CreateNetworkPort(80)
+    self.apiController = RestApiController(netPort, endpointLogger:subLogger("ApiController"))
+    self.endpoints = DNSEndpoints(endpointLogger)
+    self.apiController:AddRestApiEndpointBase(self.endpoints)
+    netPort:OpenPort()
+    self.Logger:LogDebug("setup DNS Server endpoints")
 end
 
 function Main:Run()
