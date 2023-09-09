@@ -398,12 +398,15 @@ end
 function Loader:Run(program)
     self.Logger:LogTrace("running program...")
     program.Logger:setErrorLogger()
-    local result = program:Run()
+    local thread, success, results = Utils.Function.InvokeProtected(program.Run, program)
     self.Logger:setErrorLogger()
-    if result == "$%not found%$" then
+    if not success then
+        error("execution error in main: \n" .. debug.traceback(thread, results[1]))
+    end
+    if results[1] == "$%not found%$" then
         error("no main run function found")
     end
-    self.Logger:LogInfo("program stoped running: " .. tostring(result))
+    self.Logger:LogInfo("program stoped running: " .. tostring(results[1]))
 end
 
 
