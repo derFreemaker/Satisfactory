@@ -1,9 +1,8 @@
 return {
-    DNSServer = "DNS.Server",
+    DNS_Server = "DNS.Server",
 
-    FactoryControlServer = "FactoryControl.Server",
-    FactoryControlController = "FactoryControl.Controller",
+    FactoryControl_Server = "FactoryControl.Server",
+    FactoryControl_Controller = "FactoryControl.Controller",
 
-    TestRecieveServer = "Test.RecieveServer",
-    TestSendServer = "Test.SendServer",
+    Test_Http = "Test.Http",
 }
