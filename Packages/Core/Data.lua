@@ -1940,11 +1940,18 @@ local function extractData(success, ...)
     return success, { ... }
 end
 
+---@private
+---@param ... any args
+function Task:invoke(...)
+    self.success, self.results = extractData(coroutine.resume(self.thread, self, ...))
+    self.errorObject = self.results[1]
+end
+
 ---@param ... any parameters
 ---@return any ... results
 function Task:Execute(...)
     self.thread = coroutine.create(self.invokeFunc)
-    self.success, self.results = extractData(coroutine.resume(self.thread, self, ...))
+    self:invoke(...)
     return table.unpack(self.results)
 end
 
@@ -1952,7 +1959,7 @@ end
 ---@return any[] returns
 function Task:ExecuteDynamic(args)
     self.thread = coroutine.create(self.invokeFunc)
-    self.success, self.results = extractData(coroutine.resume(self.thread, self, table.unpack(args)))
+    self:invoke(table.unpack(args))
     return self.results
 end
 
@@ -1965,7 +1972,7 @@ function Task:Resume(...)
     if coroutine.status(self.thread) == "running" or coroutine.status(self.thread) == "dead" then
         error("cannot resume dead or running task")
     end
-    self.success, self.results = extractData(coroutine.resume(self.thread, self, ...))
+    self:invoke(...)
     return table.unpack(self.results)
 end
 
@@ -1978,7 +1985,7 @@ function Task:ResumeDynamic(args)
     if coroutine.status(self.thread) == "running" or coroutine.status(self.thread) == "dead" then
         error("cannot resume dead or running task")
     end
-    self.success, self.results = extractData(coroutine.resume(self.thread, self, table.unpack(args)))
+    self:invoke(table.unpack(args))
     return self.results
 end
 
@@ -1998,7 +2005,7 @@ end
 
 ---@param logger Core.Logger?
 function Task:LogError(logger)
-    if not self.noError and logger then
+    if (not self.success or not self.noError) and logger then
         logger:LogError("execution error: \n" .. debug.traceback(self.thread, self.errorObject) .. debug.traceback():sub(17))
     end
     self:Close()
