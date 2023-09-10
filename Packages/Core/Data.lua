@@ -677,6 +677,7 @@ function RestApiController:onMessageRecieved(context)
         end
         return
     end
+    self.logger:LogTrace("found endpoint: ".. request.Endpoint)
     endpoint:Execute(request, context, self.netPort:GetNetClient())
 end
 
@@ -689,7 +690,6 @@ function RestApiController:GetEndpoint(method, endpointName)
             return endpoint
         end
     end
-    return nil
 end
 
 ---@param method Core.RestApi.RestApiMethod
@@ -1998,10 +1998,10 @@ end
 
 ---@param logger Core.Logger?
 function Task:LogError(logger)
-    self:Close()
     if not self.noError and logger then
         logger:LogError("execution error: \n" .. debug.traceback(self.thread, self.errorObject) .. debug.traceback():sub(17))
     end
+    self:Close()
 end
 
 return Utils.Class.CreateClass(Task, "Core.Task")
