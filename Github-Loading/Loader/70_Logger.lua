@@ -89,7 +89,7 @@ end
 
 ---@param ... any
 function log(...)
-    local message
+    local message = ""
     for i, arg in pairs({...}) do
         if i == 1 then
             message = tostring(arg) or "nil"
