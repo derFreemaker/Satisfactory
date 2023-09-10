@@ -49,14 +49,14 @@ function Utils.DownloadToFile(url, path, forceDownload, internetCard, logger)
     return true
 end
 
----@type Utils.String
-Utils.String = LoadedLoaderFiles["/Github-Loading/Loader/Utils/String"][1]
+---@type Utils.File
+Utils.File = LoadedLoaderFiles["/Github-Loading/Loader/Utils/File"][1]
 
 ---@type Utils.Function
 Utils.Function = LoadedLoaderFiles["/Github-Loading/Loader/Utils/Function"][1]
 
----@type Utils.File
-Utils.File = LoadedLoaderFiles["/Github-Loading/Loader/Utils/File"][1]
+---@type Utils.String
+Utils.String = LoadedLoaderFiles["/Github-Loading/Loader/Utils/String"][1]
 
 ---@type Utils.Table
 Utils.Table = LoadedLoaderFiles["/Github-Loading/Loader/Utils/Table"][1]

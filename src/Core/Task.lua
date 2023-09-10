@@ -1,24 +1,14 @@
 ---@class Core.Task : object
----@field private func function
----@field private parent table
----@field private thread thread
+---@field package func function
+---@field package parent table
+---@field package thread thread
+---@field package closed boolean
 ---@field private success boolean
----@field private closed boolean
 ---@field private results any[]
 ---@field private noError boolean
 ---@field private errorObject any
 ---@overload fun(func: function, parent: table?) : Core.Task
 local Task = {}
-
----@private
----@param ... any parameters
----@return any ... returns
-function Task:invokeFunc(...)
-    if self.parent then
-        return coroutine.yield(self.func(self.parent, ...))
-    end
-    return coroutine.yield(self.func(...))
-end
 
 ---@private
 ---@param func function
@@ -49,59 +39,81 @@ function Task:GetErrorObject()
     return self.errorObject
 end
 
----@param success boolean
----@param ... any
----@return boolean success, table returns
-local function extractData(success, ...)
-    return success, { ... }
+---@param task Core.Task
+local function createThread(task)
+    ---@param ... any parameters
+    ---@return any[] returns
+    local function invokeFunc(...)
+        ---@type any[]
+        local result
+        if task.parent then
+            result = { task.func(task.parent, ...) }
+        else
+            result = { task.func(...) }
+        end
+        if coroutine.isyieldable(task.thread) then
+            --? Should always return here
+            return coroutine.yield(result)
+        end
+        --! Should never return here
+        return result
+    end
+
+    task.thread = coroutine.create(invokeFunc)
+    task.closed = false
 end
 
 ---@private
 ---@param ... any args
-function Task:invoke(...)
-    self.success, self.results = extractData(coroutine.resume(self.thread, self, ...))
-    self.errorObject = self.results[1]
+function Task:invokeThread(...)
+    self.success, self.results = coroutine.resume(self.thread, self, ...)
 end
 
 ---@param ... any parameters
 ---@return any ... results
 function Task:Execute(...)
-    self.thread = coroutine.create(self.invokeFunc)
-    self:invoke(...)
+    createThread(self)
+    self:invokeThread(...)
     return table.unpack(self.results)
 end
 
 ---@param args any[] parameters
 ---@return any[] returns
 function Task:ExecuteDynamic(args)
-    self.thread = coroutine.create(self.invokeFunc)
-    self:invoke(table.unpack(args))
+    createThread(self)
+    self:invokeThread(table.unpack(args))
     return self.results
+end
+
+---@private
+function Task:CheckThreadState()
+    if self.thread == nil then
+        error("cannot resume a not started task")
+    end
+    if self.closed then
+        error("cannot resume a closed task")
+    end
+    if coroutine.status(self.thread) == "running" then
+        error("cannot resume running task")
+    end
+    if coroutine.status(self.thread) == "dead" then
+        error("cannot resume dead task")
+    end
 end
 
 ---@param ... any parameters
 ---@return any ... results
 function Task:Resume(...)
-    if self.thread == nil then
-        error("cannot resume not executed task")
-    end
-    if coroutine.status(self.thread) == "running" or coroutine.status(self.thread) == "dead" then
-        error("cannot resume dead or running task")
-    end
-    self:invoke(...)
+    self:CheckThreadState()
+    self:invokeThread(...)
     return table.unpack(self.results)
 end
 
 ---@param args any[] parameters
 ---@return any[] returns
 function Task:ResumeDynamic(args)
-    if self.thread == nil then
-        error("cannot resume not executed task")
-    end
-    if coroutine.status(self.thread) == "running" or coroutine.status(self.thread) == "dead" then
-        error("cannot resume dead or running task")
-    end
-    self:invoke(table.unpack(args))
+    self:CheckThreadState()
+    self:invokeThread(table.unpack(args))
     return self.results
 end
 
@@ -121,10 +133,10 @@ end
 
 ---@param logger Core.Logger?
 function Task:LogError(logger)
-    if (not self.success or not self.noError) and logger then
+    self:Close()
+    if not self.noError and logger then
         logger:LogError("execution error: \n" .. debug.traceback(self.thread, self.errorObject) .. debug.traceback():sub(17))
     end
-    self:Close()
 end
 
 return Utils.Class.CreateClass(Task, "Core.Task")
