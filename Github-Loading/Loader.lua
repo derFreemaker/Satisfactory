@@ -16,7 +16,7 @@ local LoaderFiles = {
         { "10_Entities.lua" },
         { "10_Module.lua" },
         { "10_Option.lua" },
-        { "30_Package.lua" },
+        { "40_Package.lua" },
         { "50_Event.lua" },
         { "50_Listener.lua" },
         { "70_Logger.lua" },
