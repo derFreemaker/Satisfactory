@@ -31,7 +31,7 @@ function RestApiController:onMessageRecieved(context)
         self.logger:LogTrace("found no endpoint")
         if context.Header.ReturnPort then
             self.netPort:GetNetClient():SendMessage(context.SenderIPAddress, context.Header.ReturnPort,
-                "Rest-Response", nil, RestApiResponseTemplates.NotFound("Unable to find endpoint"):ExtractData())
+                "Rest-Response", RestApiResponseTemplates.NotFound("Unable to find endpoint"):ExtractData())
         end
         return
     end

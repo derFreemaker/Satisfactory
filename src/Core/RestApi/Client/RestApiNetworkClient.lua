@@ -26,7 +26,7 @@ end
 ---@param request Core.RestApi.RestApiRequest
 ---@return Core.RestApi.RestApiResponse response
 function RestApiClient:request(request)
-    self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, "Rest-Request", { ReturnPort = self.ReturnPort }, request:ExtractData())
+    self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, "Rest-Request", request:ExtractData(), { ReturnPort = self.ReturnPort })
     local context = self.NetClient:WaitForEvent("Rest-Response", self.ReturnPort, 5)
     if not context then
         return RestApiResponse(nil, { Code = 408 })
