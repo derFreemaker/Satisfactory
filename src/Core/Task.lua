@@ -114,10 +114,10 @@ end
 
 ---@param logger Core.Logger?
 function Task:LogError(logger)
-    self:Close()
     if not self.noError and logger then
         logger:LogError("execution error: \n" .. debug.traceback(self.thread, self.errorObject) .. debug.traceback():sub(17))
     end
+    self:Close()
 end
 
 return Utils.Class.CreateClass(Task, "Core.Task")

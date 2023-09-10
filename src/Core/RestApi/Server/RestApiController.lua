@@ -35,6 +35,7 @@ function RestApiController:onMessageRecieved(context)
         end
         return
     end
+    self.logger:LogTrace("found endpoint: ".. request.Endpoint)
     endpoint:Execute(request, context, self.netPort:GetNetClient())
 end
 
@@ -47,7 +48,6 @@ function RestApiController:GetEndpoint(method, endpointName)
             return endpoint
         end
     end
-    return nil
 end
 
 ---@param method Core.RestApi.RestApiMethod

@@ -63,7 +63,7 @@ function DNSClient:CreateAddress(address, id)
 
     local createAddress = CreateAddress(address, id)
 
-    local request = ApiRequest("POST", "Address", createAddress:ExtractData())
+    local request = ApiRequest("CREATE", "Address", createAddress:ExtractData())
     local response = self.apiClient:request(request)
 
     if not response.WasSuccessfull then

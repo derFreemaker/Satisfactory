@@ -18,7 +18,7 @@ end
 
 ---@param request Core.RestApi.RestApiRequest
 ---@return Core.RestApi.RestApiResponse response
-function Endpoints:POST__Address(request)
+function Endpoints:CREATE__Address(request)
     ---@type DNS.Core.Entities.Address.Create
     local createAddress = require("src.DNS.Entities.Address.Create"):Static__CreateFromData(request.Body)
 
