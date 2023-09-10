@@ -617,7 +617,7 @@ end
 ---@param request Core.RestApi.RestApiRequest
 ---@return Core.RestApi.RestApiResponse response
 function RestApiClient:request(request)
-    self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, "Rest-Request", { ReturnPort = self.ReturnPort }, request:ExtractData())
+    self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, "Rest-Request", request:ExtractData(), { ReturnPort = self.ReturnPort })
     local context = self.NetClient:WaitForEvent("Rest-Response", self.ReturnPort, 5)
     if not context then
         return RestApiResponse(nil, { Code = 408 })
@@ -673,7 +673,7 @@ function RestApiController:onMessageRecieved(context)
         self.logger:LogTrace("found no endpoint")
         if context.Header.ReturnPort then
             self.netPort:GetNetClient():SendMessage(context.SenderIPAddress, context.Header.ReturnPort,
-                "Rest-Response", nil, RestApiResponseTemplates.NotFound("Unable to find endpoint"):ExtractData())
+                "Rest-Response", RestApiResponseTemplates.NotFound("Unable to find endpoint"):ExtractData())
         end
         return
     end
@@ -757,7 +757,7 @@ function RestApiEndpoint:Execute(request, context, netClient)
     end
     if context.Header.ReturnPort then
         self.logger:LogTrace("sending response to '" .. context.SenderIPAddress .. "' on port: " .. context.Header.ReturnPort .. "...")
-        netClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort, "Rest-Response", nil, response:ExtractData())
+        netClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort, "Rest-Response", response:ExtractData())
     else
         self.logger:LogTrace("sending no response")
     end
