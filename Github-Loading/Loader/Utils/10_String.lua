@@ -15,4 +15,16 @@ function String.Split(str, seperator)
     return t
 end
 
+---@param str string?
+---@return boolean
+function String.IsNilOrEmpty(str)
+    if str == nil then
+        return false
+    end
+    if str == "" then
+        return false
+    end
+    return true
+end
+
 return String

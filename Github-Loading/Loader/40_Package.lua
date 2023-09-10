@@ -1,6 +1,8 @@
 local LoadedLoaderFiles = ({...})[1]
 ---@type Github_Loading.Module
 local Module = LoadedLoaderFiles["/Github-Loading/Loader/Module"][1]
+---@type Utils
+local Utils = LoadedLoaderFiles["/Github-Loading/Loader/Utils"][1]
 
 ---@class Github_Loading.Package.InfoFile
 ---@field Name string
@@ -71,7 +73,9 @@ function Package:Load()
     if self.RequiredPackages and #self.RequiredPackages ~= 0 then
         self.PackageLoader.logger:LogDebug("loading required packages: " .. #self.RequiredPackages .. "...")
         for _, packageName in ipairs(self.RequiredPackages) do
-            self.PackageLoader:LoadPackage(packageName)
+            if not Utils.String.IsNilOrEmpty(packageName) then
+                self.PackageLoader:LoadPackage(packageName)
+            end
         end
         self.PackageLoader.logger:LogDebug("loaded required packages")
     end
