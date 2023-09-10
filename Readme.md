@@ -3,26 +3,37 @@
 This Repository contains all my code for the [FicsIt-Networks Mod](https://github.com/Panakotta00/FicsIt-Networks) for [Satisfactory](https://www.satisfactorygame.com).
 
 ## Coding Languages
+
 - [Lua](https://www.lua.org)
 
 ## Push Pipeline
+
 1. write source code
 2. bundle the code
 3. push the code to repo
 4. can download in game
 
 #### Bundle command
+
 ```shell
 .\bundle.bat [Package / PackagesFolder]
+
 ```
+
 #### or
+
 ```shell
 .\bundle.bat .
+
 ```
+
 to bundle all packages in current directory
+
 #### or use Lua-Bundler directly
+
 ```shell
 .\Lua-Bundler\Lua-Bundler.exe
+
 ```
 
 ## Run Sequence Overview
@@ -30,10 +41,12 @@ to bundle all packages in current directory
 [InGameLoader](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/GithubLoaderInGame.lua) starts executing.
 
 1. loads [Loader](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/Loader.lua)
+
    - loads all files in [LoaderFiles](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/Loader/)
    - checks version in [VersionFile](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/Version.latest.txt)
    - loads [Options](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/00_Options.lua)
    - sets up [PackageLoader](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/Loader/100_PackageLoader.lua)
+
 2. loads [Core Package](https://github.com/derFreemaker/Satisfactory/blob/main/src/Core)
 3. loads selected [Option](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/GithubLoaderInGame.lua#L2)
 4. runs the selected [Option](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/GithubLoaderInGame.lua#L2)
@@ -42,7 +55,7 @@ to bundle all packages in current directory
 
 ## Package Structure
 
-```
+```ini
 ├── src
 |   ├── Info.package.json <- marks a package folder
 │   ├── __main.lua <- has main functions
@@ -55,14 +68,18 @@ to bundle all packages in current directory
 
 ## Package Info File
 ### [Template:](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/Info.package.json)
+
 ```json
 {
     "Name": "PackageName",
-    "Version": "0.1.0",
+    "Version": "0.1.0-0",
     "Namespace": "PackageNamespace",
     "RequiredPackages": [ "Package1", "Package2" ]
 }
 ```
+
+"Version": "[Version]-[BuildNumber]" the BuildNumber will be increased by one erverytime the bundler bundles this package.
+The BuildNumber can only be an integer.
 
 ## Package Load Sequence
 1. download of the Package out of [Packages](https://github.com/derFreemaker/Satisfactory/blob/main/Packages/)

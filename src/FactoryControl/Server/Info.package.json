@@ -1,6 +1,9 @@
 {
   "Name": "FactoryControlServer",
-  "Version": "0.1",
+  "Version": "0.1-1",
   "Namespace": "FactoryControl.Server",
-  "RequiredPackages": [ "Core", "FactoryControl.Core" ]
+  "RequiredPackages": [
+    "Core",
+    "FactoryControl.Core"
+  ]
 }

@@ -1,6 +1,9 @@
 {
   "Name": "FactoryControlController",
-  "Version": "0.1",
+  "Version": "0.1-1",
   "Namespace": "FactoryControl.Controller",
-  "RequiredPackages": ["Core", "FactoryControl.Core"]
+  "RequiredPackages": [
+    "Core",
+    "FactoryControl.Core"
+  ]
 }
