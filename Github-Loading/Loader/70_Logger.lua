@@ -111,7 +111,7 @@ function error(message, level)
     level = level + 1
     if _G.__errorLogger then
         local debugInfo = debug.getinfo(level)
-        local errorMessage = debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
+        local errorMessage = "[LOG] " .. debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
         errorMessage = debug.traceback(errorMessage, level + 1)
         pcall(_G.__errorLogger.LogError, _G.__errorLogger, errorMessage)
     end

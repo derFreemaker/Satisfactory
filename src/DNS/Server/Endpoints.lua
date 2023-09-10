@@ -1,5 +1,8 @@
 local AddressDatabase = require("DNS.Server.AddressDatabase")
-
+local AddressEntities = {
+    ---@type DNS.Core.Entities.Address.Create
+    Create = require("DNS.Entities.Address.Create")
+}
 
 ---@class DNS.Endpoints : Core.RestApi.Server.RestApiEndpointBase
 ---@field private addressDatabase DNS.Server.AddressDatabase
@@ -20,7 +23,7 @@ end
 ---@return Core.RestApi.RestApiResponse response
 function Endpoints:CREATE__Address(request)
     ---@type DNS.Core.Entities.Address.Create
-    local createAddress = require("src.DNS.Entities.Address.Create"):Static__CreateFromData(request.Body)
+    local createAddress = AddressEntities.Create:Static__CreateFromData(request.Body)
 
     local success = self.addressDatabase:Create(createAddress)
     return self.Templates:Ok(success)
