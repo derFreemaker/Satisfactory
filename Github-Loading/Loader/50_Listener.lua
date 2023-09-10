@@ -30,14 +30,11 @@ end
 ---@param ... any
 ---@return boolean success, any ...
 function Listener:Execute(logger, ...)
-    local thread, success, results
+    local success, results
     if self.parent ~= nil then
-        thread, success, results = Utils.Function.InvokeProtected(self.func, self.parent, ...)
+        _, success, results = Utils.Function.InvokeProtected(self.func, self.parent, ...)
     else
-        thread, success, results = Utils.Function.InvokeProtected(self.func, ...)
-    end
-    if not success and logger then
-        logger:LogError("execution error: \n" .. debug.traceback(thread, results[1]) .. debug.traceback():sub(17))
+        _, success, results = Utils.Function.InvokeProtected(self.func, ...)
     end
     return success, table.unpack(results)
 end

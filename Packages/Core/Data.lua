@@ -44,27 +44,10 @@ Event.Once = Event.AddListenerOnce
 function Event:Trigger(logger, ...)
     for _, task in ipairs(self.funcs) do
         task:Execute(...)
-        task:LogError(logger)
     end
 
     for _, task in ipairs(self.onceFuncs) do
         task:Execute(...)
-        task:LogError(logger)
-    end
-    self.OnceFuncs = {}
-end
-
----@param logger Core.Logger?
----@param args table
-function Event:TriggerDynamic(logger, args)
-    for _, task in ipairs(self.funcs) do
-        task:ExecuteDynamic(args)
-        task:LogError(logger)
-    end
-
-    for _, task in ipairs(self.onceFuncs) do
-        task:ExecuteDynamic(args)
-        task:LogError(logger)
     end
     self.OnceFuncs = {}
 end
@@ -752,7 +735,6 @@ function RestApiEndpoint:Execute(request, context, netClient)
     ---@type Core.RestApi.RestApiResponse
     local response = self.task:GetResults()
     if not self.task:IsSuccess() then
-        self.task:LogError(self.logger)
         response = RestApiResponseTemplates.InternalServerError(tostring(self.task:GetErrorObject()))
     end
     if context.Header.ReturnPort then

@@ -23,7 +23,6 @@ function RestApiEndpoint:Execute(request, context, netClient)
     ---@type Core.RestApi.RestApiResponse
     local response = self.task:GetResults()
     if not self.task:IsSuccess() then
-        self.task:LogError(self.logger)
         response = RestApiResponseTemplates.InternalServerError(tostring(self.task:GetErrorObject()))
     end
     if context.Header.ReturnPort then

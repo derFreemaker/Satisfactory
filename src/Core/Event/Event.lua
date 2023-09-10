@@ -32,27 +32,10 @@ Event.Once = Event.AddListenerOnce
 function Event:Trigger(logger, ...)
     for _, task in ipairs(self.funcs) do
         task:Execute(...)
-        task:LogError(logger)
     end
 
     for _, task in ipairs(self.onceFuncs) do
         task:Execute(...)
-        task:LogError(logger)
-    end
-    self.OnceFuncs = {}
-end
-
----@param logger Core.Logger?
----@param args table
-function Event:TriggerDynamic(logger, args)
-    for _, task in ipairs(self.funcs) do
-        task:ExecuteDynamic(args)
-        task:LogError(logger)
-    end
-
-    for _, task in ipairs(self.onceFuncs) do
-        task:ExecuteDynamic(args)
-        task:LogError(logger)
     end
     self.OnceFuncs = {}
 end
