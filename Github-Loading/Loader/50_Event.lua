@@ -49,19 +49,6 @@ function Event:Trigger(logger, ...)
     self.OnceFuncs = {}
 end
 
----@param logger Github_Loading.Logger?
----@param args table
-function Event:TriggerDynamic(logger, args)
-    for _, listener in ipairs(self.funcs) do
-        listener:ExecuteDynamic(logger, args)
-    end
-
-    for _, listener in ipairs(self.onceFuncs) do
-        listener:ExecuteDynamic(logger, args)
-    end
-    self.OnceFuncs = {}
-end
-
 ---@return Github_Loading.Listener[]
 function Event:Listeners()
     local clone = {}

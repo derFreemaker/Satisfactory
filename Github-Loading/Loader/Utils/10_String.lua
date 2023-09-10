@@ -19,12 +19,12 @@ end
 ---@return boolean
 function String.IsNilOrEmpty(str)
     if str == nil then
-        return false
+        return true
     end
     if str == "" then
-        return false
+        return true
     end
-    return true
+    return false
 end
 
 return String
