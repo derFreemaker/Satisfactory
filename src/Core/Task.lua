@@ -39,19 +39,26 @@ function Task:GetErrorObject()
     return self.errorObject
 end
 
----@param task Core.Task
-local function createThread(task)
+---@private
+---@param ... any args
+function Task:invokeThread(...)
+    self.success, self.results = coroutine.resume(self.thread, ...)
+end
+
+---@param ... any parameters
+---@return any ... results
+function Task:Execute(...)
     ---@param ... any parameters
     ---@return any[] returns
     local function invokeFunc(...)
         ---@type any[]
         local result
-        if task.parent then
-            result = { task.func(task.parent, ...) }
+        if self.parent ~= nil then
+            result = { self.func(self.parent, ...) }
         else
-            result = { task.func(...) }
+            result = { self.func(...) }
         end
-        if coroutine.isyieldable(task.thread) then
+        if coroutine.isyieldable(self.thread) then
             --? Should always return here
             return coroutine.yield(result)
         end
@@ -59,30 +66,11 @@ local function createThread(task)
         return result
     end
 
-    task.thread = coroutine.create(invokeFunc)
-    task.closed = false
-end
+    self.thread = coroutine.create(invokeFunc)
+    self.closed = false
 
----@private
----@param ... any args
-function Task:invokeThread(...)
-    self.success, self.results = coroutine.resume(self.thread, self, ...)
-end
-
----@param ... any parameters
----@return any ... results
-function Task:Execute(...)
-    createThread(self)
     self:invokeThread(...)
     return table.unpack(self.results)
-end
-
----@param args any[] parameters
----@return any[] returns
-function Task:ExecuteDynamic(args)
-    createThread(self)
-    self:invokeThread(table.unpack(args))
-    return self.results
 end
 
 ---@private
@@ -107,14 +95,6 @@ function Task:Resume(...)
     self:CheckThreadState()
     self:invokeThread(...)
     return table.unpack(self.results)
-end
-
----@param args any[] parameters
----@return any[] returns
-function Task:ResumeDynamic(args)
-    self:CheckThreadState()
-    self:invokeThread(table.unpack(args))
-    return self.results
 end
 
 function Task:Close()

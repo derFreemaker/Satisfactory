@@ -22,31 +22,16 @@ local function extractSuccess(success, ...)
     return success, { ... }
 end
 ---@param func function
----@param parent any
 ---@param ... any
 ---@return thread thread, boolean success, any[] returns
-function Function.InvokeProtected(func, parent, ...)
+function Function.InvokeProtected(func, ...)
     local function invokeFunc(...)
         coroutine.yield(func(...))
     end
     local thread = coroutine.create(invokeFunc)
-    local results
-    if parent ~= nil then
-        results = {coroutine.resume(thread, parent, ...)}
-    else
-        results = {coroutine.resume(thread, ...)}
-    end
-    coroutine.close(thread)
+    local results = { coroutine.resume(thread, ...) }
     local success, filteredResults = extractSuccess(table.unpack(results))
     return thread, success, filteredResults
-end
-
----@param func function
----@param parent any
----@param args any[]
----@return thread thread, boolean success, any[] returns
-function Function.DynamicInvokeProtected(func, parent, args)
-    return Function.InvokeProtected(func, parent, table.unpack(args))
 end
 
 return Function
