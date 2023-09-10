@@ -68,7 +68,8 @@ local function tableToLineTree(node, maxLevel, properties, level, padding)
 
             if level < maxLevel then
                 ---@cast properties string[]
-                local childLines = tableToLineTree(node[k], maxLevel, properties, level + 1, padding .. (i == #keys and '    ' or '│   '))
+                local childLines = tableToLineTree(node[k], maxLevel, properties, level + 1,
+                    padding .. (i == #keys and '    ' or '│   '))
                 for _, l in ipairs(childLines) do
                     table.insert(lines, l)
                 end
@@ -90,7 +91,7 @@ end
 ---@param ... any
 function log(...)
     local message = ""
-    for i, arg in pairs({...}) do
+    for i, arg in pairs({ ... }) do
         if i == 1 then
             message = tostring(arg) or "nil"
         else
@@ -111,9 +112,9 @@ function error(message, level)
     level = level + 1
     if _G.__errorLogger then
         local debugInfo = debug.getinfo(level)
-        local errorMessage = "[LOG] " .. debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
+        local errorMessage = "[ERROR-LOG] " .. debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
         errorMessage = debug.traceback(errorMessage, level + 1)
-        pcall(_G.__errorLogger.LogError, _G.__errorLogger, errorMessage)
+        pcall(_G.__errorLogger.Log, _G.__errorLogger, errorMessage, 4)
     end
     errorFunc(message, level)
 end
@@ -128,9 +129,9 @@ function assert(condition, message, ...)
     message = message or "assertation failed"
     if not condition and _G.__errorLogger then
         local debugInfo = debug.getinfo(2)
-        local errorMessage = debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
+        local errorMessage = "[ASSERT-LOG] " .. debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
         errorMessage = debug.traceback(errorMessage, 3)
-        pcall(_G.__errorLogger.LogError, _G.__errorLogger, errorMessage)
+        pcall(_G.__errorLogger.Log, _G.__errorLogger, errorMessage, 4)
     end
     return asserFunc(condition, message, ...)
 end
@@ -140,9 +141,9 @@ local panicFunc = computer.panic
 function computer.panic(errorMsg) ---@diagnostic disable-line
     if _G.__errorLogger then
         local debugInfo = debug.getinfo(2)
-        local errorMessage = "PANIC!: " .. debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. errorMsg
+        local errorMessage = "[PANIC-LOG] " .. debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. errorMsg
         errorMessage = debug.traceback(errorMessage, 3)
-        pcall(_G.__errorLogger.LogError, _G.__errorLogger, errorMessage)
+        pcall(_G.__errorLogger.Log, _G.__errorLogger, errorMessage, 10)
     end
     return panicFunc(errorMsg)
 end
