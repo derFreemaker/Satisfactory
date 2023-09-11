@@ -111,7 +111,6 @@ function PackageLoader:LoadPackage(packageName, forceDownload)
     if success then
         ---@cast package Github_Loading.Package
         table.insert(self.Packages, package)
-        self.logger:FreeLine(1)
         package:Load()
     else
         computer.panic("could not find or download package: '" .. packageName .. "'")

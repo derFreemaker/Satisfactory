@@ -86,8 +86,7 @@ PackageData.oVIzFPpX = {
     Data = [[
 local AddressDatabase = require("DNS.Server.AddressDatabase")
 local AddressEntities = {
-    ---@type DNS.Core.Entities.Address.Create
-    Create = require("DNS.Entities.Address.Create")
+    Create = require("DNS.Core.Entities.Address.Create")
 }
 
 ---@class DNS.Endpoints : Core.RestApi.Server.RestApiEndpointBase
