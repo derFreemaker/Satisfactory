@@ -106,8 +106,8 @@ function PackageLoader:LoadPackage(packageName, forceDownload)
         self.logger:LogTrace("found package: '" .. packageName .. "'")
         return package
     end
-
-    local success, package = self:DownloadPackage(packageName, forceDownload)
+    local success
+    success, package = self:DownloadPackage(packageName, forceDownload)
     if success then
         ---@cast package Github_Loading.Package
         table.insert(self.Packages, package)
