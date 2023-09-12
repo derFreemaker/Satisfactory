@@ -1,20 +1,20 @@
 ---@class Core.Task : object
 ---@field package func function
----@field package parent table
+---@field package passthrough table
 ---@field package thread thread
 ---@field package closed boolean
 ---@field private success boolean
 ---@field private results any[]
 ---@field private traceback string?
----@overload fun(func: function, parent: table?) : Core.Task
+---@overload fun(func: function, passthrough: table?) : Core.Task
 local Task = {}
 
 ---@private
 ---@param func function
----@param parent table
-function Task:__init(func, parent)
+---@param passthrough table
+function Task:__init(func, passthrough)
     self.func = func
-    self.parent = parent
+    self.passthrough = passthrough
     self.closed = false
     self.success = true
     self.results = {}
@@ -57,8 +57,8 @@ function Task:Execute(...)
     local function invokeFunc(...)
         ---@type any[]
         local result
-        if self.parent ~= nil then
-            result = { self.func(self.parent, ...) }
+        if self.passthrough ~= nil then
+            result = { self.func(self.passthrough, ...) }
         else
             result = { self.func(...) }
         end
