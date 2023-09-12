@@ -1,6 +1,6 @@
 return {
     Name = "Test-Http",
-    Version = "0.1.0-2",
+    Version = "0.1.0-3",
     Namespace = "Test.Http",
     RequiredPackages = {
         "Core",

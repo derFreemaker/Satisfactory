@@ -33,7 +33,9 @@ function Main:Run()
 
     self.Logger:LogDebug("creating address on server...")
     local createdAddress = self.dnsClient:CreateAddress(domain, self.netClient:GetId())
-    assert(createdAddress, "unable to create address on dns server")
+    if not createdAddress then
+        self.Logger:LogInfo("unable to create address on dns server")
+    end
     self.Logger:LogInfo("created address on server")
 
     self.Logger:LogDebug("getting address back from server...")

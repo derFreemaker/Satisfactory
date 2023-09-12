@@ -32,7 +32,7 @@ end
 
 ---@return Core.RestApi.RestApiResponse
 function NetworkContext:ToApiResponse()
-    return RestApiResponse(self.Body.Headers, self.Body.Body)
+    return RestApiResponse(self.Body.Body, self.Body.Headers)
 end
 
 return Utils.Class.CreateClass(NetworkContext, "Core.Net.NetworkContext")

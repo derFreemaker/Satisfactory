@@ -419,7 +419,7 @@ end
 
 ---@return Core.RestApi.RestApiResponse
 function NetworkContext:ToApiResponse()
-    return RestApiResponse(self.Body.Headers, self.Body.Body)
+    return RestApiResponse(self.Body.Body, self.Body.Headers)
 end
 
 return Utils.Class.CreateClass(NetworkContext, "Core.Net.NetworkContext")
@@ -946,7 +946,11 @@ local RestApiResponse = {}
 function RestApiResponse:__init(body, header)
     self.Headers = header or {}
     self.Body = body
-    self.WasSuccessfull = self.Headers.Code < 300
+    if type(self.Headers.Code) == "number" then
+        self.WasSuccessfull = self.Headers.Code < 300
+    else
+        self.WasSuccessfull = false
+    end
 end
 
 ---@return table
