@@ -78,10 +78,6 @@ local function tableToLineTree(node, maxLevel, properties, level, padding)
     return lines
 end
 
-function Logger:setErrorLogger()
-    _G.__errorLogger = self
-end
-
 ---@private
 ---@param name string
 ---@param logLevel Core.Logger.LogLevel

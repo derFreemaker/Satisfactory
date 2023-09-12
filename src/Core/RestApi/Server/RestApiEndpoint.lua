@@ -19,7 +19,10 @@ end
 ---@param netClient Core.Net.NetworkClient
 function RestApiEndpoint:Execute(request, context, netClient)
     self.logger:LogTrace("executing...")
+    ___logger:setLogger(self.logger)
     self.task:Execute(request)
+    self.task:LogError(self.logger)
+    ___logger:revert()
     ---@type Core.RestApi.RestApiResponse
     local response = self.task:GetResults()
     if not self.task:IsSuccess() then

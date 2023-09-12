@@ -13,6 +13,7 @@ local LoaderFiles = {
             { "20_Class.lua" },
             { "30_Index.lua" }
             },
+        { "10_ComputerLogger.lua" },
         { "10_Entities.lua" },
         { "10_Module.lua" },
         { "10_Option.lua" },
@@ -259,7 +260,7 @@ function Loader:setupLogger(logLevel)
     self.Logger = Logger.new("Github Loader", logLevel)
     self.Logger.OnLog:AddListener(Listener.new(logFile))
     self.Logger.OnClear:AddListener(Listener.new(clear))
-    self.Logger:setErrorLogger()
+    ___logger:setLogger(self.Logger)
     self.Logger:Clear()
     self.Logger:Log("###### LOG START: ".. tostring(({ computer.magicTime() })[2]) .." ######", 10)
     self.Logger.OnLog:AddListener(Listener.new(logConsole))
@@ -275,6 +276,7 @@ function Loader:Load(logLevel)
     ---@type Utils
     Utils = self:Get("/Github-Loading/Loader/Utils")
 
+    ___logger:initialize()
     self:setupLogger(logLevel)
 end
 
@@ -383,9 +385,9 @@ function Loader:Configure(program, package, logLevel)
     program.Logger = Logger(package.Name, logLevel)
     local Task = require("Core.Task")
     self.Logger:CopyListenersToCoreEvent(Task, program.Logger)
-    program.Logger:setErrorLogger()
+    ___logger:setLogger(program.Logger)
     local errorMsg = program:Configure()
-    self.Logger:setErrorLogger()
+    ___logger:setLogger(self.Logger)
     if errorMsg ~= "not found" then
         self.Logger:LogTrace("configured program")
     else
@@ -397,9 +399,9 @@ end
 ---@param program Github_Loading.Entities.Main
 function Loader:Run(program)
     self.Logger:LogTrace("running program...")
-    program.Logger:setErrorLogger()
+    ___logger:setLogger(program.Logger)
     local result = program:Run()
-    self.Logger:setErrorLogger()
+    ___logger:setLogger(self.Logger)
     if result == "$%not found%$" then
         error("no main run function found")
     end
