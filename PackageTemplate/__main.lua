@@ -1,4 +1,5 @@
 ---@class Template.Main : Github_Loading.Entities.Main
+---@field Logger Core.Logger
 local Main = {}
 
 function Main:Configure()
