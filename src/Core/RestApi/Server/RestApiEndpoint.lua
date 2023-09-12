@@ -26,7 +26,7 @@ function RestApiEndpoint:Execute(request, context, netClient)
     ---@type Core.RestApi.RestApiResponse
     local response = self.task:GetResults()
     if not self.task:IsSuccess() then
-        response = RestApiResponseTemplates.InternalServerError(tostring(self.task:GetErrorObject()))
+        response = RestApiResponseTemplates.InternalServerError(tostring(self.task:GetTraceback()))
     end
     if context.Header.ReturnPort then
         self.logger:LogTrace("sending response to '" .. context.SenderIPAddress .. "' on port: " .. context.Header.ReturnPort .. "...")

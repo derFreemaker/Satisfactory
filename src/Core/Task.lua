@@ -37,10 +37,7 @@ end
 
 ---@return string
 function Task:GetTraceback()
-    if self.traceback == nil then
-        return self:Traceback()
-    end
-    return self.traceback
+    return self:Traceback()
 end
 
 ---@private

@@ -739,7 +739,7 @@ function RestApiEndpoint:Execute(request, context, netClient)
     ---@type Core.RestApi.RestApiResponse
     local response = self.task:GetResults()
     if not self.task:IsSuccess() then
-        response = RestApiResponseTemplates.InternalServerError(tostring(self.task:GetErrorObject()))
+        response = RestApiResponseTemplates.InternalServerError(tostring(self.task:GetTraceback()))
     end
     if context.Header.ReturnPort then
         self.logger:LogTrace("sending response to '" .. context.SenderIPAddress .. "' on port: " .. context.Header.ReturnPort .. "...")
@@ -833,25 +833,25 @@ local RestApiResponseTemplates = {}
 ---@param value any
 ---@return Core.RestApi.RestApiResponse
 function RestApiResponseTemplates.Ok(value)
-    return RestApiResponse({ Code = StatusCodes.Status200OK }, value)
+    return RestApiResponse(value, { Code = StatusCodes.Status200OK })
 end
 
 ---@param message string
 ---@return Core.RestApi.RestApiResponse
 function RestApiResponseTemplates.BadRequest(message)
-    return RestApiResponse({ Code = StatusCodes.Status400BadRequest, Message = message })
+    return RestApiResponse(nil, { Code = StatusCodes.Status400BadRequest, Message = message })
 end
 
 ---@param message string
 ---@return Core.RestApi.RestApiResponse
 function RestApiResponseTemplates.NotFound(message)
-    return RestApiResponse({ Code = StatusCodes.Status404NotFound, Message = message })
+    return RestApiResponse(nil, { Code = StatusCodes.Status404NotFound, Message = message })
 end
 
 ---@param message string
 ---@return Core.RestApi.RestApiResponse
 function RestApiResponseTemplates.InternalServerError(message)
-    return RestApiResponse({ Code = StatusCodes.Status500InternalServerError, Message = message })
+    return RestApiResponse(nil, { Code = StatusCodes.Status500InternalServerError, Message = message })
 end
 
 return RestApiResponseTemplates
@@ -1903,10 +1903,7 @@ end
 
 ---@return string
 function Task:GetTraceback()
-    if self.traceback == nil then
-        return self:Traceback()
-    end
-    return self.traceback
+    return self:Traceback()
 end
 
 ---@private
