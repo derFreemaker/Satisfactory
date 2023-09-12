@@ -683,7 +683,8 @@ function RestApiController:AddEndpoint(method , name, task)
     if self:GetEndpoint(method, name) ~= nil then
         error("Endpoint allready exists")
     end
-    self.Endpoints[method .. "__" .. name] = RestApiEndpoint(task, self.logger:subLogger("RestApiEndpoint[" .. name .. "]"))
+local endpointName = method .. "__" .. name
+    self.Endpoints[endpointName] = RestApiEndpoint(task, self.logger:subLogger("RestApiEndpoint[" .. endpointName .. "]"))
     self.logger:LogTrace("Added endpoint: '".. method .."' -> '" .. name .. "'")
     return self
 end
@@ -731,7 +732,10 @@ end
 ---@param netClient Core.Net.NetworkClient
 function RestApiEndpoint:Execute(request, context, netClient)
     self.logger:LogTrace("executing...")
+    ___logger:setLogger(self.logger)
     self.task:Execute(request)
+    self.task:LogError(self.logger)
+    ___logger:revert()
     ---@type Core.RestApi.RestApiResponse
     local response = self.task:GetResults()
     if not self.task:IsSuccess() then
@@ -1527,10 +1531,6 @@ local function tableToLineTree(node, maxLevel, properties, level, padding)
     end
 
     return lines
-end
-
-function Logger:setErrorLogger()
-    _G.__errorLogger = self
 end
 
 ---@private
