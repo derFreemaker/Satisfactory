@@ -24,7 +24,7 @@ function AddressDatabase:Create(createAddress)
         return false
     end
     local address = Address:Static__CreateFromCreateAddress(createAddress)
-    self.dbTable:Set(address.Id, address)
+    self.dbTable:Set(address.Id, address:ExtractData())
     return true
 end
 
@@ -44,10 +44,9 @@ end
 ---@param id string
 ---@return DNS.Core.Entities.Address? address
 function AddressDatabase:GetWithId(id)
-    for addressId, address in pairs(self.dbTable) do
-        ---@cast address DNS.Core.Entities.Address
+    for addressId, data in pairs(self.dbTable) do
         if addressId == id then
-            return address
+            return Address:Static__CreateFromData(data)
         end
     end
 end
@@ -56,8 +55,8 @@ end
 ---@param addressAddress string
 ---@return DNS.Core.Entities.Address? createAddress
 function AddressDatabase:GetWithAddress(addressAddress)
-    for _, address in pairs(self.dbTable) do
-        ---@cast address DNS.Core.Entities.Address
+    for _, data in pairs(self.dbTable) do
+        local address = Address:Static__CreateFromData(data)
         if address.Address == addressAddress then
             return address
         end
