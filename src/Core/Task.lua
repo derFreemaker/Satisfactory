@@ -7,6 +7,7 @@
 ---@field private results any[]
 ---@field private noError boolean
 ---@field private errorObject any
+---@field private traceback string
 ---@overload fun(func: function, parent: table?) : Core.Task
 local Task = {}
 
@@ -99,6 +100,9 @@ end
 
 function Task:Close()
     if self.closed then return end
+    if not self.success then
+        self.traceback = debug.traceback(self.thread, self.results[1])
+    end
     self.noError, self.errorObject = coroutine.close(self.thread)
     self.closed = true
 end
@@ -115,7 +119,7 @@ end
 function Task:LogError(logger)
     self:Close()
     if not self.noError and logger then
-        logger:LogError("execution error: \n" .. debug.traceback(self.thread, self.errorObject) .. debug.traceback():sub(17))
+        logger:LogError("Task: \n" .. self.traceback .. debug.traceback():sub(17))
     end
 end
 
