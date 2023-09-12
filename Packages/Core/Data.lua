@@ -1982,7 +1982,7 @@ function Task:Traceback()
     if type(self.results) == "string" then
         error = self.results --{{{@as string}}}
     end
-    self.traceback = debug.traceback(self.traceback, error)
+    self.traceback = debug.traceback(self.thread, error)
     return self.traceback
 end
 
