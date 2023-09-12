@@ -5,9 +5,7 @@
 ---@field package closed boolean
 ---@field private success boolean
 ---@field private results any[]
----@field private noError boolean
----@field private errorObject any
----@field private traceback string
+---@field private traceback string?
 ---@overload fun(func: function, parent: table?) : Core.Task
 local Task = {}
 
@@ -18,6 +16,8 @@ function Task:__init(func, parent)
     self.func = func
     self.parent = parent
     self.closed = false
+    self.success = true
+    self.results = {}
 end
 
 ---@return boolean
@@ -35,9 +35,12 @@ function Task:GetResultsArray()
     return self.results
 end
 
----@return any errorObject
-function Task:GetErrorObject()
-    return self.errorObject
+---@return string
+function Task:GetTraceback()
+    if self.traceback == nil then
+        return self:Traceback()
+    end
+    return self.traceback
 end
 
 ---@private
@@ -69,6 +72,7 @@ function Task:Execute(...)
 
     self.thread = coroutine.create(invokeFunc)
     self.closed = false
+    self.traceback = nil
 
     self:invokeThread(...)
     return table.unpack(self.results)
@@ -100,11 +104,20 @@ end
 
 function Task:Close()
     if self.closed then return end
-    if not self.success then
-        self.traceback = debug.traceback(self.thread, self.results[1])
-    end
-    self.noError, self.errorObject = coroutine.close(self.thread)
+    coroutine.close(self.thread)
     self.closed = true
+end
+
+---@return string traceback
+function Task:Traceback()
+    if self.traceback ~= nil then
+        return self.traceback end
+    local error = ""
+    if type(self.results) == "string" then
+        error = self.results --[[@as string]]
+    end
+    self.traceback = debug.traceback(self.traceback, error)
+    return self.traceback
 end
 
 ---@return "not created" | "dead" | "normal" | "running" | "suspended"
@@ -118,8 +131,8 @@ end
 ---@param logger Core.Logger?
 function Task:LogError(logger)
     self:Close()
-    if not self.noError and logger then
-        logger:LogError("Task: \n" .. self.traceback .. debug.traceback():sub(17))
+    if not self.success and logger then
+        logger:LogError("Task: \n" .. self:Traceback() .. debug.traceback():sub(17))
     end
 end
 

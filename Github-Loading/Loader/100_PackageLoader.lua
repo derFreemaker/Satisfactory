@@ -53,16 +53,13 @@ end
 ---@return Github_Loading.PackageLoader
 function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard)
     assert(not (not filesystem.exists(packagesPath) and not filesystem.createDir(packagesPath)), "Unable to create folder for packages")
-    local metatable = {
-        __index = PackageLoader
-    }
     return setmetatable({
         Packages = {},
         packagesUrl = packagesUrl,
         packagesPath = packagesPath,
         logger = logger,
         internetCard = internetCard,
-    }, metatable)
+    }, { __index = PackageLoader })
 end
 
 function PackageLoader:setGlobal()

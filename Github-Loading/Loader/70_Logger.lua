@@ -88,30 +88,24 @@ end
 ---@param logLevel Github_Loading.Logger.LogLevel
 ---@return Github_Loading.Logger
 function Logger.new(name, logLevel)
-    local metatable = {
-        __index = Logger
-    }
     return setmetatable({
         LogLevel = logLevel,
         Name = (string.gsub(name, " ", "_") or ""),
         OnLog = Event.new(),
         OnClear = Event.new()
-    }, metatable)
+    }, { __index = Logger })
 end
 
 ---@param name string
 ---@return Github_Loading.Logger
 function Logger:subLogger(name)
     name = self.Name .. "." .. name
-    local metatable = {
-        __index = Logger
-    }
     return setmetatable({
         LogLevel = self.LogLevel,
         Name = name:gsub(" ", "_"),
         OnLog = Utils.Table.Copy(self.OnLog),
         OnClear = Utils.Table.Copy(self.OnClear)
-    }, metatable)
+    }, { __index = Logger })
 end
 
 ---@param logger Github_Loading.Logger

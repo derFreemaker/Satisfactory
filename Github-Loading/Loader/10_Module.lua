@@ -17,16 +17,13 @@ local Module = {}
 ---@param moduleData Github_Loading.Module.Data
 ---@return Github_Loading.Module
 function Module.new(moduleData)
-    local metatable = {
-        __index = Module
-    }
     return setmetatable({
         Name = moduleData.Name,
         FullName = moduleData.FullName,
         Namespace = moduleData.Namespace,
         IsRunnable = moduleData.IsRunnable,
-        Data = moduleData.Data
-    }, metatable)
+        Data = moduleData.Data:gsub("{{{", "[["):gsub("}}}", "]]")
+    }, { __index = Module })
 end
 
 ---@param ... any

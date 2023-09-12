@@ -8,10 +8,7 @@ local Main = {}
 ---@param mainModule Github_Loading.Entities.Main
 ---@return Github_Loading.Entities.Main
 function Entities.newMain(mainModule)
-    local metatable = {
-        __index = Main
-    }
-    return setmetatable(mainModule, metatable)
+    return setmetatable(mainModule, { __index = Main })
 end
 
 ---@return string | any

@@ -25,9 +25,6 @@ local Package = {}
 ---@param packageLoader Github_Loading.PackageLoader
 ---@return Github_Loading.Package
 function Package.new(info, forceDownload, packageLoader)
-    local metatable = {
-        __index = Package
-    }
     return setmetatable({
         Name = info.Name,
         Namespace = info.Namespace,
@@ -35,7 +32,7 @@ function Package.new(info, forceDownload, packageLoader)
         RequiredPackages = info.RequiredPackages,
         forceDownload = forceDownload,
         PackageLoader = packageLoader
-    }, metatable)
+    }, { __index = Package })
 end
 
 ---@param moduleToGet string

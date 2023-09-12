@@ -11,13 +11,10 @@ local Listener = {}
 ---@param parent any
 ---@return Github_Loading.Listener
 function Listener.new(func, parent)
-    local metatable = {
-        __index = Listener
-    }
     return setmetatable({
         func = func,
         parent = parent
-    }, metatable)
+    }, { __index = Listener })
 end
 
 ---@param Task Core.Task | fun(func: function, parent: table?) : Core.Task

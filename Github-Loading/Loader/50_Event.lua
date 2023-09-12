@@ -9,13 +9,10 @@ local Event = {}
 
 ---@return Github_Loading.Event
 function Event.new()
-    local metatable = {
-        __index = Event
-    }
     return setmetatable({
         funcs = {},
         onceFuncs = {}
-    }, metatable)
+    }, { __index = Event })
 end
 
 ---@param listener Github_Loading.Listener
