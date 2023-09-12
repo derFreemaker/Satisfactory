@@ -16,6 +16,7 @@ function DbTable:__init(name, path, logger)
     self.name = name
     self.path = path
     self.logger = logger
+    self.data = {}
 end
 
 function DbTable:Load()
@@ -31,8 +32,6 @@ function DbTable:Load()
         if type(data) == "table" then
             self.data = data
         end
-    else
-        self.data = {}
     end
     self.logger:LogTrace("loaded Database Table")
 end
@@ -68,4 +67,4 @@ function DbTable:__pairs()
     return next, self.data, nil
 end
 
-return Utils.Class.CreateClass(DbTable, "DbTable")
+return Utils.Class.CreateClass(DbTable, "Database.DbTable")

@@ -13,6 +13,7 @@ local AddressDatabase = {}
 ---@param logger Core.Logger
 function AddressDatabase:__init(logger)
     self.dbTable = DbTable("Addresses", Path("/Database/Addresses.db"), logger:subLogger("DbTable"))
+    self.dbTable:Load()
 end
 
 

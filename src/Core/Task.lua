@@ -104,6 +104,7 @@ end
 
 function Task:Close()
     if self.closed then return end
+    self:Traceback()
     coroutine.close(self.thread)
     self.closed = true
 end
