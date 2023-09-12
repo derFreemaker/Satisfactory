@@ -7,13 +7,13 @@ local testLogger = Logger("Test", 0)
 testLogger.OnLog:AddListener(Task(print))
 
 local function testFunc()
-    error("Test", 2)
+    print("hi")
+    error("Test")
 end
 
 local test = Task(testFunc)
 
 test:Execute()
-
 test:LogError(testLogger)
 
 print("#### END ####")
