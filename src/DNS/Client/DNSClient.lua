@@ -1,6 +1,6 @@
-local NetworkClient = require("Core.Net.NetworkClient")
-local ApiClient = require("Core.RestApi.Client.RestApiNetworkClient")
-local ApiRequest = require("Core.RestApi.RestApiRequest")
+local NetworkClient = require("Net.Core.NetworkClient")
+local ApiClient = require("Net.Rest.RestApii.Client.RestApiNetworkClient")
+local ApiRequest = require("Net.Rest.RestApii.RestApiRequest")
 
 local Address = require("DNS.Core.Entities.Address.Address")
 local CreateAddress = require("DNS.Core.Entities.Address.Create")

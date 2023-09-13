@@ -1,8 +1,8 @@
 local Json = require("Core.Json")
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local Task = require("Core.Task")
-local NetworkPort = require("Core.Net.NetworkPort")
-local NetworkContext = require("Core.Net.NetworkContext")
+local NetworkPort = require("Net.Core.NetworkPort")
+local NetworkContext = require("Net.Core.NetworkContext")
 
 ---@class Core.Net.NetworkClient : object
 ---@field private id string?

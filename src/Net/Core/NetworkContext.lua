@@ -1,6 +1,6 @@
 local Json = require("Core.Json")
-local RestApiRequest = require("Core.RestApi.RestApiRequest")
-local RestApiResponse = require("Core.RestApi.RestApiResponse")
+local RestApiRequest = require("Net.Rest.RestApii.RestApiRequest")
+local RestApiResponse = require("Net.Rest.RestApii.RestApiResponse")
 
 ---@class Core.Net.NetworkContext : object
 ---@field SignalName string

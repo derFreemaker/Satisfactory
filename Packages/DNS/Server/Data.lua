@@ -148,7 +148,7 @@ function Endpoints:GET__AddressWithId(request)
 end
 
 
-return Utils.Class.CreateClass(Endpoints, "DNS.Server.Endpoints", require("Core.RestApi.Server.RestApiEndpointBase"))
+return Utils.Class.CreateClass(Endpoints, "DNS.Server.Endpoints", require("Net.Rest.RestApii.Server.RestApiEndpointBase"))
 ]]
 }
 
@@ -159,9 +159,9 @@ PackageData.PksKdJNx = {
     IsRunnable = true,
     Data = [[
 local DNSEndpoints = require("DNS.Server.Endpoints")
-local NetworkClient = require("Core.Net.NetworkClient")
+local NetworkClient = require("Net.Core.NetworkClient")
 local Task = require("Core.Task")
-local RestApiController = require("Core.RestApi.Server.RestApiController")
+local RestApiController = require("Net.Rest.RestApii.Server.RestApiController")
 
 ---@class DNS.Main : Github_Loading.Entities.Main
 ---@field private eventPullAdapter Core.EventPullAdapter

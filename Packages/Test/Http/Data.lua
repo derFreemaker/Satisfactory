@@ -9,7 +9,7 @@ PackageData.MFYoiWSx = {
     IsRunnable = true,
     Data = [[
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
-local NetworkClient = require("Core.Net.NetworkClient")
+local NetworkClient = require("Net.Core.NetworkClient")
 local DNSClient = require("DNS.Client.DNSClient")
 
 ---@class Test.Http.Main : Github_Loading.Entities.Main

@@ -8,8 +8,8 @@ PackageData.MFYoiWSx = {
     FullName = "FactoryControlApiClient.lua",
     IsRunnable = true,
     Data = [[
-local RestApiNetworkClient = require("Core.RestApi.Client.RestApiNetworkClient")
-local RestApiRequest = require("Core.RestApi.RestApiRequest")
+local RestApiNetworkClient = require("Net.Rest.RestApii.Client.RestApiNetworkClient")
+local RestApiRequest = require("Net.Rest.RestApii.RestApiRequest")
 
 ---@class FactoryControl.Core.FactoryControlRestApiClient : object
 ---@field private restApiClient Core.RestApi.Client.RestApiClient

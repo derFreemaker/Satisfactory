@@ -1,6 +1,6 @@
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
-local NetworkClient = require("Core.Net.NetworkClient")
-local RestApiController = require("Core.RestApi.Server.RestApiController")
+local NetworkClient = require("Net.Core.NetworkClient")
+local RestApiController = require("Net.Rest.RestApii.Server.RestApiController")
 local ControllerEndpoints = require("FactoryControl.Server.Endpoints.ControllerEndpoints")
 
 ---@class FactoryControl.Server.Main : Github_Loading.Entities.Main
