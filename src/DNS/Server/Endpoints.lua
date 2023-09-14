@@ -3,7 +3,7 @@ local AddressEntities = {
     Create = require("DNS.Core.Entities.Address.Create")
 }
 
----@class DNS.Endpoints : Core.RestApi.Server.RestApiEndpointBase
+---@class DNS.Endpoints : Net.Rest.Api.Server.EndpointBase
 ---@field private addressDatabase DNS.Server.AddressDatabase
 ---@field private logger Core.Logger
 ---@overload fun(logger: Core.Logger) : DNS.Endpoints
@@ -18,8 +18,8 @@ function Endpoints:__init(logger)
 end
 
 
----@param request Core.RestApi.RestApiRequest
----@return Core.RestApi.RestApiResponse response
+---@param request Net.Rest.Api.Request
+---@return Net.Rest.Api.Response response
 function Endpoints:CREATE__Address(request)
     ---@type DNS.Core.Entities.Address.Create
     local createAddress = AddressEntities.Create:Static__CreateFromData(request.Body)
@@ -29,8 +29,8 @@ function Endpoints:CREATE__Address(request)
 end
 
 
----@param request Core.RestApi.RestApiRequest
----@return Core.RestApi.RestApiResponse response
+---@param request Net.Rest.Api.Request
+---@return Net.Rest.Api.Response response
 function Endpoints:DELETE__Address(request)
     local success = self.addressDatabase:Delete(request.Body)
     if not success then
@@ -40,8 +40,8 @@ function Endpoints:DELETE__Address(request)
 end
 
 
----@param request Core.RestApi.RestApiRequest
----@return Core.RestApi.RestApiResponse response
+---@param request Net.Rest.Api.Request
+---@return Net.Rest.Api.Response response
 function Endpoints:GET__AddressWithAddress(request)
     local address = self.addressDatabase:GetWithAddress(request.Body)
     if not address then
@@ -51,8 +51,8 @@ function Endpoints:GET__AddressWithAddress(request)
 end
 
 
----@param request Core.RestApi.RestApiRequest
----@return Core.RestApi.RestApiResponse response
+---@param request Net.Rest.Api.Request
+---@return Net.Rest.Api.Response response
 function Endpoints:GET__AddressWithId(request)
     local address = self.addressDatabase:GetWithId(request.Body)
     if not address then

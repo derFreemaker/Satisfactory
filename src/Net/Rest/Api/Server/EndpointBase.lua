@@ -1,13 +1,13 @@
 local RestApiResponseTemplates = require("Core.RestApi.Server.RestApiResponseTemplates")
 
----@class Core.RestApi.Server.RestApiEndpointBase : object
+---@class Net.Rest.Api.Server.EndpointBase : object
 ---@field protected Templates Core.RestApi.Server.RestApiEndpointBase.RestApiResponseTemplates
-local RestApiEndpointBase = {}
+local EndpointBase = {}
 
 ---@return fun(self: object, key: any) : key: any, value: any
----@return Core.RestApi.Server.RestApiEndpointBase tbl
+---@return Net.Rest.Api.Server.EndpointBase tbl
 ---@return any startPoint
-function RestApiEndpointBase:__pairs()
+function EndpointBase:__pairs()
     local function iterator(tbl, key)
         local newKey, value = next(tbl, key)
         if type(newKey) == "string" and type(value) == "function" then
@@ -22,30 +22,30 @@ function RestApiEndpointBase:__pairs()
 end
 
 ---@class Core.RestApi.Server.RestApiEndpointBase.RestApiResponseTemplates
-RestApiEndpointBase.Templates = {}
+EndpointBase.Templates = {}
 
 ---@param value any
----@return Core.RestApi.RestApiResponse
-function RestApiEndpointBase.Templates:Ok(value)
+---@return Net.Rest.Api.Response
+function EndpointBase.Templates:Ok(value)
     return RestApiResponseTemplates.Ok(value)
 end
 
 ---@param message string
----@return Core.RestApi.RestApiResponse
-function RestApiEndpointBase.Templates:BadRequest(message)
+---@return Net.Rest.Api.Response
+function EndpointBase.Templates:BadRequest(message)
     return RestApiResponseTemplates.BadRequest(message)
 end
 
 ---@param message string
----@return Core.RestApi.RestApiResponse
-function RestApiEndpointBase.Templates:NotFound(message)
+---@return Net.Rest.Api.Response
+function EndpointBase.Templates:NotFound(message)
     return RestApiResponseTemplates.NotFound(message)
 end
 
 ---@param message string
----@return Core.RestApi.RestApiResponse
-function RestApiEndpointBase.Templates:InternalServerError(message)
+---@return Net.Rest.Api.Response
+function EndpointBase.Templates:InternalServerError(message)
     return RestApiResponseTemplates.InternalServerError(message)
 end
 
-return Utils.Class.CreateClass(RestApiEndpointBase, "Core.RestApi.Server.RestApiControllerBase")
+return Utils.Class.CreateClass(EndpointBase, "Net.Rest.Api.Server.EndpointBase")

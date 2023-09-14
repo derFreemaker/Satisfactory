@@ -5,7 +5,7 @@ local RestApiController = require("Net.Rest.RestApii.Server.RestApiController")
 
 ---@class DNS.Main : Github_Loading.Entities.Main
 ---@field private eventPullAdapter Core.EventPullAdapter
----@field private apiController Core.RestApi.Server.RestApiController
+---@field private apiController Net.Rest.Api.Server.Controller
 ---@field private netPort Core.Net.NetworkPort
 ---@field private endpoints DNS.Endpoints
 local Main = {}

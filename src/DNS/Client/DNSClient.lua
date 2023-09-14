@@ -8,7 +8,7 @@ local CreateAddress = require("DNS.Core.Entities.Address.Create")
 
 ---@class DNS.Client : object
 ---@field private networkClient Core.Net.NetworkClient
----@field private apiClient Core.RestApi.Client.RestApiClient
+---@field private apiClient Net.Rest.Api.Client
 ---@field private logger Core.Logger
 ---@overload fun(networkClient: Core.Net.NetworkClient, logger: Core.Logger) : DNS.Client
 local DNSClient = {}

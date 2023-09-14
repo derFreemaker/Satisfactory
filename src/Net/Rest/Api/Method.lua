@@ -1,5 +1,5 @@
----@enum Core.RestApi.RestApiMethod
-local RestApiMethods = {
+---@enum Net.Rest.Api.Method
+local Methods = {
     GET = "GET",
     HEAD = "HEAD",
     POST = "POST",
@@ -12,4 +12,4 @@ local RestApiMethods = {
     PATCH = "PATCH"
 }
 
-return RestApiMethods
+return Methods

@@ -1,4 +1,4 @@
----@class Core.RestApi.StatusCodes
+---@class Net.Rest.Api.StatusCodes
 local StatusCodes = {
     StatusCode100Continue = 100,
     Status101SwitchingProtocols = 101,

@@ -5,7 +5,7 @@ local ControllerEndpoints = require("FactoryControl.Server.Endpoints.ControllerE
 
 ---@class FactoryControl.Server.Main : Github_Loading.Entities.Main
 ---@field private eventPullAdapter Core.EventPullAdapter
----@field private apiController Core.RestApi.Server.RestApiController
+---@field private apiController Net.Rest.Api.Server.Controller
 local Main = {}
 
 function Main:Configure()

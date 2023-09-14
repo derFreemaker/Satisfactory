@@ -17,7 +17,7 @@ function HttpClient:__init(logger, dnsClient, networkClient)
     self.logger = logger
 end
 
-function HttpClient:Request(method, endpoint, )
+function HttpClient:Request(method, endpoint, body, header)
     -- //TODO: process request
 end
 

@@ -3,6 +3,8 @@
 ---@overload fun(client: Http.HttpClient) : Http.HttpRequest
 local HttpRequest = {}
 
+---@private
+---@param client Http.HttpClient
 function HttpRequest:__init(client)
     self.Client = client
 end

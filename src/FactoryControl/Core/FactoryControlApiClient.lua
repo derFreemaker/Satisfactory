@@ -2,7 +2,7 @@ local RestApiNetworkClient = require("Net.Rest.RestApii.Client.RestApiNetworkCli
 local RestApiRequest = require("Net.Rest.RestApii.RestApiRequest")
 
 ---@class FactoryControl.Core.FactoryControlRestApiClient : object
----@field private restApiClient Core.RestApi.Client.RestApiClient
+---@field private restApiClient Net.Rest.Api.Client
 ---@field private logger Core.Logger
 ---@overload fun(netClient: Core.Net.NetworkClient, logger: Core.Logger) : FactoryControl.Core.FactoryControlRestApiClient
 local FactoryControlRestApiClient = {}
@@ -15,11 +15,11 @@ function FactoryControlRestApiClient:__init(netClient, logger)
 end
 
 ---@private
----@param method Core.RestApi.RestApiMethod
+---@param method Net.Rest.Api.Method
 ---@param endpoint string
 ---@param headers Dictionary<string, any>?
 ---@param body any
----@return Core.RestApi.RestApiResponse response
+---@return Net.Rest.Api.Response response
 function FactoryControlRestApiClient:request(method, endpoint, headers, body)
     return self.restApiClient:request(RestApiRequest(method, endpoint, headers, body))
 end

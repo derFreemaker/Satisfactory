@@ -25,12 +25,12 @@ function NetworkContext:__init(data)
     self.Body = Json.decode(data[6] or "null")
 end
 
----@return Core.RestApi.RestApiRequest
+---@return Net.Rest.Api.Request
 function NetworkContext:ToApiRequest()
     return RestApiRequest(self.Body.Method, self.Body.Endpoint, self.Body.Body, self.Body.Headers)
 end
 
----@return Core.RestApi.RestApiResponse
+---@return Net.Rest.Api.Response
 function NetworkContext:ToApiResponse()
     return RestApiResponse(self.Body.Body, self.Body.Headers)
 end

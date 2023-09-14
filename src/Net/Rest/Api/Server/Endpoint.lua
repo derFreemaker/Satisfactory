@@ -1,29 +1,29 @@
 local RestApiResponseTemplates = require("Core.RestApi.Server.RestApiResponseTemplates")
 
----@class Core.RestApi.Server.RestApiEndpoint : object
+---@class Net.Rest.Api.Server.Endpoint : object
 ---@field private task Core.Task
 ---@field private logger Core.Logger
----@overload fun(task: Core.Task, logger: Core.Logger) : Core.RestApi.Server.RestApiEndpoint
-local RestApiEndpoint = {}
+---@overload fun(task: Core.Task, logger: Core.Logger) : Net.Rest.Api.Server.Endpoint
+local Endpoint = {}
 
 ---@private
 ---@param task Core.Task
 ---@param logger Core.Logger
-function RestApiEndpoint:__init(task, logger)
+function Endpoint:__init(task, logger)
     self.task = task
     self.logger = logger
 end
 
----@param request Core.RestApi.RestApiRequest
+---@param request Net.Rest.Api.Request
 ---@param context Core.Net.NetworkContext
 ---@param netClient Core.Net.NetworkClient
-function RestApiEndpoint:Execute(request, context, netClient)
+function Endpoint:Execute(request, context, netClient)
     self.logger:LogTrace("executing...")
     ___logger:setLogger(self.logger)
     self.task:Execute(request)
     self.task:LogError(self.logger)
     ___logger:revert()
-    ---@type Core.RestApi.RestApiResponse
+    ---@type Net.Rest.Api.Response
     local response = self.task:GetResults()
     if not self.task:IsSuccess() then
         response = RestApiResponseTemplates.InternalServerError(tostring(self.task:GetTraceback()))
@@ -41,4 +41,4 @@ function RestApiEndpoint:Execute(request, context, netClient)
     end
 end
 
-return Utils.Class.CreateClass(RestApiEndpoint, "Core.RestApi.Server.RestApiEndpoint")
+return Utils.Class.CreateClass(Endpoint, "Net.Rest.Api.Server.Endpoint")
