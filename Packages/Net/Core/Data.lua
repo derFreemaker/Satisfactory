@@ -1,11 +1,8 @@
 local PackageData = {}
 
--- ########## Net.Core ##########
-
-PackageData.MFYoiWSx = {
+PackageData.CjgXvuZA = {
+    Location = "Net.Core.NetworkClient",
     Namespace = "Net.Core.NetworkClient",
-    Name = "NetworkClient",
-    FullName = "NetworkClient.lua",
     IsRunnable = true,
     Data = [[
 local Json = require("Core.Json")
@@ -179,10 +176,9 @@ return Utils.Class.CreateClass(NetworkClient, "Core.Net.NetworkClient")
 ]]
 }
 
-PackageData.oVIzFPpX = {
+PackageData.eyRiSnwa = {
+    Location = "Net.Core.NetworkContext",
     Namespace = "Net.Core.NetworkContext",
-    Name = "NetworkContext",
-    FullName = "NetworkContext.lua",
     IsRunnable = true,
     Data = [[
 local Json = require("Core.Json")
@@ -212,12 +208,12 @@ function NetworkContext:__init(data)
     self.Body = Json.decode(data[6] or "null")
 end
 
----@return Core.RestApi.RestApiRequest
+---@return Net.Rest.Api.Request
 function NetworkContext:ToApiRequest()
     return RestApiRequest(self.Body.Method, self.Body.Endpoint, self.Body.Body, self.Body.Headers)
 end
 
----@return Core.RestApi.RestApiResponse
+---@return Net.Rest.Api.Response
 function NetworkContext:ToApiResponse()
     return RestApiResponse(self.Body.Body, self.Body.Headers)
 end
@@ -226,10 +222,9 @@ return Utils.Class.CreateClass(NetworkContext, "Core.Net.NetworkContext")
 ]]
 }
 
-PackageData.PksKdJNx = {
+PackageData.FNBtqhTA = {
+    Location = "Net.Core.NetworkPort",
     Namespace = "Net.Core.NetworkPort",
-    Name = "NetworkPort",
-    FullName = "NetworkPort.lua",
     IsRunnable = true,
     Data = [[
 local Event = require("Core.Event.Event")
@@ -359,7 +354,5 @@ end
 return Utils.Class.CreateClass(NetworkPort, "Core.Net.NetworkPort")
 ]]
 }
-
--- ########## Net.Core ########## --
 
 return PackageData

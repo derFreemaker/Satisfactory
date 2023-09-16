@@ -1,209 +1,8 @@
 local PackageData = {}
 
--- ########## Core ##########
-
--- ########## Core.Event ##########
-
-PackageData.oVIzFPpX = {
-    Namespace = "Core.Event.Event",
-    Name = "Event",
-    FullName = "Event.lua",
-    IsRunnable = true,
-    Data = [[
----@class Core.Event : object
----@field private funcs Core.Task[]
----@field private onceFuncs Core.Task[]
----@operator len() : integer
----@overload fun() : Core.Event
-local Event = {}
-
----@private
-function Event:__init()
-    self.funcs = {}
-    self.onceFuncs = {}
-end
-
----@param task Core.Task
----@return Core.Event
-function Event:AddListener(task)
-    table.insert(self.funcs, task)
-    return self
-end
-Event.On = Event.AddListener
-
----@param task Core.Task
----@return Core.Event
-function Event:AddListenerOnce(task)
-    table.insert(self.onceFuncs, task)
-    return self
-end
-Event.Once = Event.AddListenerOnce
-
----@param logger Core.Logger?
----@param ... any
-function Event:Trigger(logger, ...)
-    for _, task in ipairs(self.funcs) do
-        task:Execute(...)
-    end
-
-    for _, task in ipairs(self.onceFuncs) do
-        task:Execute(...)
-    end
-    self.OnceFuncs = {}
-end
-
----@alias Core.Event.Mode
----|"Permanent"
----|"Once"
-
----@return Dictionary<Core.Event.Mode, Core.Task[]>
-function Event:Listeners()
-    ---@type Core.Task[]
-    local permanentTask = {}
-    for _, task in ipairs(self.funcs) do
-        table.insert(permanentTask, task)
-    end
-
-    ---@type Core.Task[]
-    local onceTask = {}
-    for _, task in ipairs(self.onceFuncs) do
-        table.insert(onceTask, task)
-    end
-    return {
-        Permanent = permanentTask,
-        Once = onceTask
-    }
-end
-
----@private
----@return integer count
-function Event:__len()
-    return #self.funcs + #self.onceFuncs
-end
-
----@param event Core.Event
----@return Core.Event event
-function Event:CopyTo(event)
-    for _, listener in ipairs(self.funcs) do
-        event:AddListener(listener)
-    end
-    for _, listener in ipairs(self.onceFuncs) do
-        event:AddListenerOnce(listener)
-    end
-    return event
-end
-
-return Utils.Class.CreateClass(Event, "Core.Event")
-]]
-}
-
-PackageData.PksKdJNx = {
-    Namespace = "Core.Event.EventPullAdapter",
-    Name = "EventPullAdapter",
-    FullName = "EventPullAdapter.lua",
-    IsRunnable = true,
-    Data = [[
-local Event = require("Core.Event.Event")
-
----@class Core.EventPullAdapter
----@field private events Dictionary<string, Core.Event>
----@field private logger Core.Logger
----@field OnEventPull Core.Event
-local EventPullAdapter = {}
-
----@private
----@param eventPullData any[]
-function EventPullAdapter:onEventPull(eventPullData)
-    ---@type string[]
-    local removeEvent = {}
-    for name, event in pairs(self.events) do
-        if name == eventPullData[1] then
-            event:Trigger(self.logger, eventPullData)
-        end
-        if #event == 0 then
-            table.insert(removeEvent, name)
-        end
-    end
-    for _, name in ipairs(removeEvent) do
-        self.events[name] = nil
-    end
-end
-
----@param logger Core.Logger
----@return Core.EventPullAdapter
-function EventPullAdapter:Initialize(logger)
-    self.events = {}
-    self.logger = logger
-    self.OnEventPull = Event()
-    return self
-end
-
----@param signalName string
----@return Core.Event
-function EventPullAdapter:GetEvent(signalName)
-    for name, event in pairs(self.events) do
-        if name == signalName then
-            return event
-        end
-    end
-    local event = Event()
-    self.events[signalName] = event
-    return event
-end
-
----@param signalName string
----@param task Core.Task
-function EventPullAdapter:AddListener(signalName, task)
-    local event = self:GetEvent(signalName)
-    event:AddListener(task)
-    return self
-end
-
----@param signalName string
----@param task Core.Task
-function EventPullAdapter:AddListenerOnce(signalName, task)
-    local event = self:GetEvent(signalName)
-    event:AddListenerOnce(task)
-    return self
-end
-
----@param timeout number?
----@return boolean gotEvent
-function EventPullAdapter:Wait(timeout)
-    self.logger:LogTrace("## waiting for event pull ##")
-    ---@type table?
-    local eventPullData = nil
-    if timeout == nil then
-        eventPullData = { event.pull() }
-    else
-        eventPullData = { event.pull(timeout) }
-    end
-    if #eventPullData == 0 then
-        return false
-    end
-    self.logger:LogDebug("event with signalName: '".. eventPullData[1] .."' was recieved")
-    self.OnEventPull:Trigger(self.logger, eventPullData)
-    self:onEventPull(eventPullData)
-    return true
-end
-
-function EventPullAdapter:Run()
-    self.logger:LogDebug("## started event pull loop ##")
-    while true do
-        self:Wait()
-    end
-end
-
-return EventPullAdapter
-]]
-}
-
--- ########## Core.Event ########## --
-
-PackageData.qzdVACkX = {
+PackageData.agsRDvly = {
+    Location = "Core.Json",
     Namespace = "Core.Json",
-    Name = "Json",
-    FullName = "Json.lua",
     IsRunnable = true,
     Data = [[
 --
@@ -597,10 +396,9 @@ return json
 ]]
 }
 
-PackageData.RONgYwHx = {
+PackageData.CwccbpJY = {
+    Location = "Core.Logger",
     Namespace = "Core.Logger",
-    Name = "Logger",
-    FullName = "Logger.lua",
     IsRunnable = true,
     Data = [[
 local Event = require("Core.Event.Event")
@@ -784,10 +582,9 @@ return Utils.Class.CreateClass(Logger, "Core.Logger")
 ]]
 }
 
-PackageData.seyrvpeX = {
+PackageData.dLNnyigy = {
+    Location = "Core.Path",
     Namespace = "Core.Path",
-    Name = "Path",
-    FullName = "Path.lua",
     IsRunnable = true,
     Data = [[
 ---@class Core.Path
@@ -1008,10 +805,9 @@ return Utils.Class.CreateClass(Path, "Core.Path")
 ]]
 }
 
-PackageData.TtiCTjCx = {
+PackageData.EaxyWcDY = {
+    Location = "Core.Task",
     Namespace = "Core.Task",
-    Name = "Task",
-    FullName = "Task.lua",
     IsRunnable = true,
     Data = [[
 ---@class Core.Task : object
@@ -1125,7 +921,8 @@ end
 ---@return string traceback
 function Task:Traceback()
     if self.traceback ~= nil then
-        return self.traceback end
+        return self.traceback
+    end
     local error = ""
     if type(self.results) == "string" then
         error = self.results --{{{@as string}}}
@@ -1154,6 +951,196 @@ return Utils.Class.CreateClass(Task, "Core.Task")
 ]]
 }
 
--- ########## Core ########## --
+PackageData.GFSURPyY = {
+    Location = "Core.Event.Event",
+    Namespace = "Core.Event.Event",
+    IsRunnable = true,
+    Data = [[
+---@class Core.Event : object
+---@field private funcs Core.Task[]
+---@field private onceFuncs Core.Task[]
+---@operator len() : integer
+---@overload fun() : Core.Event
+local Event = {}
+
+---@private
+function Event:__init()
+    self.funcs = {}
+    self.onceFuncs = {}
+end
+
+---@param task Core.Task
+---@return Core.Event
+function Event:AddListener(task)
+    table.insert(self.funcs, task)
+    return self
+end
+Event.On = Event.AddListener
+
+---@param task Core.Task
+---@return Core.Event
+function Event:AddListenerOnce(task)
+    table.insert(self.onceFuncs, task)
+    return self
+end
+Event.Once = Event.AddListenerOnce
+
+---@param logger Core.Logger?
+---@param ... any
+function Event:Trigger(logger, ...)
+    for _, task in ipairs(self.funcs) do
+        task:Execute(...)
+    end
+
+    for _, task in ipairs(self.onceFuncs) do
+        task:Execute(...)
+    end
+    self.OnceFuncs = {}
+end
+
+---@alias Core.Event.Mode
+---|"Permanent"
+---|"Once"
+
+---@return Dictionary<Core.Event.Mode, Core.Task[]>
+function Event:Listeners()
+    ---@type Core.Task[]
+    local permanentTask = {}
+    for _, task in ipairs(self.funcs) do
+        table.insert(permanentTask, task)
+    end
+
+    ---@type Core.Task[]
+    local onceTask = {}
+    for _, task in ipairs(self.onceFuncs) do
+        table.insert(onceTask, task)
+    end
+    return {
+        Permanent = permanentTask,
+        Once = onceTask
+    }
+end
+
+---@private
+---@return integer count
+function Event:__len()
+    return #self.funcs + #self.onceFuncs
+end
+
+---@param event Core.Event
+---@return Core.Event event
+function Event:CopyTo(event)
+    for _, listener in ipairs(self.funcs) do
+        event:AddListener(listener)
+    end
+    for _, listener in ipairs(self.onceFuncs) do
+        event:AddListenerOnce(listener)
+    end
+    return event
+end
+
+return Utils.Class.CreateClass(Event, "Core.Event")
+]]
+}
+
+PackageData.hUCfoIVy = {
+    Location = "Core.Event.EventPullAdapter",
+    Namespace = "Core.Event.EventPullAdapter",
+    IsRunnable = true,
+    Data = [[
+local Event = require("Core.Event.Event")
+
+---@class Core.EventPullAdapter
+---@field private events Dictionary<string, Core.Event>
+---@field private logger Core.Logger
+---@field OnEventPull Core.Event
+local EventPullAdapter = {}
+
+---@private
+---@param eventPullData any[]
+function EventPullAdapter:onEventPull(eventPullData)
+    ---@type string[]
+    local removeEvent = {}
+    for name, event in pairs(self.events) do
+        if name == eventPullData[1] then
+            event:Trigger(self.logger, eventPullData)
+        end
+        if #event == 0 then
+            table.insert(removeEvent, name)
+        end
+    end
+    for _, name in ipairs(removeEvent) do
+        self.events[name] = nil
+    end
+end
+
+---@param logger Core.Logger
+---@return Core.EventPullAdapter
+function EventPullAdapter:Initialize(logger)
+    self.events = {}
+    self.logger = logger
+    self.OnEventPull = Event()
+    return self
+end
+
+---@param signalName string
+---@return Core.Event
+function EventPullAdapter:GetEvent(signalName)
+    for name, event in pairs(self.events) do
+        if name == signalName then
+            return event
+        end
+    end
+    local event = Event()
+    self.events[signalName] = event
+    return event
+end
+
+---@param signalName string
+---@param task Core.Task
+function EventPullAdapter:AddListener(signalName, task)
+    local event = self:GetEvent(signalName)
+    event:AddListener(task)
+    return self
+end
+
+---@param signalName string
+---@param task Core.Task
+function EventPullAdapter:AddListenerOnce(signalName, task)
+    local event = self:GetEvent(signalName)
+    event:AddListenerOnce(task)
+    return self
+end
+
+---@param timeout number?
+---@return boolean gotEvent
+function EventPullAdapter:Wait(timeout)
+    self.logger:LogTrace("## waiting for event pull ##")
+    ---@type table?
+    local eventPullData = nil
+    if timeout == nil then
+        eventPullData = { event.pull() }
+    else
+        eventPullData = { event.pull(timeout) }
+    end
+    if #eventPullData == 0 then
+        return false
+    end
+    self.logger:LogDebug("event with signalName: '" .. eventPullData[1] .. "' was recieved")
+    self.OnEventPull:Trigger(self.logger, eventPullData)
+    self:onEventPull(eventPullData)
+    return true
+end
+
+function EventPullAdapter:Run()
+    self.logger:LogDebug("## started event pull loop ##")
+    while true do
+        self:Wait()
+    end
+end
+
+return EventPullAdapter
+]]
+}
 
 return PackageData

@@ -1,11 +1,8 @@
 local PackageData = {}
 
--- ########## Hosting ##########
-
-PackageData.MFYoiWSx = {
+PackageData.ZpbqcOHZ = {
+    Location = "Hosting.Host",
     Namespace = "Hosting.Host",
-    Name = "Host",
-    FullName = "Host.lua",
     IsRunnable = true,
     Data = [[
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
@@ -23,7 +20,5 @@ end
 return Utils.Class.CreateClass(Host, "Hosting.Host")
 ]]
 }
-
--- ########## Hosting ########## --
 
 return PackageData

@@ -1,11 +1,8 @@
 local PackageData = {}
 
--- ########## DNS.Server ##########
-
-PackageData.MFYoiWSx = {
+PackageData.QXwFxOcZ = {
+    Location = "DNS.Server.AddressDatabase",
     Namespace = "DNS.Server.AddressDatabase",
-    Name = "AddressDatabase",
-    FullName = "AddressDatabase.lua",
     IsRunnable = true,
     Data = [[
 local DbTable = require("Database.DbTable")
@@ -78,10 +75,9 @@ return Utils.Class.CreateClass(AddressDatabase, "DNS.Server.AddressDatabase")
 ]]
 }
 
-PackageData.oVIzFPpX = {
+PackageData.rmhQUIAz = {
+    Location = "DNS.Server.Endpoints",
     Namespace = "DNS.Server.Endpoints",
-    Name = "Endpoints",
-    FullName = "Endpoints.lua",
     IsRunnable = true,
     Data = [[
 local AddressDatabase = require("DNS.Server.AddressDatabase")
@@ -89,7 +85,7 @@ local AddressEntities = {
     Create = require("DNS.Core.Entities.Address.Create")
 }
 
----@class DNS.Endpoints : Core.RestApi.Server.RestApiEndpointBase
+---@class DNS.Endpoints : Net.Rest.Api.Server.EndpointBase
 ---@field private addressDatabase DNS.Server.AddressDatabase
 ---@field private logger Core.Logger
 ---@overload fun(logger: Core.Logger) : DNS.Endpoints
@@ -104,8 +100,8 @@ function Endpoints:__init(logger)
 end
 
 
----@param request Core.RestApi.RestApiRequest
----@return Core.RestApi.RestApiResponse response
+---@param request Net.Rest.Api.Request
+---@return Net.Rest.Api.Response response
 function Endpoints:CREATE__Address(request)
     ---@type DNS.Core.Entities.Address.Create
     local createAddress = AddressEntities.Create:Static__CreateFromData(request.Body)
@@ -115,8 +111,8 @@ function Endpoints:CREATE__Address(request)
 end
 
 
----@param request Core.RestApi.RestApiRequest
----@return Core.RestApi.RestApiResponse response
+---@param request Net.Rest.Api.Request
+---@return Net.Rest.Api.Response response
 function Endpoints:DELETE__Address(request)
     local success = self.addressDatabase:Delete(request.Body)
     if not success then
@@ -126,8 +122,8 @@ function Endpoints:DELETE__Address(request)
 end
 
 
----@param request Core.RestApi.RestApiRequest
----@return Core.RestApi.RestApiResponse response
+---@param request Net.Rest.Api.Request
+---@return Net.Rest.Api.Response response
 function Endpoints:GET__AddressWithAddress(request)
     local address = self.addressDatabase:GetWithAddress(request.Body)
     if not address then
@@ -137,8 +133,8 @@ function Endpoints:GET__AddressWithAddress(request)
 end
 
 
----@param request Core.RestApi.RestApiRequest
----@return Core.RestApi.RestApiResponse response
+---@param request Net.Rest.Api.Request
+---@return Net.Rest.Api.Response response
 function Endpoints:GET__AddressWithId(request)
     local address = self.addressDatabase:GetWithId(request.Body)
     if not address then
@@ -152,10 +148,9 @@ return Utils.Class.CreateClass(Endpoints, "DNS.Server.Endpoints", require("Net.R
 ]]
 }
 
-PackageData.PksKdJNx = {
+PackageData.SBRbsBXZ = {
+    Location = "DNS.Server.__main",
     Namespace = "DNS.Server.__main",
-    Name = "__main",
-    FullName = "__main.lua",
     IsRunnable = true,
     Data = [[
 local DNSEndpoints = require("DNS.Server.Endpoints")
@@ -165,7 +160,7 @@ local RestApiController = require("Net.Rest.RestApii.Server.RestApiController")
 
 ---@class DNS.Main : Github_Loading.Entities.Main
 ---@field private eventPullAdapter Core.EventPullAdapter
----@field private apiController Core.RestApi.Server.RestApiController
+---@field private apiController Net.Rest.Api.Server.Controller
 ---@field private netPort Core.Net.NetworkPort
 ---@field private endpoints DNS.Endpoints
 local Main = {}
@@ -206,7 +201,5 @@ end
 return Main
 ]]
 }
-
--- ########## DNS.Server ########## --
 
 return PackageData
