@@ -5,8 +5,8 @@ PackageData.UgmxnoSZ = {
     Namespace = "FactoryControl.Core.FactoryControlApiClient",
     IsRunnable = true,
     Data = [[
-local RestApiNetworkClient = require("Net.Rest.RestApii.Client.RestApiNetworkClient")
-local RestApiRequest = require("Net.Rest.RestApii.RestApiRequest")
+local RestApiNetworkClient = require("Net.Rest.Api.Client.Client")
+local RestApiRequest = require("Net.Rest.Api.Request")
 
 ---@class FactoryControl.Core.FactoryControlRestApiClient : object
 ---@field private restApiClient Net.Rest.Api.Client
@@ -18,7 +18,8 @@ local FactoryControlRestApiClient = {}
 ---@param netClient Core.Net.NetworkClient
 ---@param logger Core.Logger
 function FactoryControlRestApiClient:__init(netClient, logger)
-    self.restApiClient = RestApiNetworkClient(Config.ServerIPAddress, Config.ServerPort, 1111, netClient, self.logger:subLogger("RestApiClient"))
+    self.restApiClient = RestApiNetworkClient(Config.ServerIPAddress, Config.ServerPort, 1111, netClient,
+        self.logger:subLogger("RestApiClient"))
 end
 
 ---@private

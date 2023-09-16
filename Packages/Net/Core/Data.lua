@@ -182,8 +182,8 @@ PackageData.eyRiSnwa = {
     IsRunnable = true,
     Data = [[
 local Json = require("Core.Json")
-local RestApiRequest = require("Net.Rest.RestApii.RestApiRequest")
-local RestApiResponse = require("Net.Rest.RestApii.RestApiResponse")
+local RestApiRequest = require("Net.Rest.Api.Request")
+local RestApiResponse = require("Net.Rest.Api.Response")
 
 ---@class Core.Net.NetworkContext : object
 ---@field SignalName string

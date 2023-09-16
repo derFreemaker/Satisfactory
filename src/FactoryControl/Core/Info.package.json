@@ -1,7 +1,7 @@
 {
   "Name": "Core",
   "Namespace": "FactoryControl.Core",
-  "Version": "0.1-12",
+  "Version": "0.1-29",
   "RequiredPackages": [
     "Core",
     "Net.Rest"

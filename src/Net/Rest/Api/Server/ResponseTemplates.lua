@@ -1,5 +1,5 @@
-local StatusCodes = require("Core.RestApi.StatusCodes")
-local RestApiResponse = require("Core.RestApi.RestApiResponse")
+local StatusCodes = require("Net.Rest.Api.StatusCodes")
+local RestApiResponse = require("Net.Rest.Api.Response")
 
 ---@class Net.Rest.Api.Server.RestApiResponseTemplates
 local ResponseTemplates = {}

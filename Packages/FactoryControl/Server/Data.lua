@@ -7,7 +7,7 @@ PackageData.vvWJKhpz = {
     Data = [[
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local NetworkClient = require("Net.Core.NetworkClient")
-local RestApiController = require("Net.Rest.RestApii.Server.RestApiController")
+local RestApiController = require("Net.Rest.Api.Server.Controller")
 local ControllerEndpoints = require("FactoryControl.Server.Endpoints.ControllerEndpoints")
 
 ---@class FactoryControl.Server.Main : Github_Loading.Entities.Main
@@ -40,7 +40,7 @@ PackageData.yarfFUjz = {
     Namespace = "FactoryControl.Server.Endpoints.ControllerEndpoints",
     IsRunnable = true,
     Data = [[
-local RestApiEndpointBase = require("Net.Rest.RestApii.Server.RestApiEndpointBase")
+local RestApiEndpointBase = require("Net.Rest.Api.Server.EndpointBase")
 
 ---@class FactoryControl.Server.Endpoints.ControllerEndpoints : Net.Rest.Api.Server.EndpointBase
 local ControllerEndpoints = {}

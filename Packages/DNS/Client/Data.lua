@@ -6,8 +6,8 @@ PackageData.kyXCjvQy = {
     IsRunnable = true,
     Data = [[
 local NetworkClient = require("Net.Core.NetworkClient")
-local ApiClient = require("Net.Rest.RestApii.Client.RestApiNetworkClient")
-local ApiRequest = require("Net.Rest.RestApii.RestApiRequest")
+local ApiClient = require("Net.Rest.Api.Client.Client")
+local ApiRequest = require("Net.Rest.Api.Request")
 
 local Address = require("DNS.Core.Entities.Address.Address")
 local CreateAddress = require("DNS.Core.Entities.Address.Create")
@@ -29,7 +29,6 @@ function DNSClient:__init(networkClient, logger)
     self.logger = logger
 end
 
-
 ---@param networkClient Core.Net.NetworkClient
 ---@return string id
 function DNSClient:Static__GetServerAddress(networkClient)
@@ -50,7 +49,6 @@ function DNSClient:Static__GetServerAddress(networkClient)
     return response.Body
 end
 
-
 ---@return string id
 function DNSClient:GetDNSServerAddressIfNeeded()
     if not self.apiClient then
@@ -60,7 +58,6 @@ function DNSClient:GetDNSServerAddressIfNeeded()
 
     return self.apiClient.ServerIPAddress
 end
-
 
 ---@param address string
 ---@param id string
@@ -79,7 +76,6 @@ function DNSClient:CreateAddress(address, id)
     return response.Body
 end
 
-
 ---@param address string
 ---@return boolean success
 function DNSClient:DeleteAddress(address)
@@ -93,7 +89,6 @@ function DNSClient:DeleteAddress(address)
     end
     return response.Body
 end
-
 
 ---@param address string
 ---@return DNS.Core.Entities.Address? address
@@ -109,7 +104,6 @@ function DNSClient:GetWithAddress(address)
     return Address:Static__CreateFromData(response.Body)
 end
 
-
 ---@param id string
 ---@return DNS.Core.Entities.Address? address
 function DNSClient:GetWithId(id)
@@ -123,7 +117,6 @@ function DNSClient:GetWithId(id)
     end
     return Address:Static__CreateFromData(response.Body)
 end
-
 
 return Utils.Class.CreateClass(DNSClient, "DNS.Client")
 ]]

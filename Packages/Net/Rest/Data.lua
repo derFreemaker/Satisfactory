@@ -193,7 +193,7 @@ PackageData.OfgeWgyB = {
     Namespace = "Net.Rest.Api.Client.Client",
     IsRunnable = true,
     Data = [[
-local RestApiResponse = require("Core.RestApi.RestApiResponse")
+local RestApiResponse = require("Net.Rest.Api.Response")
 
 ---@class Net.Rest.Api.Client : object
 ---@field ServerIPAddress string
@@ -221,7 +221,8 @@ end
 ---@param request Net.Rest.Api.Request
 ---@return Net.Rest.Api.Response response
 function Client:request(request)
-    self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, "Rest-Request", request:ExtractData(), { ReturnPort = self.ReturnPort })
+    self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, "Rest-Request", request:ExtractData(),
+        { ReturnPort = self.ReturnPort })
     local context = self.NetClient:WaitForEvent("Rest-Response", self.ReturnPort, 5)
     if not context then
         return RestApiResponse(nil, { Code = 408 })
@@ -240,7 +241,7 @@ PackageData.puQptaVb = {
     IsRunnable = true,
     Data = [[
 local Task = require("Core.Task")
-local RestApiEndpoint = require("Core.RestApi.Server.RestApiEndpoint")
+local RestApiEndpoint = require("Net.Rest.Api.Server.Endpoint")
 local RestApiResponseTemplates = require("Net.Rest.Api.Server.ResponseTemplates")
 local RestApiMethod = require("Net.Rest.Api.Method")
 
@@ -275,7 +276,7 @@ function Controller:onMessageRecieved(context)
         end
         return
     end
-    self.logger:LogTrace("found endpoint: ".. request.Endpoint)
+    self.logger:LogTrace("found endpoint: " .. request.Endpoint)
     endpoint:Execute(request, context, self.netPort:GetNetClient())
 end
 
@@ -284,7 +285,7 @@ end
 ---@return Net.Rest.Api.Server.Endpoint?
 function Controller:GetEndpoint(method, endpointName)
     for name, endpoint in pairs(self.Endpoints) do
-        if name == method .."__".. endpointName then
+        if name == method .. "__" .. endpointName then
             return endpoint
         end
     end
@@ -294,13 +295,13 @@ end
 ---@param name string
 ---@param task Core.Task
 ---@return Net.Rest.Api.Server.Controller
-function Controller:AddEndpoint(method , name, task)
+function Controller:AddEndpoint(method, name, task)
     if self:GetEndpoint(method, name) ~= nil then
         error("Endpoint allready exists")
     end
-local endpointName = method .. "__" .. name
+    local endpointName = method .. "__" .. name
     self.Endpoints[endpointName] = RestApiEndpoint(task, self.logger:subLogger("RestApiEndpoint[" .. endpointName .. "]"))
-    self.logger:LogTrace("Added endpoint: '".. method .."' -> '" .. name .. "'")
+    self.logger:LogTrace("Added endpoint: '" .. method .. "' -> '" .. name .. "'")
     return self
 end
 
@@ -325,7 +326,7 @@ PackageData.QKAARTsB = {
     Namespace = "Net.Rest.Api.Server.Endpoint",
     IsRunnable = true,
     Data = [[
-local RestApiResponseTemplates = require("Core.RestApi.Server.RestApiResponseTemplates")
+local RestApiResponseTemplates = require("Net.Rest.Api.Server.ResponseTemplates")
 
 ---@class Net.Rest.Api.Server.Endpoint : object
 ---@field private task Core.Task
@@ -356,7 +357,8 @@ function Endpoint:Execute(request, context, netClient)
         response = RestApiResponseTemplates.InternalServerError(tostring(self.task:GetTraceback()))
     end
     if context.Header.ReturnPort then
-        self.logger:LogTrace("sending response to '" .. context.SenderIPAddress .. "' on port: " .. context.Header.ReturnPort .. "...")
+        self.logger:LogTrace("sending response to '" ..
+        context.SenderIPAddress .. "' on port: " .. context.Header.ReturnPort .. "...")
         netClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort, "Rest-Response", response:ExtractData())
     else
         self.logger:LogTrace("sending no response")
@@ -364,7 +366,8 @@ function Endpoint:Execute(request, context, netClient)
     if response.Headers.Message == nil then
         self.logger:LogDebug("request finished with status code: " .. response.Headers.Code)
     else
-        self.logger:LogDebug("request finished with status code: " .. response.Headers.Code .. " with message: '" .. response.Headers.Message .. "'")
+        self.logger:LogDebug("request finished with status code: " ..
+        response.Headers.Code .. " with message: '" .. response.Headers.Message .. "'")
     end
 end
 
@@ -377,7 +380,7 @@ PackageData.sZlLoNQb = {
     Namespace = "Net.Rest.Api.Server.EndpointBase",
     IsRunnable = true,
     Data = [[
-local RestApiResponseTemplates = require("Core.RestApi.Server.RestApiResponseTemplates")
+local RestApiResponseTemplates = require("Net.Rest.Api.Server.ResponseTemplates")
 
 ---@class Net.Rest.Api.Server.EndpointBase : object
 ---@field protected Templates Core.RestApi.Server.RestApiEndpointBase.RestApiResponseTemplates
@@ -436,8 +439,8 @@ PackageData.ToVXMGnB = {
     Namespace = "Net.Rest.Api.Server.ResponseTemplates",
     IsRunnable = true,
     Data = [[
-local StatusCodes = require("Core.RestApi.StatusCodes")
-local RestApiResponse = require("Core.RestApi.RestApiResponse")
+local StatusCodes = require("Net.Rest.Api.StatusCodes")
+local RestApiResponse = require("Net.Rest.Api.Response")
 
 ---@class Net.Rest.Api.Server.RestApiResponseTemplates
 local ResponseTemplates = {}

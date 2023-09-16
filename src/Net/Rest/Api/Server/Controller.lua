@@ -1,5 +1,5 @@
 local Task = require("Core.Task")
-local RestApiEndpoint = require("Core.RestApi.Server.RestApiEndpoint")
+local RestApiEndpoint = require("Net.Rest.Api.Server.Endpoint")
 local RestApiResponseTemplates = require("Net.Rest.Api.Server.ResponseTemplates")
 local RestApiMethod = require("Net.Rest.Api.Method")
 
@@ -34,7 +34,7 @@ function Controller:onMessageRecieved(context)
         end
         return
     end
-    self.logger:LogTrace("found endpoint: ".. request.Endpoint)
+    self.logger:LogTrace("found endpoint: " .. request.Endpoint)
     endpoint:Execute(request, context, self.netPort:GetNetClient())
 end
 
@@ -43,7 +43,7 @@ end
 ---@return Net.Rest.Api.Server.Endpoint?
 function Controller:GetEndpoint(method, endpointName)
     for name, endpoint in pairs(self.Endpoints) do
-        if name == method .."__".. endpointName then
+        if name == method .. "__" .. endpointName then
             return endpoint
         end
     end
@@ -53,13 +53,13 @@ end
 ---@param name string
 ---@param task Core.Task
 ---@return Net.Rest.Api.Server.Controller
-function Controller:AddEndpoint(method , name, task)
+function Controller:AddEndpoint(method, name, task)
     if self:GetEndpoint(method, name) ~= nil then
         error("Endpoint allready exists")
     end
-local endpointName = method .. "__" .. name
+    local endpointName = method .. "__" .. name
     self.Endpoints[endpointName] = RestApiEndpoint(task, self.logger:subLogger("RestApiEndpoint[" .. endpointName .. "]"))
-    self.logger:LogTrace("Added endpoint: '".. method .."' -> '" .. name .. "'")
+    self.logger:LogTrace("Added endpoint: '" .. method .. "' -> '" .. name .. "'")
     return self
 end
 

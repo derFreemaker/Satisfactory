@@ -6,12 +6,38 @@
 		{
 			"label": "bundle All",
 			"type": "shell",
-			"command": ".\\bundle.bat ."
+			"command": ".\\bundle.bat .",
+			"problemMatcher": {
+				"owner": "lua-bundler",
+				"fileLocation": ["autoDetect", "$(workspaceFolder)/src"],
+				"pattern": {
+					"regexp": "^(.*)'-'(.*)'-'(.*)'-([0-9]*):([0-9]*):([0-9]*)$",
+					"message": 1,
+					"code": 2,
+					"file": 3,
+					"line": 4,
+					"column": 5,
+					"endColumn": 6
+				}
+			}
 		},
 		{
 			"label": "bundle All optimized",
 			"type": "shell",
-			"command": ".\\bundle.bat . -p"
+			"command": ".\\bundle.bat . -p",
+			"problemMatcher": {
+				"owner": "lua-bundler",
+				"fileLocation": ["autoDetect", "$(workspaceFolder)/src"],
+				"pattern": {
+					"regexp": "^(.*)'-'(.*)'-'(.*)'-([0-9]*):([0-9]*):([0-9]*)$",
+					"message": 1,
+					"code": 2,
+					"file": 3,
+					"line": 4,
+					"column": 5,
+					"endColumn": 6
+				}
+			}
 		},
 		{
 			"label": "open FicsIt files",

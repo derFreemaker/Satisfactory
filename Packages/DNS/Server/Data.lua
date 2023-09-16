@@ -99,7 +99,6 @@ function Endpoints:__init(logger)
     self.logger = logger
 end
 
-
 ---@param request Net.Rest.Api.Request
 ---@return Net.Rest.Api.Response response
 function Endpoints:CREATE__Address(request)
@@ -109,7 +108,6 @@ function Endpoints:CREATE__Address(request)
     local success = self.addressDatabase:Create(createAddress)
     return self.Templates:Ok(success)
 end
-
 
 ---@param request Net.Rest.Api.Request
 ---@return Net.Rest.Api.Response response
@@ -121,7 +119,6 @@ function Endpoints:DELETE__Address(request)
     return self.Templates:Ok(success)
 end
 
-
 ---@param request Net.Rest.Api.Request
 ---@return Net.Rest.Api.Response response
 function Endpoints:GET__AddressWithAddress(request)
@@ -131,7 +128,6 @@ function Endpoints:GET__AddressWithAddress(request)
     end
     return self.Templates:Ok(address:ExtractData())
 end
-
 
 ---@param request Net.Rest.Api.Request
 ---@return Net.Rest.Api.Response response
@@ -143,8 +139,7 @@ function Endpoints:GET__AddressWithId(request)
     return self.Templates:Ok(address:ExtractData())
 end
 
-
-return Utils.Class.CreateClass(Endpoints, "DNS.Server.Endpoints", require("Net.Rest.RestApii.Server.RestApiEndpointBase"))
+return Utils.Class.CreateClass(Endpoints, "DNS.Server.Endpoints", require("Net.Rest.Api.Server.EndpointBase"))
 ]]
 }
 
@@ -156,7 +151,7 @@ PackageData.SBRbsBXZ = {
 local DNSEndpoints = require("DNS.Server.Endpoints")
 local NetworkClient = require("Net.Core.NetworkClient")
 local Task = require("Core.Task")
-local RestApiController = require("Net.Rest.RestApii.Server.RestApiController")
+local RestApiController = require("Net.Rest.Api.Server.Controller")
 
 ---@class DNS.Main : Github_Loading.Entities.Main
 ---@field private eventPullAdapter Core.EventPullAdapter

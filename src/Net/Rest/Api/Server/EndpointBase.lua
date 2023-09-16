@@ -1,4 +1,4 @@
-local RestApiResponseTemplates = require("Core.RestApi.Server.RestApiResponseTemplates")
+local RestApiResponseTemplates = require("Net.Rest.Api.Server.ResponseTemplates")
 
 ---@class Net.Rest.Api.Server.EndpointBase : object
 ---@field protected Templates Core.RestApi.Server.RestApiEndpointBase.RestApiResponseTemplates
