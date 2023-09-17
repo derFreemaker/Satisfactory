@@ -1,7 +1,7 @@
----@class Http.HttpRequest.Options : object
+---@class Http.Request.Options : object
 ---@field Headers Dictionary<string, any>
 ---@field Timeout integer in seconds
----@overload fun() : Http.HttpRequest.Options
+---@overload fun() : Http.Request.Options
 local HttpRequestOptions = {}
 
 ---@private

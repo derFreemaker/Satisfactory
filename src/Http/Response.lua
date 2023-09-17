@@ -1,12 +1,12 @@
----@class Http.HttpResponse : object
+---@class Http.Response : object
 ---@field ApiResponse Net.Rest.Api.Response
----@field Request Http.HttpRequest
----@overload fun(apiResponse: Net.Rest.Api.Response, request: Http.HttpRequest) : Http.HttpResponse
+---@field Request Http.Request
+---@overload fun(apiResponse: Net.Rest.Api.Response, request: Http.Request) : Http.Response
 local HttpResponse = {}
 
 ---@private
 ---@param apiResponse Net.Rest.Api.Response
----@param request Http.HttpRequest
+---@param request Http.Request
 function HttpResponse:__init(apiResponse, request)
 	self.ApiResponse = apiResponse
 	self.Request = request

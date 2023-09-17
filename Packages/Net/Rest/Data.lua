@@ -141,10 +141,11 @@ function Client:__init(serverIPAddress, serverPort, returnPort, netClient, logge
 end
 
 ---@param request Net.Rest.Api.Request
+---@param timeout integer?
 ---@return Net.Rest.Api.Response response
-function Client:request(request)
+function Client:Request(request, timeout)
 	self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, 'Rest-Request', request:ExtractData(), {ReturnPort = self.ReturnPort})
-	local context = self.NetClient:WaitForEvent('Rest-Response', self.ReturnPort, 5)
+	local context = self.NetClient:WaitForEvent('Rest-Response', self.ReturnPort, timeout or 5)
 	if not context then
 		return Response(nil, {Code = 408})
 	end

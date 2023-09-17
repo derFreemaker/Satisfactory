@@ -1,7 +1,9 @@
 local NetworkClient = require('Net.Core.NetworkClient')
+local ApiClient = require('Net.Rest.Api.Client.Client')
 local DNSClient = require('DNS.Client.Client')
 local HttpRequest = require('Http.Request')
 local HttpResponse = require('Http.Response')
+local ApiRequest = require('Net.Rest.Api.Request')
 local ApiResponse = require('Net.Rest.Api.Response')
 
 ---@class Http.Client : object
@@ -24,21 +26,29 @@ function HttpClient:__init(logger, dnsClient, networkClient)
 	self.logger = logger
 end
 
+---@param request Http.Request
+---@return Http.Response response
+function HttpClient:Send(request)
+	local address = self.dnsClient:GetWithAddress(request.Address)
+	if not address then
+		return HttpResponse(ApiResponse(nil, {Code = 404}), request)
+	end
+
+	local apiClient = ApiClient(address.Id, 80, 80, self.netClient, self.logger:subLogger('ApiClient'))
+
+	local apiRequest = ApiRequest(request.Method, request.Endpoint, request.Body, request.Options.Headers)
+	local apiResponse = apiClient:Request(apiRequest, request.Options.Timeout)
+
+	return HttpResponse(apiResponse, request)
+end
+
 ---@param method Net.Core.Method
 ---@param endpoint string
 ---@param body any
----@param options Http.HttpRequest.Options
----@return Http.HttpResponse response
+---@param options Http.Request.Options
+---@return Http.Response response
 function HttpClient:Request(method, endpoint, body, options)
 	return self:Send(HttpRequest(method, endpoint, body, options))
-end
-
----@param request Http.HttpRequest
----@return Http.HttpResponse response
-function HttpClient:Send(request)
-	-- //TODO: process request
-
-	return HttpResponse(ApiResponse(nil, {Code = 400}), request)
 end
 
 return Utils.Class.CreateClass(HttpClient, 'Http.HttpClient')

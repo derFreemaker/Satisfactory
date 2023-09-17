@@ -1,19 +1,19 @@
 local Options = require('Http.RequestOptions')
 
----@class Http.HttpRequest : object
+---@class Http.Request : object
 ---@field Method Net.Core.Method
 ---@field Endpoint string
 ---@field Address string
 ---@field Body any
----@field Options Http.HttpRequest.Options
----@overload fun(method: Net.Core.Method, endpoint: string, address: string, body: any, options: Http.HttpRequest.Options?) : Http.HttpRequest
+---@field Options Http.Request.Options
+---@overload fun(method: Net.Core.Method, endpoint: string, address: string, body: any, options: Http.Request.Options?) : Http.Request
 local HttpRequest = {}
 
 ---@private
 ---@param method Net.Core.Method
 ---@param endpoint string
 ---@param address string
----@param options Http.HttpRequest.Options?
+---@param options Http.Request.Options?
 function HttpRequest:__init(method, endpoint, address, body, options)
 	self.Method = method
 	self.Endpoint = endpoint

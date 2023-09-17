@@ -51,7 +51,7 @@ function Client:CreateAddress(address, id)
 	local createAddress = CreateAddress(address, id)
 
 	local request = ApiRequest('CREATE', 'Address', createAddress:ExtractData())
-	local response = self.apiClient:request(request)
+	local response = self.apiClient:Request(request)
 
 	if not response.WasSuccessfull then
 		return false
@@ -65,7 +65,7 @@ function Client:DeleteAddress(address)
 	self:GetDNSServerAddressIfNeeded()
 
 	local request = ApiRequest('DELETE', 'Address', address)
-	local response = self.apiClient:request(request)
+	local response = self.apiClient:Request(request)
 
 	if not response.WasSuccessfull then
 		return false
@@ -79,7 +79,7 @@ function Client:GetWithAddress(address)
 	self:GetDNSServerAddressIfNeeded()
 
 	local request = ApiRequest('GET', 'AddressWithAddress', address)
-	local response = self.apiClient:request(request)
+	local response = self.apiClient:Request(request)
 
 	if not response.WasSuccessfull then
 		return nil
@@ -93,7 +93,7 @@ function Client:GetWithId(id)
 	self:GetDNSServerAddressIfNeeded()
 
 	local request = ApiRequest('GET', 'AddressWithId', id)
-	local response = self.apiClient:request(request)
+	local response = self.apiClient:Request(request)
 
 	if not response.WasSuccessfull then
 		return nil

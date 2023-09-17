@@ -21,7 +21,7 @@ end
 ---@param body any
 ---@return Net.Rest.Api.Response response
 function FactoryControlRestApiClient:request(method, endpoint, headers, body)
-	return self.restApiClient:request(RestApiRequest(method, endpoint, headers, body))
+	return self.restApiClient:Request(RestApiRequest(method, endpoint, headers, body))
 end
 
 ---@return boolean

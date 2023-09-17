@@ -6,9 +6,11 @@ PackageData.AEMBAHeA = {
     IsRunnable = true,
     Data = [[
 local NetworkClient = require('Net.Core.NetworkClient')
+local ApiClient = require('Net.Rest.Api.Client.Client')
 local DNSClient = require('DNS.Client.Client')
 local HttpRequest = require('Http.Request')
 local HttpResponse = require('Http.Response')
+local ApiRequest = require('Net.Rest.Api.Request')
 local ApiResponse = require('Net.Rest.Api.Response')
 
 ---@class Http.Client : object
@@ -31,21 +33,29 @@ function HttpClient:__init(logger, dnsClient, networkClient)
 	self.logger = logger
 end
 
+---@param request Http.Request
+---@return Http.Response response
+function HttpClient:Send(request)
+	local address = self.dnsClient:GetWithAddress(request.Address)
+	if not address then
+		return HttpResponse(ApiResponse(nil, {Code = 404}), request)
+	end
+
+	local apiClient = ApiClient(address.Id, 80, 80, self.netClient, self.logger:subLogger('ApiClient'))
+
+	local apiRequest = ApiRequest(request.Method, request.Endpoint, request.Body, request.Options.Headers)
+	local apiResponse = apiClient:Request(apiRequest, request.Options.Timeout)
+
+	return HttpResponse(apiResponse, request)
+end
+
 ---@param method Net.Core.Method
 ---@param endpoint string
 ---@param body any
----@param options Http.HttpRequest.Options
----@return Http.HttpResponse response
+---@param options Http.Request.Options
+---@return Http.Response response
 function HttpClient:Request(method, endpoint, body, options)
 	return self:Send(HttpRequest(method, endpoint, body, options))
-end
-
----@param request Http.HttpRequest
----@return Http.HttpResponse response
-function HttpClient:Send(request)
-	-- //TODO: process request
-
-	return HttpResponse(ApiResponse(nil, {Code = 400}), request)
 end
 
 return Utils.Class.CreateClass(HttpClient, 'Http.HttpClient')
@@ -59,20 +69,20 @@ PackageData.bTwMXABa = {
     Data = [[
 local Options = require('Http.RequestOptions')
 
----@class Http.HttpRequest : object
+---@class Http.Request : object
 ---@field Method Net.Core.Method
 ---@field Endpoint string
 ---@field Address string
 ---@field Body any
----@field Options Http.HttpRequest.Options
----@overload fun(method: Net.Core.Method, endpoint: string, address: string, body: any, options: Http.HttpRequest.Options?) : Http.HttpRequest
+---@field Options Http.Request.Options
+---@overload fun(method: Net.Core.Method, endpoint: string, address: string, body: any, options: Http.Request.Options?) : Http.Request
 local HttpRequest = {}
 
 ---@private
 ---@param method Net.Core.Method
 ---@param endpoint string
 ---@param address string
----@param options Http.HttpRequest.Options?
+---@param options Http.Request.Options?
 function HttpRequest:__init(method, endpoint, address, body, options)
 	self.Method = method
 	self.Endpoint = endpoint
@@ -90,10 +100,10 @@ PackageData.CjgXvuZA = {
     Namespace = "Http.RequestOptions",
     IsRunnable = true,
     Data = [[
----@class Http.HttpRequest.Options : object
+---@class Http.Request.Options : object
 ---@field Headers Dictionary<string, any>
 ---@field Timeout integer in seconds
----@overload fun() : Http.HttpRequest.Options
+---@overload fun() : Http.Request.Options
 local HttpRequestOptions = {}
 
 ---@private
@@ -111,15 +121,15 @@ PackageData.eyRiSnwa = {
     Namespace = "Http.Response",
     IsRunnable = true,
     Data = [[
----@class Http.HttpResponse : object
+---@class Http.Response : object
 ---@field ApiResponse Net.Rest.Api.Response
----@field Request Http.HttpRequest
----@overload fun(apiResponse: Net.Rest.Api.Response, request: Http.HttpRequest) : Http.HttpResponse
+---@field Request Http.Request
+---@overload fun(apiResponse: Net.Rest.Api.Response, request: Http.Request) : Http.Response
 local HttpResponse = {}
 
 ---@private
 ---@param apiResponse Net.Rest.Api.Response
----@param request Http.HttpRequest
+---@param request Http.Request
 function HttpResponse:__init(apiResponse, request)
 	self.ApiResponse = apiResponse
 	self.Request = request
