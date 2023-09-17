@@ -1,11 +1,8 @@
 local PackageData = {}
 
--- ########## Database ##########
-
-PackageData.MFYoiWSx = {
+PackageData.JjmrMBtY = {
+    Location = "Database.DbTable",
     Namespace = "Database.DbTable",
-    Name = "DbTable",
-    FullName = "DbTable.lua",
     IsRunnable = true,
     Data = [[
 local Json = require("Core.Json")
@@ -80,7 +77,5 @@ end
 return Utils.Class.CreateClass(DbTable, "Database.DbTable")
 ]]
 }
-
--- ########## Database ########## --
 
 return PackageData

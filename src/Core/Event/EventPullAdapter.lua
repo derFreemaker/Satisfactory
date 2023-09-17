@@ -76,7 +76,7 @@ function EventPullAdapter:Wait(timeout)
     if #eventPullData == 0 then
         return false
     end
-    self.logger:LogDebug("event with signalName: '".. eventPullData[1] .."' was recieved")
+    self.logger:LogDebug("event with signalName: '" .. eventPullData[1] .. "' was recieved")
     self.OnEventPull:Trigger(self.logger, eventPullData)
     self:onEventPull(eventPullData)
     return true

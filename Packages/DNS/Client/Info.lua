@@ -1,9 +1,11 @@
 return {
     Name = "DNS.Client",
-    Version = "0.1.1-2",
     Namespace = "DNS.Client",
+    Version = "0.1.1-38",
     RequiredPackages = {
         "Core",
-        "DNS.Core"
+        "DNS.Core",
+        "Net.Core",
+        "Net.Rest"
     },
 }

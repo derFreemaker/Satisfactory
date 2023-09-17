@@ -1,8 +1,9 @@
 return {
-    Name = "Core",
-    Version = "0.1-2",
+    Name = "FactoryControl.Core",
     Namespace = "FactoryControl.Core",
+    Version = "0.1-37",
     RequiredPackages = {
-        "Core"
+        "Core",
+        "Net.Rest"
     },
 }

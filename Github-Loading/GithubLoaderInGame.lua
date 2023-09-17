@@ -1,10 +1,3 @@
-local printFunc = print
-function print(...)
-    local thread = coroutine.running()
-    printFunc(debug.traceback(thread, "print called"))
-    printFunc(...)
-end
-
 -- if option is nil it will show you all options
 local option = nil
 local showExtendOptionDetails = false
@@ -22,7 +15,7 @@ local programForceDownload = false
 -- to define any config variables
 Config = {}
 
-local BaseUrl = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/dev"
+local BaseUrl = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/Lua-Bundler"
 
 local showDriveUUID = false
 

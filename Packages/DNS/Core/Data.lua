@@ -1,15 +1,8 @@
 local PackageData = {}
 
--- ########## DNS.Core ##########
-
--- ########## DNS.Core.Entities ##########
-
--- ########## DNS.Core.Entities.Address ##########
-
-PackageData.PksKdJNx = {
+PackageData.NscjCbiZ = {
+    Location = "DNS.Core.Entities.Address.Address",
     Namespace = "DNS.Core.Entities.Address.Address",
-    Name = "Address",
-    FullName = "Address.lua",
     IsRunnable = true,
     Data = [[
 ---@class DNS.Core.Entities.Address
@@ -50,10 +43,9 @@ return Utils.Class.CreateClass(Address, "DNS.Entities.Address")
 ]]
 }
 
-PackageData.qzdVACkX = {
+PackageData.oHMuZVFz = {
+    Location = "DNS.Core.Entities.Address.Create",
     Namespace = "DNS.Core.Entities.Address.Create",
-    Name = "Create",
-    FullName = "Create.lua",
     IsRunnable = true,
     Data = [[
 ---@class DNS.Core.Entities.Address.Create
@@ -87,11 +79,5 @@ end
 return Utils.Class.CreateClass(CreateAddress, "DNS.Entities.Address.Create")
 ]]
 }
-
--- ########## DNS.Core.Entities.Address ########## --
-
--- ########## DNS.Core.Entities ########## --
-
--- ########## DNS.Core ########## --
 
 return PackageData

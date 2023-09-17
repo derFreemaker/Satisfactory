@@ -109,7 +109,8 @@ end
 ---@return string traceback
 function Task:Traceback()
     if self.traceback ~= nil then
-        return self.traceback end
+        return self.traceback
+    end
     local error = ""
     if type(self.results) == "string" then
         error = self.results --[[@as string]]

@@ -1,4 +1,4 @@
-local LoadedLoaderFiles = ({...})[1]
+local LoadedLoaderFiles = ({ ... })[1]
 ---@type Github_Loading.Module
 local Module = LoadedLoaderFiles["/Github-Loading/Loader/Module"][1]
 ---@type Utils
@@ -6,17 +6,13 @@ local Utils = LoadedLoaderFiles["/Github-Loading/Loader/Utils"][1]
 
 ---@class Github_Loading.Package.InfoFile
 ---@field Name string
----@field Version string
 ---@field Namespace string
+---@field Version string
 ---@field RequiredPackages string[]?
 
----@class Github_Loading.Package
+---@class Github_Loading.Package : Github_Loading.Package.InfoFile
 ---@field private forceDownload boolean
 ---@field private PackageLoader Github_Loading.PackageLoader
----@field Name string
----@field Namespace string
----@field Version number
----@field RequiredPackages string[]?
 ---@field Modules Dictionary<string, Github_Loading.Module>
 local Package = {}
 
