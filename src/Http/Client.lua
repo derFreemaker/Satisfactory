@@ -26,15 +26,31 @@ function HttpClient:__init(logger, dnsClient, networkClient)
 	self.logger = logger
 end
 
+---@private
+---@param address string
+---@return string? address
+function HttpClient:getAddress(address)
+	if not address:match('^.*%..*$') then
+		return address
+	end
+
+	local getedAddress = self.dnsClient:GetWithAddress(address)
+	if not getedAddress then
+		return nil
+	end
+
+	return getedAddress.Id
+end
+
 ---@param request Http.Request
 ---@return Http.Response response
 function HttpClient:Send(request)
-	local address = self.dnsClient:GetWithAddress(request.Address)
+	local address = self:getAddress(request.Address)
 	if not address then
 		return HttpResponse(ApiResponse(nil, {Code = 404}), request)
 	end
 
-	local apiClient = ApiClient(address.Id, 80, 80, self.netClient, self.logger:subLogger('ApiClient'))
+	local apiClient = ApiClient(address, 80, 80, self.netClient, self.logger:subLogger('ApiClient'))
 
 	local apiRequest = ApiRequest(request.Method, request.Endpoint, request.Body, request.Options.Headers)
 	local apiResponse = apiClient:Request(apiRequest, request.Options.Timeout)
