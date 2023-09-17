@@ -6,35 +6,25 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
 
 - [Lua](https://www.lua.org)
 
+## Supported Module Modifiers
+
+- **---@namespace {moduleNamespace}** <- overrides the namespace of the module its in
+- **---@isRunnable {true|false}** <- overrides the IsRunnable mark of the module its in
+
+## Bundler Features
+### Checks
+- **Packages** in [RequiredPackages](https://github.com/derFreemaker/Satisfactory/blob/05084fcd3c762d58193abb0072917733042324c6/PackageTemplate/Info.package.json#L5) exist
+- **require({module})** <- checks if module exists after a bundle would happen
+- module exist only one at a **time**
+### Autocorrection
+- adds missing package to [RequiredPackages](https://github.com/derFreemaker/Satisfactory/blob/05084fcd3c762d58193abb0072917733042324c6/PackageTemplate/Info.package.json#L5) of the package
+
 ## Push Pipeline
 
 1. write source code
-2. bundle the code
+2. bundle the code with task: "bundle all" or "bundle all optimized" for smaller files
 3. push the code to repo
 4. can download in game
-
-#### Bundle command
-
-```shell
-.\bundle.bat [Package / PackagesFolder]
-
-```
-
-#### or
-
-```shell
-.\bundle.bat .
-
-```
-
-to bundle all packages in current directory
-
-#### or use Lua-Bundler directly
-
-```shell
-.\Lua-Bundler\Lua-Bundler.exe
-
-```
 
 ## Run Sequence Overview
 
@@ -67,6 +57,7 @@ to bundle all packages in current directory
 ```
 
 ## Package Info File
+
 ### [Template:](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/Info.package.json)
 
 ```json
@@ -82,11 +73,13 @@ to bundle all packages in current directory
 The BuildNumber can only be an integer.
 
 ## Package Load Sequence
+
 1. download of the Package out of [Packages](https://github.com/derFreemaker/Satisfactory/blob/main/Packages/)
 2. running events in module [__events.lua](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/__events.lua) of the Package
    - [OnLoaded](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/__events.lua#L4) function gets executed if it exists
 
 ## Package Run Sequence
+
 1. setting [Logger](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/__main.lua#L2) of Package
 2. running [Configure](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/__main.lua#L5) function
 3. running [Run](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/__main.lua#L9) function

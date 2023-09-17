@@ -1,9 +1,12 @@
 {
   "Name": "Test-Http",
-  "Version": "0.1.0-3",
   "Namespace": "Test.Http",
+  "Version": "0.1.0-41",
   "RequiredPackages": [
     "Core",
-    "DNS.Client"
+    "DNS.Client",
+    "DNS.Core",
+    "Http",
+    "Net.Core"
   ]
 }

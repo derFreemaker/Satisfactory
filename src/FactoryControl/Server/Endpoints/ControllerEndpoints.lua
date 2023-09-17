@@ -1,12 +1,12 @@
-local RestApiEndpointBase = require("Core.RestApi.Server.RestApiEndpointBase")
+local RestApiEndpointBase = require("Net.Rest.Api.Server.EndpointBase")
 
----@class FactoryControl.Server.Endpoints.ControllerEndpoints : Core.RestApi.Server.RestApiEndpointBase
+---@class FactoryControl.Server.Endpoints.ControllerEndpoints : Net.Rest.Api.Server.EndpointBase
 local ControllerEndpoints = {}
 
----@param request Core.RestApi.RestApiRequest
----@return Core.RestApi.RestApiResponse response
+---@param request Net.Rest.Api.Request
+---@return Net.Rest.Api.Response response
 function ControllerEndpoints:CREATE__Controller(request)
     return self.Templates:Ok(true)
 end
 
-return Utils.Class.CreateSubClass(ControllerEndpoints, "ControllerEndpoints", RestApiEndpointBase)
+return Utils.Class.CreateClass(ControllerEndpoints, "ControllerEndpoints", RestApiEndpointBase)

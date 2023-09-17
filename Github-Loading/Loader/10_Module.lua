@@ -1,29 +1,19 @@
 ---@class Github_Loading.Module.Data
+---@field Location string
 ---@field Namespace string
----@field Name string
----@field FullName string
 ---@field IsRunnable boolean
 ---@field Data string
 
----@class Github_Loading.Module
----@field Name string
----@field FullName string
----@field Namespace string
----@field IsRunnable boolean
----@field Data string
+---@class Github_Loading.Module : Github_Loading.Module.Data
 ---@field StoredData table
 local Module = {}
 
 ---@param moduleData Github_Loading.Module.Data
 ---@return Github_Loading.Module
 function Module.new(moduleData)
-    return setmetatable({
-        Name = moduleData.Name,
-        FullName = moduleData.FullName,
-        Namespace = moduleData.Namespace,
-        IsRunnable = moduleData.IsRunnable,
-        Data = moduleData.Data:gsub("{{{", "[["):gsub("}}}", "]]")
-    }, { __index = Module })
+    moduleData.Data = moduleData.Data:gsub("{{{", "[["):gsub("}}}", "]]")
+    ---@cast moduleData table
+    return setmetatable(moduleData, { __index = Module })
 end
 
 ---@param ... any
@@ -34,7 +24,7 @@ function Module:Load(...)
     end
     local result
     if self.IsRunnable then
-        result = { load(self.Data, self.Namespace)(...) }
+        result = { load(self.Data, self.Location)(...) }
     else
         result = { self.Data }
     end

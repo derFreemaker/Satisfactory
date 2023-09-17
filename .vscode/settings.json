@@ -10,5 +10,10 @@
     "findItem",
     "log"
   ],
-  "Lua.completion.autoRequire": false
+  "Lua.completion.autoRequire": false,
+  "triggerTaskOnSave.tasks": {
+    "check all": [
+      "*"
+    ],
+  }
 }
