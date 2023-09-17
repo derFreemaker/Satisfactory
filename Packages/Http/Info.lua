@@ -1,7 +1,7 @@
 return {
     Name = "Http",
     Namespace = "Http",
-    Version = "0.1.0-37",
+    Version = "0.1.0-38",
     RequiredPackages = {
         "Core",
         "DNS.Client",

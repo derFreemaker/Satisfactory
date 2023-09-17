@@ -46,6 +46,10 @@ end
 ---@param id string
 ---@return boolean success
 function Client:CreateAddress(address, id)
+	if not address:match('^.*%..*$') then
+		return false
+	end
+
 	self:GetDNSServerAddressIfNeeded()
 
 	local createAddress = CreateAddress(address, id)
