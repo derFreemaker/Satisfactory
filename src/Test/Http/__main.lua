@@ -30,7 +30,7 @@ function Main:Run()
 	assert(response:IsSuccess(), 'http request was not successfull')
 
 	local address = Address:Static__CreateFromData(request.Body)
-	assert(address.Id == self.netClient:GetId(), "got wrong address id back from dns server '" .. address.Id .. "'")
+	assert(address.Id == self.netClient:GetId(), "got wrong address id back from dns server '" .. tostring(address.Id) .. "'")
 
 	log(address.Address, address.Id)
 end
