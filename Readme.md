@@ -3,9 +3,11 @@
 This Repository contains all my code for the [FicsIt-Networks Mod](https://github.com/Panakotta00/FicsIt-Networks) for [Satisfactory](https://www.satisfactorygame.com).
 
 ## Coding Languages
+
 - [Lua](https://www.lua.org)
 
 ## Supported Module Modifiers
+
 - **---@namespace {moduleNamespace}** <- overrides the namespace of the module its in
 - **---@isRunnable {true|false}** <- overrides the IsRunnable mark of the module its in
 
@@ -16,7 +18,7 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
 3. push the code to repo
 4. can download in game
 
-"bundle all" will check every module exists that is geted with **require({module})** and all **Packages** that are in **[RequiredPackages](https://github.com/derFreemaker/Satisfactory/blob/05084fcd3c762d58193abb0072917733042324c6/PackageTemplate/Info.package.json#L5)** in [Info.package.json](https://github.com/derFreemaker/Satisfactory/blob/05084fcd3c762d58193abb0072917733042324c6/PackageTemplate/Info.package.json)
+"bundle all" will check every module exists that is geted with **require({module})** and exists only one **Time**. Also will check if all **Packages** that are in [RequiredPackages](https://github.com/derFreemaker/Satisfactory/blob/05084fcd3c762d58193abb0072917733042324c6/PackageTemplate/Info.package.json#L5) in [Info.package.json](https://github.com/derFreemaker/Satisfactory/blob/05084fcd3c762d58193abb0072917733042324c6/PackageTemplate/Info.package.json) exists.
 
 ## Run Sequence Overview
 
