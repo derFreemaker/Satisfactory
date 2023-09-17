@@ -1,11 +1,8 @@
 local PackageData = {}
 
--- ########## Test.Http ##########
-
-PackageData.MFYoiWSx = {
+PackageData.uDGijAKb = {
+    Location = "Test.Http.__main",
     Namespace = "Test.Http.__main",
-    Name = "__main",
-    FullName = "__main.lua",
     IsRunnable = true,
     Data = [[
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
@@ -49,7 +46,5 @@ end
 return Main
 ]]
 }
-
--- ########## Test.Http ########## --
 
 return PackageData

@@ -1,4 +1,4 @@
-local RestApiEndpointBase = require("Net.Rest.RestApii.Server.RestApiEndpointBase")
+local RestApiEndpointBase = require("Net.Rest.Api.Server.EndpointBase")
 
 ---@class FactoryControl.Server.Endpoints.ControllerEndpoints : Net.Rest.Api.Server.EndpointBase
 local ControllerEndpoints = {}

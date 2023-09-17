@@ -1,46 +1,18 @@
 local PackageData = {}
 
--- ########## FactoryControl.Server ##########
-
--- ########## FactoryControl.Server.Endpoints ##########
-
-PackageData.oVIzFPpX = {
-    Namespace = "FactoryControl.Server.Endpoints.ControllerEndpoints",
-    Name = "ControllerEndpoints",
-    FullName = "ControllerEndpoints.lua",
-    IsRunnable = true,
-    Data = [[
-local RestApiEndpointBase = require("Net.Rest.RestApii.Server.RestApiEndpointBase")
-
----@class FactoryControl.Server.Endpoints.ControllerEndpoints : Core.RestApi.Server.RestApiEndpointBase
-local ControllerEndpoints = {}
-
----@param request Core.RestApi.RestApiRequest
----@return Core.RestApi.RestApiResponse response
-function ControllerEndpoints:CREATE__Controller(request)
-    return self.Templates:Ok(true)
-end
-
-return Utils.Class.CreateClass(ControllerEndpoints, "ControllerEndpoints", RestApiEndpointBase)
-]]
-}
-
--- ########## FactoryControl.Server.Endpoints ########## --
-
-PackageData.PksKdJNx = {
+PackageData.vvWJKhpz = {
+    Location = "FactoryControl.Server.__main",
     Namespace = "FactoryControl.Server.__main",
-    Name = "__main",
-    FullName = "__main.lua",
     IsRunnable = true,
     Data = [[
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local NetworkClient = require("Net.Core.NetworkClient")
-local RestApiController = require("Net.Rest.RestApii.Server.RestApiController")
+local RestApiController = require("Net.Rest.Api.Server.Controller")
 local ControllerEndpoints = require("FactoryControl.Server.Endpoints.ControllerEndpoints")
 
 ---@class FactoryControl.Server.Main : Github_Loading.Entities.Main
 ---@field private eventPullAdapter Core.EventPullAdapter
----@field private apiController Core.RestApi.Server.RestApiController
+---@field private apiController Net.Rest.Api.Server.Controller
 local Main = {}
 
 function Main:Configure()
@@ -63,6 +35,24 @@ return Main
 ]]
 }
 
--- ########## FactoryControl.Server ########## --
+PackageData.yarfFUjz = {
+    Location = "FactoryControl.Server.Endpoints.ControllerEndpoints",
+    Namespace = "FactoryControl.Server.Endpoints.ControllerEndpoints",
+    IsRunnable = true,
+    Data = [[
+local RestApiEndpointBase = require("Net.Rest.Api.Server.EndpointBase")
+
+---@class FactoryControl.Server.Endpoints.ControllerEndpoints : Net.Rest.Api.Server.EndpointBase
+local ControllerEndpoints = {}
+
+---@param request Net.Rest.Api.Request
+---@return Net.Rest.Api.Response response
+function ControllerEndpoints:CREATE__Controller(request)
+    return self.Templates:Ok(true)
+end
+
+return Utils.Class.CreateClass(ControllerEndpoints, "ControllerEndpoints", RestApiEndpointBase)
+]]
+}
 
 return PackageData

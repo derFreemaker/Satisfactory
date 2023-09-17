@@ -1,18 +1,15 @@
 local PackageData = {}
 
--- ########## FactoryControl.Core ##########
-
-PackageData.MFYoiWSx = {
+PackageData.UgmxnoSZ = {
+    Location = "FactoryControl.Core.FactoryControlApiClient",
     Namespace = "FactoryControl.Core.FactoryControlApiClient",
-    Name = "FactoryControlApiClient",
-    FullName = "FactoryControlApiClient.lua",
     IsRunnable = true,
     Data = [[
-local RestApiNetworkClient = require("Net.Rest.RestApii.Client.RestApiNetworkClient")
-local RestApiRequest = require("Net.Rest.RestApii.RestApiRequest")
+local RestApiNetworkClient = require("Net.Rest.Api.Client.Client")
+local RestApiRequest = require("Net.Rest.Api.Request")
 
 ---@class FactoryControl.Core.FactoryControlRestApiClient : object
----@field private restApiClient Core.RestApi.Client.RestApiClient
+---@field private restApiClient Net.Rest.Api.Client
 ---@field private logger Core.Logger
 ---@overload fun(netClient: Core.Net.NetworkClient, logger: Core.Logger) : FactoryControl.Core.FactoryControlRestApiClient
 local FactoryControlRestApiClient = {}
@@ -21,15 +18,16 @@ local FactoryControlRestApiClient = {}
 ---@param netClient Core.Net.NetworkClient
 ---@param logger Core.Logger
 function FactoryControlRestApiClient:__init(netClient, logger)
-    self.restApiClient = RestApiNetworkClient(Config.ServerIPAddress, Config.ServerPort, 1111, netClient, self.logger:subLogger("RestApiClient"))
+    self.restApiClient = RestApiNetworkClient(Config.ServerIPAddress, Config.ServerPort, 1111, netClient,
+        self.logger:subLogger("RestApiClient"))
 end
 
 ---@private
----@param method Core.RestApi.RestApiMethod
+---@param method Net.Rest.Api.Method
 ---@param endpoint string
 ---@param headers Dictionary<string, any>?
 ---@param body any
----@return Core.RestApi.RestApiResponse response
+---@return Net.Rest.Api.Response response
 function FactoryControlRestApiClient:request(method, endpoint, headers, body)
     return self.restApiClient:request(RestApiRequest(method, endpoint, headers, body))
 end
@@ -43,7 +41,5 @@ end
 return Utils.Class.CreateClass(FactoryControlRestApiClient, "FactoryControlRestApiClient")
 ]]
 }
-
--- ########## FactoryControl.Core ########## --
 
 return PackageData

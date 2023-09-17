@@ -1,4 +1,4 @@
-local RestApiResponse = require("Core.RestApi.RestApiResponse")
+local RestApiResponse = require("Net.Rest.Api.Response")
 
 ---@class Net.Rest.Api.Client : object
 ---@field ServerIPAddress string
@@ -26,7 +26,8 @@ end
 ---@param request Net.Rest.Api.Request
 ---@return Net.Rest.Api.Response response
 function Client:request(request)
-    self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, "Rest-Request", request:ExtractData(), { ReturnPort = self.ReturnPort })
+    self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, "Rest-Request", request:ExtractData(),
+        { ReturnPort = self.ReturnPort })
     local context = self.NetClient:WaitForEvent("Rest-Response", self.ReturnPort, 5)
     if not context then
         return RestApiResponse(nil, { Code = 408 })
