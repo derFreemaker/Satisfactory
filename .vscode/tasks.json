@@ -58,11 +58,6 @@
 				"panel": "shared",
 				"showReuseMessage": true,
 				"clear": false
-			},
-			"runOptions": {
-				"runOn": "folderOpen",
-				"instanceLimit": 1,
-				"reevaluateOnRerun": true
 			}
 		},
 		{
@@ -89,11 +84,6 @@
 				"panel": "shared",
 				"showReuseMessage": true,
 				"clear": false
-			},
-			"runOptions": {
-				"runOn": "folderOpen",
-				"instanceLimit": 1,
-				"reevaluateOnRerun": true
 			}
 		},
 		{
