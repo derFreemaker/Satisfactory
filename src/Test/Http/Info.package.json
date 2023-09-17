@@ -5,6 +5,8 @@
   "RequiredPackages": [
     "Core",
     "DNS.Client",
+    "DNS.Core",
+    "Http",
     "Net.Core"
   ]
 }
