@@ -1,10 +1,10 @@
 return {
     Name = "Test-Http",
     Namespace = "Test.Http",
-    Version = "0.1.0-38",
+    Version = "0.1.0-39",
     RequiredPackages = {
         "Core",
-        "Net.Core",
-        "DNS.Client"
+        "DNS.Client",
+        "Net.Core"
     },
 }

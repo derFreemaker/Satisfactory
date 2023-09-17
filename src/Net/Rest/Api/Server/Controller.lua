@@ -1,7 +1,7 @@
 local Task = require('Core.Task')
 local RestApiEndpoint = require('Net.Rest.Api.Server.Endpoint')
 local RestApiResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
-local RestApiMethod = require('Net.Rest.Api.Method')
+local RestApiMethod = require('Net.Core.Method')
 ---@type Net.Rest.Api.Extensions
 local Extensions = require('Net.Core.NetworkContext.Api.Extensions')
 
@@ -39,7 +39,7 @@ function Controller:onMessageRecieved(context)
 	endpoint:Execute(request, context, self.netPort:GetNetClient())
 end
 
----@param method Net.Rest.Api.Method
+---@param method Net.Core.Method
 ---@param endpointName string
 ---@return Net.Rest.Api.Server.Endpoint?
 function Controller:GetEndpoint(method, endpointName)
@@ -50,7 +50,7 @@ function Controller:GetEndpoint(method, endpointName)
 	end
 end
 
----@param method Net.Rest.Api.Method
+---@param method Net.Core.Method
 ---@param name string
 ---@param task Core.Task
 ---@return Net.Rest.Api.Server.Controller

@@ -58,7 +58,8 @@
 				"panel": "shared",
 				"showReuseMessage": true,
 				"clear": false
-			}
+			},
+			"group": "test"
 		},
 		{
 			"label": "bundle All optimized",
@@ -84,7 +85,8 @@
 				"panel": "shared",
 				"showReuseMessage": true,
 				"clear": false
-			}
+			},
+			"group": "build"
 		},
 		{
 			"label": "open FicsIt files",

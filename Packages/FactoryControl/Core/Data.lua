@@ -22,7 +22,7 @@ function FactoryControlRestApiClient:__init(netClient, logger)
 end
 
 ---@private
----@param method Net.Rest.Api.Method
+---@param method Net.Core.Method
 ---@param endpoint string
 ---@param headers Dictionary<string, any>?
 ---@param body any

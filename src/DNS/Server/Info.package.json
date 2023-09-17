@@ -4,9 +4,9 @@
   "Version": "0.1.4-40",
   "RequiredPackages": [
     "Core",
-    "Net.Core",
-    "Net.Rest",
     "Database",
-    "DNS.Core"
+    "DNS.Core",
+    "Net.Core",
+    "Net.Rest"
   ]
 }
