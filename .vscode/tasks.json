@@ -3,15 +3,95 @@
     // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
-        {
-            "label": "bundle All",
-            "type": "shell",
-            "command": ".\\bundle.bat ."
-        },
-        {
-            "label": "open FicsIt files",
-            "type": "shell",
-            "command": "code %localappdata%\\FactoryGame\\Saved\\SaveGames\\Computers"
-        }
-    ]
+		{
+			"label": "check all",
+			"command": "${workspaceFolder}\\Lua-Bundler\\Lua-Bundler.exe",
+			"args": ["--SourcePath", "${workspaceFolder}\\src", "--OutputPath", "${workspaceFolder}\\Packages", "--Package", "."],
+			"problemMatcher": {
+				"owner": "lua-bundler",
+				"fileLocation": ["autoDetect", "$(workspaceFolder)/src"],
+				"pattern": {
+					"regexp": "^(.*)'-'(.*)'-'(.*)'-([0-9]*):([0-9]*):([0-9]*)$",
+					"code": 1,
+					"message": 2,
+					"file": 3,
+					"line": 4,
+					"column": 5,
+					"endColumn": 6
+				}
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "never",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"runOptions": {
+				"runOn": "folderOpen",
+				"instanceLimit": 1,
+				"reevaluateOnRerun": true
+			}
+		},
+		{
+			"label": "bundle All",
+			"command": "${workspaceFolder}\\Lua-Bundler\\Lua-Bundler.exe",
+			"args": ["--SourcePath", "${workspaceFolder}\\src", "--OutputPath", "${workspaceFolder}\\Packages", "--Package", ".", "-B"],
+			"problemMatcher": {
+				"owner": "lua-bundler",
+				"fileLocation": ["autoDetect", "$(workspaceFolder)/src"],
+				"pattern": {
+					"regexp": "^(.*)'-'(.*)'-'(.*)'-([0-9]*):([0-9]*):([0-9]*)$",
+					"message": 1,
+					"code": 2,
+					"file": 3,
+					"line": 4,
+					"column": 5,
+					"endColumn": 6
+				}
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "never",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"group": "test"
+		},
+		{
+			"label": "bundle All optimized",
+			"command": "${workspaceFolder}\\Lua-Bundler\\Lua-Bundler.exe",
+			"args": ["--SourcePath", "${workspaceFolder}\\src", "--OutputPath", "${workspaceFolder}\\Packages", "--Package", ".", "-B", "-O"],
+			"problemMatcher": {
+				"owner": "lua-bundler",
+				"fileLocation": ["autoDetect", "$(workspaceFolder)/src"],
+				"pattern": {
+					"regexp": "^(.*)'-'(.*)'-'(.*)'-([0-9]*):([0-9]*):([0-9]*)$",
+					"message": 1,
+					"code": 2,
+					"file": 3,
+					"line": 4,
+					"column": 5,
+					"endColumn": 6
+				}
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "never",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"group": "build"
+		},
+		{
+			"label": "open FicsIt files",
+			"type": "shell",
+			"command": "code %localappdata%\\FactoryGame\\Saved\\SaveGames\\Computers"
+		}
+	]
 }

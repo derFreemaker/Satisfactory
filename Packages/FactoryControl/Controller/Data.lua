@@ -1,14 +1,11 @@
 local PackageData = {}
 
--- ########## FactoryControl.Controller ##########
-
-PackageData.MFYoiWSx = {
+PackageData.tQCmPuuz = {
+    Location = "FactoryControl.Controller.__main",
     Namespace = "FactoryControl.Controller.__main",
-    Name = "__main",
-    FullName = "__main.lua",
     IsRunnable = true,
     Data = [[
-local NetworkClient = require("Core.Net.NetworkClient")
+local NetworkClient = require("Net.Core.NetworkClient")
 local FactoryControlRestApiClient = require("FactoryControl.Core.FactoryControlApiClient")
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
@@ -32,7 +29,5 @@ end
 return Main
 ]]
 }
-
--- ########## FactoryControl.Controller ########## --
 
 return PackageData
