@@ -53,7 +53,7 @@ function HttpClient:Send(request)
 	local apiClient = ApiClient(address, 80, 80, self.netClient, self.logger:subLogger('ApiClient'))
 
 	local apiRequest = ApiRequest(request.Method, request.Endpoint, request.Body, request.Options.Headers)
-	local apiResponse = apiClient:Request(apiRequest, request.Options.Timeout)
+	local apiResponse = apiClient:Send(apiRequest, request.Options.Timeout)
 
 	return HttpResponse(apiResponse, request)
 end
