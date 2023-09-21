@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.JjmrMBtY = {
+PackageData.hUCfoIVy = {
     Location = "Database.DbTable",
     Namespace = "Database.DbTable",
     IsRunnable = true,

@@ -30,7 +30,7 @@ function Endpoint:Execute(request, context, netClient)
 	end
 	if context.Header.ReturnPort then
 		self.logger:LogTrace("sending response to '" .. context.SenderIPAddress .. "' on port: " .. context.Header.ReturnPort .. '...')
-		netClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort, 'Rest-Response', response:ExtractData())
+		netClient:Send(context.SenderIPAddress, context.Header.ReturnPort, 'Rest-Response', response:ExtractData())
 	else
 		self.logger:LogTrace('sending no response')
 	end

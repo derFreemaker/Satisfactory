@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.MBLIbtDA = {
+PackageData.llbxDAga = {
     Location = "Net.Rest.Api.Extensions",
     Namespace = "Net.Core.NetworkContext.Api.Extensions",
     IsRunnable = true,
@@ -29,7 +29,7 @@ return Utils.Class.CreateClass(Extensions, 'Net.Core.NetworkContext.Api.Extensio
 ]]
 }
 
-PackageData.nQvTynab = {
+PackageData.MBLIbtDA = {
     Location = "Net.Rest.Api.Request",
     Namespace = "Net.Rest.Api.Request",
     IsRunnable = true,
@@ -68,7 +68,7 @@ return Utils.Class.CreateClass(Request, 'Net.Rest.Api.Request')
 ]]
 }
 
-PackageData.OfgeWgyB = {
+PackageData.nQvTynab = {
     Location = "Net.Rest.Api.Response",
     Namespace = "Net.Rest.Api.Response",
     IsRunnable = true,
@@ -108,7 +108,7 @@ return Utils.Class.CreateClass(Response, 'Net.Rest.Api.Response')
 ]]
 }
 
-PackageData.sZlLoNQb = {
+PackageData.QKAARTsB = {
     Location = "Net.Rest.Api.Client.Client",
     Namespace = "Net.Rest.Api.Client.Client",
     IsRunnable = true,
@@ -143,8 +143,8 @@ end
 ---@param request Net.Rest.Api.Request
 ---@param timeout integer?
 ---@return Net.Rest.Api.Response response
-function Client:Request(request, timeout)
-	self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, 'Rest-Request', request:ExtractData(), {ReturnPort = self.ReturnPort})
+function Client:Send(request, timeout)
+	self.NetClient:Send(self.ServerIPAddress, self.ServerPort, 'Rest-Request', request:ExtractData(), {ReturnPort = self.ReturnPort})
 	local context = self.NetClient:WaitForEvent('Rest-Response', self.ReturnPort, timeout or 5)
 	if not context then
 		return Response(nil, {Code = 408})
@@ -158,7 +158,7 @@ return Utils.Class.CreateClass(Client, 'Net.Rest.Api.Client')
 ]]
 }
 
-PackageData.ToVXMGnB = {
+PackageData.sZlLoNQb = {
     Location = "Net.Rest.Api.Server.Controller",
     Namespace = "Net.Rest.Api.Server.Controller",
     IsRunnable = true,
@@ -196,7 +196,7 @@ function Controller:onMessageRecieved(context)
 	if endpoint == nil then
 		self.logger:LogTrace('found no endpoint')
 		if context.Header.ReturnPort then
-			self.netPort:GetNetClient():SendMessage(context.SenderIPAddress, context.Header.ReturnPort, 'Rest-Response', RestApiResponseTemplates.NotFound('Unable to find endpoint'):ExtractData())
+			self.netPort:GetNetClient():Send(context.SenderIPAddress, context.Header.ReturnPort, 'Rest-Response', RestApiResponseTemplates.NotFound('Unable to find endpoint'):ExtractData())
 		end
 		return
 	end
@@ -246,7 +246,7 @@ return Utils.Class.CreateClass(Controller, 'Net.Rest.Api.Server.Controller')
 ]]
 }
 
-PackageData.uDGijAKb = {
+PackageData.ToVXMGnB = {
     Location = "Net.Rest.Api.Server.Endpoint",
     Namespace = "Net.Rest.Api.Server.Endpoint",
     IsRunnable = true,
@@ -283,7 +283,7 @@ function Endpoint:Execute(request, context, netClient)
 	end
 	if context.Header.ReturnPort then
 		self.logger:LogTrace("sending response to '" .. context.SenderIPAddress .. "' on port: " .. context.Header.ReturnPort .. '...')
-		netClient:SendMessage(context.SenderIPAddress, context.Header.ReturnPort, 'Rest-Response', response:ExtractData())
+		netClient:Send(context.SenderIPAddress, context.Header.ReturnPort, 'Rest-Response', response:ExtractData())
 	else
 		self.logger:LogTrace('sending no response')
 	end
@@ -298,7 +298,7 @@ return Utils.Class.CreateClass(Endpoint, 'Net.Rest.Api.Server.Endpoint')
 ]]
 }
 
-PackageData.VTqtHthB = {
+PackageData.uDGijAKb = {
     Location = "Net.Rest.Api.Server.EndpointBase",
     Namespace = "Net.Rest.Api.Server.EndpointBase",
     IsRunnable = true,
@@ -357,7 +357,7 @@ return Utils.Class.CreateClass(EndpointBase, "Net.Rest.Api.Server.EndpointBase")
 ]]
 }
 
-PackageData.wiaEemFb = {
+PackageData.VTqtHthB = {
     Location = "Net.Rest.Api.Server.ResponseTemplates",
     Namespace = "Net.Rest.Api.Server.ResponseTemplates",
     IsRunnable = true,

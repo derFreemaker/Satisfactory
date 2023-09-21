@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.XxLPBgcB = {
+PackageData.wiaEemFb = {
     Location = "Test.Http.__main",
     Namespace = "Test.Http.__main",
     IsRunnable = true,
@@ -8,8 +8,8 @@ PackageData.XxLPBgcB = {
 local EventPullAdapter = require('Core.Event.EventPullAdapter')
 local NetworkClient = require('Net.Core.NetworkClient')
 local DNSClient = require('DNS.Client.Client')
-local HttpClient = require('Http.Client')
-local HttpRequest = require('Http.Request')
+local HttpClient = require('Net.Http.Client')
+local HttpRequest = require('Net.Http.Request')
 local Address = require('DNS.Core.Entities.Address.Address')
 
 ---@class Test.Http.Main : Github_Loading.Entities.Main
@@ -30,9 +30,11 @@ function Main:Run()
 	local domain = 'factoryControl.de'
 
 	local success = self.dnsClient:CreateAddress(domain, self.netClient:GetId())
-	assert(success, 'unable to create address on dns server')
+	if not success then
+		log('unable to create address on dns server or allready exists')
+	end
 
-	local request = HttpRequest('GET', 'AddressWithAddress', self.dnsClient:GetDNSServerAddressIfNeeded(), domain)
+	local request = HttpRequest('GET', 'AddressWithAddress', self.dnsClient:RequestOrGetDNSServerIP(), domain)
 	local response = self.httpClient:Send(request)
 	assert(response:IsSuccess(), 'http request was not successfull')
 

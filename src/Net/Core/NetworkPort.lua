@@ -24,6 +24,11 @@ function NetworkPort:GetEvents()
 	return Utils.Table.Copy(self.events)
 end
 
+---@return integer
+function NetworkPort:GetEventsCount()
+	return #self.events
+end
+
 ---@return Net.Core.NetworkClient
 function NetworkPort:GetNetClient()
 	return self.netClient
@@ -45,7 +50,7 @@ end
 ---@protected
 ---@param eventName string | "all"
 ---@return Core.Event
-function NetworkPort:GetEvent(eventName)
+function NetworkPort:CreateOrGetEvent(eventName)
 	for name, event in pairs(self.events) do
 		if name == eventName then
 			return event
@@ -60,7 +65,7 @@ end
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
 function NetworkPort:AddListener(onRecivedEventName, listener)
-	local event = self:GetEvent(onRecivedEventName)
+	local event = self:CreateOrGetEvent(onRecivedEventName)
 	event:AddListener(listener)
 	return self
 end
@@ -70,7 +75,7 @@ NetworkPort.On = NetworkPort.AddListener
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
 function NetworkPort:AddListenerOnce(onRecivedEventName, listener)
-	local event = self:GetEvent(onRecivedEventName)
+	local event = self:CreateOrGetEvent(onRecivedEventName)
 	event:AddListenerOnce(listener)
 	return self
 end
@@ -86,14 +91,14 @@ end
 function NetworkPort:OpenPort()
 	local port = self.Port
 	if type(port) == 'number' then
-		self.netClient:OpenPort(port)
+		self.netClient:Open(port)
 	end
 end
 
 function NetworkPort:ClosePort()
 	local port = self.Port
 	if type(port) == 'number' then
-		self.netClient:ClosePort(port)
+		self.netClient:Close(port)
 	end
 end
 
@@ -107,7 +112,7 @@ function NetworkPort:SendMessage(ipAddress, eventName, body, header)
 		error('Unable to send a message over all ports')
 	end
 	---@cast port integer
-	self.netClient:SendMessage(ipAddress, port, eventName, body, header)
+	self.netClient:Send(ipAddress, port, eventName, body, header)
 end
 
 ---@param eventName string
@@ -119,7 +124,7 @@ function NetworkPort:BroadCastMessage(eventName, body, header)
 		error('Unable to broadcast a message over all ports')
 	end
 	---@cast port integer
-	self.netClient:BroadCastMessage(port, eventName, body, header)
+	self.netClient:BroadCast(port, eventName, body, header)
 end
 
 return Utils.Class.CreateClass(NetworkPort, 'Core.Net.NetworkPort')

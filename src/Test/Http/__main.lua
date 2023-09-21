@@ -23,9 +23,11 @@ function Main:Run()
 	local domain = 'factoryControl.de'
 
 	local success = self.dnsClient:CreateAddress(domain, self.netClient:GetId())
-	assert(success, 'unable to create address on dns server')
+	if not success then
+		log('unable to create address on dns server or allready exists')
+	end
 
-	local request = HttpRequest('GET', 'AddressWithAddress', self.dnsClient:GetDNSServerAddressIfNeeded(), domain)
+	local request = HttpRequest('GET', 'AddressWithAddress', self.dnsClient:RequestOrGetDNSServerIP(), domain)
 	local response = self.httpClient:Send(request)
 	assert(response:IsSuccess(), 'http request was not successfull')
 

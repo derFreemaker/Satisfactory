@@ -51,7 +51,7 @@ function NetworkClient:networkMessageRecieved(data)
 		if port.Port == context.Port or port.Port == 'all' then
 			port:Execute(context)
 		end
-		if Utils.Table.Count(port:GetEvents()) == 0 then
+		if port:GetEventsCount() == 0 then
 			port:ClosePort()
 			self.ports[i] = nil
 		end
@@ -60,13 +60,14 @@ end
 
 ---@protected
 ---@param port integer | "all"
-function NetworkClient:GetNetworkPort(port)
+---@return Net.Core.NetworkPort
+function NetworkClient:GetOrCreateNetworkPort(port)
 	for portNumber, networkPort in pairs(self.ports) do
 		if portNumber == port then
 			return networkPort
 		end
 	end
-	return nil
+	return self:CreateNetworkPort(port)
 end
 
 ---@param onRecivedEventName (string | "all")?
@@ -77,22 +78,22 @@ function NetworkClient:AddListener(onRecivedEventName, onRecivedPort, listener)
 	onRecivedEventName = onRecivedEventName or 'all'
 	onRecivedPort = onRecivedPort or 'all'
 
-	local networkPort = self:GetNetworkPort(onRecivedPort) or self:CreateNetworkPort(onRecivedPort)
+	local networkPort = self:GetOrCreateNetworkPort(onRecivedPort)
 	networkPort:AddListener(onRecivedEventName, listener)
 	return networkPort
 end
 NetworkClient.On = NetworkClient.AddListener
 
----@param onRecivedEventName (string | "all")?
----@param onRecivedPort (integer | "all")?
+---@param onRecivedEventName string | "all"
+---@param onRecivedPort integer | "all"
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
 function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listener)
 	onRecivedEventName = onRecivedEventName or 'all'
 	onRecivedPort = onRecivedPort or 'all'
 
-	local networkPort = self:GetNetworkPort(onRecivedPort) or self:CreateNetworkPort(onRecivedPort)
-	networkPort:AddListener(onRecivedEventName, listener)
+	local networkPort = self:GetOrCreateNetworkPort(onRecivedPort)
+	networkPort:AddListenerOnce(onRecivedEventName, listener)
 	return networkPort
 end
 NetworkClient.Once = NetworkClient.AddListenerOnce
@@ -102,7 +103,7 @@ NetworkClient.Once = NetworkClient.AddListenerOnce
 function NetworkClient:CreateNetworkPort(port)
 	port = port or 'all'
 
-	local networkPort = self:GetNetworkPort(port)
+	local networkPort = self:GetOrCreateNetworkPort(port)
 	if networkPort ~= nil then
 		return networkPort
 	end
@@ -132,18 +133,18 @@ function NetworkClient:WaitForEvent(eventName, port, timeout)
 end
 
 ---@param port integer
-function NetworkClient:OpenPort(port)
+function NetworkClient:Open(port)
 	self.networkCard:open(port)
 	self.Logger:LogTrace('opened Port: ' .. port)
 end
 
 ---@param port integer
-function NetworkClient:ClosePort(port)
+function NetworkClient:Close(port)
 	self.networkCard:close(port)
 	self.Logger:LogTrace('closed Port: ' .. port)
 end
 
-function NetworkClient:CloseAllPorts()
+function NetworkClient:CloseAll()
 	self.networkCard:closeAll()
 	self.Logger:LogTrace('closed all Ports')
 end
@@ -153,7 +154,7 @@ end
 ---@param eventName string
 ---@param body any
 ---@param header Dictionary<string, any>?
-function NetworkClient:SendMessage(ipAddress, port, eventName, body, header)
+function NetworkClient:Send(ipAddress, port, eventName, body, header)
 	self.networkCard:send(ipAddress, port, eventName, Json.encode(body), Json.encode(header or {}))
 end
 
@@ -161,7 +162,7 @@ end
 ---@param eventName string
 ---@param body any
 ---@param header Dictionary<string, any>?
-function NetworkClient:BroadCastMessage(port, eventName, body, header)
+function NetworkClient:BroadCast(port, eventName, body, header)
 	self.networkCard:broadcast(port, eventName, Json.encode(body), Json.encode(header or {}))
 end
 

@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.QXwFxOcZ = {
+PackageData.oHMuZVFz = {
     Location = "DNS.Server.AddressDatabase",
     Namespace = "DNS.Server.AddressDatabase",
     IsRunnable = true,
@@ -75,7 +75,7 @@ return Utils.Class.CreateClass(AddressDatabase, "DNS.Server.AddressDatabase")
 ]]
 }
 
-PackageData.rmhQUIAz = {
+PackageData.QXwFxOcZ = {
     Location = "DNS.Server.Endpoints",
     Namespace = "DNS.Server.Endpoints",
     IsRunnable = true,
@@ -143,7 +143,7 @@ return Utils.Class.CreateClass(Endpoints, "DNS.Server.Endpoints", require("Net.R
 ]]
 }
 
-PackageData.SBRbsBXZ = {
+PackageData.rmhQUIAz = {
     Location = "DNS.Server.__main",
     Namespace = "DNS.Server.__main",
     IsRunnable = true,
@@ -165,7 +165,7 @@ function Main:GetDNSServerAddress(context)
 	local netClient = self.netPort:GetNetClient()
 	local id = netClient:GetId()
 	self.Logger:LogDebug(context.SenderIPAddress .. ' requested DNS Server IP Address')
-	netClient:SendMessage(context.SenderIPAddress, 53, 'ReturnDNSServerAddress', id)
+	netClient:Send(context.SenderIPAddress, 53, 'ReturnDNSServerAddress', id)
 end
 
 function Main:Configure()

@@ -12,11 +12,15 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
 - **---@isRunnable {true|false}** -> overrides the IsRunnable mark of the module its in
 
 ## Bundler Features
+
 ### Checks
+
 - **Packages** in [RequiredPackages](https://github.com/derFreemaker/Satisfactory/blob/05084fcd3c762d58193abb0072917733042324c6/PackageTemplate/Info.package.json#L5) exist
 - **require({module})** -> checks if module exists after a bundle would happen
 - module exist only one at a **time**
+
 ### Autocorrection
+
 - adds missing package to [RequiredPackages](https://github.com/derFreemaker/Satisfactory/blob/05084fcd3c762d58193abb0072917733042324c6/PackageTemplate/Info.package.json#L5) of the package
 
 ## Push Pipeline
@@ -28,7 +32,7 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
 
 ## Run Sequence Overview
 
-[InGameLoader](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/GithubLoaderInGame.lua) starts executing.
+[InGameLoader](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/GithubLoaderInGame.lua) starts executing...
 
 1. loads [Loader](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/Loader.lua)
 
@@ -54,6 +58,7 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
 └── bundled Package
     ├── Data.lua -> all modules of the package
     └── Info.lua -> contains information about the package
+
 ```
 
 ## Package Info File
@@ -67,6 +72,7 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
     "Namespace": "PackageNamespace",
     "RequiredPackages": [ "Package1", "Package2" ]
 }
+
 ```
 
 "Version": "[Version]-[BuildNumber]" the BuildNumber will be increased by one erverytime the bundler bundles this package.

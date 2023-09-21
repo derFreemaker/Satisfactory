@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.FNBtqhTA = {
+PackageData.ZpbqcOHZ = {
     Location = "Net.Core.Method",
     Namespace = "Net.Core.Method",
     IsRunnable = true,
@@ -23,7 +23,7 @@ return Methods
 ]]
 }
 
-PackageData.gclENara = {
+PackageData.AEMBAHeA = {
     Location = "Net.Core.NetworkClient",
     Namespace = "Net.Core.NetworkClient",
     IsRunnable = true,
@@ -81,7 +81,7 @@ function NetworkClient:networkMessageRecieved(data)
 		if port.Port == context.Port or port.Port == 'all' then
 			port:Execute(context)
 		end
-		if Utils.Table.Count(port:GetEvents()) == 0 then
+		if port:GetEventsCount() == 0 then
 			port:ClosePort()
 			self.ports[i] = nil
 		end
@@ -90,13 +90,14 @@ end
 
 ---@protected
 ---@param port integer | "all"
-function NetworkClient:GetNetworkPort(port)
+---@return Net.Core.NetworkPort
+function NetworkClient:GetOrCreateNetworkPort(port)
 	for portNumber, networkPort in pairs(self.ports) do
 		if portNumber == port then
 			return networkPort
 		end
 	end
-	return nil
+	return self:CreateNetworkPort(port)
 end
 
 ---@param onRecivedEventName (string | "all")?
@@ -107,22 +108,22 @@ function NetworkClient:AddListener(onRecivedEventName, onRecivedPort, listener)
 	onRecivedEventName = onRecivedEventName or 'all'
 	onRecivedPort = onRecivedPort or 'all'
 
-	local networkPort = self:GetNetworkPort(onRecivedPort) or self:CreateNetworkPort(onRecivedPort)
+	local networkPort = self:GetOrCreateNetworkPort(onRecivedPort)
 	networkPort:AddListener(onRecivedEventName, listener)
 	return networkPort
 end
 NetworkClient.On = NetworkClient.AddListener
 
----@param onRecivedEventName (string | "all")?
----@param onRecivedPort (integer | "all")?
+---@param onRecivedEventName string | "all"
+---@param onRecivedPort integer | "all"
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
 function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listener)
 	onRecivedEventName = onRecivedEventName or 'all'
 	onRecivedPort = onRecivedPort or 'all'
 
-	local networkPort = self:GetNetworkPort(onRecivedPort) or self:CreateNetworkPort(onRecivedPort)
-	networkPort:AddListener(onRecivedEventName, listener)
+	local networkPort = self:GetOrCreateNetworkPort(onRecivedPort)
+	networkPort:AddListenerOnce(onRecivedEventName, listener)
 	return networkPort
 end
 NetworkClient.Once = NetworkClient.AddListenerOnce
@@ -132,7 +133,7 @@ NetworkClient.Once = NetworkClient.AddListenerOnce
 function NetworkClient:CreateNetworkPort(port)
 	port = port or 'all'
 
-	local networkPort = self:GetNetworkPort(port)
+	local networkPort = self:GetOrCreateNetworkPort(port)
 	if networkPort ~= nil then
 		return networkPort
 	end
@@ -162,18 +163,18 @@ function NetworkClient:WaitForEvent(eventName, port, timeout)
 end
 
 ---@param port integer
-function NetworkClient:OpenPort(port)
+function NetworkClient:Open(port)
 	self.networkCard:open(port)
 	self.Logger:LogTrace('opened Port: ' .. port)
 end
 
 ---@param port integer
-function NetworkClient:ClosePort(port)
+function NetworkClient:Close(port)
 	self.networkCard:close(port)
 	self.Logger:LogTrace('closed Port: ' .. port)
 end
 
-function NetworkClient:CloseAllPorts()
+function NetworkClient:CloseAll()
 	self.networkCard:closeAll()
 	self.Logger:LogTrace('closed all Ports')
 end
@@ -183,7 +184,7 @@ end
 ---@param eventName string
 ---@param body any
 ---@param header Dictionary<string, any>?
-function NetworkClient:SendMessage(ipAddress, port, eventName, body, header)
+function NetworkClient:Send(ipAddress, port, eventName, body, header)
 	self.networkCard:send(ipAddress, port, eventName, Json.encode(body), Json.encode(header or {}))
 end
 
@@ -191,7 +192,7 @@ end
 ---@param eventName string
 ---@param body any
 ---@param header Dictionary<string, any>?
-function NetworkClient:BroadCastMessage(port, eventName, body, header)
+function NetworkClient:BroadCast(port, eventName, body, header)
 	self.networkCard:broadcast(port, eventName, Json.encode(body), Json.encode(header or {}))
 end
 
@@ -199,7 +200,7 @@ return Utils.Class.CreateClass(NetworkClient, 'Core.Net.NetworkClient')
 ]]
 }
 
-PackageData.HsWQlUOA = {
+PackageData.bTwMXABa = {
     Location = "Net.Core.NetworkContext",
     Namespace = "Net.Core.NetworkContext",
     IsRunnable = true,
@@ -233,7 +234,7 @@ return Utils.Class.CreateClass(NetworkContext, 'Core.Net.NetworkContext')
 ]]
 }
 
-PackageData.iHGbINla = {
+PackageData.CjgXvuZA = {
     Location = "Net.Core.NetworkPort",
     Namespace = "Net.Core.NetworkPort",
     IsRunnable = true,
@@ -264,6 +265,11 @@ function NetworkPort:GetEvents()
 	return Utils.Table.Copy(self.events)
 end
 
+---@return integer
+function NetworkPort:GetEventsCount()
+	return #self.events
+end
+
 ---@return Net.Core.NetworkClient
 function NetworkPort:GetNetClient()
 	return self.netClient
@@ -285,7 +291,7 @@ end
 ---@protected
 ---@param eventName string | "all"
 ---@return Core.Event
-function NetworkPort:GetEvent(eventName)
+function NetworkPort:CreateOrGetEvent(eventName)
 	for name, event in pairs(self.events) do
 		if name == eventName then
 			return event
@@ -300,7 +306,7 @@ end
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
 function NetworkPort:AddListener(onRecivedEventName, listener)
-	local event = self:GetEvent(onRecivedEventName)
+	local event = self:CreateOrGetEvent(onRecivedEventName)
 	event:AddListener(listener)
 	return self
 end
@@ -310,7 +316,7 @@ NetworkPort.On = NetworkPort.AddListener
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
 function NetworkPort:AddListenerOnce(onRecivedEventName, listener)
-	local event = self:GetEvent(onRecivedEventName)
+	local event = self:CreateOrGetEvent(onRecivedEventName)
 	event:AddListenerOnce(listener)
 	return self
 end
@@ -326,14 +332,14 @@ end
 function NetworkPort:OpenPort()
 	local port = self.Port
 	if type(port) == 'number' then
-		self.netClient:OpenPort(port)
+		self.netClient:Open(port)
 	end
 end
 
 function NetworkPort:ClosePort()
 	local port = self.Port
 	if type(port) == 'number' then
-		self.netClient:ClosePort(port)
+		self.netClient:Close(port)
 	end
 end
 
@@ -347,7 +353,7 @@ function NetworkPort:SendMessage(ipAddress, eventName, body, header)
 		error('Unable to send a message over all ports')
 	end
 	---@cast port integer
-	self.netClient:SendMessage(ipAddress, port, eventName, body, header)
+	self.netClient:Send(ipAddress, port, eventName, body, header)
 end
 
 ---@param eventName string
@@ -359,14 +365,14 @@ function NetworkPort:BroadCastMessage(eventName, body, header)
 		error('Unable to broadcast a message over all ports')
 	end
 	---@cast port integer
-	self.netClient:BroadCastMessage(port, eventName, body, header)
+	self.netClient:BroadCast(port, eventName, body, header)
 end
 
 return Utils.Class.CreateClass(NetworkPort, 'Core.Net.NetworkPort')
 ]]
 }
 
-PackageData.JWqmgHIA = {
+PackageData.eyRiSnwa = {
     Location = "Net.Core.StatusCodes",
     Namespace = "Net.Core.StatusCodes",
     IsRunnable = true,

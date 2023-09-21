@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.kyXCjvQy = {
+PackageData.JjmrMBtY = {
     Location = "DNS.Client.Client",
     Namespace = "DNS.Client.Client",
     IsRunnable = true,
@@ -32,82 +32,15 @@ function Client:GetNetClient()
 	return self.networkClient
 end
 
----@return string id
-function Client:GetDNSServerAddressIfNeeded()
-	if not self.apiClient then
-		local serverIPAddress = self:Static__GetServerAddress(self.networkClient)
-		self.apiClient = ApiClient(serverIPAddress, 80, 80, self.networkClient, self.logger:subLogger('ApiClient'))
-	end
-
-	return self.apiClient.ServerIPAddress
-end
-
----@param address string
----@param id string
----@return boolean success
-function Client:CreateAddress(address, id)
-	if not address:match('^.*%..*$') then
-		return false
-	end
-
-	self:GetDNSServerAddressIfNeeded()
-
-	local createAddress = CreateAddress(address, id)
-
-	local request = ApiRequest('CREATE', 'Address', createAddress:ExtractData())
-	local response = self.apiClient:Request(request)
-
-	if not response.WasSuccessfull then
-		return false
-	end
-	return response.Body
-end
-
----@param address string
----@return boolean success
-function Client:DeleteAddress(address)
-	self:GetDNSServerAddressIfNeeded()
-
-	local request = ApiRequest('DELETE', 'Address', address)
-	local response = self.apiClient:Request(request)
-
-	if not response.WasSuccessfull then
-		return false
-	end
-	return response.Body
-end
-
----@param address string
----@return DNS.Core.Entities.Address? address
-function Client:GetWithAddress(address)
-	self:GetDNSServerAddressIfNeeded()
-
-	local request = ApiRequest('GET', 'AddressWithAddress', address)
-	local response = self.apiClient:Request(request)
-
-	if not response.WasSuccessfull then
-		return nil
-	end
-	return Address:Static__CreateFromData(response.Body)
-end
-
----@param id string
----@return DNS.Core.Entities.Address? address
-function Client:GetWithId(id)
-	self:GetDNSServerAddressIfNeeded()
-
-	local request = ApiRequest('GET', 'AddressWithId', id)
-	local response = self.apiClient:Request(request)
-
-	if not response.WasSuccessfull then
-		return nil
-	end
-	return Address:Static__CreateFromData(response.Body)
+---@param networkClient Net.Core.NetworkClient
+function Client.Static_WaitForHeartbeat(networkClient)
+	networkClient:WaitForEvent('Heartbeat', 53)
 end
 
 ---@param networkClient Net.Core.NetworkClient
 ---@return string id
-function Client:Static__GetServerAddress(networkClient)
+function Client.Static__GetServerAddress(networkClient)
+	Client.Static_WaitForHeartbeat(networkClient)
 	local netPort = networkClient:CreateNetworkPort(53)
 
 	netPort:BroadCastMessage('GetDNSServerAddress', nil, nil)
@@ -123,6 +56,78 @@ function Client:Static__GetServerAddress(networkClient)
 	end
 	---@cast response Net.Core.NetworkContext
 	return response.Body
+end
+
+---@return string id
+function Client:RequestOrGetDNSServerIP()
+	if not self.apiClient then
+		self.networkClient:WaitForEvent('Heartbeat', 53)
+
+		local serverIPAddress = Client.Static__GetServerAddress(self.networkClient)
+		self.apiClient = ApiClient(serverIPAddress, 80, 80, self.networkClient, self.logger:subLogger('ApiClient'))
+	end
+
+	return self.apiClient.ServerIPAddress
+end
+
+---@private
+---@param request Net.Rest.Api.Request
+function Client:InternalRequest(request)
+	Client.Static_WaitForHeartbeat(self.networkClient)
+	self:RequestOrGetDNSServerIP()
+
+	return self.apiClient:Send(request)
+end
+
+---@param address string
+---@param id string
+---@return boolean success
+function Client:CreateAddress(address, id)
+	local createAddress = CreateAddress(address, id)
+
+	local request = ApiRequest('CREATE', 'Address', createAddress:ExtractData())
+	local response = self:InternalRequest(request)
+
+	if not response.WasSuccessfull then
+		return false
+	end
+	return response.Body
+end
+
+---@param address string
+---@return boolean success
+function Client:DeleteAddress(address)
+	local request = ApiRequest('DELETE', 'Address', address)
+	local response = self:InternalRequest(request)
+
+	if not response.WasSuccessfull then
+		return false
+	end
+	return response.Body
+end
+
+---@param address string
+---@return DNS.Core.Entities.Address? address
+function Client:GetWithAddress(address)
+	local request = ApiRequest('GET', 'AddressWithAddress', address)
+	local response = self:InternalRequest(request)
+
+	if not response.WasSuccessfull then
+		return nil
+	end
+	return Address:Static__CreateFromData(response.Body)
+end
+
+---@param id string
+---@return DNS.Core.Entities.Address? address
+function Client:GetWithId(id)
+	local request = ApiRequest('GET', 'AddressWithId', id)
+	local response = self:InternalRequest(request)
+
+	if not response.WasSuccessfull then
+		return nil
+	end
+	return Address:Static__CreateFromData(response.Body)
 end
 
 return Utils.Class.CreateClass(Client, 'DNS.Client')

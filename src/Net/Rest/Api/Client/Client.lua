@@ -29,7 +29,7 @@ end
 ---@param timeout integer?
 ---@return Net.Rest.Api.Response response
 function Client:Send(request, timeout)
-	self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, 'Rest-Request', request:ExtractData(), {ReturnPort = self.ReturnPort})
+	self.NetClient:Send(self.ServerIPAddress, self.ServerPort, 'Rest-Request', request:ExtractData(), {ReturnPort = self.ReturnPort})
 	local context = self.NetClient:WaitForEvent('Rest-Response', self.ReturnPort, timeout or 5)
 	if not context then
 		return Response(nil, {Code = 408})
