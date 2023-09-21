@@ -88,16 +88,21 @@ function NetworkClient:networkMessageRecieved(data)
 	end
 end
 
----@protected
 ---@param port integer | "all"
----@return Net.Core.NetworkPort
-function NetworkClient:GetOrCreateNetworkPort(port)
+---@return Net.Core.NetworkPort?
+function NetworkClient:GetNetworkPort(port)
 	for portNumber, networkPort in pairs(self.ports) do
 		if portNumber == port then
 			return networkPort
 		end
 	end
-	return self:CreateNetworkPort(port)
+	return nil
+end
+
+---@param port integer | "all"
+---@return Net.Core.NetworkPort
+function NetworkClient:GetOrCreateNetworkPort(port)
+	return self:GetNetworkPort(port) or self:CreateNetworkPort(port)
 end
 
 ---@param onRecivedEventName (string | "all")?
@@ -133,10 +138,11 @@ NetworkClient.Once = NetworkClient.AddListenerOnce
 function NetworkClient:CreateNetworkPort(port)
 	port = port or 'all'
 
-	local networkPort = self:GetOrCreateNetworkPort(port)
-	if networkPort ~= nil then
+	local networkPort = self:GetNetworkPort(port)
+	if networkPort then
 		return networkPort
 	end
+
 	networkPort = NetworkPort(port, self.Logger:subLogger('NetworkPort[' .. port .. ']'), self)
 	self.ports[port] = networkPort
 	return networkPort
