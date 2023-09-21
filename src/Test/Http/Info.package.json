@@ -6,7 +6,7 @@
     "Core",
     "DNS.Client",
     "DNS.Core",
-    "Http",
-    "Net.Core"
+    "Net.Core",
+    "Net.Http"
   ]
 }

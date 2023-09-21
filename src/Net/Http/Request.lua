@@ -1,4 +1,4 @@
-local Options = require('Http.RequestOptions')
+local Options = require('Net.Http.RequestOptions')
 
 ---@class Http.Request : object
 ---@field Method Net.Core.Method

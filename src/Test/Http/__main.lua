@@ -1,8 +1,8 @@
 local EventPullAdapter = require('Core.Event.EventPullAdapter')
 local NetworkClient = require('Net.Core.NetworkClient')
 local DNSClient = require('DNS.Client.Client')
-local HttpClient = require('Http.Client')
-local HttpRequest = require('Http.Request')
+local HttpClient = require('Net.Http.Client')
+local HttpRequest = require('Net.Http.Request')
 local Address = require('DNS.Core.Entities.Address.Address')
 
 ---@class Test.Http.Main : Github_Loading.Entities.Main

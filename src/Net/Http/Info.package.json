@@ -1,6 +1,6 @@
 {
   "Name": "Http",
-  "Namespace": "Http",
+  "Namespace": "Net.Http",
   "Version": "0.1.0-38",
   "RequiredPackages": [
     "Core",

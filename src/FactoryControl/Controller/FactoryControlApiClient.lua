@@ -1,17 +1,17 @@
-local RestApiNetworkClient = require('Net.Rest.Api.Client.Client')
-local RestApiRequest = require('Net.Rest.Api.Request')
+local ApiClient = require('Net.Rest.Api.Client.Client')
+local HttpRequest = require('Net.Rest.Api.Request')
 
----@class FactoryControl.Core.FactoryControlRestApiClient : object
+---@class FactoryControl.Controller.Client : object
 ---@field private restApiClient Net.Rest.Api.Client
 ---@field private logger Core.Logger
----@overload fun(netClient: Net.Core.NetworkClient, logger: Core.Logger) : FactoryControl.Core.FactoryControlRestApiClient
+---@overload fun(netClient: Net.Core.NetworkClient, logger: Core.Logger) : FactoryControl.Controller.Client
 local FactoryControlRestApiClient = {}
 
 ---@private
 ---@param netClient Net.Core.NetworkClient
 ---@param logger Core.Logger
 function FactoryControlRestApiClient:__init(netClient, logger)
-	self.restApiClient = RestApiNetworkClient(Config.ServerIPAddress, Config.ServerPort, 1111, netClient, self.logger:subLogger('RestApiClient'))
+	self.restApiClient = ApiClient(Config.ServerIPAddress, Config.ServerPort, 1111, netClient, self.logger:subLogger('RestApiClient'))
 end
 
 ---@private
@@ -21,7 +21,7 @@ end
 ---@param body any
 ---@return Net.Rest.Api.Response response
 function FactoryControlRestApiClient:request(method, endpoint, headers, body)
-	return self.restApiClient:Send(RestApiRequest(method, endpoint, headers, body))
+	return self.restApiClient:Send(HttpRequest(method, endpoint, headers, body))
 end
 
 ---@return boolean
@@ -30,4 +30,4 @@ function FactoryControlRestApiClient:CreateController()
 	return response.Body
 end
 
-return Utils.Class.CreateClass(FactoryControlRestApiClient, 'FactoryControlRestApiClient')
+return Utils.Class.CreateClass(FactoryControlRestApiClient, 'FactoryControl.Controller.Client')

@@ -1,8 +1,8 @@
 local NetworkClient = require('Net.Core.NetworkClient')
 local ApiClient = require('Net.Rest.Api.Client.Client')
 local DNSClient = require('DNS.Client.Client')
-local HttpRequest = require('Http.Request')
-local HttpResponse = require('Http.Response')
+local HttpRequest = require('Net.Http.Request')
+local HttpResponse = require('Net.Http.Response')
 local ApiRequest = require('Net.Rest.Api.Request')
 local ApiResponse = require('Net.Rest.Api.Response')
 
