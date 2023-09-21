@@ -8,13 +8,13 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
 
 ## Supported Module Modifiers
 
-- **---@namespace {moduleNamespace}** <- overrides the namespace of the module its in
-- **---@isRunnable {true|false}** <- overrides the IsRunnable mark of the module its in
+- **---@namespace {moduleNamespace}** -> overrides the namespace of the module its in
+- **---@isRunnable {true|false}** -> overrides the IsRunnable mark of the module its in
 
 ## Bundler Features
 ### Checks
 - **Packages** in [RequiredPackages](https://github.com/derFreemaker/Satisfactory/blob/05084fcd3c762d58193abb0072917733042324c6/PackageTemplate/Info.package.json#L5) exist
-- **require({module})** <- checks if module exists after a bundle would happen
+- **require({module})** -> checks if module exists after a bundle would happen
 - module exist only one at a **time**
 ### Autocorrection
 - adds missing package to [RequiredPackages](https://github.com/derFreemaker/Satisfactory/blob/05084fcd3c762d58193abb0072917733042324c6/PackageTemplate/Info.package.json#L5) of the package
@@ -47,13 +47,13 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
 
 ```ini
 ├── src
-|   ├── Info.package.json <- marks a package folder
-│   ├── __main.lua <- has main functions
-│   ├── __events.lua <- has event functions
-|   └── **/*.lua <- will be marked as runnable from bundler
+|   ├── Info.package.json -> marks the folder as package
+│   ├── __main.lua -> has main functions
+│   ├── __events.lua -> has event functions
+|   └── **/*.lua -> will be marked as runnable from bundler
 └── bundled Package
-    ├── Data.lua <- all modules of the package
-    └── Info.lua <- contains information about the package
+    ├── Data.lua -> all modules of the package
+    └── Info.lua -> contains information about the package
 ```
 
 ## Package Info File
