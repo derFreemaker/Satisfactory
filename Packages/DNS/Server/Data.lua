@@ -157,6 +157,7 @@ local RestApiController = require('Net.Rest.Api.Server.Controller')
 ---@field private eventPullAdapter Core.EventPullAdapter
 ---@field private apiController Net.Rest.Api.Server.Controller
 ---@field private netPort Net.Core.NetworkPort
+---@field private netClient Net.Core.NetworkClient
 ---@field private endpoints DNS.Endpoints
 local Main = {}
 
@@ -172,15 +173,15 @@ function Main:Configure()
 	self.eventPullAdapter = require('Core.Event.EventPullAdapter'):Initialize(self.Logger:subLogger('EventPullAdapter'))
 
 	local dnsLogger = self.Logger:subLogger('DNSServerAddress')
-	local netClient = NetworkClient(dnsLogger:subLogger('NetworkClient'))
-	self.netPort = netClient:CreateNetworkPort(53)
+	self.netClient = NetworkClient(dnsLogger:subLogger('NetworkClient'))
+	self.netPort = self.netClient:CreateNetworkPort(53)
 	self.netPort:AddListener('GetDNSServerAddress', Task(self.GetDNSServerAddress, self))
 	self.netPort:OpenPort()
 	self.Logger:LogDebug('setup Get DNS Server IP Address')
 
 	self.Logger:LogTrace('setting up DNS Server endpoints...')
 	local endpointLogger = self.Logger:subLogger('Endpoints')
-	local netPort = netClient:CreateNetworkPort(80)
+	local netPort = self.netClient:CreateNetworkPort(80)
 	self.apiController = RestApiController(netPort, endpointLogger:subLogger('ApiController'))
 	self.endpoints = DNSEndpoints(endpointLogger)
 	self.apiController:AddRestApiEndpointBase(self.endpoints)
@@ -190,7 +191,10 @@ end
 
 function Main:Run()
 	self.Logger:LogInfo('started DNS Server')
-	self.eventPullAdapter:Run()
+	while true do
+		self.netClient:BroadCast(53, 'Heartbeat')
+		self.eventPullAdapter:WaitForAll(3)
+	end
 end
 
 return Main

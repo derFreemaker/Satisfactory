@@ -30,10 +30,7 @@ end
 
 function Main:Run()
 	self.Logger:LogInfo('started server')
-	while true do
-		self.netClient:BroadCast(53, 'Heartbeat')
-		self.eventPullAdapter:WaitForAll(3)
-	end
+	self.eventPullAdapter:WaitForAll()
 end
 
 return Main
