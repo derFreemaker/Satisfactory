@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.wiaEemFb = {
+PackageData.XxLPBgcB = {
     Location = "Test.Http.__main",
     Namespace = "Test.Http.__main",
     IsRunnable = true,

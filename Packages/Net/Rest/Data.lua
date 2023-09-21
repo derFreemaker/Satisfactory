@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.llbxDAga = {
+PackageData.MBLIbtDA = {
     Location = "Net.Rest.Api.Extensions",
     Namespace = "Net.Core.NetworkContext.Api.Extensions",
     IsRunnable = true,
@@ -29,7 +29,7 @@ return Utils.Class.CreateClass(Extensions, 'Net.Core.NetworkContext.Api.Extensio
 ]]
 }
 
-PackageData.MBLIbtDA = {
+PackageData.nQvTynab = {
     Location = "Net.Rest.Api.Request",
     Namespace = "Net.Rest.Api.Request",
     IsRunnable = true,
@@ -68,7 +68,7 @@ return Utils.Class.CreateClass(Request, 'Net.Rest.Api.Request')
 ]]
 }
 
-PackageData.nQvTynab = {
+PackageData.OfgeWgyB = {
     Location = "Net.Rest.Api.Response",
     Namespace = "Net.Rest.Api.Response",
     IsRunnable = true,
@@ -108,7 +108,7 @@ return Utils.Class.CreateClass(Response, 'Net.Rest.Api.Response')
 ]]
 }
 
-PackageData.QKAARTsB = {
+PackageData.sZlLoNQb = {
     Location = "Net.Rest.Api.Client.Client",
     Namespace = "Net.Rest.Api.Client.Client",
     IsRunnable = true,
@@ -158,7 +158,7 @@ return Utils.Class.CreateClass(Client, 'Net.Rest.Api.Client')
 ]]
 }
 
-PackageData.sZlLoNQb = {
+PackageData.ToVXMGnB = {
     Location = "Net.Rest.Api.Server.Controller",
     Namespace = "Net.Rest.Api.Server.Controller",
     IsRunnable = true,
@@ -246,7 +246,7 @@ return Utils.Class.CreateClass(Controller, 'Net.Rest.Api.Server.Controller')
 ]]
 }
 
-PackageData.ToVXMGnB = {
+PackageData.uDGijAKb = {
     Location = "Net.Rest.Api.Server.Endpoint",
     Namespace = "Net.Rest.Api.Server.Endpoint",
     IsRunnable = true,
@@ -298,7 +298,7 @@ return Utils.Class.CreateClass(Endpoint, 'Net.Rest.Api.Server.Endpoint')
 ]]
 }
 
-PackageData.uDGijAKb = {
+PackageData.VTqtHthB = {
     Location = "Net.Rest.Api.Server.EndpointBase",
     Namespace = "Net.Rest.Api.Server.EndpointBase",
     IsRunnable = true,
@@ -357,7 +357,7 @@ return Utils.Class.CreateClass(EndpointBase, "Net.Rest.Api.Server.EndpointBase")
 ]]
 }
 
-PackageData.VTqtHthB = {
+PackageData.wiaEemFb = {
     Location = "Net.Rest.Api.Server.ResponseTemplates",
     Namespace = "Net.Rest.Api.Server.ResponseTemplates",
     IsRunnable = true,

@@ -1,10 +1,12 @@
 local PackageData = {}
 
-PackageData.FNBtqhTA = {
+PackageData.gclENara = {
     Location = "Net.Http.Client",
     Namespace = "Net.Http.Client",
     IsRunnable = true,
     Data = [[
+local PortUsage = require('Core.PortUsage')
+
 local NetworkClient = require('Net.Core.NetworkClient')
 local ApiClient = require('Net.Rest.Api.Client.Client')
 local DNSClient = require('DNS.Client.Client')
@@ -57,7 +59,7 @@ function HttpClient:Send(request)
 		return HttpResponse(ApiResponse(nil, {Code = 404}), request)
 	end
 
-	local apiClient = ApiClient(address, 80, 80, self.netClient, self.logger:subLogger('ApiClient'))
+	local apiClient = ApiClient(address, PortUsage.HTTP, PortUsage.HTTP, self.netClient, self.logger:subLogger('ApiClient'))
 
 	local apiRequest = ApiRequest(request.Method, request.Endpoint, request.Body, request.Options.Headers)
 	local apiResponse = apiClient:Send(apiRequest, request.Options.Timeout)
@@ -78,7 +80,7 @@ return Utils.Class.CreateClass(HttpClient, 'Http.HttpClient')
 ]]
 }
 
-PackageData.gclENara = {
+PackageData.HsWQlUOA = {
     Location = "Net.Http.Request",
     Namespace = "Net.Http.Request",
     IsRunnable = true,
@@ -111,7 +113,7 @@ return Utils.Class.CreateClass(HttpRequest, 'Http.HttpRequest')
 ]]
 }
 
-PackageData.HsWQlUOA = {
+PackageData.iHGbINla = {
     Location = "Net.Http.RequestOptions",
     Namespace = "Net.Http.RequestOptions",
     IsRunnable = true,
@@ -132,7 +134,7 @@ return Utils.Class.CreateClass(HttpRequestOptions, 'Http.HttpRequestOptions')
 ]]
 }
 
-PackageData.iHGbINla = {
+PackageData.JWqmgHIA = {
     Location = "Net.Http.Response",
     Namespace = "Net.Http.Response",
     IsRunnable = true,

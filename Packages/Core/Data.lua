@@ -810,6 +810,24 @@ return Utils.Class.CreateClass(Path, "Core.Path")
 }
 
 PackageData.dLNnyigy = {
+    Location = "Core.PortUsage",
+    Namespace = "Core.PortUsage",
+    IsRunnable = true,
+    Data = [[
+-- 0 .. 2^1023
+
+---@enum Core.PortUsage
+local PortUsage = {
+	Heartbeats = 10,
+	DNS = 53,
+	HTTP = 80
+}
+
+return PortUsage
+]]
+}
+
+PackageData.EaxyWcDY = {
     Location = "Core.Task",
     Namespace = "Core.Task",
     IsRunnable = true,
@@ -955,7 +973,7 @@ return Utils.Class.CreateClass(Task, "Core.Task")
 ]]
 }
 
-PackageData.fphJtVby = {
+PackageData.GFSURPyY = {
     Location = "Core.Event.Event",
     Namespace = "Core.Event.Event",
     IsRunnable = true,
@@ -1047,7 +1065,7 @@ return Utils.Class.CreateClass(Event, "Core.Event")
 ]]
 }
 
-PackageData.GFSURPyY = {
+PackageData.hUCfoIVy = {
     Location = "Core.Event.EventPullAdapter",
     Namespace = "Core.Event.EventPullAdapter",
     IsRunnable = true,

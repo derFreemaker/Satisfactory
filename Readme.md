@@ -17,7 +17,6 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
 
 - **Packages** in [RequiredPackages](https://github.com/derFreemaker/Satisfactory/blob/05084fcd3c762d58193abb0072917733042324c6/PackageTemplate/Info.package.json#L5) exist
 - **require({module})** -> checks if module exists after a bundle would happen
-- module exist only one at a **time**
 
 ### Autocorrection
 

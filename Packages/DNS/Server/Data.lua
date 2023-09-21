@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.oHMuZVFz = {
+PackageData.QXwFxOcZ = {
     Location = "DNS.Server.AddressDatabase",
     Namespace = "DNS.Server.AddressDatabase",
     IsRunnable = true,
@@ -75,7 +75,7 @@ return Utils.Class.CreateClass(AddressDatabase, "DNS.Server.AddressDatabase")
 ]]
 }
 
-PackageData.QXwFxOcZ = {
+PackageData.rmhQUIAz = {
     Location = "DNS.Server.Endpoints",
     Namespace = "DNS.Server.Endpoints",
     IsRunnable = true,
@@ -143,11 +143,13 @@ return Utils.Class.CreateClass(Endpoints, "DNS.Server.Endpoints", require("Net.R
 ]]
 }
 
-PackageData.rmhQUIAz = {
+PackageData.SBRbsBXZ = {
     Location = "DNS.Server.__main",
     Namespace = "DNS.Server.__main",
     IsRunnable = true,
     Data = [[
+local PortUsage = require('Core.PortUsage')
+
 local DNSEndpoints = require('DNS.Server.Endpoints')
 local NetworkClient = require('Net.Core.NetworkClient')
 local Task = require('Core.Task')
@@ -166,7 +168,7 @@ function Main:GetDNSServerAddress(context)
 	local netClient = self.netPort:GetNetClient()
 	local id = netClient:GetId()
 	self.Logger:LogDebug(context.SenderIPAddress .. ' requested DNS Server IP Address')
-	netClient:Send(context.SenderIPAddress, 53, 'ReturnDNSServerAddress', id)
+	netClient:Send(context.SenderIPAddress, PortUsage.DNS, 'ReturnDNSServerAddress', id)
 end
 
 function Main:Configure()
@@ -174,14 +176,14 @@ function Main:Configure()
 
 	local dnsLogger = self.Logger:subLogger('DNSServerAddress')
 	self.netClient = NetworkClient(dnsLogger:subLogger('NetworkClient'))
-	self.netPort = self.netClient:CreateNetworkPort(53)
+	self.netPort = self.netClient:CreateNetworkPort(PortUsage.DNS)
 	self.netPort:AddListener('GetDNSServerAddress', Task(self.GetDNSServerAddress, self))
 	self.netPort:OpenPort()
 	self.Logger:LogDebug('setup Get DNS Server IP Address')
 
 	self.Logger:LogTrace('setting up DNS Server endpoints...')
 	local endpointLogger = self.Logger:subLogger('Endpoints')
-	local netPort = self.netClient:CreateNetworkPort(80)
+	local netPort = self.netClient:CreateNetworkPort(PortUsage.HTTP)
 	self.apiController = RestApiController(netPort, endpointLogger:subLogger('ApiController'))
 	self.endpoints = DNSEndpoints(endpointLogger)
 	self.apiController:AddRestApiEndpointBase(self.endpoints)
@@ -192,7 +194,7 @@ end
 function Main:Run()
 	self.Logger:LogInfo('started DNS Server')
 	while true do
-		self.netClient:BroadCast(53, 'Heartbeat')
+		self.netClient:BroadCast(PortUsage.Heartbeats, 'DNS')
 		self.eventPullAdapter:WaitForAll(3)
 	end
 end

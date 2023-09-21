@@ -1,10 +1,12 @@
 local PackageData = {}
 
-PackageData.JjmrMBtY = {
+PackageData.kyXCjvQy = {
     Location = "DNS.Client.Client",
     Namespace = "DNS.Client.Client",
     IsRunnable = true,
     Data = [[
+local PortUsage = require('Core.PortUsage')
+
 local NetworkClient = require('Net.Core.NetworkClient')
 local ApiClient = require('Net.Rest.Api.Client.Client')
 local ApiRequest = require('Net.Rest.Api.Request')
@@ -34,14 +36,14 @@ end
 
 ---@param networkClient Net.Core.NetworkClient
 function Client.Static_WaitForHeartbeat(networkClient)
-	networkClient:WaitForEvent('Heartbeat', 53)
+	networkClient:WaitForEvent('DNS', PortUsage.Heartbeats)
 end
 
 ---@param networkClient Net.Core.NetworkClient
 ---@return string id
 function Client.Static__GetServerAddress(networkClient)
 	Client.Static_WaitForHeartbeat(networkClient)
-	local netPort = networkClient:CreateNetworkPort(53)
+	local netPort = networkClient:CreateNetworkPort(PortUsage.DNS)
 
 	netPort:BroadCastMessage('GetDNSServerAddress', nil, nil)
 	---@type Net.Core.NetworkContext?
@@ -61,10 +63,10 @@ end
 ---@return string id
 function Client:RequestOrGetDNSServerIP()
 	if not self.apiClient then
-		self.networkClient:WaitForEvent('Heartbeat', 53)
+		self.Static_WaitForHeartbeat(self.networkClient)
 
 		local serverIPAddress = Client.Static__GetServerAddress(self.networkClient)
-		self.apiClient = ApiClient(serverIPAddress, 80, 80, self.networkClient, self.logger:subLogger('ApiClient'))
+		self.apiClient = ApiClient(serverIPAddress, PortUsage.HTTP, PortUsage.HTTP, self.networkClient, self.logger:subLogger('ApiClient'))
 	end
 
 	return self.apiClient.ServerIPAddress

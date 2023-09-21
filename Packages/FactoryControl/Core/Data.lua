@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.UgmxnoSZ = {
+PackageData.vvWJKhpz = {
     Location = "FactoryControl.Core.Config",
     Namespace = "FactoryControl.Core.Config",
     IsRunnable = true,

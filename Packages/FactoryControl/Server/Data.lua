@@ -1,17 +1,18 @@
 local PackageData = {}
 
-PackageData.vvWJKhpz = {
+PackageData.XKHUhbMZ = {
     Location = "FactoryControl.Server.__main",
     Namespace = "FactoryControl.Server.__main",
     IsRunnable = true,
     Data = [[
+local Config = require('FactoryControl.Core.Config')
+local PortUsage = require('Core.PortUsage')
+
 local EventPullAdapter = require('Core.Event.EventPullAdapter')
 local NetworkClient = require('Net.Core.NetworkClient')
 local RestApiController = require('Net.Rest.Api.Server.Controller')
 local ControllerEndpoints = require('FactoryControl.Server.Endpoints.ControllerEndpoints')
 local DNSClient = require('DNS.Client.Client')
-
-local Config = require('FactoryControl.Core.Config')
 
 ---@class FactoryControl.Server.Main : Github_Loading.Entities.Main
 ---@field private eventPullAdapter Core.EventPullAdapter
@@ -24,7 +25,7 @@ function Main:Configure()
 	self.eventPullAdapter = EventPullAdapter:Initialize(self.Logger:subLogger('EventPullAdapter'))
 
 	self.netClient = NetworkClient(self.Logger:subLogger('NetworkClient'))
-	local netPort = self.netClient:CreateNetworkPort(80)
+	local netPort = self.netClient:CreateNetworkPort(PortUsage.HTTP)
 	netPort:OpenPort()
 	self.apiController = RestApiController(netPort, self.Logger:subLogger('RestApiController'))
 	self.apiController:AddRestApiEndpointBase(ControllerEndpoints())
@@ -44,7 +45,7 @@ return Main
 ]]
 }
 
-PackageData.yarfFUjz = {
+PackageData.ZpbqcOHZ = {
     Location = "FactoryControl.Server.Endpoints.ControllerEndpoints",
     Namespace = "FactoryControl.Server.Endpoints.ControllerEndpoints",
     IsRunnable = true,

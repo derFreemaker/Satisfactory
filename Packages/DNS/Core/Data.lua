@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.mdrYeiKz = {
+PackageData.NscjCbiZ = {
     Location = "DNS.Core.Entities.Address.Address",
     Namespace = "DNS.Core.Entities.Address.Address",
     IsRunnable = true,
@@ -43,7 +43,7 @@ return Utils.Class.CreateClass(Address, "DNS.Entities.Address")
 ]]
 }
 
-PackageData.NscjCbiZ = {
+PackageData.oHMuZVFz = {
     Location = "DNS.Core.Entities.Address.Create",
     Namespace = "DNS.Core.Entities.Address.Create",
     IsRunnable = true,

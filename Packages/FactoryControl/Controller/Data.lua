@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.SBRbsBXZ = {
+PackageData.tQCmPuuz = {
     Location = "FactoryControl.Controller.FactoryControlApiClient",
     Namespace = "FactoryControl.Controller.FactoryControlApiClient",
     IsRunnable = true,
@@ -41,7 +41,7 @@ return Utils.Class.CreateClass(FactoryControlRestApiClient, 'FactoryControl.Cont
 ]]
 }
 
-PackageData.tQCmPuuz = {
+PackageData.UgmxnoSZ = {
     Location = "FactoryControl.Controller.__main",
     Namespace = "FactoryControl.Controller.__main",
     IsRunnable = true,
