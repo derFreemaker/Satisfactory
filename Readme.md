@@ -74,7 +74,7 @@ The BuildNumber can only be an integer.
 
 ## Package Load Sequence
 
-1. download of the Package out of [Packages](https://github.com/derFreemaker/Satisfactory/blob/main/Packages/)
+1. download of the Package from [Packages](https://github.com/derFreemaker/Satisfactory/blob/main/Packages/)
 2. running events in module [__events.lua](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/__events.lua) of the Package
    - [OnLoaded](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/__events.lua#L4) function gets executed if it exists
 
