@@ -26,7 +26,7 @@
 				"focus": false,
 				"panel": "shared",
 				"showReuseMessage": true,
-				"clear": false
+				"clear": true
 			},
 			"runOptions": {
 				"runOn": "folderOpen",
@@ -57,9 +57,8 @@
 				"focus": false,
 				"panel": "shared",
 				"showReuseMessage": true,
-				"clear": false
-			},
-			"group": "test"
+				"clear": true
+			}
 		},
 		{
 			"label": "bundle All optimized",
@@ -84,14 +83,21 @@
 				"focus": false,
 				"panel": "shared",
 				"showReuseMessage": true,
-				"clear": false
-			},
-			"group": "build"
+				"clear": true
+			}
 		},
 		{
 			"label": "open FicsIt files",
 			"type": "shell",
-			"command": "code %localappdata%\\FactoryGame\\Saved\\SaveGames\\Computers"
+			"command": "code %localappdata%\\FactoryGame\\Saved\\SaveGames\\Computers",
+			"presentation": {
+				"echo": true,
+				"reveal": "never",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true
+			}
 		}
 	]
 }
