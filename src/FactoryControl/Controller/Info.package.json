@@ -7,5 +7,6 @@
     "FactoryControl.Core",
     "Net.Core",
     "Net.Rest"
-  ]
+  ],
+  "PackageType": "Library"
 }

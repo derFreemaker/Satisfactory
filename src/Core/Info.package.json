@@ -2,5 +2,6 @@
   "Name": "Core",
   "Namespace": "Core",
   "Version": "0.3.10-51",
-  "RequiredPackages": []
+  "RequiredPackages": [],
+  "PackageType": "Library"
 }

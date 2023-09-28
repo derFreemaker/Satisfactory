@@ -4,5 +4,6 @@
   "Version": "0.1-41",
   "RequiredPackages": [
     "Core"
-  ]
+  ],
+  "PackageType": "Library"
 }

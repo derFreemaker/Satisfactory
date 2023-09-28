@@ -8,5 +8,6 @@
     "DNS.Core",
     "Net.Core",
     "Net.Rest"
-  ]
+  ],
+  "PackageType": "Application"
 }
