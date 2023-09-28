@@ -13,10 +13,20 @@
 
 --- A reflection object representing a function.
 ---@class FicsIt_Networks.Components.Function : FicsIt_Networks.Components.ReflectionBase
----@field flags FicsIt_Networks.Components.Function.Flags The function bit flag register defining some behavior of it.
 local Function = {}
 
+--- The function bit flag register defining some behavior of it.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
+--- * Read Only - The value of this property can not be changed by code
+---@type FicsIt_Networks.Components.Function.Flags
+Function.flags = nil
+
 --- Returns all the parameters of this function.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
 ---@return FicsIt_Networks.Components.Property[] parameters The parameters of this functions.
 function Function:getParameters()
 end

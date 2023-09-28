@@ -5,6 +5,9 @@
 local ArrayProperty = {}
 
 --- Returns the inner type of this array
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
 ---@return FicsIt_Networks.Components.Property Inner The inner type of this array.
 function ArrayProperty:getInner()
 end

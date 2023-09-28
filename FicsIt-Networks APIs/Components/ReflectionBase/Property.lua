@@ -27,6 +27,20 @@
 
 --- A Reflection object that holds information about properties and parameters.
 ---@class FicsIt_Networks.Components.Property
----@field dataType FicsIt_Networks.Components.Property.DataType The data type of this property.
----@field flags FicsIt_Networks.Components.Property.Flags The property bit flag register defining some behaviour of it.
 local Property = {}
+
+--- The data type of this property.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
+--- * Read Only - The value of this property can not be changed by code
+---@type FicsIt_Networks.Components.Property.DataType
+Property.dataType = nil
+
+--- The property bit flag register defining some behaviour of it.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
+--- * Read Only - The value of this property can not be changed by code
+---@type FicsIt_Networks.Components.Property.Flags
+Property.flags = nil
