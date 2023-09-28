@@ -16,9 +16,7 @@ local NetworkClient = {}
 ---@param logger Core.Logger
 ---@param networkCard Adapter.Computer.NetworkCard?
 function NetworkClient:__init(logger, networkCard)
-	if networkCard == nil then
-		networkCard = NetworkCardAdapter(1)
-	end
+	networkCard = networkCard or NetworkCardAdapter(1)
 
 	self.Logger = logger
 	self.ports = {}
