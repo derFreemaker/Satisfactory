@@ -1,5 +1,4 @@
 ---@class Adapter.Pipeline.Valve : object
----@field private id FicsIt_Networks.UUID
 ---@field private valve FicsIt_Networks.Components.Factory.Build_Valve_C
 ---@overload fun(id: FicsIt_Networks.UUID, valve: FicsIt_Networks.Components.Factory.Build_Valve_C?)
 local Valve = {}
@@ -21,22 +20,19 @@ function Valve.Static__FindAllValvesInNetwork(groupName)
 end
 
 ---@private
----@param id FicsIt_Networks.UUID
----@param valve FicsIt_Networks.Components.Factory.Build_Valve_C?
-function Valve:__init(id, valve)
-	if valve == nil then
-		self.id = id
-		self.valve = component.proxy(id) --[[@as FicsIt_Networks.Components.Factory.Build_Valve_C]]
+---@param idOrValve FicsIt_Networks.UUID | FicsIt_Networks.Components.Factory.Build_Valve_C
+function Valve:__init(idOrValve)
+	if type(idOrValve) == 'string' then
+		self.valve = component.proxy(idOrValve) --[[@as FicsIt_Networks.Components.Factory.Build_Valve_C]]
 		return
 	end
-
-	self.id = id
-	self.valve = valve
+	---@cast idOrValve FicsIt_Networks.Components.Factory.Build_Valve_C
+	self.valve = idOrValve
 end
 
 ---@return FicsIt_Networks.UUID
 function Valve:GetId()
-	return self.id
+	return self.valve.id
 end
 
 --- Closes the valve so nothing goes through it anymore.

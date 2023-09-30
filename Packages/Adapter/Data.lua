@@ -6,7 +6,6 @@ PackageData.lqndKdvW = {
     IsRunnable = true,
     Data = [[
 ---@class Adapter.Computer.NetworkCard : object
----@field private id FicsIt_Networks.UUID
 ---@field private networkCard FicsIt_Networks.Components.FINComputerMod.NetworkCard_C
 ---@overload fun(idOrIndexOrNetworkCard: FicsIt_Networks.UUID | integer | FicsIt_Networks.Components.FINComputerMod.NetworkCard_C) : Adapter.Computer.NetworkCard
 local NetworkCard = {}
@@ -35,13 +34,7 @@ end
 
 ---@return FicsIt_Networks.UUID
 function NetworkCard:GetId()
-	if self.id then
-		return self.id
-	end
-
-	local splittedPrint = Utils.String.Split(tostring(self.networkCard), ' ')
-	self.id = splittedPrint[#splittedPrint] --{{{@as FicsIt_Networks.UUID}}}
-	return self.id
+	return self.networkCard.id
 end
 
 function NetworkCard:Listen()
@@ -85,7 +78,6 @@ PackageData.MFYoiWSx = {
     IsRunnable = true,
     Data = [[
 ---@class Adapter.Pipeline.Valve : object
----@field private id FicsIt_Networks.UUID
 ---@field private valve FicsIt_Networks.Components.Factory.Build_Valve_C
 ---@overload fun(id: FicsIt_Networks.UUID, valve: FicsIt_Networks.Components.Factory.Build_Valve_C?)
 local Valve = {}
@@ -107,22 +99,19 @@ function Valve.Static__FindAllValvesInNetwork(groupName)
 end
 
 ---@private
----@param id FicsIt_Networks.UUID
----@param valve FicsIt_Networks.Components.Factory.Build_Valve_C?
-function Valve:__init(id, valve)
-	if valve == nil then
-		self.id = id
-		self.valve = component.proxy(id) --{{{@as FicsIt_Networks.Components.Factory.Build_Valve_C}}}
+---@param idOrValve FicsIt_Networks.UUID | FicsIt_Networks.Components.Factory.Build_Valve_C
+function Valve:__init(idOrValve)
+	if type(idOrValve) == 'string' then
+		self.valve = component.proxy(idOrValve) --{{{@as FicsIt_Networks.Components.Factory.Build_Valve_C}}}
 		return
 	end
-
-	self.id = id
-	self.valve = valve
+	---@cast idOrValve FicsIt_Networks.Components.Factory.Build_Valve_C
+	self.valve = idOrValve
 end
 
 ---@return FicsIt_Networks.UUID
 function Valve:GetId()
-	return self.id
+	return self.valve.id
 end
 
 --- Closes the valve so nothing goes through it anymore.

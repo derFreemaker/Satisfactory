@@ -1,5 +1,4 @@
 ---@class Adapter.Computer.NetworkCard : object
----@field private id FicsIt_Networks.UUID
 ---@field private networkCard FicsIt_Networks.Components.FINComputerMod.NetworkCard_C
 ---@overload fun(idOrIndexOrNetworkCard: FicsIt_Networks.UUID | integer | FicsIt_Networks.Components.FINComputerMod.NetworkCard_C) : Adapter.Computer.NetworkCard
 local NetworkCard = {}
@@ -28,13 +27,7 @@ end
 
 ---@return FicsIt_Networks.UUID
 function NetworkCard:GetId()
-	if self.id then
-		return self.id
-	end
-
-	local splittedPrint = Utils.String.Split(tostring(self.networkCard), ' ')
-	self.id = splittedPrint[#splittedPrint] --[[@as FicsIt_Networks.UUID]]
-	return self.id
+	return self.networkCard.id
 end
 
 function NetworkCard:Listen()
