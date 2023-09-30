@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.zRIGgCOY = {
+PackageData.oVIzFPpX = {
     Location = "Core.Json",
     Namespace = "Core.Json",
     IsRunnable = true,
@@ -388,7 +388,7 @@ return json
 ]]
 }
 
-PackageData.agsRDvly = {
+PackageData.PksKdJNx = {
     Location = "Core.Logger",
     Namespace = "Core.Logger",
     IsRunnable = true,
@@ -586,7 +586,7 @@ return Utils.Class.CreateClass(Logger, 'Core.Logger')
 ]]
 }
 
-PackageData.CwccbpJY = {
+PackageData.qzdVACkX = {
     Location = "Core.Path",
     Namespace = "Core.Path",
     IsRunnable = true,
@@ -809,7 +809,7 @@ return Utils.Class.CreateClass(Path, "Core.Path")
 ]]
 }
 
-PackageData.dLNnyigy = {
+PackageData.RONgYwHx = {
     Location = "Core.PortUsage",
     Namespace = "Core.PortUsage",
     IsRunnable = true,
@@ -827,7 +827,7 @@ return PortUsage
 ]]
 }
 
-PackageData.EaxyWcDY = {
+PackageData.seyrvpeX = {
     Location = "Core.Task",
     Namespace = "Core.Task",
     IsRunnable = true,
@@ -973,7 +973,7 @@ return Utils.Class.CreateClass(Task, "Core.Task")
 ]]
 }
 
-PackageData.GFSURPyY = {
+PackageData.TtiCTjCx = {
     Location = "Core.Event.Event",
     Namespace = "Core.Event.Event",
     IsRunnable = true,
@@ -1065,7 +1065,7 @@ return Utils.Class.CreateClass(Event, "Core.Event")
 ]]
 }
 
-PackageData.hUCfoIVy = {
+PackageData.vISNqcZX = {
     Location = "Core.Event.EventPullAdapter",
     Namespace = "Core.Event.EventPullAdapter",
     IsRunnable = true,

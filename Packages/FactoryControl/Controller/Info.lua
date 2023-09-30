@@ -1,7 +1,7 @@
 return {
     Name = "FactoryControlController",
     Namespace = "FactoryControl.Controller",
-    Version = "0.1-40",
+    Version = "0.1-41",
     RequiredPackages = {
         "Core",
         "FactoryControl.Core",

@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.AEMBAHeA = {
+PackageData.kyXCjvQy = {
     Location = "Net.Core.Method",
     Namespace = "Net.Core.Method",
     IsRunnable = true,
@@ -23,11 +23,12 @@ return Methods
 ]]
 }
 
-PackageData.bTwMXABa = {
+PackageData.LOHNHonY = {
     Location = "Net.Core.NetworkClient",
     Namespace = "Net.Core.NetworkClient",
     IsRunnable = true,
     Data = [[
+local NetworkCardAdapter = require('Adapter.Computer.NetworkCard')
 local Json = require('Core.Json')
 local EventPullAdapter = require('Core.Event.EventPullAdapter')
 local Task = require('Core.Task')
@@ -35,41 +36,24 @@ local NetworkPort = require('Net.Core.NetworkPort')
 local NetworkContext = require('Net.Core.NetworkContext')
 
 ---@class Net.Core.NetworkClient : object
----@field private id string?
 ---@field private Logger Core.Logger
 ---@field private ports Dictionary<integer | "all", Net.Core.NetworkPort>
----@field private networkCard FicsIt_Networks.Components.FINComputerMod.NetworkCard
----@overload fun(logger: Core.Logger, networkCard: FicsIt_Networks.Components.FINComputerMod.NetworkCard?) : Net.Core.NetworkClient
+---@field private networkCard Adapter.Computer.NetworkCard
+---@overload fun(logger: Core.Logger, networkCard: Adapter.Computer.NetworkCard?) : Net.Core.NetworkClient
 local NetworkClient = {}
 
 ---@private
 ---@param logger Core.Logger
----@param networkCard FicsIt_Networks.Components.FINComputerMod.NetworkCard?
+---@param networkCard Adapter.Computer.NetworkCard?
 function NetworkClient:__init(logger, networkCard)
-	if networkCard == nil then
-		networkCard = computer.getPCIDevices(findClass('NetworkCard'))[1]
-		if networkCard == nil then
-			error('no networkCard was found')
-		end
-	end
+	networkCard = networkCard or NetworkCardAdapter(1)
 
 	self.Logger = logger
 	self.ports = {}
 	self.networkCard = networkCard
 
-	event.listen(networkCard)
+	networkCard:Listen()
 	EventPullAdapter:AddListener('NetworkMessage', Task(self.networkMessageRecieved, self))
-end
-
----@return string
-function NetworkClient:GetId()
-	if self.id then
-		return self.id
-	end
-
-	local splittedPrint = Utils.String.Split(tostring(self.networkCard), ' ')
-	self.id = splittedPrint[#splittedPrint]
-	return self.id
 end
 
 ---@private
@@ -170,18 +154,18 @@ end
 
 ---@param port integer
 function NetworkClient:Open(port)
-	self.networkCard:open(port)
+	self.networkCard:OpenPort(port)
 	self.Logger:LogTrace('opened Port: ' .. port)
 end
 
 ---@param port integer
 function NetworkClient:Close(port)
-	self.networkCard:close(port)
+	self.networkCard:ClosePort(port)
 	self.Logger:LogTrace('closed Port: ' .. port)
 end
 
 function NetworkClient:CloseAll()
-	self.networkCard:closeAll()
+	self.networkCard:CloseAllPorts()
 	self.Logger:LogTrace('closed all Ports')
 end
 
@@ -191,7 +175,7 @@ end
 ---@param body any
 ---@param header Dictionary<string, any>?
 function NetworkClient:Send(ipAddress, port, eventName, body, header)
-	self.networkCard:send(ipAddress, port, eventName, Json.encode(body), Json.encode(header or {}))
+	self.networkCard:Send(ipAddress, port, eventName, Json.encode(body), Json.encode(header or {}))
 end
 
 ---@param port integer
@@ -199,14 +183,14 @@ end
 ---@param body any
 ---@param header Dictionary<string, any>?
 function NetworkClient:BroadCast(port, eventName, body, header)
-	self.networkCard:broadcast(port, eventName, Json.encode(body), Json.encode(header or {}))
+	self.networkCard:BroadCast(port, eventName, Json.encode(body), Json.encode(header or {}))
 end
 
 return Utils.Class.CreateClass(NetworkClient, 'Core.Net.NetworkClient')
 ]]
 }
 
-PackageData.CjgXvuZA = {
+PackageData.mdrYeiKz = {
     Location = "Net.Core.NetworkContext",
     Namespace = "Net.Core.NetworkContext",
     IsRunnable = true,
@@ -240,7 +224,7 @@ return Utils.Class.CreateClass(NetworkContext, 'Core.Net.NetworkContext')
 ]]
 }
 
-PackageData.eyRiSnwa = {
+PackageData.NscjCbiZ = {
     Location = "Net.Core.NetworkPort",
     Namespace = "Net.Core.NetworkPort",
     IsRunnable = true,
@@ -378,7 +362,7 @@ return Utils.Class.CreateClass(NetworkPort, 'Core.Net.NetworkPort')
 ]]
 }
 
-PackageData.FNBtqhTA = {
+PackageData.oHMuZVFz = {
     Location = "Net.Core.StatusCodes",
     Namespace = "Net.Core.StatusCodes",
     IsRunnable = true,
