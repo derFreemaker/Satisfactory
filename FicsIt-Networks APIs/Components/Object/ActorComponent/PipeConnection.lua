@@ -1,83 +1,92 @@
 ---@meta
 
----@alias FicsIt_Networks.Components.ItemType.Form
----|1 Solid
----|2 Liquid
----|3 Gas
----|4 Heat
+--- A actor component base that is a connection point to which a pipe for fluid or hyper can get attached to.
+---@class FicsIt_Networks.Components.PipeConnection : FicsIt_Networks.Components.ActorComponent
+local PipeConnection = {}
 
---- The type of an item (iron plate, iron rod, leaves)
----@class FicsIt_Networks.Components.ItemType : FicsIt_Networks.Components.Object
-local ItemType = {}
-
---- The matter state of this resource.
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
---- * Read Only - The value of this property can not be changed by code
----@type FicsIt_Networks.Components.ItemType.Form
-ItemType.form = nil
-
---- How much energy this resource provides if used as fuel.
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
---- * Read Only - The value of this property can not be changed by code
----@type float
-ItemType.energy = nil
-
---- The amount of radiation this item radiates.
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
---- * Read Only - The value of this property can not be changed by code
----@type float
-ItemType.radioactiveDecay = nil
-
---- The name of the item.
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
---- * Read Only - The value of this property can not be changed by code
----@type string
-ItemType.name = nil
-
---- The description of this item.
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
---- * Read Only - The value of this property can not be changed by code
----@type string
-ItemType.description = nil
-
---- The maximum stack size of this item.
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
---- * Read Only - The value of this property can not be changed by code
----@type integer
-ItemType.max = nil
-
---- True if this item can be discarded.
+--- True if something is connected to this connection.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
 --- * Read Only - The value of this property can not be changed by code
 ---@type boolean
-ItemType.canBeDiscarded = nil
+PipeConnection.isConnected = nil
 
---- The category in which this item is in.
+--- Returns the amount of fluid this fluid container contains.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
 --- * Read Only - The value of this property can not be changed by code
----@type FicsIt_Networks.Components.ItemCategory
-ItemType.category = nil
+---@type float
+PipeConnection.fluidBoxConent = nil
 
---- The color of this fuild.
+--- Returns the height of this fluid container.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
 --- * Read Only - The value of this property can not be changed by code
----@type FicsIt_Networks.Components.Color
-ItemType.fluidColor = nil
+---@type float
+PipeConnection.fluidBoxHeight = nil
+
+--- Returns the laminar height of this fluid container.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
+--- * Read Only - The value of this property can not be changed by code
+---@type float
+PipeConnection.fluidBoxLaminarHeight = nil
+
+--- Returns the amount of fluid flowing through this fluid container.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
+--- * Read Only - The value of this property can not be changed by code
+---@type float
+PipeConnection.fluidBoxFlowThrough = nil
+
+--- Returns the fill rate of this fluid container.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
+--- * Read Only - The value of this property can not be changed by code
+---@type float
+PipeConnection.fluidBoxFlowFill = nil
+
+--- Returns the drain rate of this fluid container.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
+--- * Read Only - The value of this property can not be changed by code
+---@type float
+PipeConnection.fluidBoxFlowDrain = nil
+
+--- Returns the maximum flow limit of this fluid container.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
+--- * Read Only - The value of this property can not be changed by code
+---@type float
+PipeConnection.fluidBoxFlowLimit = nil
+
+--- Returns the network ID of the pipe network this connection is associated with.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
+--- * Read Only - The value of this property can not be changed by code
+---@type integer
+PipeConnection.networkID = nil
+
+--- Returns the item type of the fluid in this fluid container.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@return FicsIt_Networks.Components.ItemType fluidDescriptor The item type the fluid in this fluid container.
+function PipeConnection:getFluidDescriptor()
+end
+
+--- Flush the associated pipe network.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+function PipeConnection:flushPipeNetwork()
+end

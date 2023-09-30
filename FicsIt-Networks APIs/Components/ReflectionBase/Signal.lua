@@ -1,6 +1,5 @@
 ---@meta
 
---- # not a property only for documentation purposes
 --- A reflection object representing a signal.
 ---@class FicsIt_Networks.Components.Signal : FicsIt_Networks.Components.ReflectionBase
 local Signal = {}

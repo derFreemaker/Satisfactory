@@ -11,27 +11,30 @@ local Template
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
 --- * Read Only - The value of this property can not be changed by code
 ---@type any
-Template.X = nil
+Template.property = nil
 
 --- # Function
 --- Description
 --- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+--- * Variable Arguments - Can have any additional arguments as described.
 ---@param test any Description parameter 1
 ---@return any returnName Description return parameter
-function Template:test(test)
+function Template:functionTemplate(test)
 end
 
 --- # Signal
---- Triggers when the network card receives a network message on one of its opened ports. The additional arguments are the data that is contained within the network message.
+--- Description
 ---
 --- ### returns from event.pull:
 --- ```
 --- local signalName, component, test, ... = event.pull()
 --- ```
---- - `test: string` -> The component id of the sender of the network message.
---- - `...: any` -> addtional parameters
+--- - `signalName: string` <br> -> "Signal"
+--- - `component: Template` <br> -> The component wich send the signal.
+--- - `test: string` <br> -> description
+--- - `...: any` <br> -> addtional parameters
 ---@deprecated
 ---@type FicsIt_Networks.Components.Signal
-Template.NetworkMessage = {isVarArgs = true}
+Template.Signal = {isVarArgs = true}
