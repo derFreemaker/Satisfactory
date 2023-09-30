@@ -1,5 +1,5 @@
 return {
     Name = "Adapter",
     Namespace = "Adapter",
-    Version = "0.1.0-2",
+    Version = "0.1.0-3",
 }

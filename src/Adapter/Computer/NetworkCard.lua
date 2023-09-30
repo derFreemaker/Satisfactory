@@ -26,7 +26,7 @@ function NetworkCard:__init(idOrIndexOrNetworkCard)
 	self.networkCard = idOrIndexOrNetworkCard
 end
 
----@return string
+---@return FicsIt_Networks.UUID
 function NetworkCard:GetId()
 	if self.id then
 		return self.id

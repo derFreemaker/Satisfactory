@@ -17,7 +17,7 @@ end
 
 function Main:Run()
 	for _, valve in pairs(self.hotSteamValves) do
-		print(valve:GetFlowLimit())
+		log(valve:GetId(), valve:GetFlowLimit())
 	end
 end
 
