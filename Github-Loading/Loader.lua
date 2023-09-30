@@ -359,7 +359,9 @@ function Loader:LoadProgram(option, baseUrl, forceDownload)
 	PackageLoader:setGlobal()
 	self.Logger:LogDebug('setup PackageLoader')
 
-	PackageLoader:DownloadPackage('Core')
+	self.Logger:LogTrace('loading Core package...')
+	PackageLoader:LoadPackage('Core')
+	self.Logger:LogTrace('loaded Core package')
 
 	self.Logger:LogTrace('loading option package...')
 	local package = PackageLoader:LoadPackage(option.Url, forceDownload)

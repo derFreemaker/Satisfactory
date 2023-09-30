@@ -15,7 +15,7 @@ local programForceDownload = false
 -- to define any config variables
 Config = {}
 
-local BaseUrl = 'https://raw.githubusercontent.com/derFreemaker/Satisfactory/Http-Client'
+local BaseUrl = 'https://raw.githubusercontent.com/derFreemaker/Satisfactory/dev'
 
 local showDriveUUID = false
 
