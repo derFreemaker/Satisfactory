@@ -38,7 +38,7 @@ end
 
 function Main:Run()
 	self.Logger:LogInfo('started server')
-	self.eventPullAdapter:WaitForAll()
+	self.eventPullAdapter:Run()
 end
 
 return Main

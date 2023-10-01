@@ -89,6 +89,8 @@ function EventPullAdapter:WaitForAll(timeout)
 	end
 end
 
+--- Starts event pull loop
+--- ## will never return
 function EventPullAdapter:Run()
 	self.logger:LogDebug('## started event pull loop ##')
 	while true do
