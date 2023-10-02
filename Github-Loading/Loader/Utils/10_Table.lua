@@ -1,31 +1,30 @@
 ---@class Utils.Table
 local Table = {}
 
+---@param obj any?
+---@param seen any[]
+---@return any
+local function copyTable(obj, seen)
+    if obj == nil then return nil end
+    if seen[obj] then return seen[obj] end
+
+    local copy = {}
+    seen[obj] = copy
+    setmetatable(copy, copyTable(getmetatable(obj), seen))
+
+    for key, value in next, obj, nil do
+        key = (type(key) == "table") and copyTable(key, seen) or key
+        value = (type(value) == "table") and copyTable(value, seen) or value
+        rawset(copy, key, value)
+    end
+
+    return copy
+end
+
 ---@param t table
 ---@return table table
 function Table.Copy(t)
-    local seen = {}
-
-    ---@param obj any?
-    ---@return any
-    local function copyTable(obj)
-        if obj == nil then return nil end
-        if seen[obj] then return seen[obj] end
-
-        local copy = {}
-        seen[obj] = copy
-        setmetatable(copy, copyTable(getmetatable(obj)))
-
-        for key, value in next, obj, nil do
-            key = (type(key) == "table") and copyTable(key) or key
-            value = (type(value) == "table") and copyTable(value) or value
-            rawset(copy, key, value)
-        end
-
-        return copy
-    end
-
-    return copyTable(t)
+    return copyTable(t, {})
 end
 
 --- removes all margins like table[1] = "1", table[2] = nil, table[3] = "3" -> table[2] would be removed meaning table[3] would be table[2] now and so on. Removes no named values (table["named"]). And sets n to number of cleaned results. Should only be used on arrays really.

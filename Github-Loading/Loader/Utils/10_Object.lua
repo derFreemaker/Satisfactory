@@ -24,6 +24,8 @@
 ---@field protected __call (function)? self()
 ---@field protected __init (function)? constructor
 ---@field protected __gc (fun())? deconstructor
+---@field protected __index fun(class, key) : any
+---@field protected __newindex fun(class, key, value)
 
 ---@class object : Utils.Class.ObjectMetaMethods
 local Object = {}
@@ -36,10 +38,8 @@ function Object:GetType()
     return metatable.Type
 end
 
-
 local metatable = {
     Type = "object",
-    HasBaseClass = false,
     HasDeconstructor = false,
     HasConstructor = false,
     ConstructorState = 1,
