@@ -77,7 +77,7 @@ end
 
 ---@private
 function UUID:__newindex()
-    error("Core.UUID is completely read only")
+    error("Core.UUID is completely read only", 3)
 end
 
 ---@private
