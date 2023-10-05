@@ -5,7 +5,7 @@ local ValveAdapter = require('Adapter.Pipeline.Valve')
 local Main = {}
 
 function Main:Configure()
-	self.hotSteamValves = ValveAdapter.Static__FindAllValvesInNetwork()
+	self.hotSteamValves = ValveAdapter.Static__FindAllValvesInNetworkAndAddAdapter()
 end
 
 function Main:Run()

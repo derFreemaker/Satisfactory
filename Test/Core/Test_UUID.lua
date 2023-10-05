@@ -22,17 +22,17 @@ local function benchmarkFunction(func, amount)
 end
 
 function TestNewUUID()
-    benchmarkFunction(UUID.Static__New, 10000)
+    benchmarkFunction(UUID.Static__New, 100000)
 end
 
 function TestEmptyUUID()
-    benchmarkFunction(UUID.Static__Empty, 1000000)
+    benchmarkFunction(UUID.Static__Empty, 10000000)
 end
 
 function TestParseUUID()
     benchmarkFunction(function()
         UUID.Static__Parse("000000-0000-000000")
-    end, 10000)
+    end, 100000)
 end
 
 os.exit(luaunit.LuaUnit.run())

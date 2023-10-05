@@ -11,7 +11,7 @@ local String = LoadedLoaderFiles['/Github-Loading/Loader/Utils/String'][1]
 ---@type Utils.Table
 local Table = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Table'][1]
 
----@class Utils.Class.MetaMethods
+---@class Utils.old.Class.MetaMethods
 ---@field __init (fun(self: object, ...) : ...)?
 ---@field __call (fun(self: object, ...) : ...)?
 ---@field __gc fun(self: object)?
@@ -40,7 +40,7 @@ local Table = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Table'][1]
 ---@field __index fun(class, key) : any
 ---@field __newindex fun(class, key, value)
 
----@enum Utils.Class.ConstructorState
+---@enum Utils.old.Class.ConstructorState
 local ConstructorState = {
     Building = 0,
     Builded = 1,
@@ -48,11 +48,11 @@ local ConstructorState = {
     Finished = 3
 }
 
----@class Utils.Class.Metatable : Utils.Class.MetaMethods
+---@class Utils.old.Class.Metatable : Utils.old.Class.MetaMethods
 ---@field Type string
 ---@field Base object
 ---@field IsBaseClass boolean
----@field ConstructorState Utils.Class.ConstructorState
+---@field ConstructorState Utils.old.Class.ConstructorState
 ---@field HasConstructor boolean
 ---@field HasDeconstructor boolean
 ---@field MetaMethods Utils.Class.MetaMethods
@@ -63,7 +63,7 @@ local ConstructorState = {
 ---@field HasIndex boolean
 ---@field HasNewIndex boolean
 
----@class Utils.Class
+---@class Utils.old.Class
 local Class = {}
 Class.SearchValueInBase = {}
 
@@ -98,7 +98,7 @@ local metatableMethods = {
 }
 
 ---@param class table
----@param metatable Utils.Class.Metatable
+---@param metatable Utils.old.Class.Metatable
 ---@param key string
 ---@param value any
 local function hasStringKey(class, metatable, key, value)
@@ -126,7 +126,7 @@ local function hasStringKey(class, metatable, key, value)
 end
 
 ---@param class table
----@param metatable Utils.Class.Metatable
+---@param metatable Utils.old.Class.Metatable
 local function HideMembers(class, metatable)
     ---@diagnostic disable-next-line
     metatable.MetaMethods = {}
@@ -150,7 +150,7 @@ local function HideMembers(class, metatable)
 end
 
 ---@param class table
----@param metatable Utils.Class.Metatable
+---@param metatable Utils.old.Class.Metatable
 local function ShowMembers(class, metatable)
     for key, value in pairs(metatable.MetaMethods) do
         metatable[key] = value
@@ -169,7 +169,7 @@ local overrideMetaMethods = {
     '__ipairs',
     '__len'
 }
----@param metatable Utils.Class.Metatable
+---@param metatable Utils.old.Class.Metatable
 local function OverrideMetaMethods(metatable)
     for _, metaMethod in pairs(overrideMetaMethods) do
         if not metatable.MetaMethods[metaMethod] then
@@ -190,7 +190,7 @@ end
 ---@param class object
 ---@param key any
 local function index(class, key)
-    ---@type Utils.Class.Metatable
+    ---@type Utils.old.Class.Metatable
     local classMetatable = getmetatable(class)
     local value
     if classMetatable.HasIndex then
@@ -209,7 +209,7 @@ end
 ---@param class object
 ---@param key any
 local function NotConstructedIndex(class, key)
-    ---@type Utils.Class.Metatable
+    ---@type Utils.old.Class.Metatable
     local classMetatable = getmetatable(class)
 
     local staticProperty = classMetatable.StaticProperties[key]
@@ -230,12 +230,12 @@ local function NotConstructedIndex(class, key)
     error('cannot get values if class: ' .. classMetatable.Type .. ' was not constructed', 2)
 end
 
----@param metatable Utils.Class.Metatable
+---@param metatable Utils.old.Class.Metatable
 local function BlockIndex(metatable)
     metatable.__index = NotConstructedIndex
 end
 
----@param metatable Utils.Class.Metatable
+---@param metatable Utils.old.Class.Metatable
 local function UnBlockIndex(metatable)
     if metatable.HasIndex then
         metatable.__index = index
@@ -244,7 +244,7 @@ local function UnBlockIndex(metatable)
     metatable.__index = nil
 end
 
----@param metatable Utils.Class.Metatable
+---@param metatable Utils.old.Class.Metatable
 local function AddIndex(metatable)
     local __index = metatable.MetaMethods.__index
     if type(__index) == 'function' then
@@ -256,17 +256,17 @@ end
 
 ---@param class object
 local function NotConstructedNewIndex(class)
-    ---@type Utils.Class.Metatable
+    ---@type Utils.old.Class.Metatable
     local classMetatable = getmetatable(class)
     error('cannot assign values if class: ' .. classMetatable.Type .. ' was not constructed', 2)
 end
 
----@param metatable Utils.Class.Metatable
+---@param metatable Utils.old.Class.Metatable
 local function BlockNewIndex(metatable)
     metatable.__newindex = NotConstructedNewIndex
 end
 
----@param metatable Utils.Class.Metatable
+---@param metatable Utils.old.Class.Metatable
 local function UnBlockNewIndex(metatable)
     if metatable.HasNewIndex then
         metatable.__newindex = metatable.MetaMethods.__newindex
@@ -275,7 +275,7 @@ local function UnBlockNewIndex(metatable)
     metatable.__newindex = nil
 end
 
----@param metatable Utils.Class.Metatable
+---@param metatable Utils.old.Class.Metatable
 local function AddNewIndex(metatable)
     local __newindex = metatable.MetaMethods.__newindex
     if type(__newindex) == 'function' then
@@ -285,25 +285,25 @@ local function AddNewIndex(metatable)
     metatable.HasNewIndex = false
 end
 
----@param metatable Utils.Class.Metatable
+---@param metatable Utils.old.Class.Metatable
 local function Block(metatable)
     BlockIndex(metatable)
     BlockNewIndex(metatable)
 end
 
----@param metatable Utils.Class.Metatable
+---@param metatable Utils.old.Class.Metatable
 local function Free(metatable)
     metatable.__index = nil
     metatable.__newindex = nil
 end
 
----@param metatable Utils.Class.Metatable
+---@param metatable Utils.old.Class.Metatable
 local function UnBlock(metatable)
     UnBlockIndex(metatable)
     UnBlockNewIndex(metatable)
 end
 
----@param classMetatable Utils.Class.Metatable
+---@param classMetatable Utils.old.Class.Metatable
 ---@param baseClass object
 local function AddBaseClass(classMetatable, baseClass)
     classMetatable.Base = baseClass
@@ -317,7 +317,7 @@ end
 ---@param class TBaseClass
 ---@return TBaseClass
 local function CopyIfNotBaseClass(class)
-    ---@type Utils.Class.Metatable
+    ---@type Utils.old.Class.Metatable
     local classMetatable = getmetatable(class)
     if classMetatable.IsBaseClass then
         return class
@@ -325,7 +325,7 @@ local function CopyIfNotBaseClass(class)
     return Utils.Table.Copy(class)
 end
 
----@param metatable Utils.Class.Metatable
+---@param metatable Utils.old.Class.Metatable
 local function AddConstructor(metatable)
     ---@type fun(self: object, ...: any, base: object | nil)
     local constructor = metatable.MetaMethods.__init
@@ -334,7 +334,7 @@ local function AddConstructor(metatable)
     ---@param ... any
     local function construct(class, ...) ---@diagnostic disable-line: redefined-local
         class = CopyIfNotBaseClass(class)
-        ---@type Utils.Class.Metatable
+        ---@type Utils.old.Class.Metatable
         local classMetatable = getmetatable(class)
         classMetatable.__call = nil
         classMetatable.ConstructorState = ConstructorState.Running
@@ -343,7 +343,7 @@ local function AddConstructor(metatable)
         setmetatable(class, classMetatable)
 
         local baseClass = classMetatable.Base
-        ---@type Utils.Class.Metatable
+        ---@type Utils.old.Class.Metatable
         local baseClassMetatable = getmetatable(baseClass)
 
         if classMetatable.HasConstructor and baseClassMetatable.HasConstructor then
@@ -376,7 +376,7 @@ local function AddConstructor(metatable)
     end
 
     metatable.HasConstructor = false
-    ---@type Utils.Class.Metatable
+    ---@type Utils.old.Class.Metatable
     local baseClassMetatable = getmetatable(metatable.Base)
     if baseClassMetatable.HasConstructor then
         error(
@@ -386,7 +386,7 @@ local function AddConstructor(metatable)
     end
 end
 
----@param metatable Utils.Class.Metatable
+---@param metatable Utils.old.Class.Metatable
 local function AddDeconstructor(metatable)
     ---@type fun(class: object)?
     local deconstructor = metatable.MetaMethods.__gc
@@ -395,7 +395,7 @@ local function AddDeconstructor(metatable)
     local function deconstruct(class)
         ---@cast deconstructor fun(class: object)
 
-        ---@type Utils.Class.Metatable
+        ---@type Utils.old.Class.Metatable
         local classMetatable = getmetatable(class)
         classMetatable.__gc = nil
 
@@ -422,7 +422,7 @@ function Class.CreateClass(class, classType, baseClass)
     if not Class.HasClassOfType(baseClass, 'object') then
         error('base class argument is not a class', 2)
     end
-    ---@type Utils.Class.Metatable
+    ---@type Utils.old.Class.Metatable
     local classMetatable = getmetatable(class)
     if classMetatable == nil then
         ---@diagnostic disable-next-line
@@ -449,7 +449,7 @@ end
 ---@param classType string
 ---@return boolean hasClassOfType
 function Class.HasClassOfType(class, classType)
-    ---@type Utils.Class.Metatable
+    ---@type Utils.old.Class.Metatable
     local metatable = getmetatable(class)
     if metatable.Type == classType then
         return true
@@ -463,7 +463,7 @@ end
 ---@param class object
 ---@return object? base
 function Class.GetBaseClass(class)
-    ---@type Utils.Class.Metatable
+    ---@type Utils.old.Class.Metatable
     local classMetatable = getmetatable(class)
     return classMetatable.Base
 end

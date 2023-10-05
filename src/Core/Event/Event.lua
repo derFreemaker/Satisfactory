@@ -17,6 +17,7 @@ function Event:AddListener(task)
     table.insert(self.funcs, task)
     return self
 end
+
 Event.On = Event.AddListener
 
 ---@param task Core.Task
@@ -25,6 +26,7 @@ function Event:AddListenerOnce(task)
     table.insert(self.onceFuncs, task)
     return self
 end
+
 Event.Once = Event.AddListenerOnce
 
 ---@param logger Core.Logger?
@@ -63,9 +65,8 @@ function Event:Listeners()
     }
 end
 
----@private
 ---@return integer count
-function Event:__len()
+function Event:GetCount()
     return #self.funcs + #self.onceFuncs
 end
 

@@ -12,9 +12,13 @@ function Simulator:LoadLoaderFiles()
     self.loadedLoaderFiles["/Github-Loading/Loader/Utils/Object"] = { require("Github-Loading.Loader.Utils.10_Object") }
     self.loadedLoaderFiles["/Github-Loading/Loader/Utils/String"] = { require("Github-Loading.Loader.Utils.10_String") }
     self.loadedLoaderFiles["/Github-Loading/Loader/Utils/Table"] = { require("Github-Loading.Loader.Utils.10_Table") }
+    self.loadedLoaderFiles["/Github-Loading/Loader/Utils/Class/Metatable"] = {
+        loadfile("Github-Loading/Loader/Utils/Class/20_Metatable.lua")(self.loadedLoaderFiles) }
+    self.loadedLoaderFiles["/Github-Loading/Loader/Utils/Class/Construction"] = {
+        loadfile("Github-Loading/Loader/Utils/Class/30_Construction.lua")(self.loadedLoaderFiles) }
     self.loadedLoaderFiles["/Github-Loading/Loader/Utils/Class"] = {
-        loadfile("Github-Loading/Loader/Utils/20_Class.lua")(self.loadedLoaderFiles) }
-    Utils = loadfile("Github-Loading/Loader/Utils/30_Index.lua")(self.loadedLoaderFiles) --[[@as Utils]]
+        loadfile("Github-Loading/Loader/Utils/Class/50_Index.lua")(self.loadedLoaderFiles) }
+    Utils = loadfile("Github-Loading/Loader/Utils/100_Index.lua")(self.loadedLoaderFiles) --[[@as Utils]]
 
     -- //TODO: load other files
 end

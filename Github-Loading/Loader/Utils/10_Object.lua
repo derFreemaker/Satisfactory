@@ -42,20 +42,25 @@ local metatable = {
     Type = "object",
     HasDeconstructor = false,
     HasConstructor = false,
-    ConstructorState = 1,
-    __call = function(obj)
-        local metatable = getmetatable(obj)
+    ConstructorState = "waiting",
+    __call = function(self)
+        local metatable = getmetatable(self)
         metatable.__call = nil
-        metatable.ConstructorState = 2
+        metatable.ConstructorState = "running"
         for key, value in pairs(metatable.Functions) do
-            obj[key] = value
+            self[key] = value
         end
         for key, value in pairs(metatable.Properties) do
-            obj[key] = value
+            self[key] = value
         end
         metatable.Properties = nil
-        metatable.ConstructorState = 3
-        return obj
+        metatable.ConstructorState = "finished"
+        return self
+    end,
+    __gc = function(self)
+        local metatable = getmetatable(self)
+        metatable.__gc = nil
+        metatable.ConstructorState = "deconstructed"
     end,
     HiddenMembers = {},
     MetaMethods = {},

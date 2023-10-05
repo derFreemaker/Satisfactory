@@ -15,7 +15,15 @@ local function generateRandomChars(amount)
     ---@type number[]
     local chars = {}
     for i = 1, amount, 1 do
-        chars[i] = string.byte(string.format("%x", math.random(0, 0xf) or math.random(8, 0xb)))
+        local j = math.random(1, 3)
+
+        if j == 1 then
+            chars[i] = math.random(48, 57)
+        elseif j == 2 then
+            chars[i] = math.random(65, 90)
+        elseif j == 3 then
+            chars[i] = math.random(97, 122)
+        end
     end
     return chars
 end

@@ -41,7 +41,7 @@ function NetworkPort:Execute(context)
 		if name == context.EventName or name == 'all' then
 			event:Trigger(self.logger, context)
 		end
-		if #event == 0 then
+		if event:GetCount() == 0 then
 			self.events[name] = nil
 		end
 	end
@@ -69,6 +69,7 @@ function NetworkPort:AddListener(onRecivedEventName, listener)
 	event:AddListener(listener)
 	return self
 end
+
 NetworkPort.On = NetworkPort.AddListener
 
 ---@param onRecivedEventName string | "all"
@@ -79,6 +80,7 @@ function NetworkPort:AddListenerOnce(onRecivedEventName, listener)
 	event:AddListenerOnce(listener)
 	return self
 end
+
 NetworkPort.Once = NetworkPort.AddListenerOnce
 
 ---@param eventName string

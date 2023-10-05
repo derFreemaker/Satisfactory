@@ -22,7 +22,7 @@ end
 function TestCreateClass()
     benchmarkFunction(function()
         Utils.Class.CreateClass({}, "CreateEmpty")
-    end, 10000)
+    end, 100000)
 end
 
 local testClass = Utils.Class.CreateClass({}, "EmptyBaseClass")
@@ -30,11 +30,18 @@ local testClass = Utils.Class.CreateClass({}, "EmptyBaseClass")
 function TestCreateClassWithBaseClass()
     benchmarkFunction(function()
         Utils.Class.CreateClass({}, "CreateEmptyWithBaseClass", testClass)
-    end, 10000)
+    end, 100000)
 end
 
 function TestConstructClass()
-    benchmarkFunction(testClass --[[@as function]], 10000)
+    benchmarkFunction(testClass --[[@as function]], 100000)
+end
+
+function TestConstructAndDeconstructClass()
+    benchmarkFunction(function()
+        local class = testClass()
+        Utils.Class.Deconstruct(class)
+    end, 100000)
 end
 
 os.exit(luaunit.LuaUnit.run())

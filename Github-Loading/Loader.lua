@@ -5,26 +5,31 @@ local LoaderFiles = {
 		'Loader',
 		{
 			'Utils',
-			{'10_File.lua'},
-			{'10_Function.lua'},
-			{'10_Object.lua'},
-			{'10_String.lua'},
-			{'10_Table.lua'},
-			{'20_Class.lua'},
-			{'30_Index.lua'}
+			{
+				"Class",
+				{ "20_Metatable.lua" },
+				{ "30_Construction.lua" },
+				{ "50_Index.lua" }
+			},
+			{ '10_File.lua' },
+			{ '10_Function.lua' },
+			{ '10_Object.lua' },
+			{ '10_String.lua' },
+			{ '10_Table.lua' },
+			{ '100_Index.lua' }
 		},
-		{'10_ComputerLogger.lua'},
-		{'10_Entities.lua'},
-		{'10_Module.lua'},
-		{'10_Option.lua'},
-		{'40_Package.lua'},
-		{'50_Event.lua'},
-		{'50_Listener.lua'},
-		{'70_Logger.lua'},
-		{'100_PackageLoader.lua'}
+		{ '10_ComputerLogger.lua' },
+		{ '10_Entities.lua' },
+		{ '10_Module.lua' },
+		{ '10_Option.lua' },
+		{ '120_Event.lua' },
+		{ '120_Listener.lua' },
+		{ '120_Package.lua' },
+		{ '140_Logger.lua' },
+		{ '200_PackageLoader.lua' }
 	},
-	{'00_Options.lua'},
-	{'Version.latest.txt'}
+	{ '00_Options.lua' },
+	{ 'Version.latest.txt' }
 }
 
 ---@param url string
@@ -43,7 +48,7 @@ local function internalDownload(url, path, forceDownload, internetCard)
 	repeat
 	until req:canGet()
 	local code,
-		data = req:get()
+	data = req:get()
 	if code ~= 200 or data == nil then
 		return false
 	end
@@ -121,7 +126,8 @@ local function downloadFiles(loaderBaseUrl, loaderBasePath, forceDownload, inter
 		if path:find('Version.latest.txt') or path:find('00_Options.lua') then
 			downloadAnyway = true
 		end
-		assert(internalDownload(url, path, downloadAnyway or forceDownload, internetCard), "Unable to download file: '" .. path .. "'")
+		assert(internalDownload(url, path, downloadAnyway or forceDownload, internetCard),
+			"Unable to download file: '" .. path .. "'")
 		return true
 	end
 
@@ -173,7 +179,7 @@ local function loadFiles(loaderBasePath)
 				str = str .. buf
 			end
 			path = path:match('^(.+/.+)%..+$')
-			loadedLoaderFiles[path] = {str}
+			loadedLoaderFiles[path] = { str }
 			file:close()
 		end
 		return true
@@ -194,9 +200,9 @@ local function loadFiles(loaderBasePath)
 	table.sort(loadOrder)
 	for _, num in ipairs(loadOrder) do
 		for _, path in pairs(loadEntries[num]) do
-			local loadedFile = {filesystem.loadFile(loaderBasePath .. path)(loadedLoaderFiles)}
+			local loadedFile = { filesystem.loadFile(loaderBasePath .. path)(loadedLoaderFiles) }
 			local folderPath,
-				filename = path:match('^(.+)/%d+_(.+)%..+$')
+			filename = path:match('^(.+)/%d+_(.+)%..+$')
 			if filename == 'Index' then
 				loadedLoaderFiles[folderPath] = loadedFile
 			else
@@ -274,13 +280,14 @@ function Loader:setupLogger(logLevel)
 	self.Logger.OnClear:AddListener(Listener.new(clear))
 	___logger:setLogger(self.Logger)
 	self.Logger:Clear()
-	self.Logger:Log('###### LOG START: ' .. tostring(({computer.magicTime()})[2]) .. ' ######', 10)
+	self.Logger:Log('###### LOG START: ' .. tostring(({ computer.magicTime() })[2]) .. ' ######', 10)
 	self.Logger.OnLog:AddListener(Listener.new(logConsole))
 end
 
 ---@param logLevel Github_Loading.Logger.LogLevel
 function Loader:Load(logLevel)
-	assert(downloadFiles(self.loaderBaseUrl, self.loaderBasePath, self.forceDownload, self.internetCard), 'Unable to download loader Files')
+	assert(downloadFiles(self.loaderBaseUrl, self.loaderBasePath, self.forceDownload, self.internetCard),
+		'Unable to download loader Files')
 	self:LoadFiles()
 
 	---@type Utils
@@ -355,7 +362,8 @@ end
 function Loader:LoadProgram(option, baseUrl, forceDownload)
 	---@type Github_Loading.PackageLoader
 	local PackageLoader = self:Get('/Github-Loading/Loader/PackageLoader')
-	PackageLoader = PackageLoader.new(baseUrl .. '/Packages', self.loaderBasePath .. '/Packages', self.Logger:subLogger('PackageLoader'), self.internetCard)
+	PackageLoader = PackageLoader.new(baseUrl .. '/Packages', self.loaderBasePath .. '/Packages',
+		self.Logger:subLogger('PackageLoader'), self.internetCard)
 	PackageLoader:setGlobal()
 	self.Logger:LogDebug('setup PackageLoader')
 
@@ -394,8 +402,8 @@ function Loader:Configure(program, package, logLevel)
 	self.Logger:CopyListenersToCoreEvent(Task, program.Logger)
 	___logger:setLogger(program.Logger)
 	local thread,
-		success,
-		returns = Utils.Function.InvokeProtected(program.Configure, program)
+	success,
+	returns = Utils.Function.InvokeProtected(program.Configure, program)
 	if not success then
 		self.Logger:LogError(debug.traceback(thread, returns[1]))
 	end
@@ -412,8 +420,8 @@ function Loader:Run(program)
 	self.Logger:LogTrace('running program...')
 	___logger:setLogger(program.Logger)
 	local thread,
-		success,
-		returns = Utils.Function.InvokeProtected(program.Run, program)
+	success,
+	returns = Utils.Function.InvokeProtected(program.Run, program)
 	if not success then
 		self.Logger:LogError(debug.traceback(thread, returns[1]))
 	end

@@ -35,14 +35,14 @@ end
 ---@param data any[]
 function NetworkClient:networkMessageRecieved(data)
 	local context = NetworkContext(data)
-	self.Logger:LogDebug("recieved network message with event: '" .. context.EventName .. "' on port: '" .. context.Port .. "'")
+	self.Logger:LogDebug("recieved network message with event: '" ..
+		context.EventName .. "' on port: '" .. context.Port .. "'")
 	for i, port in pairs(self.ports) do
 		if port.Port == context.Port or port.Port == 'all' then
 			port:Execute(context)
 		end
 		if port:GetEventsCount() == 0 then
 			port:ClosePort()
-			self.ports[i] = nil
 		end
 	end
 end
@@ -76,6 +76,7 @@ function NetworkClient:AddListener(onRecivedEventName, onRecivedPort, listener)
 	networkPort:AddListener(onRecivedEventName, listener)
 	return networkPort
 end
+
 NetworkClient.On = NetworkClient.AddListener
 
 ---@param onRecivedEventName string | "all"
@@ -90,6 +91,7 @@ function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listen
 	networkPort:AddListenerOnce(onRecivedEventName, listener)
 	return networkPort
 end
+
 NetworkClient.Once = NetworkClient.AddListenerOnce
 
 ---@param port (integer | "all")?
