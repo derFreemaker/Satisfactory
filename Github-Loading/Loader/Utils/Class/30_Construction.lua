@@ -44,8 +44,8 @@ end
 ---@param ... any
 local function construct(class, ...)
     class = Table.Copy(class)
-    ---@type Utils.Class.Metatable
     local classMetatable = getmetatable(class)
+
     classMetatable.__call = nil
     classMetatable.ConstructionState = "running"
     Metatable.FreeMetaMethods(classMetatable)

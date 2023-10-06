@@ -170,6 +170,7 @@ local Metatable = {}
 ---@param metatable Utils.Class.Metatable
 function Metatable.Prepare(class, metatable)
     SortMetaMethods(class, metatable)
+    return class, metatable
 end
 
 ---@param metatable Utils.Class.Metatable
@@ -208,6 +209,8 @@ function Metatable.BlockMetaMethods(metatable)
         error('cannot assign values if class: ' .. type .. ' was not constructed', 2)
     end
     metatable.__newindex = NotConstructedNewIndex
+
+    return metatable
 end
 
 ---@param metatable Utils.Class.Metatable

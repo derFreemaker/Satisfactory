@@ -1,5 +1,6 @@
 local math = math
 local string = string
+local random = math.random
 
 ---@class Core.UUID : object
 ---@field private head number[]
@@ -15,14 +16,14 @@ local function generateRandomChars(amount)
     ---@type number[]
     local chars = {}
     for i = 1, amount, 1 do
-        local j = math.random(1, 3)
+        local j = random(1, 3)
 
         if j == 1 then
-            chars[i] = math.random(48, 57)
+            chars[i] = random(48, 57)
         elseif j == 2 then
-            chars[i] = math.random(65, 90)
+            chars[i] = random(65, 90)
         elseif j == 3 then
-            chars[i] = math.random(97, 122)
+            chars[i] = random(97, 122)
         end
     end
     return chars
@@ -30,7 +31,7 @@ end
 
 ---@return Core.UUID
 function UUID.Static__New()
-    math.randomseed()
+    math.randomseed(os.time())
     local head = generateRandomChars(6)
     local body = generateRandomChars(4)
     local tail = generateRandomChars(6)

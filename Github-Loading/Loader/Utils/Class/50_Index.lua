@@ -22,17 +22,18 @@ Class.SearchValueInBase = SearchValueInBase
 ---@param baseClass TBaseClass?
 ---@return TClass
 function Class.CreateClass(class, classType, baseClass)
-    baseClass = baseClass or Object
-    if not Class.HasClassOfType(baseClass, 'object') then
+    if baseClass == nil then
+        baseClass = Object
+    elseif not Class.HasClassOfType(baseClass, 'object') then
         error('base class argument is not a class', 2)
     end
     baseClass = Table.Copy(baseClass) -- //TODO: find new way of constructing class wich is faster and does not use Table.Copy
+
     ---@type Utils.Class.Metatable
     local classMetatable = getmetatable(class)
     if classMetatable == nil then
         ---@diagnostic disable-next-line
         classMetatable = {}
-        setmetatable(class, classMetatable)
     end
 
     classMetatable.Type = classType
@@ -56,7 +57,7 @@ function Class.HasClassOfType(class, classType)
     if metatable.Type == classType then
         return true
     end
-    if metatable.Type == 'object' then
+    if metatable.Type == "object" then
         return false
     end
     return Class.HasClassOfType(metatable.Base, classType)
