@@ -1,6 +1,6 @@
 local LoadedLoaderFiles = ({ ... })[1]
 ---@type Utils.Class.Modifier.Metatable
-local Metatable = LoadedLoaderFiles["/Github-Loading/Loader/Utils/Class/Metatable"][1]
+local Metatable = LoadedLoaderFiles["/Github-Loading/Loader/Utils/Old/Class/Metatable"][1]
 ---@type Utils.Table
 local Table = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Table'][1]
 

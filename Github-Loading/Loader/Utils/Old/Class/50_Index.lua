@@ -3,13 +3,11 @@ local LoadedLoaderFiles = ({ ... })[1]
 local Object = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Object'][1]
 ---@type Utils.Table
 local Table = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Table'][1]
-local _MetatableModifier = LoadedLoaderFiles["/Github-Loading/Loader/Utils/Class/Metatable"]
----@type Utils.Class.Modifier.Metatable
-local MetatableModifier = _MetatableModifier[1]
----@type table
-local SearchValueInBase = _MetatableModifier[2]
+local _MetatableModifier = LoadedLoaderFiles["/Github-Loading/Loader/Utils/Old/Class/Metatable"]
+---@type Utils.Class.Modifier.Metatable, table
+local MetatableModifier, SearchValueInBase = _MetatableModifier[1], _MetatableModifier[2]
 ---@type Utils.Class.Construction
-local Construction = LoadedLoaderFiles["/Github-Loading/Loader/Utils/Class/Construction"][1]
+local Construction = LoadedLoaderFiles["/Github-Loading/Loader/Utils/Old/Class/Construction"][1]
 
 ---@class Utils.Class
 local Class = {}
@@ -30,11 +28,7 @@ function Class.CreateClass(class, classType, baseClass)
     baseClass = Table.Copy(baseClass) -- //TODO: find new way of constructing class wich is faster and does not use Table.Copy
 
     ---@type Utils.Class.Metatable
-    local classMetatable = getmetatable(class)
-    if classMetatable == nil then
-        ---@diagnostic disable-next-line
-        classMetatable = {}
-    end
+    local classMetatable = getmetatable(class) or {}
 
     classMetatable.Type = classType
     classMetatable.ConstructionState = "constructing"

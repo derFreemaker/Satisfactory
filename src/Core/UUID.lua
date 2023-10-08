@@ -96,7 +96,7 @@ function UUID:__eq(other)
     if type(other) ~= "table" or not other.GetType or other:GetType() ~= "Core.UUID" then
         local typeString = type(other)
         if type(other) == "table" and other.GetType then
-            typeString = other:GetType()
+            typeString = other:GetType().Name
         end
         error("wrong argument #2: (Core.UUID expected; got " .. typeString .. ")")
         return false

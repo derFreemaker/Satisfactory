@@ -10,10 +10,12 @@
     "findItem",
     "log"
   ],
-  "Lua.completion.autoRequire": false,
+  "Lua.completion.autoRequire": true,
   "triggerTaskOnSave.tasks": {
     "check all": [
       "*"
     ],
-  }
+  },
+  "lua.targetVersion": "5.3",
+  "Lua.hint.setType": true
 }

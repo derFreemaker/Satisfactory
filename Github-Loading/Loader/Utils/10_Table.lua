@@ -4,17 +4,16 @@ local Table = {}
 ---@param obj any?
 ---@param seen any[]
 ---@return any
-local function copyTable(obj, seen)
+local function copyTable(obj, copy, seen)
     if obj == nil then return nil end
     if seen[obj] then return seen[obj] end
 
-    local copy = {}
     seen[obj] = copy
-    setmetatable(copy, copyTable(getmetatable(obj), seen))
+    setmetatable(copy, copyTable(getmetatable(obj), {}, seen))
 
     for key, value in next, obj, nil do
-        key = (type(key) == "table") and copyTable(key, seen) or key
-        value = (type(value) == "table") and copyTable(value, seen) or value
+        key = (type(key) == "table") and copyTable(key, {}, seen) or key
+        value = (type(value) == "table") and copyTable(value, {}, seen) or value
         rawset(copy, key, value)
     end
 
@@ -24,7 +23,21 @@ end
 ---@param t table
 ---@return table table
 function Table.Copy(t)
-    return copyTable(t, {})
+    return copyTable(t, {}, {})
+end
+
+---@param from table
+---@param to table
+function Table.CopyTo(from, to)
+    copyTable(from, to, {})
+end
+
+---@param t table
+function Table.Clear(t)
+    for key, _ in pairs(t) do
+        t[key] = nil
+    end
+    setmetatable(t, nil)
 end
 
 ---@param t table
@@ -41,11 +54,10 @@ end
 
 ---@param t table
 ---@param key any
+---@return boolean
 function Table.ContainsKey(t, key)
-    for tKey, _ in pairs(t) do
-        if tKey == key then
-            return true
-        end
+    if t[key] ~= nil then
+        return true
     end
     return false
 end

@@ -1,4 +1,4 @@
-local LoadedLoaderFiles = ({...})[1]
+local LoadedLoaderFiles = ({ ... })[1]
 
 ---@class Utils
 local Utils = {}
@@ -27,7 +27,7 @@ function Utils.Download(url, internetCard, logger)
 	repeat
 	until req:canGet()
 	local code,
-		data = req:get()
+	data = req:get()
 	if code ~= 200 or data == nil then
 		return false, nil
 	end
@@ -51,7 +51,7 @@ function Utils.DownloadToFile(url, path, forceDownload, internetCard, logger)
 		return true
 	end
 	local success,
-		data = Utils.Download(url, internetCard, logger)
+	data = Utils.Download(url, internetCard, logger)
 	if not success or not data then
 		return false
 	end
@@ -76,7 +76,7 @@ Utils.String = LoadedLoaderFiles['/Github-Loading/Loader/Utils/String'][1]
 ---@type Utils.Table
 Utils.Table = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Table'][1]
 
----@type Utils.Class
-Utils.Class = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class'][1]
+---@type Utils.new.Class
+Utils.Class = LoadedLoaderFiles['/Github-Loading/Loader/Utils/New/Class'][1]
 
 return Utils
