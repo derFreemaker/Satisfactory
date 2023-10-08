@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.agsRDvly = {
+PackageData.CwccbpJY = {
     Location = "DNS.Server.AddressDatabase",
     Namespace = "DNS.Server.AddressDatabase",
     IsRunnable = true,
@@ -75,7 +75,7 @@ return Utils.Class.CreateClass(AddressDatabase, "DNS.Server.AddressDatabase")
 ]]
 }
 
-PackageData.CwccbpJY = {
+PackageData.dLNnyigy = {
     Location = "DNS.Server.Endpoints",
     Namespace = "DNS.Server.Endpoints",
     IsRunnable = true,
@@ -143,7 +143,7 @@ return Utils.Class.CreateClass(Endpoints, "DNS.Server.Endpoints", require("Net.R
 ]]
 }
 
-PackageData.dLNnyigy = {
+PackageData.EaxyWcDY = {
     Location = "DNS.Server.__main",
     Namespace = "DNS.Server.__main",
     IsRunnable = true,

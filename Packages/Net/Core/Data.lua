@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.kyXCjvQy = {
+PackageData.LOHNHonY = {
     Location = "Net.Core.Method",
     Namespace = "Net.Core.Method",
     IsRunnable = true,
@@ -23,7 +23,7 @@ return Methods
 ]]
 }
 
-PackageData.LOHNHonY = {
+PackageData.mdrYeiKz = {
     Location = "Net.Core.NetworkClient",
     Namespace = "Net.Core.NetworkClient",
     IsRunnable = true,
@@ -65,14 +65,14 @@ end
 ---@param data any[]
 function NetworkClient:networkMessageRecieved(data)
 	local context = NetworkContext(data)
-	self.Logger:LogDebug("recieved network message with event: '" .. context.EventName .. "' on port: '" .. context.Port .. "'")
+	self.Logger:LogDebug("recieved network message with event: '" ..
+		context.EventName .. "' on port: '" .. context.Port .. "'")
 	for i, port in pairs(self.ports) do
 		if port.Port == context.Port or port.Port == 'all' then
 			port:Execute(context)
 		end
 		if port:GetEventsCount() == 0 then
 			port:ClosePort()
-			self.ports[i] = nil
 		end
 	end
 end
@@ -106,6 +106,7 @@ function NetworkClient:AddListener(onRecivedEventName, onRecivedPort, listener)
 	networkPort:AddListener(onRecivedEventName, listener)
 	return networkPort
 end
+
 NetworkClient.On = NetworkClient.AddListener
 
 ---@param onRecivedEventName string | "all"
@@ -120,6 +121,7 @@ function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listen
 	networkPort:AddListenerOnce(onRecivedEventName, listener)
 	return networkPort
 end
+
 NetworkClient.Once = NetworkClient.AddListenerOnce
 
 ---@param port (integer | "all")?
@@ -195,7 +197,7 @@ return Utils.Class.CreateClass(NetworkClient, 'Core.Net.NetworkClient')
 ]]
 }
 
-PackageData.mdrYeiKz = {
+PackageData.NscjCbiZ = {
     Location = "Net.Core.NetworkContext",
     Namespace = "Net.Core.NetworkContext",
     IsRunnable = true,
@@ -229,7 +231,7 @@ return Utils.Class.CreateClass(NetworkContext, 'Core.Net.NetworkContext')
 ]]
 }
 
-PackageData.NscjCbiZ = {
+PackageData.oHMuZVFz = {
     Location = "Net.Core.NetworkPort",
     Namespace = "Net.Core.NetworkPort",
     IsRunnable = true,
@@ -277,7 +279,7 @@ function NetworkPort:Execute(context)
 		if name == context.EventName or name == 'all' then
 			event:Trigger(self.logger, context)
 		end
-		if #event == 0 then
+		if event:GetCount() == 0 then
 			self.events[name] = nil
 		end
 	end
@@ -305,6 +307,7 @@ function NetworkPort:AddListener(onRecivedEventName, listener)
 	event:AddListener(listener)
 	return self
 end
+
 NetworkPort.On = NetworkPort.AddListener
 
 ---@param onRecivedEventName string | "all"
@@ -315,6 +318,7 @@ function NetworkPort:AddListenerOnce(onRecivedEventName, listener)
 	event:AddListenerOnce(listener)
 	return self
 end
+
 NetworkPort.Once = NetworkPort.AddListenerOnce
 
 ---@param eventName string
@@ -367,7 +371,7 @@ return Utils.Class.CreateClass(NetworkPort, 'Core.Net.NetworkPort')
 ]]
 }
 
-PackageData.oHMuZVFz = {
+PackageData.QXwFxOcZ = {
     Location = "Net.Core.StatusCodes",
     Namespace = "Net.Core.StatusCodes",
     IsRunnable = true,

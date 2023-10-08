@@ -83,7 +83,7 @@ PackageData.MFYoiWSx = {
 local Valve = {}
 
 ---@param groupName string?
----@return Adapter.Pipeline.Valve[]
+---@return FicsIt_Networks.UUID[]
 function Valve.Static__FindAllValvesInNetwork(groupName)
 	local valveIds = {}
 	if groupName == nil then
@@ -91,6 +91,13 @@ function Valve.Static__FindAllValvesInNetwork(groupName)
 	else
 		valveIds = component.findComponent(groupName)
 	end
+	return valveIds
+end
+
+---@param groupName string?
+---@return Adapter.Pipeline.Valve[]
+function Valve.Static__FindAllValvesInNetworkAndAddAdapter(groupName)
+	local valveIds = Valve.Static__FindAllValvesInNetwork(groupName)
 	local valveAdapters = {}
 	for _, valveId in ipairs(valveIds) do
 		table.insert(valveAdapters, Valve(valveId))

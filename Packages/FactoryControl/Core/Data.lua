@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.GFSURPyY = {
+PackageData.hUCfoIVy = {
     Location = "FactoryControl.Core.Config",
     Namespace = "FactoryControl.Core.Config",
     IsRunnable = true,

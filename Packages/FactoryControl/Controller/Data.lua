@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.EaxyWcDY = {
+PackageData.fphJtVby = {
     Location = "FactoryControl.Controller.FactoryControlApiClient",
     Namespace = "FactoryControl.Controller.FactoryControlApiClient",
     IsRunnable = true,
@@ -41,7 +41,7 @@ return Utils.Class.CreateClass(FactoryControlRestApiClient, 'FactoryControl.Cont
 ]]
 }
 
-PackageData.fphJtVby = {
+PackageData.GFSURPyY = {
     Location = "FactoryControl.Controller.__main",
     Namespace = "FactoryControl.Controller.__main",
     IsRunnable = true,

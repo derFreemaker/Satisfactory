@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.UgmxnoSZ = {
+PackageData.vvWJKhpz = {
     Location = "Net.Rest.Api.Extensions",
     Namespace = "Net.Core.NetworkContext.Api.Extensions",
     IsRunnable = true,
@@ -29,7 +29,7 @@ return Utils.Class.CreateClass(Extensions, 'Net.Core.NetworkContext.Api.Extensio
 ]]
 }
 
-PackageData.vvWJKhpz = {
+PackageData.XKHUhbMZ = {
     Location = "Net.Rest.Api.Request",
     Namespace = "Net.Rest.Api.Request",
     IsRunnable = true,
@@ -68,7 +68,7 @@ return Utils.Class.CreateClass(Request, 'Net.Rest.Api.Request')
 ]]
 }
 
-PackageData.XKHUhbMZ = {
+PackageData.yarfFUjz = {
     Location = "Net.Rest.Api.Response",
     Namespace = "Net.Rest.Api.Response",
     IsRunnable = true,
@@ -108,7 +108,7 @@ return Utils.Class.CreateClass(Response, 'Net.Rest.Api.Response')
 ]]
 }
 
-PackageData.yarfFUjz = {
+PackageData.ZpbqcOHZ = {
     Location = "Net.Rest.Api.Client.Client",
     Namespace = "Net.Rest.Api.Client.Client",
     IsRunnable = true,
@@ -158,7 +158,7 @@ return Utils.Class.CreateClass(Client, 'Net.Rest.Api.Client')
 ]]
 }
 
-PackageData.ZpbqcOHZ = {
+PackageData.AEMBAHeA = {
     Location = "Net.Rest.Api.Server.Controller",
     Namespace = "Net.Rest.Api.Server.Controller",
     IsRunnable = true,
@@ -246,7 +246,7 @@ return Utils.Class.CreateClass(Controller, 'Net.Rest.Api.Server.Controller')
 ]]
 }
 
-PackageData.AEMBAHeA = {
+PackageData.bTwMXABa = {
     Location = "Net.Rest.Api.Server.Endpoint",
     Namespace = "Net.Rest.Api.Server.Endpoint",
     IsRunnable = true,
@@ -298,66 +298,69 @@ return Utils.Class.CreateClass(Endpoint, 'Net.Rest.Api.Server.Endpoint')
 ]]
 }
 
-PackageData.bTwMXABa = {
+PackageData.CjgXvuZA = {
     Location = "Net.Rest.Api.Server.EndpointBase",
     Namespace = "Net.Rest.Api.Server.EndpointBase",
     IsRunnable = true,
     Data = [[
-local RestApiResponseTemplates = require("Net.Rest.Api.Server.ResponseTemplates")
+local RestApiResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 
 ---@class Net.Rest.Api.Server.EndpointBase : object
----@field protected Templates Core.RestApi.Server.RestApiEndpointBase.RestApiResponseTemplates
+---@field protected Templates Core.Rest.Api.Server.EndpointBase.ResponseTemplates
 local EndpointBase = {}
 
 ---@return fun(self: object, key: any) : key: any, value: any
 ---@return Net.Rest.Api.Server.EndpointBase tbl
 ---@return any startPoint
 function EndpointBase:__pairs()
-    local function iterator(tbl, key)
-        local newKey, value = next(tbl, key)
-        if type(newKey) == "string" and type(value) == "function" then
-            return newKey, value
-        end
-        if newKey == nil and value == nil then
-            return nil, nil
-        end
-        return iterator(tbl, newKey)
-    end
-    return iterator, self, nil
+	local function iterator(tbl, key)
+		local newKey,
+			value = next(tbl, key)
+		if type(newKey) == 'string' and type(value) == 'function' then
+			return newKey, value
+		end
+		if newKey == nil and value == nil then
+			return nil, nil
+		end
+		return iterator(tbl, newKey)
+	end
+	return iterator, self, nil
 end
 
----@class Core.RestApi.Server.RestApiEndpointBase.RestApiResponseTemplates
-EndpointBase.Templates = {}
+---@class Core.Rest.Api.Server.EndpointBase.ResponseTemplates
+local Templates = {}
 
 ---@param value any
 ---@return Net.Rest.Api.Response
-function EndpointBase.Templates:Ok(value)
-    return RestApiResponseTemplates.Ok(value)
+function Templates:Ok(value)
+	return RestApiResponseTemplates.Ok(value)
 end
 
 ---@param message string
 ---@return Net.Rest.Api.Response
-function EndpointBase.Templates:BadRequest(message)
-    return RestApiResponseTemplates.BadRequest(message)
+function Templates:BadRequest(message)
+	return RestApiResponseTemplates.BadRequest(message)
 end
 
 ---@param message string
 ---@return Net.Rest.Api.Response
-function EndpointBase.Templates:NotFound(message)
-    return RestApiResponseTemplates.NotFound(message)
+function Templates:NotFound(message)
+	return RestApiResponseTemplates.NotFound(message)
 end
 
 ---@param message string
 ---@return Net.Rest.Api.Response
-function EndpointBase.Templates:InternalServerError(message)
-    return RestApiResponseTemplates.InternalServerError(message)
+function Templates:InternalServerError(message)
+	return RestApiResponseTemplates.InternalServerError(message)
 end
 
-return Utils.Class.CreateClass(EndpointBase, "Net.Rest.Api.Server.EndpointBase")
+EndpointBase.Templates = Templates
+
+return Utils.Class.CreateClass(EndpointBase, 'Net.Rest.Api.Server.EndpointBase')
 ]]
 }
 
-PackageData.CjgXvuZA = {
+PackageData.eyRiSnwa = {
     Location = "Net.Rest.Api.Server.ResponseTemplates",
     Namespace = "Net.Rest.Api.Server.ResponseTemplates",
     IsRunnable = true,

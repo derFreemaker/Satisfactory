@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.hUCfoIVy = {
+PackageData.JjmrMBtY = {
     Location = "FactoryControl.Server.__main",
     Namespace = "FactoryControl.Server.__main",
     IsRunnable = true,
@@ -45,13 +45,11 @@ return Main
 ]]
 }
 
-PackageData.JjmrMBtY = {
+PackageData.kyXCjvQy = {
     Location = "FactoryControl.Server.Endpoints.ControllerEndpoints",
     Namespace = "FactoryControl.Server.Endpoints.ControllerEndpoints",
     IsRunnable = true,
     Data = [[
-local RestApiEndpointBase = require('Net.Rest.Api.Server.EndpointBase')
-
 ---@class FactoryControl.Server.Endpoints.ControllerEndpoints : Net.Rest.Api.Server.EndpointBase
 local ControllerEndpoints = {}
 
@@ -61,7 +59,8 @@ function ControllerEndpoints:CREATE__Controller(request)
 	return self.Templates:Ok(true)
 end
 
-return Utils.Class.CreateClass(ControllerEndpoints, 'FactoryControl.Server.ControllerEndpoints', RestApiEndpointBase)
+return Utils.Class.CreateClass(ControllerEndpoints, 'FactoryControl.Server.ControllerEndpoints',
+	require('Net.Rest.Api.Server.EndpointBase'))
 ]]
 }
 
