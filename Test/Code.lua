@@ -1,4 +1,4 @@
-require('Test.Simulator')
+require('Test.Simulator.Simulator')
 
 local UUID = require('Core.UUID')
 

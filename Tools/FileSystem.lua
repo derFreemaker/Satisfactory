@@ -1,14 +1,23 @@
 ---@class Tools.FileSystem
 local FileSystem = {}
 
-local debugTemp = { paths = {} }
+---@param path1 string
+---@param path2 string
+---@return string path
+function FileSystem.Path(path1, path2)
+	if path2 == "/" then
+		return path1
+	end
+	if path2:find("/") ~= 1 then
+		return path1 .. "/" .. path2
+	end
+	return path1 .. path2
+end
 
 ---@param path string
 ---@param mode openmode
 ---@return file*
 function FileSystem.OpenFile(path, mode)
-	table.insert(debugTemp.paths, { Function = "OpenFile", Path = path })
-
 	local file = io.open(path, mode)
 	if not file then
 		error('unable to open file: ' .. path)
@@ -50,8 +59,6 @@ end
 ---@param path string
 ---@return string[]
 function FileSystem.GetDirectories(path)
-	table.insert(debugTemp.paths, { Function = "GetDirectories", Path = path })
-
 	local command = 'dir "' .. path .. '" /ad /b'
 	local result = io.popen(command)
 	if not result then
@@ -68,8 +75,6 @@ end
 ---@param path string
 ---@return string[]
 function FileSystem.GetFiles(path)
-	table.insert(debugTemp.paths, { Function = "GetFiles", Path = path })
-
 	local command = 'dir "' .. path .. '" /a-d /b'
 	local result = io.popen(command)
 	if not result then
@@ -81,14 +86,6 @@ function FileSystem.GetFiles(path)
 		table.insert(children, line)
 	end
 	return children
-end
-
-function FileSystem.ThrowDebug()
-	local errorMsg = "\n"
-	for _, value in pairs(debugTemp.paths) do
-		errorMsg = errorMsg .. value.Function .. " -> " .. value.Path .. "\n"
-	end
-	error(errorMsg)
 end
 
 return FileSystem

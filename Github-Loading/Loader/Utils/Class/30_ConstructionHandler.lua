@@ -1,23 +1,25 @@
-local LoadedLoaderFiles = ({...})[1]
+local LoadedLoaderFiles = ({ ... })[1]
 ---@type Utils.Table
 local Table = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Table'][1]
----@type Utils.new.Class.MetatableHandler, table
 local MetatableHandler,
-	metaMethods = table.unpack(LoadedLoaderFiles['/Github-Loading/Loader/Utils/New/Class/MetatableHandler'])
+metaMethods = table.unpack(LoadedLoaderFiles
+	['/Github-Loading/Loader/Utils/Class/MetatableHandler'])
+---@cast MetatableHandler Utils.Class.MetatableHandler
+---@cast metaMethods table
 
----@class Utils.new.Class.ConstructionHandler
+---@class Utils.Class.ConstructionHandler
 local ConstructionHandler = {}
 
----@param obj Utils.new.Class
+---@param obj object
 local function construct(obj, ...)
-	---@type Utils.new.Class.Metatable
+	---@type Utils.Class.Metatable
 	local metatable = getmetatable(obj)
 	local typeInfo = metatable.Type
 
 	local class,
-		classMetatable = {}, {}
+	classMetatable = {}, {}
 	---@cast class table
-	---@cast classMetatable Utils.new.Class.Metatable
+	---@cast classMetatable Utils.Class.Metatable
 
 	MetatableHandler.CreateMetatable(typeInfo, classMetatable)
 	ConstructionHandler.ConstructClass(typeInfo, class, classMetatable, ...)
@@ -25,9 +27,9 @@ local function construct(obj, ...)
 	return class
 end
 
----@param typeInfo Utils.new.Class.Type
+---@param typeInfo Utils.Class.Type
 ---@param class table
----@param classMetatable Utils.new.Class.Metatable
+---@param classMetatable Utils.Class.Metatable
 ---@param ... any
 function ConstructionHandler.ConstructClass(typeInfo, class, classMetatable, ...)
 	---@type function
@@ -70,9 +72,9 @@ function ConstructionHandler.ConstructClass(typeInfo, class, classMetatable, ...
 	end
 end
 
----@param typeInfo Utils.new.Class.Type
+---@param typeInfo Utils.Class.Type
 ---@param data table
----@return Utils.new.Class template
+---@return Utils.Class template
 function ConstructionHandler.ConstructTemplate(typeInfo, data)
 	Table.Clear(data)
 

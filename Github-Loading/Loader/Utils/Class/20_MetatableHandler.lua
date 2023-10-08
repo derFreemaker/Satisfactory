@@ -4,11 +4,12 @@ local String = LoadedLoaderFiles['/Github-Loading/Loader/Utils/String'][1]
 ---@type Utils.Table
 local Table = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Table'][1]
 
----@class Utils.new.Class.Metatable : Utils.new.Class.MetaMethods
----@field Type Utils.new.Class.Type
+---@class Utils.Class.Metatable : Utils.Class.MetaMethods
+---@field Type Utils.Class.Type
 
 ---@type Dictionary<string, boolean>
 local metaMethods = {
+    __gc = true,
     __call = true,
     __tostring = true,
     __add = true,
@@ -66,12 +67,12 @@ local function writeToNewIndex(t, func)
     setmetatable(t, metatable)
 end
 
----@class Utils.new.Class.MetatableHandler
+---@class Utils.Class.MetatableHandler
 local MetatableHandler = {}
 
----@return Utils.new.Class.Metatable templateMetatable
+---@return Utils.Class.Metatable templateMetatable
 function MetatableHandler.CreateTemplateMetatable(typeInfo)
-    ---@type Utils.new.Class.Metatable
+    ---@type Utils.Class.Metatable
     local metatable = { Type = typeInfo }
 
     ---@param obj object
@@ -122,12 +123,12 @@ function MetatableHandler.CreateTemplateMetatable(typeInfo)
     return metatable
 end
 
----@param typeInfo Utils.new.Class.Type
----@param metatable Utils.new.Class.Metatable
+---@param typeInfo Utils.Class.Type
+---@param metatable Utils.Class.Metatable
 function MetatableHandler.CreateMetatable(typeInfo, metatable)
     metatable.Type = typeInfo
 
-    ---@param obj Utils.new.Class
+    ---@param obj Utils.Class
     ---@param key any
     ---@return any value
     local function index(obj, key)
@@ -176,7 +177,7 @@ function MetatableHandler.CreateMetatable(typeInfo, metatable)
     end
 end
 
----@param typeInfo Utils.new.Class.Type
+---@param typeInfo Utils.Class.Type
 function MetatableHandler.LockMetatables(typeInfo)
     writeToNewIndex(typeInfo, blockedNewIndex)
     writeToNewIndex(typeInfo.Members, blockedNewIndex)
@@ -184,4 +185,4 @@ function MetatableHandler.LockMetatables(typeInfo)
     writeToNewIndex(typeInfo.Static, letOnlyStaticNamesThrough_NewIndex)
 end
 
-return MetatableHandler, metaMethods, overrideMetaMethods
+return MetatableHandler, metaMethods, overrideMetaMethods, blockedNewIndex

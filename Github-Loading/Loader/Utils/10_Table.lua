@@ -33,9 +33,15 @@ function Table.CopyTo(from, to)
 end
 
 ---@param t table
-function Table.Clear(t)
-    for key, _ in pairs(t) do
-        t[key] = nil
+---@param ignoreProperties string[]?
+function Table.Clear(t, ignoreProperties)
+    if not ignoreProperties then
+        ignoreProperties = {}
+    end
+    for key, _ in next, t, nil do
+        if not Table.Contains(ignoreProperties, key) then
+            t[key] = nil
+        end
     end
     setmetatable(t, nil)
 end

@@ -30,7 +30,7 @@ local function preloadFile(loadEntries, loadOrder, loadedLoaderFiles, path)
 			str = str .. buf
 		end
 		path = path:match('^(.+/.+)%..+$')
-		loadedLoaderFiles[path:gsub(CurrentPath, '')] = {str}
+		loadedLoaderFiles[path:gsub(CurrentPath, '')] = { str }
 		file:close()
 	end
 end
@@ -54,31 +54,7 @@ local Simulator = {}
 
 ---@private
 function Simulator:LoadLoaderFiles()
-	---@type string[][]
-	local loadEntries = {}
-	---@type integer[]
-	local loadOrder = {}
-	---@type Dictionary<string, any[]>
-	local loadedLoaderFiles = {}
-
-	preloadDirectory(loadEntries, loadOrder, loadedLoaderFiles, CurrentPath .. '/Github-Loading/Loader')
-
-	table.sort(loadOrder)
-	for _, num in ipairs(loadOrder) do
-		for _, path in pairs(loadEntries[num]) do
-			local loadedFile = {loadfile(path)(loadedLoaderFiles)}
-			local folderPath,
-				filename = path:match('^(.+)/%d+_(.+)%..+$')
-			folderPath = folderPath:gsub('%' .. CurrentPath, '')
-			if filename == 'Index' then
-				loadedLoaderFiles[folderPath] = loadedFile
-			else
-				loadedLoaderFiles[folderPath .. '/' .. filename] = loadedFile
-			end
-		end
-	end
-
-	self.loadedLoaderFiles = loadedLoaderFiles
+	self.loadedLoaderFiles = require("Test.Simulator.LoadFiles")(CurrentPath)
 end
 
 local requireFunc = require
@@ -106,15 +82,14 @@ function Simulator:Prepare()
 	Utils = self.loadedLoaderFiles['/Github-Loading/Loader/Utils'][1] --[[@as Utils]]
 end
 
-local temp = {...}
+local temp = { ... }
 
 ---@return Test.Simulator
 function Simulator:Initialize()
-	CurrentPath = FileSystem.GetCurrentDirectory():gsub("/Test", "")
+	local simulatorPath = FileSystem.GetCurrentDirectory()
+	CurrentPath = simulatorPath:gsub("/Test/Simulator", "")
 
 	self:Prepare()
-
-	FileSystem.ThrowDebug()
 
 	return self
 end

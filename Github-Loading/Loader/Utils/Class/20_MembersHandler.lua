@@ -1,10 +1,10 @@
-local LoadedLoaderFiles = ({...})[1]
+local LoadedLoaderFiles = ({ ... })[1]
 ---@type Utils.String
 local String = LoadedLoaderFiles['/Github-Loading/Loader/Utils/String'][1]
 ---@type Utils.Table
 local Table = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Table'][1]
 
----@class Utils.new.Class.MetaMethods
+---@class Utils.Class.MetaMethods
 ---@field __init (fun(self: object, ...))? self(...) before construction
 ---@field __gc fun(self: object)? Class.Deconstruct(self) or garbageCollection
 ---@field __call (fun(self: object, ...) : ...)? self(...) after construction
@@ -64,7 +64,7 @@ local metaMethods = {
 	__le = true
 }
 
----@param typeInfo Utils.new.Class.Type
+---@param typeInfo Utils.Class.Type
 ---@param name string
 ---@param func function
 local function isNormalFunction(typeInfo, name, func)
@@ -76,7 +76,7 @@ local function isNormalFunction(typeInfo, name, func)
 	typeInfo.Members[name] = func
 end
 
----@param typeInfo Utils.new.Class.Type
+---@param typeInfo Utils.Class.Type
 ---@param name string
 ---@param value any
 local function isNormalMember(typeInfo, name, value)
@@ -86,14 +86,14 @@ local function isNormalMember(typeInfo, name, value)
 	end
 end
 
----@param typeInfo Utils.new.Class.Type
+---@param typeInfo Utils.Class.Type
 ---@param name string
 ---@param value any
 local function isStaticMember(typeInfo, name, value)
 	typeInfo.Static[name] = value
 end
 
----@param typeInfo Utils.new.Class.Type
+---@param typeInfo Utils.Class.Type
 ---@param key any
 ---@param value any
 local function sortMember(typeInfo, key, value)
@@ -111,11 +111,11 @@ local function sortMember(typeInfo, key, value)
 	typeInfo.Members[key] = value
 end
 
----@class Utils.new.Class.MembersHandler
+---@class Utils.Class.MembersHandler
 local MembersHandler = {}
 
 ---@param data table
----@param typeInfo Utils.new.Class.Type
+---@param typeInfo Utils.Class.Type
 function MembersHandler.SortMembers(data, typeInfo)
 	typeInfo.Static = {}
 	typeInfo.MetaMethods = {}

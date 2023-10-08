@@ -1,4 +1,4 @@
-local LoadedLoaderFiles = ({...})[1]
+local LoadedLoaderFiles = ({ ... })[1]
 ---@type Utils.String
 local String = LoadedLoaderFiles['/Github-Loading/Loader/Utils/String'][1]
 ---@type Utils.Table
@@ -67,9 +67,9 @@ local metaMethods = {
 ---@class object : Utils.Class.ObjectMetaMethods
 local Object = {}
 
----@return Utils.new.Class.Type
+---@return Utils.Class.Type
 function Object:GetType()
-	---@type Utils.new.Class.Metatable
+	---@type Utils.Class.Metatable
 	local metatable = getmetatable(self)
 	return metatable.Type
 end
@@ -80,7 +80,7 @@ function Object:__tostring()
 end
 
 local typeInfo = {}
----@cast typeInfo Utils.new.Class.Type
+---@cast typeInfo Utils.Class.Type
 
 typeInfo.Name = 'object'
 

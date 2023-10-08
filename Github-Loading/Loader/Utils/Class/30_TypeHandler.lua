@@ -1,14 +1,14 @@
-local LoadedLoaderFiles = ({...})[1]
----@type Utils.new.Class.Type
-local ObjectTypeInfo = LoadedLoaderFiles['/Github-Loading/Loader/Utils/New/Class/Object'][1]
+local LoadedLoaderFiles = ({ ... })[1]
+---@type Utils.Class.Type
+local ObjectTypeInfo = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/Object'][1]
 
----@class Utils.new.Class.Type
+---@class Utils.Class.Type
 ---@field Name string
----@field Base Utils.new.Class.Type
+---@field Base Utils.Class.Type
 ---
 ---@field Static table
 ---
----@field MetaMethods Utils.new.Class.MetaMethods
+---@field MetaMethods Utils.Class.MetaMethods
 ---@field Members Dictionary<string, any>
 ---
 ---
@@ -17,18 +17,18 @@ local ObjectTypeInfo = LoadedLoaderFiles['/Github-Loading/Loader/Utils/New/Class
 ---@field HasIndex boolean
 ---@field HasNewIndex boolean
 
----@class Utils.new.Class.TypeHandler
+---@class Utils.Class.TypeHandler
 local TypeHandler = {}
 
 ---@param name string
 ---@param baseClass object?
----@return Utils.new.Class.Type
+---@return Utils.Class.Type
 function TypeHandler.CreateType(name, baseClass)
-	local typeInfo = {Name = name}
-	---@cast typeInfo Utils.new.Class.Type
+	local typeInfo = { Name = name }
+	---@cast typeInfo Utils.Class.Type
 
 	if baseClass then
-		---@type Utils.new.Class.Metatable
+		---@type Utils.Class.Metatable
 		local baseClassMetatable = getmetatable(baseClass)
 		typeInfo.Base = baseClassMetatable.Type
 	else

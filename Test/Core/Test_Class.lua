@@ -1,5 +1,5 @@
 local luaunit = require('Test.Luaunit')
-require('Test.Simulator')
+require('Test.Simulator.Simulator')
 
 ---@param func function
 ---@param amount integer
@@ -7,7 +7,7 @@ local function benchmarkFunction(func, amount)
 	local startTime = os.clock()
 
 	for i = 1, amount, 1 do
-		func()
+		func(i)
 	end
 
 	local endTime = os.clock()
@@ -42,11 +42,18 @@ function TestConstructClass()
 	benchmarkFunction(testClass --[[@as function]], 100000)
 end
 
--- function TestConstructAndDeconstructClass()
---     benchmarkFunction(function()
---         local class = testClass()
---         Utils.Class.Deconstruct(class)
---     end, 100000)
--- end
+function TestDeconstructClass()
+	local amount = 100000
+
+	local testClasses = {}
+	for i = 1, amount, 1 do
+		testClasses[i] = testClass()
+	end
+
+	benchmarkFunction(function(num)
+		local class = testClasses[num]
+		Utils.Class.Deconstruct(class)
+	end, amount)
+end
 
 os.exit(luaunit.LuaUnit.run())
