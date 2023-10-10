@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.oVIzFPpX = {
+PackageData.PksKdJNx = {
     Location = "Core.Json",
     Namespace = "Core.Json",
     IsRunnable = true,
@@ -388,7 +388,7 @@ return json
 ]]
 }
 
-PackageData.PksKdJNx = {
+PackageData.qzdVACkX = {
     Location = "Core.Logger",
     Namespace = "Core.Logger",
     IsRunnable = true,
@@ -586,7 +586,184 @@ return Utils.Class.CreateClass(Logger, 'Core.Logger')
 ]]
 }
 
-PackageData.qzdVACkX = {
+PackageData.RONgYwHx = {
+    Location = "Core.Path_new",
+    Namespace = "Core.Path_new",
+    IsRunnable = true,
+    Data = [[
+---@param str string
+---@return string str
+local function formatStr(str)
+    str = str:gsub("\\", "/")
+    return str
+end
+
+---@class Core.Path.new
+---@field private nodes string[]
+---@overload fun(pathOrNodes: (string | string[])?) : Core.Path.new
+local Path = {}
+
+---@param path string
+---@return boolean isNode
+function Path.Static__IsNode(path)
+    if path:find("/") then
+        return false
+    end
+
+    return true
+end
+
+---@private
+---@param pathOrNodes string | string[]
+function Path:__init(pathOrNodes)
+    if not pathOrNodes then
+        self.nodes = {}
+        return
+    end
+
+    if type(pathOrNodes) == "string" then
+        pathOrNodes = formatStr(pathOrNodes)
+        self.nodes = Utils.String.Split(pathOrNodes, "/")
+        return
+    end
+
+    self.nodes = pathOrNodes
+end
+
+---@return string path
+function Path:GetPath()
+    return Utils.String.Join(self.nodes, "/")
+end
+
+---@private
+Path.__tostring = Path.GetPath
+
+---@return boolean
+function Path:IsEmpty()
+    return #self.nodes == 0
+end
+
+---@return boolean
+function Path:IsFile()
+    return self.nodes[#self.nodes] ~= ""
+end
+
+---@return boolean
+function Path:IsDir()
+    return self.nodes[#self.nodes] == ""
+end
+
+---@return Core.Path.new
+function Path:GetParentFolderPath()
+    local copy = self:Copy()
+    local lenght = #copy.nodes
+
+    if lenght > 0 then
+        if lenght > 1 and copy.nodes[lenght] == "" then
+            copy.nodes[lenght] = nil
+            copy.nodes[lenght - 1] = ""
+        else
+            copy.nodes[lenght] = nil
+        end
+    end
+
+    return copy
+end
+
+---@return string fileName
+function Path:GetFileName()
+    if not self:IsFile() then
+        error("path is not a file: " .. self:GetPath())
+    end
+
+    return self.nodes[#self.nodes]
+end
+
+---@return string fileExtension
+function Path:GetFileExtension()
+    if not self:IsFile() then
+        error("path is not a file: " .. self:GetPath())
+    end
+
+    local fileName = self.nodes[#self.nodes]
+
+    local _, _, extension = fileName:find("^.+(%..+)$")
+    return extension
+end
+
+---@return string fileStem
+function Path:GetFileStem()
+    if not self:IsFile() then
+        error("path is not a file: " .. self:GetPath())
+    end
+
+    local fileName = self.nodes[#self.nodes]
+
+    local _, _, stem = fileName:find("^(.+)%..+$")
+    return stem
+end
+
+---@return Core.Path.new
+function Path:Normalize()
+    ---@type string[]
+    local newNodes = {}
+
+    for index, value in ipairs(self.nodes) do
+        if value == "." then
+        elseif value == "" then
+            if index == 1 or index == #self.nodes then
+                newNodes[index] = ""
+            end
+        elseif value == ".." then
+            if index ~= 1 then
+                newNodes[#newNodes] = nil
+            end
+        else
+            newNodes[#newNodes + 1] = value
+        end
+    end
+
+    if not newNodes[#newNodes]:find("^.+%..+$") then
+        newNodes[#newNodes + 1] = ""
+    end
+
+    self.nodes = newNodes
+    return self
+end
+
+---@param path string
+---@return Core.Path.new
+function Path:Append(path)
+    path = formatStr(path)
+    local newNodes = Utils.String.Split(path, "/")
+
+    for _, value in ipairs(newNodes) do
+        self.nodes[#self.nodes + 1] = value
+    end
+
+    self:Normalize()
+
+    return self
+end
+
+---@param path string
+---@return Core.Path.new
+function Path:Extend(path)
+    local copy = self:Copy()
+    return copy:Append(path)
+end
+
+---@return Core.Path.new
+function Path:Copy()
+    local copyNodes = Utils.Table.Copy(self.nodes)
+    return Path(copyNodes)
+end
+
+return Utils.Class.CreateClass(Path, "Core.Path")
+]]
+}
+
+PackageData.seyrvpeX = {
     Location = "Core.Path",
     Namespace = "Core.Path",
     IsRunnable = true,
@@ -596,16 +773,17 @@ PackageData.qzdVACkX = {
 ---@overload fun(path: string?) : Core.Path
 local Path = {}
 
+---@param str string
+---@return string
+local function formatString(str)
+    str = str:gsub("\\", "/")
+    return str
+end
+
 ---@param path string
 ---@boolean
 function Path.Static__IsNode(path)
     if path:find("/") then
-        return false
-    end
-    if path:find("\\") then
-        return false
-    end
-    if path:find("|") then
         return false
     end
     return true
@@ -618,27 +796,12 @@ function Path:__init(path)
         self.path = ""
         return
     end
-    self.path = path:gsub("\\", "/")
+    self.path = formatString(path)
 end
 
 ---@return string
 function Path:GetPath()
     return self.path
-end
-
----@param node string
----@return Core.Path
-function Path:Append(node)
-    local pos = self.path:len() - self.path:reverse():find("/")
-    if node == "." or node == ".." or Path.Static__IsNode(node) then
-        if pos ~= self.path:len() - 1 then
-            self.path = self.path .. "/"
-        end
-        self.path = self.path .. node
-    elseif node == "/" then
-        self.path = self.path .. node
-    end
-    return self
 end
 
 ---@return string
@@ -785,31 +948,42 @@ function Path:Relative()
     return self:Normalize()
 end
 
----@param pathExtension string
+---@param path string
 ---@return Core.Path
-function Path:Extend(pathExtension)
-    local path = self.path
-    local pos = path:len() - path:reverse():find("/")
-    if pathExtension == "." or pathExtension == ".." or Path.Static__IsNode(pathExtension) then
-        if pos ~= path:len() - 1 then
-            path = path .. "/"
+function Path:Append(path)
+    path = formatString(path)
+    local pos = self.path:len() - self.path:reverse():find("/")
+    if path == "." or path == ".." or Path.Static__IsNode(path) then
+        if pos ~= self.path:len() - 1 then
+            self.path = self.path .. "/"
         end
-        path = path .. pathExtension
-    elseif pathExtension == "/" then
-        path = path .. pathExtension
+        self.path = self.path .. path
+    elseif path == "/" then
+        self.path = self.path .. path
     end
-    return Path(path)
+    return self
+end
+
+---@param path string
+---@return Core.Path
+function Path:Extend(path)
+    local copy = self:Copy()
+    return copy:Append(path)
 end
 
 function Path:Copy()
     return Path(self.path)
 end
 
+function Path:__tostring()
+    return self.path
+end
+
 return Utils.Class.CreateClass(Path, "Core.Path")
 ]]
 }
 
-PackageData.RONgYwHx = {
+PackageData.TtiCTjCx = {
     Location = "Core.PortUsage",
     Namespace = "Core.PortUsage",
     IsRunnable = true,
@@ -827,7 +1001,7 @@ return PortUsage
 ]]
 }
 
-PackageData.seyrvpeX = {
+PackageData.vISNqcZX = {
     Location = "Core.Task",
     Namespace = "Core.Task",
     IsRunnable = true,
@@ -973,7 +1147,7 @@ return Utils.Class.CreateClass(Task, "Core.Task")
 ]]
 }
 
-PackageData.TtiCTjCx = {
+PackageData.WXDYOWwx = {
     Location = "Core.UUID",
     Namespace = "Core.UUID",
     IsRunnable = true,
@@ -1025,7 +1199,7 @@ function UUID.Static__Empty()
         return emptyUUID
     end
 
-    emptyUUID = UUID({ 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 })
+    emptyUUID = UUID({ 48, 48, 48, 48, 48, 48 }, { 48, 48, 48, 48 }, { 48, 48, 48, 48, 48, 48 })
 
     return UUID.Static__Empty()
 end
@@ -1130,7 +1304,7 @@ return Utils.Class.CreateClass(UUID, 'Core.UUID')
 ]]
 }
 
-PackageData.vISNqcZX = {
+PackageData.xnnklPUX = {
     Location = "Core.Event.Event",
     Namespace = "Core.Event.Event",
     IsRunnable = true,
@@ -1223,7 +1397,7 @@ return Utils.Class.CreateClass(Event, "Core.Event")
 ]]
 }
 
-PackageData.WXDYOWwx = {
+PackageData.YCXvIIrx = {
     Location = "Core.Event.EventPullAdapter",
     Namespace = "Core.Event.EventPullAdapter",
     IsRunnable = true,

@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.hUCfoIVy = {
+PackageData.kyXCjvQy = {
     Location = "FactoryControl.Core.Config",
     Namespace = "FactoryControl.Core.Config",
     IsRunnable = true,

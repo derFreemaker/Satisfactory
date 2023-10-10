@@ -68,4 +68,20 @@ function Table.ContainsKey(t, key)
     return false
 end
 
+--- removes all spaces between
+---@param t any[]
+function Table.Clean(t)
+    for key, value in pairs(t) do
+        for i = key - 1, 1, -1 do
+            if key ~= 1 then
+                if t[i] == nil and (t[i - 1] ~= nil or i == 1) then
+                    t[i] = value
+                    t[key] = nil
+                    break
+                end
+            end
+        end
+    end
+end
+
 return Table

@@ -9,8 +9,8 @@ function String.Split(str, seperator)
         seperator = "%s"
     end
     local t = {}
-    for splittedStr in string.gmatch(str, "([^" .. seperator .. "]+)") do
-        table.insert(t, splittedStr)
+    for splittedStr in string.gmatch(str, "([^" .. seperator .. "]*)") do
+        t[#t + 1] = splittedStr
     end
     return t
 end
@@ -25,6 +25,23 @@ function String.IsNilOrEmpty(str)
         return true
     end
     return false
+end
+
+---@param array string[]
+---@param sep string
+---@return string
+function String.Join(array, sep)
+    local str = ""
+
+    for index, value in ipairs(array) do
+        if index == 1 then
+            str = value
+        else
+            str = str .. sep .. value
+        end
+    end
+
+    return str
 end
 
 return String

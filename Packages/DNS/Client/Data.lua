@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.YCXvIIrx = {
+PackageData.agsRDvly = {
     Location = "DNS.Client.Client",
     Namespace = "DNS.Client.Client",
     IsRunnable = true,

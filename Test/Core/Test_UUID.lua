@@ -3,39 +3,24 @@ require('Test.Simulator.Simulator')
 
 local UUID = require('Core.UUID')
 
----@param func function
----@param amount integer
-local function benchmarkFunction(func, amount)
-	local startTime = os.clock()
-
-	for i = 1, amount, 1 do
-		func()
-	end
-
-	local endTime = os.clock()
-
-	local totalTime = endTime - startTime
-
-	print('total time: ' .. totalTime .. 's amount: ' .. amount)
-	print('each time : ' .. (totalTime / amount) * 1000 * 1000 .. 'us')
-	--                           ms -> us -> ns
-end
-
 function TestNewUUID()
-	benchmarkFunction(UUID.Static__New, 100000)
+	local test = UUID.Static__New()
+
+	luaunit.assertNotIsNil(test)
 end
 
 function TestEmptyUUID()
-	benchmarkFunction(UUID.Static__Empty, 10000000)
+	local test = UUID.Static__Empty()
+
+	luaunit.assertEquals(tostring(test), "000000-0000-000000")
 end
 
 function TestParseUUID()
-	benchmarkFunction(
-		function()
-			UUID.Static__Parse('000000-0000-000000')
-		end,
-		100000
-	)
+	local uuidStr = "000000-0000-000000"
+
+	local test = UUID.Static__Parse(uuidStr)
+
+	luaunit.assertEquals(tostring(test), uuidStr)
 end
 
 os.exit(luaunit.LuaUnit.run())

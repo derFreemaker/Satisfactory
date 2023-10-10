@@ -6,6 +6,10 @@ local NetworkCard = {}
 ---@private
 ---@param idOrIndexOrNetworkCard FicsIt_Networks.UUID | integer | FicsIt_Networks.Components.FINComputerMod.NetworkCard_C
 function NetworkCard:__init(idOrIndexOrNetworkCard)
+	if not idOrIndexOrNetworkCard then
+		idOrIndexOrNetworkCard = 1
+	end
+
 	if type(idOrIndexOrNetworkCard) == 'string' then
 		---@cast idOrIndexOrNetworkCard FicsIt_Networks.UUID
 		self.networkCard = component.proxy(idOrIndexOrNetworkCard) --[[@as FicsIt_Networks.Components.FINComputerMod.NetworkCard_C]]
@@ -13,7 +17,6 @@ function NetworkCard:__init(idOrIndexOrNetworkCard)
 	end
 
 	if type(idOrIndexOrNetworkCard) == 'number' then
-		---@cast idOrIndexOrNetworkCard integer
 		self.networkCard = computer.getPCIDevices(findClass('NetworkCard_C'))[idOrIndexOrNetworkCard]
 		if self.networkCard == nil then
 			error('no networkCard was found')

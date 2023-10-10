@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.gclENara = {
+PackageData.iHGbINla = {
     Location = "Test.Http.__main",
     Namespace = "Test.Http.__main",
     IsRunnable = true,

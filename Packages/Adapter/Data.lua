@@ -1,6 +1,83 @@
 local PackageData = {}
 
 PackageData.lqndKdvW = {
+    Location = "Adapter.Computer.InternetCard",
+    Namespace = "Adapter.Computer.InternetCard",
+    IsRunnable = true,
+    Data = [[
+---@class Adapter.InternetCard : object
+---@field internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+local InternetCard = {}
+
+---@param url string
+---@param logger Core.Logger?
+---@param internetCardAdapter Adapter.InternetCard?
+---@return boolean success, string? data, number code
+function InternetCard.Static__Download(url, logger, internetCardAdapter)
+    if not internetCardAdapter then
+        internetCardAdapter = InternetCard()
+    end
+    if logger then
+        logger:LogTrace("downloading from: '" .. url .. "'...")
+    end
+    local req = internetCardAdapter.internetCard:request(url, 'GET', '')
+    repeat
+    until req:canGet()
+    local code,
+    data = req:get()
+    if code ~= 200 or data == nil then
+        return false, nil, 400
+    end
+    if logger then
+        logger:LogTrace("downloaded from: '" .. url .. "'")
+    end
+    return true, data, code
+end
+
+---@param indexOrInternetCard number | FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+function InternetCard:__init(indexOrInternetCard)
+    if not indexOrInternetCard then
+        indexOrInternetCard = 1
+    end
+
+    if type(indexOrInternetCard) == "number" then
+        self.internetCard = computer.getPCIDevices(findClass('InternetCard_C'))[indexOrInternetCard]
+        if self.internetCard == nil then
+            error('no internetCard was found')
+        end
+        return
+    end
+
+    ---@cast indexOrInternetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+    self.internetCard = indexOrInternetCard
+end
+
+---@param url string
+---@param logger Core.Logger?
+---@return boolean success, string? data, number code
+function InternetCard:Download(url, logger)
+    if logger then
+        logger:LogTrace("downloading from: '" .. url .. "'...")
+    end
+    local req = self.internetCard:request(url, 'GET', '')
+    repeat
+    until req:canGet()
+    local code,
+    data = req:get()
+    if code ~= 200 or data == nil then
+        return false, nil, 400
+    end
+    if logger then
+        logger:LogTrace("downloaded from: '" .. url .. "'")
+    end
+    return true, data, code
+end
+
+return Utils.Class.CreateClass(InternetCard, "Adapter.InternetCard")
+]]
+}
+
+PackageData.MFYoiWSx = {
     Location = "Adapter.Computer.NetworkCard",
     Namespace = "Adapter.Computer.NetworkCard",
     IsRunnable = true,
@@ -13,6 +90,10 @@ local NetworkCard = {}
 ---@private
 ---@param idOrIndexOrNetworkCard FicsIt_Networks.UUID | integer | FicsIt_Networks.Components.FINComputerMod.NetworkCard_C
 function NetworkCard:__init(idOrIndexOrNetworkCard)
+	if not idOrIndexOrNetworkCard then
+		idOrIndexOrNetworkCard = 1
+	end
+
 	if type(idOrIndexOrNetworkCard) == 'string' then
 		---@cast idOrIndexOrNetworkCard FicsIt_Networks.UUID
 		self.networkCard = component.proxy(idOrIndexOrNetworkCard) --{{{@as FicsIt_Networks.Components.FINComputerMod.NetworkCard_C}}}
@@ -20,7 +101,6 @@ function NetworkCard:__init(idOrIndexOrNetworkCard)
 	end
 
 	if type(idOrIndexOrNetworkCard) == 'number' then
-		---@cast idOrIndexOrNetworkCard integer
 		self.networkCard = computer.getPCIDevices(findClass('NetworkCard_C'))[idOrIndexOrNetworkCard]
 		if self.networkCard == nil then
 			error('no networkCard was found')
@@ -72,7 +152,7 @@ return Utils.Class.CreateClass(NetworkCard, 'Adapter.Computer.NetworkCard')
 ]]
 }
 
-PackageData.MFYoiWSx = {
+PackageData.oVIzFPpX = {
     Location = "Adapter.Pipeline.Valve",
     Namespace = "Adapter.Pipeline.Valve",
     IsRunnable = true,
@@ -82,22 +162,22 @@ PackageData.MFYoiWSx = {
 ---@overload fun(id: FicsIt_Networks.UUID, valve: FicsIt_Networks.Components.Factory.Build_Valve_C?)
 local Valve = {}
 
----@param groupName string?
+---@param nickName string?
 ---@return FicsIt_Networks.UUID[]
-function Valve.Static__FindAllValvesInNetwork(groupName)
+function Valve.Static__FindAllValvesInNetwork(nickName)
 	local valveIds = {}
-	if groupName == nil then
+	if nickName == nil then
 		valveIds = component.findComponent(findClass('Build_Valve_C'))
 	else
-		valveIds = component.findComponent(groupName)
+		valveIds = component.findComponent(nickName)
 	end
 	return valveIds
 end
 
----@param groupName string?
+---@param nickName string?
 ---@return Adapter.Pipeline.Valve[]
-function Valve.Static__FindAllValvesInNetworkAndAddAdapter(groupName)
-	local valveIds = Valve.Static__FindAllValvesInNetwork(groupName)
+function Valve.Static__FindAllValvesInNetworkAndAddAdapter(nickName)
+	local valveIds = Valve.Static__FindAllValvesInNetwork(nickName)
 	local valveAdapters = {}
 	for _, valveId in ipairs(valveIds) do
 		table.insert(valveAdapters, Valve(valveId))

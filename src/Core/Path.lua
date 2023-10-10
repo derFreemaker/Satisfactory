@@ -3,16 +3,17 @@
 ---@overload fun(path: string?) : Core.Path
 local Path = {}
 
+---@param str string
+---@return string
+local function formatString(str)
+    str = str:gsub("\\", "/")
+    return str
+end
+
 ---@param path string
 ---@boolean
 function Path.Static__IsNode(path)
     if path:find("/") then
-        return false
-    end
-    if path:find("\\") then
-        return false
-    end
-    if path:find("|") then
         return false
     end
     return true
@@ -25,27 +26,12 @@ function Path:__init(path)
         self.path = ""
         return
     end
-    self.path = path:gsub("\\", "/")
+    self.path = formatString(path)
 end
 
 ---@return string
 function Path:GetPath()
     return self.path
-end
-
----@param node string
----@return Core.Path
-function Path:Append(node)
-    local pos = self.path:len() - self.path:reverse():find("/")
-    if node == "." or node == ".." or Path.Static__IsNode(node) then
-        if pos ~= self.path:len() - 1 then
-            self.path = self.path .. "/"
-        end
-        self.path = self.path .. node
-    elseif node == "/" then
-        self.path = self.path .. node
-    end
-    return self
 end
 
 ---@return string
@@ -192,24 +178,35 @@ function Path:Relative()
     return self:Normalize()
 end
 
----@param pathExtension string
+---@param path string
 ---@return Core.Path
-function Path:Extend(pathExtension)
-    local path = self.path
-    local pos = path:len() - path:reverse():find("/")
-    if pathExtension == "." or pathExtension == ".." or Path.Static__IsNode(pathExtension) then
-        if pos ~= path:len() - 1 then
-            path = path .. "/"
+function Path:Append(path)
+    path = formatString(path)
+    local pos = self.path:len() - self.path:reverse():find("/")
+    if path == "." or path == ".." or Path.Static__IsNode(path) then
+        if pos ~= self.path:len() - 1 then
+            self.path = self.path .. "/"
         end
-        path = path .. pathExtension
-    elseif pathExtension == "/" then
-        path = path .. pathExtension
+        self.path = self.path .. path
+    elseif path == "/" then
+        self.path = self.path .. path
     end
-    return Path(path)
+    return self
+end
+
+---@param path string
+---@return Core.Path
+function Path:Extend(path)
+    local copy = self:Copy()
+    return copy:Append(path)
 end
 
 function Path:Copy()
     return Path(self.path)
+end
+
+function Path:__tostring()
+    return self.path
 end
 
 return Utils.Class.CreateClass(Path, "Core.Path")

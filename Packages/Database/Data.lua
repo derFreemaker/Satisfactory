@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.xnnklPUX = {
+PackageData.zRIGgCOY = {
     Location = "Database.DbTable",
     Namespace = "Database.DbTable",
     IsRunnable = true,

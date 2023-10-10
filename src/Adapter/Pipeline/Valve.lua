@@ -3,22 +3,22 @@
 ---@overload fun(id: FicsIt_Networks.UUID, valve: FicsIt_Networks.Components.Factory.Build_Valve_C?)
 local Valve = {}
 
----@param groupName string?
+---@param nickName string?
 ---@return FicsIt_Networks.UUID[]
-function Valve.Static__FindAllValvesInNetwork(groupName)
+function Valve.Static__FindAllValvesInNetwork(nickName)
 	local valveIds = {}
-	if groupName == nil then
+	if nickName == nil then
 		valveIds = component.findComponent(findClass('Build_Valve_C'))
 	else
-		valveIds = component.findComponent(groupName)
+		valveIds = component.findComponent(nickName)
 	end
 	return valveIds
 end
 
----@param groupName string?
+---@param nickName string?
 ---@return Adapter.Pipeline.Valve[]
-function Valve.Static__FindAllValvesInNetworkAndAddAdapter(groupName)
-	local valveIds = Valve.Static__FindAllValvesInNetwork(groupName)
+function Valve.Static__FindAllValvesInNetworkAndAddAdapter(nickName)
+	local valveIds = Valve.Static__FindAllValvesInNetwork(nickName)
 	local valveAdapters = {}
 	for _, valveId in ipairs(valveIds) do
 		table.insert(valveAdapters, Valve(valveId))

@@ -45,7 +45,7 @@ function UUID.Static__Empty()
         return emptyUUID
     end
 
-    emptyUUID = UUID({ 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0 })
+    emptyUUID = UUID({ 48, 48, 48, 48, 48, 48 }, { 48, 48, 48, 48 }, { 48, 48, 48, 48, 48, 48 })
 
     return UUID.Static__Empty()
 end

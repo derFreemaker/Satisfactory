@@ -15,6 +15,7 @@ function Utils.Sleep(ms)
 	end
 end
 
+--- ### Use InternetCard Adapter if possible.
 ---@param url string
 ---@param internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
 ---@param logger (Github_Loading.Logger | Core.Logger)?
@@ -37,6 +38,7 @@ function Utils.Download(url, internetCard, logger)
 	return true, data
 end
 
+--- ### Use InternetCard Adapter if possible.
 ---@param url string
 ---@param path string
 ---@param forceDownload boolean

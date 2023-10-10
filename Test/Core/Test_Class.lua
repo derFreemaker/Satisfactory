@@ -1,59 +1,36 @@
 local luaunit = require('Test.Luaunit')
 require('Test.Simulator.Simulator')
 
----@param func function
----@param amount integer
-local function benchmarkFunction(func, amount)
-	local startTime = os.clock()
-
-	for i = 1, amount, 1 do
-		func(i)
-	end
-
-	local endTime = os.clock()
-
-	local totalTime = endTime - startTime
-
-	print('total time: ' .. totalTime .. 's amount: ' .. amount)
-	print('each time : ' .. (totalTime / amount) * 1000 * 1000 .. 'us')
-end
-
 function TestCreateClass()
-	benchmarkFunction(
-		function()
-			Utils.Class.CreateClass({}, 'CreateEmpty')
-		end,
-		100000
-	)
-end
+	local test = Utils.Class.CreateClass({}, 'CreateEmpty')
 
-local testClass = Utils.Class.CreateClass({}, 'EmptyBaseClass')
+	luaunit.assertNotIsNil(test)
+end
 
 function TestCreateClassWithBaseClass()
-	benchmarkFunction(
-		function()
-			Utils.Class.CreateClass({}, 'CreateEmptyWithBaseClass', testClass)
-		end,
-		100000
-	)
+	local testBaseClass = Utils.Class.CreateClass({}, 'EmptyBaseClass')
+	local test = Utils.Class.CreateClass({}, 'CreateEmptyWithBaseClass', testBaseClass)
+
+	luaunit.assertNotIsNil(test)
 end
 
 function TestConstructClass()
-	benchmarkFunction(testClass --[[@as function]], 100000)
+	local test = Utils.Class.CreateClass({}, 'CreateEmpty')
+
+	luaunit.assertNotIsNil(test())
 end
 
 function TestDeconstructClass()
-	local amount = 100000
-
-	local testClasses = {}
-	for i = 1, amount, 1 do
-		testClasses[i] = testClass()
+	local testClass = Utils.Class.CreateClass({}, 'CreateEmpty')
+	local test = testClass()
+	local function throwErrorBecauseOfDeconstructedClass()
+		_ = test.hi
 	end
 
-	benchmarkFunction(function(num)
-		local class = testClasses[num]
-		Utils.Class.Deconstruct(class)
-	end, amount)
+	Utils.Class.Deconstruct(test)
+
+	luaunit.assertErrorMsgContains("cannot get values from deconstruct class: CreateEmpty",
+		throwErrorBecauseOfDeconstructedClass)
 end
 
 os.exit(luaunit.LuaUnit.run())
