@@ -13,7 +13,7 @@ local Utils = LoadedLoaderFiles["/Github-Loading/Loader/Utils"][1]
 ---@class Github_Loading.Package : Github_Loading.Package.InfoFile
 ---@field private forceDownload boolean
 ---@field private PackageLoader Github_Loading.PackageLoader
----@field Modules Dictionary<string, Github_Loading.Module>
+---@field Modules Dictionary<integer, Github_Loading.Module>
 local Package = {}
 
 ---@param info Github_Loading.Package.InfoFile
@@ -49,10 +49,10 @@ function Package:Download(url, path)
     local dataFilePath = filesystem.path(path, "Data.lua")
     if not self.PackageLoader:internalDownload(dataFileUrl, dataFilePath, self.forceDownload) then return false end
 
-    ---@type Dictionary<string, Github_Loading.Module.Data>
+    ---@type Dictionary<integer, Github_Loading.Module.Data>
     local dataContent = filesystem.doFile(dataFilePath)
 
-    ---@type Dictionary<string, Github_Loading.Module>
+    ---@type Dictionary<integer, Github_Loading.Module>
     local modules = {}
     for id, module in pairs(dataContent) do
         modules[id] = Module.new(module)

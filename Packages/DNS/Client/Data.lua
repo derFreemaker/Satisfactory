@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.agsRDvly = {
+PackageData[-1559148983] = {
     Location = "DNS.Client.Client",
     Namespace = "DNS.Client.Client",
     IsRunnable = true,

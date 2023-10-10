@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.hUCfoIVy = {
+PackageData[-940958832] = {
     Location = "FactoryControl.Controller.__main",
     Namespace = "FactoryControl.Controller.__main",
     IsRunnable = true,
@@ -30,7 +30,7 @@ return Main
 ]]
 }
 
-PackageData.JjmrMBtY = {
+PackageData[-1806410241] = {
     Location = "FactoryControl.Controller.FactoryControlApiClient",
     Namespace = "FactoryControl.Controller.FactoryControlApiClient",
     IsRunnable = true,

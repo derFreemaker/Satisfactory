@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.LOHNHonY = {
+PackageData[1184986639] = {
     Location = "FactoryControl.Server.__main",
     Namespace = "FactoryControl.Server.__main",
     IsRunnable = true,
@@ -45,7 +45,7 @@ return Main
 ]]
 }
 
-PackageData.mdrYeiKz = {
+PackageData[-1380199868] = {
     Location = "FactoryControl.Server.Endpoints.ControllerEndpoints",
     Namespace = "FactoryControl.Server.Endpoints.ControllerEndpoints",
     IsRunnable = true,

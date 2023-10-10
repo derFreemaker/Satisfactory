@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.NscjCbiZ = {
+PackageData[-1058189529] = {
     Location = "Net.Core.Method",
     Namespace = "Net.Core.Method",
     IsRunnable = true,
@@ -23,7 +23,7 @@ return Methods
 ]]
 }
 
-PackageData.oHMuZVFz = {
+PackageData[-810495773] = {
     Location = "Net.Core.NetworkClient",
     Namespace = "Net.Core.NetworkClient",
     IsRunnable = true,
@@ -197,7 +197,7 @@ return Utils.Class.CreateClass(NetworkClient, 'Core.Net.NetworkClient')
 ]]
 }
 
-PackageData.QXwFxOcZ = {
+PackageData[108999106] = {
     Location = "Net.Core.NetworkContext",
     Namespace = "Net.Core.NetworkContext",
     IsRunnable = true,
@@ -231,7 +231,7 @@ return Utils.Class.CreateClass(NetworkContext, 'Core.Net.NetworkContext')
 ]]
 }
 
-PackageData.rmhQUIAz = {
+PackageData[1890077625] = {
     Location = "Net.Core.NetworkPort",
     Namespace = "Net.Core.NetworkPort",
     IsRunnable = true,
@@ -371,7 +371,7 @@ return Utils.Class.CreateClass(NetworkPort, 'Core.Net.NetworkPort')
 ]]
 }
 
-PackageData.SBRbsBXZ = {
+PackageData[256538919] = {
     Location = "Net.Core.StatusCodes",
     Namespace = "Net.Core.StatusCodes",
     IsRunnable = true,

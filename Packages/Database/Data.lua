@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.zRIGgCOY = {
+PackageData[986863927] = {
     Location = "Database.DbTable",
     Namespace = "Database.DbTable",
     IsRunnable = true,

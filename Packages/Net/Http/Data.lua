@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.tQCmPuuz = {
+PackageData[-245824027] = {
     Location = "Net.Http.Client",
     Namespace = "Net.Http.Client",
     IsRunnable = true,
@@ -80,7 +80,7 @@ return Utils.Class.CreateClass(HttpClient, 'Http.HttpClient')
 ]]
 }
 
-PackageData.UgmxnoSZ = {
+PackageData[-752176356] = {
     Location = "Net.Http.Request",
     Namespace = "Net.Http.Request",
     IsRunnable = true,
@@ -113,7 +113,7 @@ return Utils.Class.CreateClass(HttpRequest, 'Http.HttpRequest')
 ]]
 }
 
-PackageData.vvWJKhpz = {
+PackageData[1581849457] = {
     Location = "Net.Http.RequestOptions",
     Namespace = "Net.Http.RequestOptions",
     IsRunnable = true,
@@ -134,7 +134,7 @@ return Utils.Class.CreateClass(HttpRequestOptions, 'Http.HttpRequestOptions')
 ]]
 }
 
-PackageData.XKHUhbMZ = {
+PackageData[-923098324] = {
     Location = "Net.Http.Response",
     Namespace = "Net.Http.Response",
     IsRunnable = true,

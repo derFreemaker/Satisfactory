@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.iHGbINla = {
+PackageData[1298246731] = {
     Location = "Test.Http.__main",
     Namespace = "Test.Http.__main",
     IsRunnable = true,

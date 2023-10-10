@@ -1,7 +1,7 @@
 return {
     Name = "FactoryControlServer",
     Namespace = "FactoryControl.Server",
-    Version = "0.1-44",
+    Version = "0.1-46",
     RequiredPackages = {
         "Core",
         "DNS.Client",

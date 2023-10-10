@@ -1,196 +1,155 @@
----@class Core.Path
----@field private path string
----@overload fun(path: string?) : Core.Path
-local Path = {}
-
 ---@param str string
----@return string
-local function formatString(str)
+---@return string str
+local function formatStr(str)
     str = str:gsub("\\", "/")
     return str
 end
 
+---@class Core.Path
+---@field private nodes string[]
+---@overload fun(pathOrNodes: (string | string[])?) : Core.Path
+local Path = {}
+
 ---@param path string
----@boolean
+---@return boolean isNode
 function Path.Static__IsNode(path)
     if path:find("/") then
         return false
     end
+
     return true
 end
 
 ---@private
----@param path string?
-function Path:__init(path)
-    if not path or path == "" then
-        self.path = ""
+---@param pathOrNodes string | string[]
+function Path:__init(pathOrNodes)
+    if not pathOrNodes then
+        self.nodes = {}
         return
     end
-    self.path = formatString(path)
-end
 
----@return string
-function Path:GetPath()
-    return self.path
-end
-
----@return string
-function Path:GetRoot()
-    local str = self:Relative().path
-    local slash = str:find("/")
-    return str:sub(0, slash)
-end
-
----@return Core.Path
-function Path:GetParentFolderPath()
-    local pos = self.path:reverse():find("/")
-    if not pos then
-        return Path()
+    if type(pathOrNodes) == "string" then
+        pathOrNodes = formatStr(pathOrNodes)
+        self.nodes = Utils.String.Split(pathOrNodes, "/")
+        return
     end
-    local path = self.path:sub(0, self.path:len() - pos)
-    return Path(path)
+
+    self.nodes = pathOrNodes
 end
 
----@return boolean
-function Path:IsSingle()
-    local pos = self.path:find("/", 1)
-    return (pos == 0 and self.path:len() > 0 and self.path ~= "/")
+---@return string path
+function Path:GetPath()
+    return Utils.String.Join(self.nodes, "/")
 end
 
----@return boolean
-function Path:IsAbsolute()
-    return self.path:sub(0, 1) == "/"
-end
+---@private
+Path.__tostring = Path.GetPath
 
 ---@return boolean
 function Path:IsEmpty()
-    return (self.path:len() == 1 and self:IsAbsolute()) or self.path:len() == 0
+    return #self.nodes == 0
 end
 
 ---@return boolean
-function Path:IsRoot()
-    return self.path == "/"
+function Path:IsFile()
+    return self.nodes[#self.nodes] ~= ""
 end
 
 ---@return boolean
 function Path:IsDir()
-    local reversedPath = self.path:reverse()
-    return reversedPath:sub(0, 1) == "/"
+    return self.nodes[#self.nodes] == ""
 end
 
----@param other Core.Path
----@return boolean
-function Path:StartsWith(other)
-    if other:IsAbsolute() then
-        other = other:Absolute()
-    else
-        other = other:Relative()
+---@return Core.Path
+function Path:GetParentFolderPath()
+    local copy = self:Copy()
+    local lenght = #copy.nodes
+
+    if lenght > 0 then
+        if lenght > 1 and copy.nodes[lenght] == "" then
+            copy.nodes[lenght] = nil
+            copy.nodes[lenght - 1] = ""
+        else
+            copy.nodes[lenght] = nil
+        end
     end
-    return self.path:sub(0, other.path:len()) == other.path
+
+    return copy
 end
 
----@return string
+---@return string fileName
 function Path:GetFileName()
-    local slash = (self.path:reverse():find("/") or 0) - 2
-    if slash == nil or slash == -2 then
-        return self.path
+    if not self:IsFile() then
+        error("path is not a file: " .. self:GetPath())
     end
-    return self.path:sub(self.path:len() - slash)
+
+    return self.nodes[#self.nodes]
 end
 
----@return string
+---@return string fileExtension
 function Path:GetFileExtension()
-    local name = self:GetFileName()
-    local pos = (name:reverse():find("%.") or 0) - 1
-    if pos == nil or pos == -1 then
-        return ""
+    if not self:IsFile() then
+        error("path is not a file: " .. self:GetPath())
     end
-    return name:sub(name:len() - pos)
+
+    local fileName = self.nodes[#self.nodes]
+
+    local _, _, extension = fileName:find("^.+(%..+)$")
+    return extension
 end
 
----@return string
+---@return string fileStem
 function Path:GetFileStem()
-    local name = self:GetFileName()
-    local pos = (name:reverse():find("%.") or 0)
-    local lenght = name:len()
-    if pos == lenght then
-        return name
+    if not self:IsFile() then
+        error("path is not a file: " .. self:GetPath())
     end
-    return name:sub(0, lenght - pos)
+
+    local fileName = self.nodes[#self.nodes]
+
+    local _, _, stem = fileName:find("^(.+)%..+$")
+    return stem
 end
 
 ---@return Core.Path
 function Path:Normalize()
-    local newPath = Path()
-    if self:IsAbsolute() then
-        newPath.path = "/"
-    end
-    local posStart = 0
-    local posEnd = self.path:find("/", posStart)
-    while true do
-        local node = self.path:sub(posStart, posEnd - 1)
-        posStart = posEnd + 1
-        if node == "." then
-        elseif node == ".." then
-            local pos = newPath.path:len() - newPath.path:reverse():find("/")
-            if pos == nil then
-                newPath.path = ""
-            else
-                newPath.path = newPath.path:sub(pos)
+    ---@type string[]
+    local newNodes = {}
+
+    for index, value in ipairs(self.nodes) do
+        if value == "." then
+        elseif value == "" then
+            if index == 1 or index == #self.nodes then
+                newNodes[index] = ""
             end
-            if newPath.path:len() < 1 and self:IsAbsolute() then
-                newPath.path = "/"
+        elseif value == ".." then
+            if index ~= 1 then
+                newNodes[#newNodes] = nil
             end
-        elseif Path.Static__IsNode(node) then
-            if newPath.path:len() > 0 and newPath.path:reverse():find("/") ~= 1 then
-                newPath.path = newPath.path .. "/"
-            end
-            newPath.path = newPath.path .. node
+        else
+            newNodes[#newNodes + 1] = value
         end
-
-        if posEnd == self.path:len() + 1 then
-            break
-        end
-
-        local newPosEnd = self.path:find("/", posStart)
-        if newPosEnd == nil then
-            posStart = posEnd + 1
-            newPosEnd = self.path:len() + 1
-        end
-        posEnd = newPosEnd
     end
-    return newPath
-end
 
----@return Core.Path
-function Path:Absolute()
-    if self:IsAbsolute() then
-        return Path(self:Normalize().path)
+    if not newNodes[#newNodes]:find("^.+%..+$") then
+        newNodes[#newNodes + 1] = ""
     end
-    return Path("/" .. self:Normalize().path)
-end
 
----@return Core.Path
-function Path:Relative()
-    if self:IsAbsolute() then
-        return Path(self:Normalize().path:sub(1))
-    end
-    return self:Normalize()
+    self.nodes = newNodes
+    return self
 end
 
 ---@param path string
 ---@return Core.Path
 function Path:Append(path)
-    path = formatString(path)
-    local pos = self.path:len() - self.path:reverse():find("/")
-    if path == "." or path == ".." or Path.Static__IsNode(path) then
-        if pos ~= self.path:len() - 1 then
-            self.path = self.path .. "/"
-        end
-        self.path = self.path .. path
-    elseif path == "/" then
-        self.path = self.path .. path
+    path = formatStr(path)
+    local newNodes = Utils.String.Split(path, "/")
+
+    for _, value in ipairs(newNodes) do
+        self.nodes[#self.nodes + 1] = value
     end
+
+    self:Normalize()
+
     return self
 end
 
@@ -201,12 +160,10 @@ function Path:Extend(path)
     return copy:Append(path)
 end
 
+---@return Core.Path
 function Path:Copy()
-    return Path(self.path)
-end
-
-function Path:__tostring()
-    return self.path
+    local copyNodes = Utils.Table.Copy(self.nodes)
+    return Path(copyNodes)
 end
 
 return Utils.Class.CreateClass(Path, "Core.Path")

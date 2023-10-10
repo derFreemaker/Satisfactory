@@ -1,7 +1,7 @@
 local luaunit = require('Test.Luaunit')
 require('Test.Simulator.Simulator')
 
-local Path = require("Core.Path_new")
+local Path = require("Core.Path")
 
 function TestCreatePath()
     local test = Path("/Test/Path")

@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.EaxyWcDY = {
+PackageData[1191231537] = {
     Location = "DNS.Server.__main",
     Namespace = "DNS.Server.__main",
     IsRunnable = true,
@@ -60,7 +60,7 @@ return Main
 ]]
 }
 
-PackageData.fphJtVby = {
+PackageData[1771489619] = {
     Location = "DNS.Server.AddressDatabase",
     Namespace = "DNS.Server.AddressDatabase",
     IsRunnable = true,
@@ -83,7 +83,6 @@ function AddressDatabase:__init(logger)
     self.dbTable:Load()
 end
 
-
 ---@param createAddress DNS.Core.Entities.Address.Create
 ---@return boolean
 function AddressDatabase:Create(createAddress)
@@ -94,7 +93,6 @@ function AddressDatabase:Create(createAddress)
     self.dbTable:Set(address.Id, address:ExtractData())
     return true
 end
-
 
 ---@param addressAddress string
 ---@return boolean
@@ -107,7 +105,6 @@ function AddressDatabase:Delete(addressAddress)
     return true
 end
 
-
 ---@param id string
 ---@return DNS.Core.Entities.Address? address
 function AddressDatabase:GetWithId(id)
@@ -117,7 +114,6 @@ function AddressDatabase:GetWithId(id)
         end
     end
 end
-
 
 ---@param addressAddress string
 ---@return DNS.Core.Entities.Address? createAddress
@@ -130,12 +126,11 @@ function AddressDatabase:GetWithAddress(addressAddress)
     end
 end
 
-
 return Utils.Class.CreateClass(AddressDatabase, "DNS.Server.AddressDatabase")
 ]]
 }
 
-PackageData.GFSURPyY = {
+PackageData[1217019283] = {
     Location = "DNS.Server.Endpoints",
     Namespace = "DNS.Server.Endpoints",
     IsRunnable = true,

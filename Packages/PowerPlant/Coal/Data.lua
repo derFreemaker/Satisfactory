@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData.HsWQlUOA = {
+PackageData[1902650688] = {
     Location = "PowerPlant.Coal.__main",
     Namespace = "PowerPlant.Coal.__main",
     IsRunnable = true,

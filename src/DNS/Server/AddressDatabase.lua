@@ -16,7 +16,6 @@ function AddressDatabase:__init(logger)
     self.dbTable:Load()
 end
 
-
 ---@param createAddress DNS.Core.Entities.Address.Create
 ---@return boolean
 function AddressDatabase:Create(createAddress)
@@ -27,7 +26,6 @@ function AddressDatabase:Create(createAddress)
     self.dbTable:Set(address.Id, address:ExtractData())
     return true
 end
-
 
 ---@param addressAddress string
 ---@return boolean
@@ -40,7 +38,6 @@ function AddressDatabase:Delete(addressAddress)
     return true
 end
 
-
 ---@param id string
 ---@return DNS.Core.Entities.Address? address
 function AddressDatabase:GetWithId(id)
@@ -50,7 +47,6 @@ function AddressDatabase:GetWithId(id)
         end
     end
 end
-
 
 ---@param addressAddress string
 ---@return DNS.Core.Entities.Address? createAddress
@@ -62,6 +58,5 @@ function AddressDatabase:GetWithAddress(addressAddress)
         end
     end
 end
-
 
 return Utils.Class.CreateClass(AddressDatabase, "DNS.Server.AddressDatabase")
