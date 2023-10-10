@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData[1298246731] = {
+PackageData["TestHttp__main"] = {
     Location = "Test.Http.__main",
     Namespace = "Test.Http.__main",
     IsRunnable = true,

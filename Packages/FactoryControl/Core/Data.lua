@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData[-1907611324] = {
+PackageData["FactoryControlCoreConfig"] = {
     Location = "FactoryControl.Core.Config",
     Namespace = "FactoryControl.Core.Config",
     IsRunnable = true,

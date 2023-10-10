@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData[-1559148983] = {
+PackageData["DNSClientClient"] = {
     Location = "DNS.Client.Client",
     Namespace = "DNS.Client.Client",
     IsRunnable = true,

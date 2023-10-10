@@ -1,7 +1,7 @@
 return {
     Name = "PowerPlant.Coal",
     Namespace = "PowerPlant.Coal",
-    Version = "0.1.0-6",
+    Version = "0.1.0-11",
     RequiredPackages = {
         "Adapter"
     },

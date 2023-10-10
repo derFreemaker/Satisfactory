@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData[-222189639] = {
+PackageData["CoreJson"] = {
     Location = "Core.Json",
     Namespace = "Core.Json",
     IsRunnable = true,
@@ -388,7 +388,7 @@ return json
 ]]
 }
 
-PackageData[1205633584] = {
+PackageData["CoreLogger"] = {
     Location = "Core.Logger",
     Namespace = "Core.Logger",
     IsRunnable = true,
@@ -586,7 +586,7 @@ return Utils.Class.CreateClass(Logger, 'Core.Logger')
 ]]
 }
 
-PackageData[-1371063648] = {
+PackageData["CorePath"] = {
     Location = "Core.Path",
     Namespace = "Core.Path",
     IsRunnable = true,
@@ -763,7 +763,7 @@ return Utils.Class.CreateClass(Path, "Core.Path")
 ]]
 }
 
-PackageData[-852330596] = {
+PackageData["CorePortUsage"] = {
     Location = "Core.PortUsage",
     Namespace = "Core.PortUsage",
     IsRunnable = true,
@@ -781,7 +781,7 @@ return PortUsage
 ]]
 }
 
-PackageData[-24950880] = {
+PackageData["CoreTask"] = {
     Location = "Core.Task",
     Namespace = "Core.Task",
     IsRunnable = true,
@@ -927,7 +927,7 @@ return Utils.Class.CreateClass(Task, "Core.Task")
 ]]
 }
 
-PackageData[-383907486] = {
+PackageData["CoreUUID"] = {
     Location = "Core.UUID",
     Namespace = "Core.UUID",
     IsRunnable = true,
@@ -1084,7 +1084,7 @@ return Utils.Class.CreateClass(UUID, 'Core.UUID')
 ]]
 }
 
-PackageData[-327636876] = {
+PackageData["CoreEventEvent"] = {
     Location = "Core.Event.Event",
     Namespace = "Core.Event.Event",
     IsRunnable = true,
@@ -1177,7 +1177,7 @@ return Utils.Class.CreateClass(Event, "Core.Event")
 ]]
 }
 
-PackageData[-1339589330] = {
+PackageData["CoreEventEventPullAdapter"] = {
     Location = "Core.Event.EventPullAdapter",
     Namespace = "Core.Event.EventPullAdapter",
     IsRunnable = true,

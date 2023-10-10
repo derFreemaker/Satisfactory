@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData[-490466516] = {
+PackageData["AdapterComputerInternetCard"] = {
     Location = "Adapter.Computer.InternetCard",
     Namespace = "Adapter.Computer.InternetCard",
     IsRunnable = true,
@@ -77,7 +77,7 @@ return Utils.Class.CreateClass(InternetCard, "Adapter.InternetCard")
 ]]
 }
 
-PackageData[-1496411270] = {
+PackageData["AdapterComputerNetworkCard"] = {
     Location = "Adapter.Computer.NetworkCard",
     Namespace = "Adapter.Computer.NetworkCard",
     IsRunnable = true,
@@ -152,7 +152,7 @@ return Utils.Class.CreateClass(NetworkCard, 'Adapter.Computer.NetworkCard')
 ]]
 }
 
-PackageData[-1135312311] = {
+PackageData["AdapterPipelineValve"] = {
     Location = "Adapter.Pipeline.Valve",
     Namespace = "Adapter.Pipeline.Valve",
     IsRunnable = true,

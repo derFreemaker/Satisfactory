@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData[1902650688] = {
+PackageData["PowerPlantCoal__main"] = {
     Location = "PowerPlant.Coal.__main",
     Namespace = "PowerPlant.Coal.__main",
     IsRunnable = true,

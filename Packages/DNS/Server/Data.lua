@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData[1191231537] = {
+PackageData["DNSServer__main"] = {
     Location = "DNS.Server.__main",
     Namespace = "DNS.Server.__main",
     IsRunnable = true,
@@ -60,7 +60,7 @@ return Main
 ]]
 }
 
-PackageData[1771489619] = {
+PackageData["DNSServerAddressDatabase"] = {
     Location = "DNS.Server.AddressDatabase",
     Namespace = "DNS.Server.AddressDatabase",
     IsRunnable = true,
@@ -130,7 +130,7 @@ return Utils.Class.CreateClass(AddressDatabase, "DNS.Server.AddressDatabase")
 ]]
 }
 
-PackageData[1217019283] = {
+PackageData["DNSServerEndpoints"] = {
     Location = "DNS.Server.Endpoints",
     Namespace = "DNS.Server.Endpoints",
     IsRunnable = true,

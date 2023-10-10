@@ -1,6 +1,6 @@
 local PackageData = {}
 
-PackageData[1205214928] = {
+PackageData["NetRestApiExtensions"] = {
     Location = "Net.Rest.Api.Extensions",
     Namespace = "Net.Core.NetworkContext.Api.Extensions",
     IsRunnable = true,
@@ -29,7 +29,7 @@ return Utils.Class.CreateClass(Extensions, 'Net.Core.NetworkContext.Api.Extensio
 ]]
 }
 
-PackageData[1829029708] = {
+PackageData["NetRestApiRequest"] = {
     Location = "Net.Rest.Api.Request",
     Namespace = "Net.Rest.Api.Request",
     IsRunnable = true,
@@ -68,7 +68,7 @@ return Utils.Class.CreateClass(Request, 'Net.Rest.Api.Request')
 ]]
 }
 
-PackageData[1954224512] = {
+PackageData["NetRestApiResponse"] = {
     Location = "Net.Rest.Api.Response",
     Namespace = "Net.Rest.Api.Response",
     IsRunnable = true,
@@ -108,7 +108,7 @@ return Utils.Class.CreateClass(Response, 'Net.Rest.Api.Response')
 ]]
 }
 
-PackageData[1803776928] = {
+PackageData["NetRestApiClientClient"] = {
     Location = "Net.Rest.Api.Client.Client",
     Namespace = "Net.Rest.Api.Client.Client",
     IsRunnable = true,
@@ -158,7 +158,7 @@ return Utils.Class.CreateClass(Client, 'Net.Rest.Api.Client')
 ]]
 }
 
-PackageData[-511510070] = {
+PackageData["NetRestApiServerController"] = {
     Location = "Net.Rest.Api.Server.Controller",
     Namespace = "Net.Rest.Api.Server.Controller",
     IsRunnable = true,
@@ -246,7 +246,7 @@ return Utils.Class.CreateClass(Controller, 'Net.Rest.Api.Server.Controller')
 ]]
 }
 
-PackageData[-1305436617] = {
+PackageData["NetRestApiServerEndpoint"] = {
     Location = "Net.Rest.Api.Server.Endpoint",
     Namespace = "Net.Rest.Api.Server.Endpoint",
     IsRunnable = true,
@@ -298,7 +298,7 @@ return Utils.Class.CreateClass(Endpoint, 'Net.Rest.Api.Server.Endpoint')
 ]]
 }
 
-PackageData[-458672574] = {
+PackageData["NetRestApiServerEndpointBase"] = {
     Location = "Net.Rest.Api.Server.EndpointBase",
     Namespace = "Net.Rest.Api.Server.EndpointBase",
     IsRunnable = true,
@@ -360,7 +360,7 @@ return Utils.Class.CreateClass(EndpointBase, 'Net.Rest.Api.Server.EndpointBase')
 ]]
 }
 
-PackageData[1566765688] = {
+PackageData["NetRestApiServerResponseTemplates"] = {
     Location = "Net.Rest.Api.Server.ResponseTemplates",
     Namespace = "Net.Rest.Api.Server.ResponseTemplates",
     IsRunnable = true,
