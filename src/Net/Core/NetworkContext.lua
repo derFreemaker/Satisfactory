@@ -2,7 +2,7 @@ local Json = require('Core.Json')
 
 ---@class Net.Core.NetworkContext : object
 ---@field SignalName string
----@field SignalSender FicsIt_Networks.Components.Object
+---@field SignalSender Satisfactory.Components.Object
 ---@field SenderIPAddress string
 ---@field Port integer
 ---@field EventName string

@@ -1,6 +1,6 @@
 ---@class Adapter.Pipeline.Valve : object
----@field private valve FicsIt_Networks.Components.Factory.Build_Valve_C
----@overload fun(id: FicsIt_Networks.UUID, valve: FicsIt_Networks.Components.Factory.Build_Valve_C?)
+---@field private valve Satisfactory.Components.Factory.Build_Valve_C
+---@overload fun(id: FicsIt_Networks.UUID, valve: Satisfactory.Components.Factory.Build_Valve_C?)
 local Valve = {}
 
 ---@param nickName string?
@@ -27,13 +27,13 @@ function Valve.Static__FindAllValvesInNetworkAndAddAdapter(nickName)
 end
 
 ---@private
----@param idOrValve FicsIt_Networks.UUID | FicsIt_Networks.Components.Factory.Build_Valve_C
+---@param idOrValve FicsIt_Networks.UUID | Satisfactory.Components.Factory.Build_Valve_C
 function Valve:__init(idOrValve)
 	if type(idOrValve) == 'string' then
-		self.valve = component.proxy(idOrValve) --[[@as FicsIt_Networks.Components.Factory.Build_Valve_C]]
+		self.valve = component.proxy(idOrValve) --[[@as Satisfactory.Components.Factory.Build_Valve_C]]
 		return
 	end
-	---@cast idOrValve FicsIt_Networks.Components.Factory.Build_Valve_C
+	---@cast idOrValve Satisfactory.Components.Factory.Build_Valve_C
 	self.valve = idOrValve
 end
 
