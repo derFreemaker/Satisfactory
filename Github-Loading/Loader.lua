@@ -432,4 +432,13 @@ function Loader:Run(program)
 	self.Logger:LogInfo('program stoped running: ' .. tostring(returns[1]))
 end
 
+function Loader:Cleanup()
+	---@type FicsIt_Networks.Filesystem.File[]
+	local openFiles = self.loadedLoaderFiles["/Github-Loading/Loader/Utils/10_File.lua"][2]
+
+	for _, file in pairs(openFiles) do
+		file:close()
+	end
+end
+
 return Loader

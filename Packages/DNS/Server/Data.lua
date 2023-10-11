@@ -1,3 +1,4 @@
+---@meta
 local PackageData = {}
 
 PackageData["DNSServer__main"] = {
@@ -79,7 +80,7 @@ local AddressDatabase = {}
 ---@private
 ---@param logger Core.Logger
 function AddressDatabase:__init(logger)
-    self.dbTable = DbTable("Addresses", Path("/Database/Addresses.db"), logger:subLogger("DbTable"))
+    self.dbTable = DbTable("Addresses", Path("/Database/"), logger:subLogger("DbTable"))
     self.dbTable:Load()
 end
 
@@ -91,6 +92,8 @@ function AddressDatabase:Create(createAddress)
     end
     local address = Address:Static__CreateFromCreateAddress(createAddress)
     self.dbTable:Set(address.Id, address:ExtractData())
+
+    self.dbTable:Save()
     return true
 end
 
@@ -102,6 +105,8 @@ function AddressDatabase:Delete(addressAddress)
         return false
     end
     self.dbTable:Delete(address.Id)
+
+    self.dbTable:Save()
     return true
 end
 

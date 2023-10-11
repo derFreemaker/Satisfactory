@@ -1,3 +1,4 @@
+---@meta
 local PackageData = {}
 
 PackageData["TestHttp__main"] = {

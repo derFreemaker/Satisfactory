@@ -60,6 +60,23 @@ function Path:IsDir()
     return self.nodes[#self.nodes] == ""
 end
 
+---@return string
+function Path:GetParentFolder()
+    local copy = Utils.Table.Copy(self.nodes)
+    local lenght = #copy
+
+    if lenght > 0 then
+        if lenght > 1 and copy[lenght] == "" then
+            copy[lenght] = nil
+            copy[lenght - 1] = ""
+        else
+            copy[lenght] = nil
+        end
+    end
+
+    return Utils.String.Join(copy, "/")
+end
+
 ---@return Core.Path
 function Path:GetParentFolderPath()
     local copy = self:Copy()

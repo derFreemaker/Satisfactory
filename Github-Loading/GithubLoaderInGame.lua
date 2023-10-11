@@ -51,6 +51,9 @@ if showDriveUUID then
 	print('[Computer] DEBUG mounted filesystem on drive: ' .. drive)
 end
 
+---@type Github_Loading.Loader?
+local Loader
+
 ---@return boolean restart
 local function Run()
 	if not filesystem.exists(LoaderFilesPath) then
@@ -62,7 +65,7 @@ local function Run()
 		repeat
 		until req:canGet()
 		local _,
-			libdata = req:get()
+		libdata = req:get()
 		---@cast libdata string
 		local file = filesystem.open(LoaderPath, 'w')
 		assert(file, "Unable to open file: '" .. LoaderPath .. "'")
@@ -73,7 +76,7 @@ local function Run()
 
 	-- ######## load Loader Files and initialize ######## --
 	---@type Github_Loading.Loader
-	local Loader = filesystem.doFile(LoaderPath)
+	Loader = filesystem.doFile(LoaderPath)
 	assert(Loader, 'Unable to load Github Loader')
 
 	Loader = Loader.new(BaseUrl, LoaderFilesPath, loaderForceDownload, internetCard)
@@ -87,7 +90,7 @@ local function Run()
 	-- ######## load option ######## --
 	local chosenOption = Loader:LoadOption(option, showExtendOptionDetails)
 	local program,
-		package = Loader:LoadProgram(chosenOption, BaseUrl, programForceDownload)
+	package = Loader:LoadProgram(chosenOption, BaseUrl, programForceDownload)
 
 	-- ######## start Program ######## --
 	Loader:Configure(program, package, programLogLevel)
@@ -99,14 +102,18 @@ end
 repeat
 	local thread =
 		coroutine.create(
-		function()
-			coroutine.yield(Run())
-		end
-	)
+			function()
+				coroutine.yield(Run())
+			end
+		)
 	local success,
-		result = coroutine.resume(thread)
+	result = coroutine.resume(thread)
 	if not success then
 		print(debug.traceback(thread, result))
 	end
 	coroutine.close(thread)
 until not result or type(result) ~= 'boolean'
+
+if Loader then
+	Loader:Cleanup()
+end

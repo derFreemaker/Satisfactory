@@ -23,7 +23,7 @@
 --
 
 ---@class Core.Json
-local json = {_version = '0.1.2'}
+local json = { _version = '0.1.2' }
 
 -------------------------------------------------------------------------------
 -- Encode
@@ -41,7 +41,7 @@ local escape_char_map = {
 	['\t'] = 't'
 }
 
-local escape_char_map_inv = {['/'] = '/'}
+local escape_char_map_inv = { ['/'] = '/' }
 for k, v in pairs(escape_char_map) do
 	escape_char_map_inv[v] = k
 end
@@ -107,6 +107,13 @@ local function encode_number(val)
 	end
 	return string.format('%.14g', val)
 end
+
+---@alias Json.SerializeableTypes
+---|nil
+---|table
+---|string
+---|number
+---|boolean
 
 local type_func_map = {
 	['nil'] = encode_nil,
@@ -219,7 +226,8 @@ local function parse_string(str, i)
 			j = j + 1
 			local c = str:sub(j, j)
 			if c == 'u' then
-				local hex = str:match('^[dD][89aAbB]%x%x\\u%x%x%x%x', j + 1) or str:match('^%x%x%x%x', j + 1) or decode_error(str, j - 1, 'invalid unicode escape in string')
+				local hex = str:match('^[dD][89aAbB]%x%x\\u%x%x%x%x', j + 1) or str:match('^%x%x%x%x', j + 1) or
+				decode_error(str, j - 1, 'invalid unicode escape in string')
 				res = res .. parse_unicode_escape(hex)
 				j = j + #hex
 			else
@@ -273,7 +281,7 @@ local function parse_array(str, i)
 		end
 		-- Read token
 		x,
-			i = parse(str, i)
+		i = parse(str, i)
 		res[n] = x
 		n = n + 1
 		-- Next token
@@ -295,7 +303,7 @@ local function parse_object(str, i)
 	i = i + 1
 	while 1 do
 		local key,
-			val
+		val
 		i = next_char(str, i, space_chars, true)
 		-- Empty / end of object?
 		if str:sub(i, i) == '}' then
@@ -307,7 +315,7 @@ local function parse_object(str, i)
 			decode_error(str, i, 'expected string for key')
 		end
 		key,
-			i = parse(str, i)
+		i = parse(str, i)
 		-- Read ':' delimiter
 		i = next_char(str, i, space_chars, true)
 		if str:sub(i, i) ~= ':' then
@@ -316,7 +324,7 @@ local function parse_object(str, i)
 		i = next_char(str, i + 1, space_chars, true)
 		-- Read value
 		val,
-			i = parse(str, i)
+		i = parse(str, i)
 		-- Set
 		res[key] = val
 		-- Next token
@@ -369,7 +377,7 @@ function json.decode(str)
 		error('expected argument of type string, got ' .. type(str))
 	end
 	local res,
-		idx = parse(str, next_char(str, 1, space_chars, true))
+	idx = parse(str, next_char(str, 1, space_chars, true))
 	idx = next_char(str, idx, space_chars, true)
 	if idx <= #str then
 		decode_error(str, idx, 'trailing garbage')
