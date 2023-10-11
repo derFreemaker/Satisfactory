@@ -35,7 +35,6 @@ function component.proxy(ids) end
 ---@return FicsIt_Networks.Component[] ... components
 function component.proxy(...) end
 
-
 --- Searches the component network for components with the given query.
 ---@param query string
 ---@return FicsIt_Networks.UUID[] UUIDs

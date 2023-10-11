@@ -52,38 +52,31 @@ function computer.demote() end
 ---@return FicsIt_Networks.Computer.State
 function computer.state() end
 
-
 --- Lets the computer emit a simple beep sound with the given pitch.
 ---@param pitch number The pitch of the beep sound you want to play.
 function computer.beep(pitch) end
-
 
 --- Sets the code of the current eeprom. Doesn’t cause a system reset.
 ---@param code string The code you want to place into the eeprom.
 function computer.setEEPROM(code) end
 
-
 --- Returns the code the current eeprom contents.
 ---@return string code The code in the EEPROM
 function computer.getEEPROM() end
-
 
 --- Returns the number of game seconds passed since the save got created. A game day consists of 24 game hours, a game hour consists of 60 game minutes, a game minute consists of 60 game seconds.
 ---@return number time The number of game seconds passed since the save got created.
 function computer.time() end
 
-
 --- Returns the amount of milliseconds passed since the system started.
 ---@return integer milliseconds Amount of milliseconds since system start
 function computer.millis() end
-
 
 --- Returns some kind of strange/mysterious time data from a unknown place (the real life).
 ---@return integer Timestamp Unix Timestamp
 ---@return string DateTimeStamp Serverside Formated Date-Time-Stamp
 ---@return string DateTimeStamp Date-Time-Stamp after ISO 8601
 function computer.magicTime() end
-
 
 --- This function allows you to get all installed PCI-Devices in a computer of a given type.
 ---@generic TPCIDevice

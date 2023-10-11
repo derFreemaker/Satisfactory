@@ -17,20 +17,17 @@ filesystem = {}
 ---@return boolean success returns true if it was able to create the new filesystem
 function filesystem.makeFileSystem(type, name) end
 
-
 --- Trys to remove the filesystem with the given name from the system DevDevice.
 --- All mounts of the device will run invalid.
 ---@param name string the name of the new filesystem you want to remove
 ---@return boolean success returns true if it was able to remove the new filesystem
 function filesystem.removeFileSystem(name) end
 
-
 --- Trys to mount the system DevDevice to the given location.
 --- The DevDevice is special Device holding DeviceNodes for all filesystems added to the system. (like TmpFS and drives). It is unmountable as well as getting mounted a seccond time.
 ---@param path string path to the mountpoint were the dev device should get mounted to
 ---@return boolean success returns if it was able to mount the DevDevice
 function filesystem.initFileSystem(path) end
-
 
 ---@alias FicsIt_Networks.Filesystem.openmode
 ---|"r" read only -> file stream can just read from file. If file doesn’t exist, will return nil
@@ -45,20 +42,17 @@ function filesystem.initFileSystem(path) end
 ---@return FicsIt_Networks.Filesystem.File File
 function filesystem.open(path, mode) end
 
-
 --- Creates the folder path.
 ---@param path string folder path the function should create
 ---@param all boolean? if true creates all sub folders from the path
 ---@return boolean success returns if it was able to create the directory
 function filesystem.createDir(path, all) end
 
-
 --- Removes the filesystem object at the given path.
 ---@param path string path to the filesystem object
 ---@param all boolean? if true deletes everything
 ---@return boolean success returns if it was able to remove the node
 function filesystem.remove(path, all) end
-
 
 --- Moves the filesystem object from the given path to the other given path.
 --- Function fails if it is not able to move the object.
@@ -67,19 +61,16 @@ function filesystem.remove(path, all) end
 ---@return boolean success returns true if it was able to move the node
 function filesystem.move(from, to) end
 
-
 --- Renames the filesystem object at the given path to the given name.
 ---@param path string path to the filesystem object you want to rename
 ---@param name string the new name for your filesystem object
 ---@return boolean success returns true if it was able to rename the node
 function filesystem.rename(path, name) end
 
-
 --- Checks if the given path exists.
 ---@param path string path you want to check if it exists
 ---@return boolean exists true if given path exists
 function filesystem.exists(path) end
-
 
 --- Lists all children of this node. (f.e. items in a folder)
 ---@param path string path to the filesystem object you want to get the childs from
@@ -93,29 +84,24 @@ function filesystem.childs(path) end
 ---@return string[] childs array of string which are the names of the childs
 function filesystem.children(path) end
 
-
 --- Checks if path refers to a file.
 ---@param path string path you want to check if it refers to a file
 ---@return boolean isFile true if path refers to a file
 function filesystem.isFile(path) end
-
 
 --- Checks if given path refers to a directory.
 ---@param path string path you want to check if it refers to a directory
 ---@return boolean isDir returns true if path refers to a directory
 function filesystem.isDir(path) end
 
-
 --- This function mounts the device referenced by the the path to a device node to the given mount point.
 ---@param device string the path to the device you want to mount
 ---@param mountPoint string the path to the point were the device should get mounted to
 function filesystem.mount(device, mountPoint) end
 
-
 --- This function unmounts the device referenced to the the given mount point.
 ---@param mountPoint string the path to the point were the device is referenced to
 function filesystem.unmount(mountPoint) end
-
 
 --- Executes Lua code in the file referd by the given path.
 --- Function fails if path doesn’t exist or path doesn’t refer to a file.
@@ -123,13 +109,11 @@ function filesystem.unmount(mountPoint) end
 ---@return any ... Returned values from executed file.
 function filesystem.doFile(path) end
 
-
 --- Loads the file refered by the given path as a Lua function and returns it.
 --- Functions fails if path doesn’t exist or path doesn’t reger to a file.
 ---@param path string path to the file you want to load as Lua function
 ---@return function loadedFunction the file compiled as Lua function
 function filesystem.loadFile(path) end
-
 
 ---@alias FicsIt_Networks.Filesystem.PathParameters
 ---|0 Normalize the path. -> /my/../weird/./path → /weird/path
@@ -151,7 +135,6 @@ function filesystem.path(...) end
 ---@return string path the final combined and converted output path
 function filesystem.path(parameter, ...) end
 
-
 ---@alias FicsIt_Networks.Filesystem.PathRegister
 ---|1 Is filesystem root
 ---|2 Is Empty (includes if it is root-path)
@@ -171,7 +154,6 @@ function filesystem.analyzePath(path) end
 ---@param ... string filesystem-paths you want to get lexical features from.
 ---@return FicsIt_Networks.Filesystem.PathRegister ... bit-registers describing the features of each path
 function filesystem.analyzePath(...) end
-
 
 --- For given string, returns a bool to tell if string is a valid node (file/folder) name.
 ---@param node string node-name you want to check.
