@@ -123,7 +123,7 @@ PowerCircuit.batteryOut = nil
 --- local signalName, component = event.pull()
 --- ```
 --- - `signalName: string` <br> -> "PowerFuseChanged"
---- - `component: FicsIt_Networks.Components.PowerCircuit` <br> -> The component wich send the signal.
+--- - `component: FIN.Components.PowerCircuit` <br> -> The component wich send the signal.
 ---@deprecated
----@type FicsIt_Networks.Components.Signal
-PowerCircuit.PowerFuseChanged = {isVarArgs = true}
+---@type FIN.Components.Signal
+PowerCircuit.PowerFuseChanged = { isVarArgs = true }

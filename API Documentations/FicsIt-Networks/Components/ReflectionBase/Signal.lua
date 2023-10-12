@@ -1,7 +1,7 @@
 ---@meta
 
 --- A reflection object representing a signal.
----@class FicsIt_Networks.Components.Signal : FicsIt_Networks.Components.ReflectionBase
+---@class FIN.Components.Signal : FIN.Components.ReflectionBase
 local Signal = {}
 
 --- True if this signal has a variable amount of arguments.
@@ -16,6 +16,6 @@ Signal.isVarArgs = nil
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
----@return FicsIt_Networks.Components.Property[] parameters The parameters this signal.
+---@return FIN.Components.Property[] parameters The parameters this signal.
 function Signal:getParameters()
 end

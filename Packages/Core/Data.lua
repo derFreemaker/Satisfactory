@@ -2,10 +2,10 @@
 local PackageData = {}
 
 PackageData["CoreJson"] = {
-    Location = "Core.Json",
-    Namespace = "Core.Json",
-    IsRunnable = true,
-    Data = [[
+	Location = "Core.Json",
+	Namespace = "Core.Json",
+	IsRunnable = true,
+	Data = [[
 --
 -- json.lua
 --
@@ -398,10 +398,10 @@ return json
 }
 
 PackageData["CoreLogger"] = {
-    Location = "Core.Logger",
-    Namespace = "Core.Logger",
-    IsRunnable = true,
-    Data = [[
+	Location = "Core.Logger",
+	Namespace = "Core.Logger",
+	IsRunnable = true,
+	Data = [[
 local Event = require('Core.Event.Event')
 
 ---@alias Core.Logger.LogLevel
@@ -596,10 +596,10 @@ return Utils.Class.CreateClass(Logger, 'Core.Logger')
 }
 
 PackageData["CorePath"] = {
-    Location = "Core.Path",
-    Namespace = "Core.Path",
-    IsRunnable = true,
-    Data = [[
+	Location = "Core.Path",
+	Namespace = "Core.Path",
+	IsRunnable = true,
+	Data = [[
 ---@param str string
 ---@return string str
 local function formatStr(str)
@@ -790,10 +790,10 @@ return Utils.Class.CreateClass(Path, "Core.Path")
 }
 
 PackageData["CorePortUsage"] = {
-    Location = "Core.PortUsage",
-    Namespace = "Core.PortUsage",
-    IsRunnable = true,
-    Data = [[
+	Location = "Core.PortUsage",
+	Namespace = "Core.PortUsage",
+	IsRunnable = true,
+	Data = [[
 -- 0 .. 2^1023
 
 ---@enum Core.PortUsage
@@ -808,10 +808,10 @@ return PortUsage
 }
 
 PackageData["CoreTask"] = {
-    Location = "Core.Task",
-    Namespace = "Core.Task",
-    IsRunnable = true,
-    Data = [[
+	Location = "Core.Task",
+	Namespace = "Core.Task",
+	IsRunnable = true,
+	Data = [[
 ---@class Core.Task : object
 ---@field package func function
 ---@field package passthrough table
@@ -954,10 +954,10 @@ return Utils.Class.CreateClass(Task, "Core.Task")
 }
 
 PackageData["CoreUUID"] = {
-    Location = "Core.UUID",
-    Namespace = "Core.UUID",
-    IsRunnable = true,
-    Data = [[
+	Location = "Core.UUID",
+	Namespace = "Core.UUID",
+	IsRunnable = true,
+	Data = [[
 local math = math
 local string = string
 local random = math.random
@@ -1111,10 +1111,10 @@ return Utils.Class.CreateClass(UUID, 'Core.UUID')
 }
 
 PackageData["CoreEventEvent"] = {
-    Location = "Core.Event.Event",
-    Namespace = "Core.Event.Event",
-    IsRunnable = true,
-    Data = [[
+	Location = "Core.Event.Event",
+	Namespace = "Core.Event.Event",
+	IsRunnable = true,
+	Data = [[
 ---@class Core.Event : object
 ---@field private funcs Core.Task[]
 ---@field private onceFuncs Core.Task[]
@@ -1204,10 +1204,10 @@ return Utils.Class.CreateClass(Event, "Core.Event")
 }
 
 PackageData["CoreEventEventPullAdapter"] = {
-    Location = "Core.Event.EventPullAdapter",
-    Namespace = "Core.Event.EventPullAdapter",
-    IsRunnable = true,
-    Data = [[
+	Location = "Core.Event.EventPullAdapter",
+	Namespace = "Core.Event.EventPullAdapter",
+	IsRunnable = true,
+	Data = [[
 local Event = require('Core.Event.Event')
 
 ---@class Core.EventPullAdapter
@@ -1313,10 +1313,10 @@ return EventPullAdapter
 }
 
 PackageData["CoreFileSystemFile"] = {
-    Location = "Core.FileSystem.File",
-    Namespace = "Core.FileSystem.File",
-    IsRunnable = true,
-    Data = [[
+	Location = "Core.FileSystem.File",
+	Namespace = "Core.FileSystem.File",
+	IsRunnable = true,
+	Data = [[
 local Path = require("Core.Path")
 
 ---@alias Core.FileSystem.File.OpenModes
@@ -1329,7 +1329,7 @@ local Path = require("Core.Path")
 ---@class Core.FileSystem.File : object
 ---@field private path Core.Path
 ---@field private mode Core.FileSystem.File.OpenModes?
----@field private file FicsIt_Networks.Filesystem.File?
+---@field private file FIN.Filesystem.File?
 ---@overload fun(path: string | Core.Path) : Core.FileSystem.File
 local File = {}
 

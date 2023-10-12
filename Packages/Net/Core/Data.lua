@@ -2,10 +2,10 @@
 local PackageData = {}
 
 PackageData["NetCoreMethod"] = {
-    Location = "Net.Core.Method",
-    Namespace = "Net.Core.Method",
-    IsRunnable = true,
-    Data = [[
+	Location = "Net.Core.Method",
+	Namespace = "Net.Core.Method",
+	IsRunnable = true,
+	Data = [[
 ---@enum Net.Core.Method
 local Methods = {
 	GET = 'GET',
@@ -25,10 +25,10 @@ return Methods
 }
 
 PackageData["NetCoreNetworkClient"] = {
-    Location = "Net.Core.NetworkClient",
-    Namespace = "Net.Core.NetworkClient",
-    IsRunnable = true,
-    Data = [[
+	Location = "Net.Core.NetworkClient",
+	Namespace = "Net.Core.NetworkClient",
+	IsRunnable = true,
+	Data = [[
 local NetworkCardAdapter = require('Adapter.Computer.NetworkCard')
 local Json = require('Core.Json')
 local EventPullAdapter = require('Core.Event.EventPullAdapter')
@@ -57,7 +57,7 @@ function NetworkClient:__init(logger, networkCard)
 	EventPullAdapter:AddListener('NetworkMessage', Task(self.networkMessageRecieved, self))
 end
 
----@return FicsIt_Networks.UUID
+---@return FIN.UUID
 function NetworkClient:GetId()
 	return self.networkCard:GetId()
 end
@@ -199,15 +199,15 @@ return Utils.Class.CreateClass(NetworkClient, 'Core.Net.NetworkClient')
 }
 
 PackageData["NetCoreNetworkContext"] = {
-    Location = "Net.Core.NetworkContext",
-    Namespace = "Net.Core.NetworkContext",
-    IsRunnable = true,
-    Data = [[
+	Location = "Net.Core.NetworkContext",
+	Namespace = "Net.Core.NetworkContext",
+	IsRunnable = true,
+	Data = [[
 local Json = require('Core.Json')
 
 ---@class Net.Core.NetworkContext : object
 ---@field SignalName string
----@field SignalSender FicsIt_Networks.Components.Object
+---@field SignalSender FIN.Components.Object
 ---@field SenderIPAddress string
 ---@field Port integer
 ---@field EventName string
@@ -233,10 +233,10 @@ return Utils.Class.CreateClass(NetworkContext, 'Core.Net.NetworkContext')
 }
 
 PackageData["NetCoreNetworkPort"] = {
-    Location = "Net.Core.NetworkPort",
-    Namespace = "Net.Core.NetworkPort",
-    IsRunnable = true,
-    Data = [[
+	Location = "Net.Core.NetworkPort",
+	Namespace = "Net.Core.NetworkPort",
+	IsRunnable = true,
+	Data = [[
 local Event = require('Core.Event.Event')
 
 ---@class Net.Core.NetworkPort : object
@@ -373,10 +373,10 @@ return Utils.Class.CreateClass(NetworkPort, 'Core.Net.NetworkPort')
 }
 
 PackageData["NetCoreStatusCodes"] = {
-    Location = "Net.Core.StatusCodes",
-    Namespace = "Net.Core.StatusCodes",
-    IsRunnable = true,
-    Data = [[
+	Location = "Net.Core.StatusCodes",
+	Namespace = "Net.Core.StatusCodes",
+	IsRunnable = true,
+	Data = [[
 ---@enum Net.Core.StatusCodes
 local StatusCodes = {
 	StatusCode100Continue = 100,

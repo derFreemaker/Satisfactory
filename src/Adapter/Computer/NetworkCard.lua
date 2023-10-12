@@ -1,18 +1,18 @@
 ---@class Adapter.Computer.NetworkCard : object
----@field private networkCard FicsIt_Networks.Components.FINComputerMod.NetworkCard_C
----@overload fun(idOrIndexOrNetworkCard: FicsIt_Networks.UUID | integer | FicsIt_Networks.Components.FINComputerMod.NetworkCard_C) : Adapter.Computer.NetworkCard
+---@field private networkCard FIN.Components.FINComputerMod.NetworkCard_C
+---@overload fun(idOrIndexOrNetworkCard: FIN.UUID | integer | FIN.Components.FINComputerMod.NetworkCard_C) : Adapter.Computer.NetworkCard
 local NetworkCard = {}
 
 ---@private
----@param idOrIndexOrNetworkCard FicsIt_Networks.UUID | integer | FicsIt_Networks.Components.FINComputerMod.NetworkCard_C
+---@param idOrIndexOrNetworkCard FIN.UUID | integer | FIN.Components.FINComputerMod.NetworkCard_C
 function NetworkCard:__init(idOrIndexOrNetworkCard)
 	if not idOrIndexOrNetworkCard then
 		idOrIndexOrNetworkCard = 1
 	end
 
 	if type(idOrIndexOrNetworkCard) == 'string' then
-		---@cast idOrIndexOrNetworkCard FicsIt_Networks.UUID
-		self.networkCard = component.proxy(idOrIndexOrNetworkCard) --[[@as FicsIt_Networks.Components.FINComputerMod.NetworkCard_C]]
+		---@cast idOrIndexOrNetworkCard FIN.UUID
+		self.networkCard = component.proxy(idOrIndexOrNetworkCard) --[[@as FIN.Components.FINComputerMod.NetworkCard_C]]
 		return
 	end
 
@@ -24,11 +24,11 @@ function NetworkCard:__init(idOrIndexOrNetworkCard)
 		return
 	end
 
-	---@cast idOrIndexOrNetworkCard FicsIt_Networks.Components.FINComputerMod.NetworkCard_C
+	---@cast idOrIndexOrNetworkCard FIN.Components.FINComputerMod.NetworkCard_C
 	self.networkCard = idOrIndexOrNetworkCard
 end
 
----@return FicsIt_Networks.UUID
+---@return FIN.UUID
 function NetworkCard:GetId()
 	return self.networkCard.id
 end

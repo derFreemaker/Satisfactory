@@ -1,4 +1,4 @@
 ---@meta
 
----@class FicsIt_Networks.Components.FINComputerMod : Satisfactory.Components.FGBuildable
+---@class FIN.Components.FINComputerMod : Satisfactory.Components.FGBuildable
 local FINComputerMod = {}

@@ -1,6 +1,6 @@
 ---@meta
 
----@class FicsIt_Networks.Filesystem.File
+---@class FIN.Filesystem.File
 local File = {}
 
 ---@param data string

@@ -61,8 +61,8 @@ end
 --- local signalName, component, item = event.pull()
 --- ```
 --- - `signalName: string` <br> -> "ItemTransfer"
---- - `component: FicsIt_Networks.Components.FactoryConnection` <br> -> The component wich send the signal.
---- - `item: FicsIt_Networks.Components.Item` <br> -> The transferd item
+--- - `component: FIN.Components.FactoryConnection` <br> -> The component wich send the signal.
+--- - `item: FIN.Components.Item` <br> -> The transferd item
 ---@deprecated
----@type FicsIt_Networks.Components.Signal
+---@type FIN.Components.Signal
 FactoryConnection.ItemTransfer = { isVarArgs = false }

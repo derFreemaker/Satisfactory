@@ -10,7 +10,7 @@ local Path = require("Core.Path")
 ---@class Core.FileSystem.File : object
 ---@field private path Core.Path
 ---@field private mode Core.FileSystem.File.OpenModes?
----@field private file FicsIt_Networks.Filesystem.File?
+---@field private file FIN.Filesystem.File?
 ---@overload fun(path: string | Core.Path) : Core.FileSystem.File
 local File = {}
 

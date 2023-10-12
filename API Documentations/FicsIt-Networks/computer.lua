@@ -4,7 +4,7 @@
 --- [Documentation](https://docs.ficsit.app/ficsit-networks/latest/index.html)
 --- [Code](https://github.com/Panakotta00/FicsIt-Networks/tree/master)
 --- Date: 08.09.2023
----@class FicsIt_Networks.Computer.Api
+---@class FIN.Computer.Api
 computer = {}
 
 ---@deprecated
@@ -18,7 +18,7 @@ function computer.getMemory() end
 --- Returns the current computer case
 --- Not sure what it does. "https://github.com/Panakotta00/FicsIt-Networks/blob/659a65dbe0e56cdbee2f225bdbb3a9d988b35657/Source/FicsItNetworks/FicsItKernel/Processor/Lua/LuaComputerAPI.cpp#L20"
 --- ### Not in Documentation. ###
----@return FicsIt_Networks.Components.ComputerCase_C
+---@return FIN.Components.ComputerCase_C
 function computer.getInstance() end
 
 --- Stops the current code execution immediately and queues the system to restart in the next tick.
@@ -43,13 +43,13 @@ function computer.promote() end
 --- ### Not in Documentation. ###
 function computer.demote() end
 
----@alias FicsIt_Networks.Computer.State
+---@alias FIN.Computer.State
 ---|0 # Sync
 ---|1 # Async
 
 --- If computer state is async probably after calling computer.skip.
 --- ### Not in Documentation. ###
----@return FicsIt_Networks.Computer.State
+---@return FIN.Computer.State
 function computer.state() end
 
 --- Lets the computer emit a simple beep sound with the given pitch.
@@ -80,6 +80,6 @@ function computer.magicTime() end
 
 --- This function allows you to get all installed PCI-Devices in a computer of a given type.
 ---@generic TPCIDevice
----@param type FicsIt_Networks.Class
+---@param type FIN.Class
 ---@return TPCIDevice[]
 function computer.getPCIDevices(type) end

@@ -30,13 +30,13 @@ require = nil
 
 ---@class float : number
 
----@class FicsIt_Networks.Class
+---@class FIN.Class
 
----@class FicsIt_Networks.ItemType
+---@class FIN.ItemType
 
----@class FicsIt_Networks.UUID : string
+---@class FIN.UUID : string
 
----@class FicsIt_Networks.Component
+---@class FIN.Component
 local Component = {}
 
 --- The network id of this object.
@@ -46,7 +46,7 @@ local Component = {}
 --- * Runtime Synchronous - Can be called/changed in Game Tick
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
 --- * Read Only - The value of this property can not be changed by code
----@type FicsIt_Networks.UUID
+---@type FIN.UUID
 Component.id = nil
 
 --#endregion
@@ -55,19 +55,19 @@ Component.id = nil
 
 --- Tries to find an object type with the given name, and returns the found type.
 ---@param name string
----@return FicsIt_Networks.Class Class
+---@return FIN.Class Class
 function findClass(name)
 end
 
 --- Tries to find a structure type with the given name, and returns the found type.
 ---@param name string
----@return FicsIt_Networks.Class Class
+---@return FIN.Class Class
 function findStruct(name)
 end
 
 --- Tries to find an item type with the given name, and returns the found item type.
 ---@param name string
----@return FicsIt_Networks.ItemType ItemType
+---@return FIN.ItemType ItemType
 function findItem(name)
 end
 

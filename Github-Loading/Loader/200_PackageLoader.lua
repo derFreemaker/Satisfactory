@@ -1,4 +1,4 @@
-local LoadedLoaderFiles = ({...})[1]
+local LoadedLoaderFiles = ({ ... })[1]
 ---@type Github_Loading.Package
 local Package = LoadedLoaderFiles['/Github-Loading/Loader/Package'][1]
 ---@type Utils
@@ -9,7 +9,7 @@ local Utils = LoadedLoaderFiles['/Github-Loading/Loader/Utils'][1]
 ---@field logger Github_Loading.Logger
 ---@field private packagesUrl string
 ---@field private packagesPath string
----@field private internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+---@field private internetCard FIN.Components.FINComputerMod.InternetCard_C
 local PackageLoader = {}
 
 ---@param url string
@@ -50,10 +50,11 @@ end
 ---@param packagesUrl string
 ---@param packagesPath string
 ---@param logger Github_Loading.Logger
----@param internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+---@param internetCard FIN.Components.FINComputerMod.InternetCard_C
 ---@return Github_Loading.PackageLoader
 function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard)
-	assert(not (not filesystem.exists(packagesPath) and not filesystem.createDir(packagesPath)), 'Unable to create folder for packages')
+	assert(not (not filesystem.exists(packagesPath) and not filesystem.createDir(packagesPath)),
+		'Unable to create folder for packages')
 	return setmetatable(
 		{
 			Packages = {},
@@ -62,7 +63,7 @@ function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard)
 			logger = logger,
 			internetCard = internetCard
 		},
-		{__index = PackageLoader}
+		{ __index = PackageLoader }
 	)
 end
 
@@ -88,10 +89,11 @@ function PackageLoader:DownloadPackage(packageName, forceDownload)
 	forceDownload = forceDownload or false
 	packageName = packageName:gsub('%.', '/')
 	local packagePath = self.packagesPath .. '/' .. packageName
-	assert(not (not filesystem.exists(packagePath) and not filesystem.createDir(packagePath, true)), "Unable to create folder for package: '" .. packageName .. "'")
+	assert(not (not filesystem.exists(packagePath) and not filesystem.createDir(packagePath, true)),
+		"Unable to create folder for package: '" .. packageName .. "'")
 	local packageUrl = self.packagesUrl .. '/' .. packageName
 	local success,
-		package = self:internalDownloadPackage(packageUrl, packagePath, forceDownload)
+	package = self:internalDownloadPackage(packageUrl, packagePath, forceDownload)
 	if not success or not package or not package:Download(packageUrl, packagePath) then
 		return false
 	end
@@ -110,7 +112,7 @@ function PackageLoader:LoadPackage(packageName, forceDownload)
 	end
 	local success
 	success,
-		package = self:DownloadPackage(packageName, forceDownload)
+	package = self:DownloadPackage(packageName, forceDownload)
 	if success then
 		---@cast package Github_Loading.Package
 		table.insert(self.Packages, package)

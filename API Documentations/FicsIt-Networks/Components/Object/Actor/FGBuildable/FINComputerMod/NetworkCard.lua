@@ -1,6 +1,6 @@
 ---@meta
 
----@class FicsIt_Networks.Components.FINComputerMod.NetworkCard : FicsIt_Networks.Components.FINComputerMod
+---@class FIN.Components.NetworkCard : FIN.Components.FINComputerMod
 local NetworkCard = {}
 
 --- Sends a network message to the receiver with the given port. The data you want to add can be passed as additional parameters.
@@ -59,17 +59,17 @@ end
 --- local signalName, component, sender, port, ... = event.pull()
 --- ```
 --- - `signalName: string` <br> -> "NetworkMessage"
---- - `component: FicsIt_Networks.Components.FINComputerMod.NetworkCard_C` <br> -> The component wich send the signal.
+--- - `component: FIN.Components.FINComputerMod.NetworkCard_C` <br> -> The component wich send the signal.
 --- - `sender: string` <br> -> The component id of the sender of the network message.
 --- - `port: integer` <br> -> The port on which the network message got sent.
 --- - `...: nil | booleans | numbers | string` <br> -> The 7 addtional parameters if some were sent.
 ---@deprecated
----@type FicsIt_Networks.Components.Signal
-NetworkCard.NetworkMessage = {isVarArgs = true}
+---@type FIN.Components.Signal
+NetworkCard.NetworkMessage = { isVarArgs = true }
 
 --- The FicsIt Networks Card allows yout to send network messages to other network cards in the same computer network. <br>
 --- You can use unicast and broadcast messages to share information between multiple different computers in the same network. <br>
 --- This is the best and easiest way for you to communicate between multiple computers. <br>
 --- If you want to recieve network messages, make sure you also open the according port, since every message is asscoiated with a port allowing for better filtering.
----@class FicsIt_Networks.Components.FINComputerMod.NetworkCard_C : FicsIt_Networks.Components.FINComputerMod.NetworkCard
+---@class FIN.Components.FINComputerMod.NetworkCard_C : FIN.Components.NetworkCard
 local NetworkCard_C = {}

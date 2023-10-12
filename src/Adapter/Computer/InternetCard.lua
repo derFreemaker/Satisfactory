@@ -1,5 +1,5 @@
 ---@class Adapter.InternetCard : object
----@field internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+---@field internetCard FIN.Components.FINComputerMod.InternetCard_C
 local InternetCard = {}
 
 ---@param url string
@@ -27,7 +27,7 @@ function InternetCard.Static__Download(url, logger, internetCardAdapter)
     return true, data, code
 end
 
----@param indexOrInternetCard number | FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+---@param indexOrInternetCard number | FIN.Components.FINComputerMod.InternetCard_C
 function InternetCard:__init(indexOrInternetCard)
     if not indexOrInternetCard then
         indexOrInternetCard = 1
@@ -41,7 +41,7 @@ function InternetCard:__init(indexOrInternetCard)
         return
     end
 
-    ---@cast indexOrInternetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+    ---@cast indexOrInternetCard FIN.Components.FINComputerMod.InternetCard_C
     self.internetCard = indexOrInternetCard
 end
 

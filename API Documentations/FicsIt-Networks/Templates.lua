@@ -36,5 +36,5 @@ end
 --- - `test: string` <br> -> description
 --- - `...: any` <br> -> addtional parameters
 ---@deprecated
----@type FicsIt_Networks.Components.Signal
-Template.Signal = {isVarArgs = true}
+---@type FIN.Components.Signal
+Template.Signal = { isVarArgs = true }

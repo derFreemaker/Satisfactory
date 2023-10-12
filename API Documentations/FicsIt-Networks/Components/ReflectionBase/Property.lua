@@ -1,6 +1,6 @@
 ---@meta
 
----@alias FicsIt_Networks.Components.Property.DataType
+---@alias FIN.Components.Property.DataType
 ---|0 nil
 ---|1 boolean
 ---|2 integer
@@ -14,7 +14,7 @@
 ---|10 anything
 
 --- Bits and their meaning (least significant bit first)
----@alias FicsIt_Networks.Components.Property.Flags
+---@alias FIN.Components.Property.Flags
 ---|0 Is this property a member attribute.
 ---|1 Is this property a read only.
 ---|2 Is this property a parameter.
@@ -26,7 +26,7 @@
 ---|8 This property is a class attribute.
 
 --- A Reflection object that holds information about properties and parameters.
----@class FicsIt_Networks.Components.Property
+---@class FIN.Components.Property
 local Property = {}
 
 --- The data type of this property.
@@ -34,7 +34,7 @@ local Property = {}
 --- * Runtime Synchronous - Can be called/changed in Game Tick
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
 --- * Read Only - The value of this property can not be changed by code
----@type FicsIt_Networks.Components.Property.DataType
+---@type FIN.Components.Property.DataType
 Property.dataType = nil
 
 --- The property bit flag register defining some behaviour of it.
@@ -42,5 +42,5 @@ Property.dataType = nil
 --- * Runtime Synchronous - Can be called/changed in Game Tick
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
 --- * Read Only - The value of this property can not be changed by code
----@type FicsIt_Networks.Components.Property.Flags
+---@type FIN.Components.Property.Flags
 Property.flags = nil

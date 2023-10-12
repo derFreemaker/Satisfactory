@@ -26,7 +26,7 @@ function NetworkClient:__init(logger, networkCard)
 	EventPullAdapter:AddListener('NetworkMessage', Task(self.networkMessageRecieved, self))
 end
 
----@return FicsIt_Networks.UUID
+---@return FIN.UUID
 function NetworkClient:GetId()
 	return self.networkCard:GetId()
 end

@@ -1,13 +1,13 @@
 ---@meta
 
 --- Reflection Object that holds information about structures.
----@class FicsIt_Networks.Components.Struct : FicsIt_Networks.Components.ReflectionBase
+---@class FIN.Components.Struct : FIN.Components.ReflectionBase
 local Struct = {}
 
 --- Returns the parent type of this type
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick
----@return FicsIt_Networks.Components.Class parent The parent type of this type.
+---@return FIN.Components.Class parent The parent type of this type.
 function Struct:getParent()
 end
 
@@ -15,7 +15,7 @@ end
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
----@return FicsIt_Networks.Components.Property[] properties The properties this specific type implements (excluding properties from parent types).
+---@return FIN.Components.Property[] properties The properties this specific type implements (excluding properties from parent types).
 function Struct:getProperties()
 end
 
@@ -23,7 +23,7 @@ end
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
----@return FicsIt_Networks.Components.Property[] properties The properties this type implements including properties from parent types.
+---@return FIN.Components.Property[] properties The properties this type implements including properties from parent types.
 function Struct:getAllProperties()
 end
 
@@ -31,7 +31,7 @@ end
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
----@return FicsIt_Networks.Components.Function[] functions The functions this specific type implements (excluding functions from parent types).
+---@return FIN.Components.Function[] functions The functions this specific type implements (excluding functions from parent types).
 function Struct:getFunctions()
 end
 
@@ -39,7 +39,7 @@ end
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
----@return FicsIt_Networks.Components.Function[] functions The functions this type implements including functions from parent types.
+---@return FIN.Components.Function[] functions The functions this type implements including functions from parent types.
 function Struct:getAllFunctions()
 end
 
@@ -47,7 +47,7 @@ end
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
----@param parent FicsIt_Networks.Components.Struct The parent struct you want to check if this struct is a child of.
+---@param parent FIN.Components.Struct The parent struct you want to check if this struct is a child of.
 ---@return boolean isChild True of this struct is a child of parent.
 function Struct:isChildOf(parent)
 end

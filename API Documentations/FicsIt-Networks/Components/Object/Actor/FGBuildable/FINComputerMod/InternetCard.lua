@@ -1,9 +1,9 @@
 ---@meta
 
----@class FicsIt_Networks.Components.FINComputerMod.FINInternetCard : FicsIt_Networks.Components.FINComputerMod
+---@class FIN.Components.FINInternetCard : FIN.Components.FINComputerMod
 local InternetCard = {}
 
----@alias FicsIt_Networks.Components.FINComputerMod.FINInternetCard.HttpMethods
+---@alias FIN.Components.FINComputerMod.FINInternetCard.HttpMethods
 ---|"CREATE"
 ---|"GET"
 ---|"HEAD"
@@ -21,12 +21,12 @@ local InternetCard = {}
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
 --- * Variable Arguments - Can have any additional arguments as described.
 ---@param url string The Url for which you want to make an HTTP Request.
----@param method FicsIt_Networks.Components.FINComputerMod.FINInternetCard.HttpMethods The http request method/verb you want to make the request.
+---@param method FIN.Components.FINComputerMod.FINInternetCard.HttpMethods The http request method/verb you want to make the request.
 ---@param data string The http request payload you want to sent. Leave empty: ```""``` if you want to send no data.
----@return FicsIt_Networks.Components.Future ReturnValue
+---@return FIN.Components.Future ReturnValue
 function InternetCard:request(url, method, data)
 end
 
 --- A Internet Card!
----@class FicsIt_Networks.Components.FINComputerMod.InternetCard_C : FicsIt_Networks.Components.FINComputerMod.FINInternetCard
+---@class FIN.Components.FINComputerMod.InternetCard_C : FIN.Components.FINInternetCard
 local InternetCard_C = {}

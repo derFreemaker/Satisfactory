@@ -1,7 +1,7 @@
 ---@meta
 
 --- The base class for all things of the reflection system.
----@class FicsIt_Networks.Components.ReflectionBase : Satisfactory.Components.Object
+---@class FIN.Components.ReflectionBase : Satisfactory.Components.Object
 local ReflectionBase = {}
 
 --- The internal name.

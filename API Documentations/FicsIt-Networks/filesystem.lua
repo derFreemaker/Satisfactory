@@ -4,15 +4,15 @@
 --- [Documentation](https://docs.ficsit.app/ficsit-networks/latest/index.html)
 --- [Code](https://github.com/Panakotta00/FicsIt-Networks/tree/master)
 --- Date: 08.09.2023
----@class FicsIt_Networks.Filesystem.Api
+---@class FIN.Filesystem.Api
 filesystem = {}
 
----@alias FicsIt_Networks.Filesystem.Type
+---@alias FIN.Filesystem.Type
 ---|"tmpfs" # A temporary filesystem only existing at runtime in the memory of your computer. All data will be lost when the system stops.
 
 --- Trys to create a new file system of the given type with the given name.
 --- The created filesystem will be added to the system DevDevice.
----@param type FicsIt_Networks.Filesystem.Type # the type of the new filesystem
+---@param type FIN.Filesystem.Type # the type of the new filesystem
 ---@param name string the name of the new filesystem you want to create
 ---@return boolean success returns true if it was able to create the new filesystem
 function filesystem.makeFileSystem(type, name) end
@@ -29,7 +29,7 @@ function filesystem.removeFileSystem(name) end
 ---@return boolean success returns if it was able to mount the DevDevice
 function filesystem.initFileSystem(path) end
 
----@alias FicsIt_Networks.Filesystem.openmode
+---@alias FIN.Filesystem.openmode
 ---|"r" read only -> file stream can just read from file. If file doesn’t exist, will return nil
 ---|"w" write -> file stream can read and write creates the file if it doesn’t exist
 ---|"a" end of file -> file stream can read and write cursor is set to the end of file
@@ -38,8 +38,8 @@ function filesystem.initFileSystem(path) end
 
 --- Opens a file-stream and returns it as File-table.
 ---@param path string
----@param mode FicsIt_Networks.Filesystem.openmode
----@return FicsIt_Networks.Filesystem.File File
+---@param mode FIN.Filesystem.openmode
+---@return FIN.Filesystem.File File
 function filesystem.open(path, mode) end
 
 --- Creates the folder path.
@@ -115,7 +115,7 @@ function filesystem.doFile(path) end
 ---@return function loadedFunction the file compiled as Lua function
 function filesystem.loadFile(path) end
 
----@alias FicsIt_Networks.Filesystem.PathParameters
+---@alias FIN.Filesystem.PathParameters
 ---|0 Normalize the path. -> /my/../weird/./path → /weird/path
 ---|1 Normalizes and converts the path to an absolute path. -> my/abs/path → /my/abs/path
 ---|2 Normalizes and converts the path to an relative path. -> /my/relative/path → my/relative/path
@@ -130,12 +130,12 @@ function filesystem.path(...) end
 
 --- Combines a variable amount of strings as paths together to one big path.
 --- Additionally, applies given conversion.
----@param parameter FicsIt_Networks.Filesystem.PathParameters defines a conversion that should get applied to the output path.
+---@param parameter FIN.Filesystem.PathParameters defines a conversion that should get applied to the output path.
 ---@param ... string paths to be combined
 ---@return string path the final combined and converted output path
 function filesystem.path(parameter, ...) end
 
----@alias FicsIt_Networks.Filesystem.PathRegister
+---@alias FIN.Filesystem.PathRegister
 ---|1 Is filesystem root
 ---|2 Is Empty (includes if it is root-path)
 ---|3 Is absolute path
@@ -146,13 +146,13 @@ function filesystem.path(parameter, ...) end
 --- Will be checked for lexical features.
 --- Return value which is a bit-flag-register describing those lexical features.
 ---@param path string filesystem-path you want to get lexical features from.
----@return FicsIt_Networks.Filesystem.PathRegister BitRegister bit-register describing the features of each path
+---@return FIN.Filesystem.PathRegister BitRegister bit-register describing the features of each path
 function filesystem.analyzePath(path) end
 
 --- Each string will be viewed as one filesystem-path and will be checked for lexical features.
 --- Each of those string will then have a integer return value which is a bit-flag-register describing those lexical features.
 ---@param ... string filesystem-paths you want to get lexical features from.
----@return FicsIt_Networks.Filesystem.PathRegister ... bit-registers describing the features of each path
+---@return FIN.Filesystem.PathRegister ... bit-registers describing the features of each path
 function filesystem.analyzePath(...) end
 
 --- For given string, returns a bool to tell if string is a valid node (file/folder) name.

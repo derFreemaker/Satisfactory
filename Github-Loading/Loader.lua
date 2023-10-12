@@ -35,7 +35,7 @@ local LoaderFiles = {
 ---@param url string
 ---@param path string
 ---@param forceDownload boolean
----@param internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+---@param internetCard FIN.Components.FINComputerMod.InternetCard_C
 ---@return boolean
 local function internalDownload(url, path, forceDownload, internetCard)
 	if forceDownload == nil then
@@ -114,7 +114,7 @@ end
 ---@param loaderBaseUrl string
 ---@param loaderBasePath string
 ---@param forceDownload boolean
----@param internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+---@param internetCard FIN.Components.FINComputerMod.InternetCard_C
 ---@return boolean
 local function downloadFiles(loaderBaseUrl, loaderBasePath, forceDownload, internetCard)
 	---@param path string
@@ -218,7 +218,7 @@ end
 ---@field private loaderBaseUrl string
 ---@field private loaderBasePath string
 ---@field private forceDownload boolean
----@field private internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+---@field private internetCard FIN.Components.FINComputerMod.InternetCard_C
 ---@field private loadedLoaderFiles Dictionary<string, any>
 ---@field Logger Github_Loading.Logger
 local Loader = {}
@@ -226,7 +226,7 @@ local Loader = {}
 ---@param loaderBaseUrl string
 ---@param loaderBasePath string
 ---@param forceDownload boolean
----@param internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+---@param internetCard FIN.Components.FINComputerMod.InternetCard_C
 ---@return Github_Loading.Loader
 function Loader.new(loaderBaseUrl, loaderBasePath, forceDownload, internetCard)
 	local metatable = {
@@ -433,7 +433,7 @@ function Loader:Run(program)
 end
 
 function Loader:Cleanup()
-	---@type FicsIt_Networks.Filesystem.File[]
+	---@type FIN.Filesystem.File[]
 	local openFiles = self.loadedLoaderFiles["/Github-Loading/Loader/Utils/10_File.lua"][2]
 
 	for _, file in pairs(openFiles) do

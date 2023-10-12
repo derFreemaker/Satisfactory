@@ -7,7 +7,7 @@ PackageData["AdapterComputerInternetCard"] = {
     IsRunnable = true,
     Data = [[
 ---@class Adapter.InternetCard : object
----@field internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+---@field internetCard FIN.Components.FINComputerMod.InternetCard_C
 local InternetCard = {}
 
 ---@param url string
@@ -35,7 +35,7 @@ function InternetCard.Static__Download(url, logger, internetCardAdapter)
     return true, data, code
 end
 
----@param indexOrInternetCard number | FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+---@param indexOrInternetCard number | FIN.Components.FINComputerMod.InternetCard_C
 function InternetCard:__init(indexOrInternetCard)
     if not indexOrInternetCard then
         indexOrInternetCard = 1
@@ -49,7 +49,7 @@ function InternetCard:__init(indexOrInternetCard)
         return
     end
 
-    ---@cast indexOrInternetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+    ---@cast indexOrInternetCard FIN.Components.FINComputerMod.InternetCard_C
     self.internetCard = indexOrInternetCard
 end
 
@@ -84,20 +84,20 @@ PackageData["AdapterComputerNetworkCard"] = {
     IsRunnable = true,
     Data = [[
 ---@class Adapter.Computer.NetworkCard : object
----@field private networkCard FicsIt_Networks.Components.FINComputerMod.NetworkCard_C
----@overload fun(idOrIndexOrNetworkCard: FicsIt_Networks.UUID | integer | FicsIt_Networks.Components.FINComputerMod.NetworkCard_C) : Adapter.Computer.NetworkCard
+---@field private networkCard FIN.Components.FINComputerMod.NetworkCard_C
+---@overload fun(idOrIndexOrNetworkCard: FIN.UUID | integer | FIN.Components.FINComputerMod.NetworkCard_C) : Adapter.Computer.NetworkCard
 local NetworkCard = {}
 
 ---@private
----@param idOrIndexOrNetworkCard FicsIt_Networks.UUID | integer | FicsIt_Networks.Components.FINComputerMod.NetworkCard_C
+---@param idOrIndexOrNetworkCard FIN.UUID | integer | FIN.Components.FINComputerMod.NetworkCard_C
 function NetworkCard:__init(idOrIndexOrNetworkCard)
 	if not idOrIndexOrNetworkCard then
 		idOrIndexOrNetworkCard = 1
 	end
 
 	if type(idOrIndexOrNetworkCard) == 'string' then
-		---@cast idOrIndexOrNetworkCard FicsIt_Networks.UUID
-		self.networkCard = component.proxy(idOrIndexOrNetworkCard) --{{{@as FicsIt_Networks.Components.FINComputerMod.NetworkCard_C}}}
+		---@cast idOrIndexOrNetworkCard FIN.UUID
+		self.networkCard = component.proxy(idOrIndexOrNetworkCard) --{{{@as FIN.Components.FINComputerMod.NetworkCard_C}}}
 		return
 	end
 
@@ -109,11 +109,11 @@ function NetworkCard:__init(idOrIndexOrNetworkCard)
 		return
 	end
 
-	---@cast idOrIndexOrNetworkCard FicsIt_Networks.Components.FINComputerMod.NetworkCard_C
+	---@cast idOrIndexOrNetworkCard FIN.Components.FINComputerMod.NetworkCard_C
 	self.networkCard = idOrIndexOrNetworkCard
 end
 
----@return FicsIt_Networks.UUID
+---@return FIN.UUID
 function NetworkCard:GetId()
 	return self.networkCard.id
 end
@@ -159,12 +159,12 @@ PackageData["AdapterPipelineValve"] = {
     IsRunnable = true,
     Data = [[
 ---@class Adapter.Pipeline.Valve : object
----@field private valve FicsIt_Networks.Components.Factory.Build_Valve_C
----@overload fun(id: FicsIt_Networks.UUID, valve: FicsIt_Networks.Components.Factory.Build_Valve_C?)
+---@field private valve FIN.Components.Factory.Build_Valve_C
+---@overload fun(id: FIN.UUID, valve: FIN.Components.Factory.Build_Valve_C?)
 local Valve = {}
 
 ---@param nickName string?
----@return FicsIt_Networks.UUID[]
+---@return FIN.UUID[]
 function Valve.Static__FindAllValvesInNetwork(nickName)
 	local valveIds = {}
 	if nickName == nil then
@@ -187,17 +187,17 @@ function Valve.Static__FindAllValvesInNetworkAndAddAdapter(nickName)
 end
 
 ---@private
----@param idOrValve FicsIt_Networks.UUID | FicsIt_Networks.Components.Factory.Build_Valve_C
+---@param idOrValve FIN.UUID | FIN.Components.Factory.Build_Valve_C
 function Valve:__init(idOrValve)
 	if type(idOrValve) == 'string' then
-		self.valve = component.proxy(idOrValve) --{{{@as FicsIt_Networks.Components.Factory.Build_Valve_C}}}
+		self.valve = component.proxy(idOrValve) --{{{@as FIN.Components.Factory.Build_Valve_C}}}
 		return
 	end
-	---@cast idOrValve FicsIt_Networks.Components.Factory.Build_Valve_C
+	---@cast idOrValve FIN.Components.Factory.Build_Valve_C
 	self.valve = idOrValve
 end
 
----@return FicsIt_Networks.UUID
+---@return FIN.UUID
 function Valve:GetId()
 	return self.valve.id
 end

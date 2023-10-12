@@ -1,7 +1,7 @@
 ---@meta
 
 --- The base class of ervery object
----@class Satisfactory.Components.Object : FicsIt_Networks.Component
+---@class Satisfactory.Components.Object : FIN.Component
 local Object = {}
 
 --- A Hash of this object. This is a value that nearly uniquely identifies this object.
@@ -40,6 +40,6 @@ end
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
----@return FicsIt_Networks.Components.Class type The type of this class instance
+---@return FIN.Components.Class type The type of this class instance
 function Object:getType()
 end
