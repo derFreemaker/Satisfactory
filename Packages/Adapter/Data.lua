@@ -159,8 +159,8 @@ PackageData["AdapterPipelineValve"] = {
     IsRunnable = true,
     Data = [[
 ---@class Adapter.Pipeline.Valve : object
----@field private valve FIN.Components.Factory.Build_Valve_C
----@overload fun(id: FIN.UUID, valve: FIN.Components.Factory.Build_Valve_C?)
+---@field private valve Satisfactory.Components.Factory.Build_Valve_C
+---@overload fun(id: FIN.UUID, valve: Satisfactory.Components.Factory.Build_Valve_C?)
 local Valve = {}
 
 ---@param nickName string?
@@ -187,13 +187,13 @@ function Valve.Static__FindAllValvesInNetworkAndAddAdapter(nickName)
 end
 
 ---@private
----@param idOrValve FIN.UUID | FIN.Components.Factory.Build_Valve_C
+---@param idOrValve FIN.UUID | Satisfactory.Components.Factory.Build_Valve_C
 function Valve:__init(idOrValve)
 	if type(idOrValve) == 'string' then
-		self.valve = component.proxy(idOrValve) --{{{@as FIN.Components.Factory.Build_Valve_C}}}
+		self.valve = component.proxy(idOrValve) --{{{@as Satisfactory.Components.Factory.Build_Valve_C}}}
 		return
 	end
-	---@cast idOrValve FIN.Components.Factory.Build_Valve_C
+	---@cast idOrValve Satisfactory.Components.Factory.Build_Valve_C
 	self.valve = idOrValve
 end
 

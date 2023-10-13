@@ -63,7 +63,8 @@ local function tableToLineTree(node, maxLevel, properties, level, padding)
 
 			if level < maxLevel then
 				---@cast properties string[]
-				local childLines = tableToLineTree(node[k], maxLevel, properties, level + 1, padding .. (i == #keys and '    ' or '│   '))
+				local childLines = tableToLineTree(node[k], maxLevel, properties, level + 1,
+					padding .. (i == #keys and '    ' or '│   '))
 				for _, l in ipairs(childLines) do
 					table.insert(lines, l)
 				end
@@ -147,43 +148,71 @@ function Logger:FreeLine(logLevel)
 	self.OnLog:Trigger(self, '')
 end
 
----@param message any
-function Logger:LogTrace(message)
-	if message == nil then
+---@param ... any
+---@return string?
+local function formatMessage(...)
+	local messages = { ... }
+	if #messages == 0 then
+		return nil
+	end
+	local message = ""
+	for i, arg in pairs(messages) do
+		if i == 1 then
+			message = tostring(arg) or "nil"
+		else
+			message = message .. "   " .. (tostring(arg) or "nil")
+		end
+	end
+	return message
+end
+
+---@param ... any
+function Logger:LogTrace(...)
+	local message = formatMessage(...)
+	if not message then
 		return
 	end
+
 	self:Log('TRACE ' .. tostring(message), 0)
 end
 
----@param message any
-function Logger:LogDebug(message)
-	if message == nil then
+---@param ... any
+function Logger:LogDebug(...)
+	local message = formatMessage(...)
+	if not message then
 		return
 	end
+
 	self:Log('DEBUG ' .. tostring(message), 1)
 end
 
----@param message any
-function Logger:LogInfo(message)
-	if message == nil then
+---@param ... any
+function Logger:LogInfo(...)
+	local message = formatMessage(...)
+	if not message then
 		return
 	end
+
 	self:Log('INFO ' .. tostring(message), 2)
 end
 
----@param message any
-function Logger:LogWarning(message)
-	if message == nil then
+---@param ... any
+function Logger:LogWarning(...)
+	local message = formatMessage(...)
+	if not message then
 		return
 	end
+
 	self:Log('WARN ' .. tostring(message), 3)
 end
 
----@param message any
-function Logger:LogError(message)
-	if message == nil then
+---@param ... any
+function Logger:LogError(...)
+	local message = formatMessage(...)
+	if not message then
 		return
 	end
+
 	self:Log('ERROR ' .. tostring(message), 4)
 end
 

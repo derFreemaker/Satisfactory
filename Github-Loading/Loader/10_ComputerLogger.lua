@@ -1,7 +1,7 @@
 ---@class Computer.Logger
 ---@field private LoggerHistory { [integer]: (Github_Loading.Logger | Core.Logger) }
 ---@field package CurrentLogger (Github_Loading.Logger | Core.Logger)?
-___logger = { LoggerHistory = {}, CurrentLogger = nil}
+___logger = { LoggerHistory = {}, CurrentLogger = nil }
 
 function ___logger:initialize()
     local function wrapFunc(func)
@@ -20,7 +20,8 @@ end
 ---@param logger Github_Loading.Logger | Core.Logger
 function ___logger:setLogger(logger)
     if logger == nil then
-        return end
+        return
+    end
     table.insert(self.LoggerHistory, logger)
     self.CurrentLogger = logger
 end
@@ -44,7 +45,7 @@ function ___logger:log(...)
         if i == 1 then
             message = tostring(arg) or "nil"
         else
-            message = message .. " " .. (tostring(arg) or "nil")
+            message = message .. "   " .. (tostring(arg) or "nil")
         end
     end
     local currentLogger = self.CurrentLogger
@@ -83,7 +84,7 @@ function ___logger:assert(condition, message, ...)
         if currentLogger then
             local debugInfo = debug.getinfo(2)
             local errorMessage = "[ASSERT-LOG] " ..
-            debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
+                debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
             errorMessage = debug.traceback(errorMessage, 3)
             pcall(currentLogger.Log, currentLogger, errorMessage, 4)
         end

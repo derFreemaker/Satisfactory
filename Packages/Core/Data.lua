@@ -2,10 +2,10 @@
 local PackageData = {}
 
 PackageData["CoreJson"] = {
-	Location = "Core.Json",
-	Namespace = "Core.Json",
-	IsRunnable = true,
-	Data = [[
+    Location = "Core.Json",
+    Namespace = "Core.Json",
+    IsRunnable = true,
+    Data = [[
 --
 -- json.lua
 --
@@ -398,10 +398,10 @@ return json
 }
 
 PackageData["CoreLogger"] = {
-	Location = "Core.Logger",
-	Namespace = "Core.Logger",
-	IsRunnable = true,
-	Data = [[
+    Location = "Core.Logger",
+    Namespace = "Core.Logger",
+    IsRunnable = true,
+    Data = [[
 local Event = require('Core.Event.Event')
 
 ---@alias Core.Logger.LogLevel
@@ -467,7 +467,8 @@ local function tableToLineTree(node, maxLevel, properties, level, padding)
 
 			if level < maxLevel then
 				---@cast properties string[]
-				local childLines = tableToLineTree(node[k], maxLevel, properties, level + 1, padding .. (i == #keys and '    ' or '│   '))
+				local childLines = tableToLineTree(node[k], maxLevel, properties, level + 1,
+					padding .. (i == #keys and '    ' or '│   '))
 				for _, l in ipairs(childLines) do
 					table.insert(lines, l)
 				end
@@ -551,43 +552,71 @@ function Logger:FreeLine(logLevel)
 	self.OnLog:Trigger(self, '')
 end
 
----@param message any
-function Logger:LogTrace(message)
-	if message == nil then
+---@param ... any
+---@return string?
+local function formatMessage(...)
+	local messages = { ... }
+	if #messages == 0 then
+		return nil
+	end
+	local message = ""
+	for i, arg in pairs(messages) do
+		if i == 1 then
+			message = tostring(arg) or "nil"
+		else
+			message = message .. "   " .. (tostring(arg) or "nil")
+		end
+	end
+	return message
+end
+
+---@param ... any
+function Logger:LogTrace(...)
+	local message = formatMessage(...)
+	if not message then
 		return
 	end
+
 	self:Log('TRACE ' .. tostring(message), 0)
 end
 
----@param message any
-function Logger:LogDebug(message)
-	if message == nil then
+---@param ... any
+function Logger:LogDebug(...)
+	local message = formatMessage(...)
+	if not message then
 		return
 	end
+
 	self:Log('DEBUG ' .. tostring(message), 1)
 end
 
----@param message any
-function Logger:LogInfo(message)
-	if message == nil then
+---@param ... any
+function Logger:LogInfo(...)
+	local message = formatMessage(...)
+	if not message then
 		return
 	end
+
 	self:Log('INFO ' .. tostring(message), 2)
 end
 
----@param message any
-function Logger:LogWarning(message)
-	if message == nil then
+---@param ... any
+function Logger:LogWarning(...)
+	local message = formatMessage(...)
+	if not message then
 		return
 	end
+
 	self:Log('WARN ' .. tostring(message), 3)
 end
 
----@param message any
-function Logger:LogError(message)
-	if message == nil then
+---@param ... any
+function Logger:LogError(...)
+	local message = formatMessage(...)
+	if not message then
 		return
 	end
+
 	self:Log('ERROR ' .. tostring(message), 4)
 end
 
@@ -596,10 +625,10 @@ return Utils.Class.CreateClass(Logger, 'Core.Logger')
 }
 
 PackageData["CorePath"] = {
-	Location = "Core.Path",
-	Namespace = "Core.Path",
-	IsRunnable = true,
-	Data = [[
+    Location = "Core.Path",
+    Namespace = "Core.Path",
+    IsRunnable = true,
+    Data = [[
 ---@param str string
 ---@return string str
 local function formatStr(str)
@@ -790,10 +819,10 @@ return Utils.Class.CreateClass(Path, "Core.Path")
 }
 
 PackageData["CorePortUsage"] = {
-	Location = "Core.PortUsage",
-	Namespace = "Core.PortUsage",
-	IsRunnable = true,
-	Data = [[
+    Location = "Core.PortUsage",
+    Namespace = "Core.PortUsage",
+    IsRunnable = true,
+    Data = [[
 -- 0 .. 2^1023
 
 ---@enum Core.PortUsage
@@ -808,10 +837,10 @@ return PortUsage
 }
 
 PackageData["CoreTask"] = {
-	Location = "Core.Task",
-	Namespace = "Core.Task",
-	IsRunnable = true,
-	Data = [[
+    Location = "Core.Task",
+    Namespace = "Core.Task",
+    IsRunnable = true,
+    Data = [[
 ---@class Core.Task : object
 ---@field package func function
 ---@field package passthrough table
@@ -954,10 +983,10 @@ return Utils.Class.CreateClass(Task, "Core.Task")
 }
 
 PackageData["CoreUUID"] = {
-	Location = "Core.UUID",
-	Namespace = "Core.UUID",
-	IsRunnable = true,
-	Data = [[
+    Location = "Core.UUID",
+    Namespace = "Core.UUID",
+    IsRunnable = true,
+    Data = [[
 local math = math
 local string = string
 local random = math.random
@@ -1111,10 +1140,10 @@ return Utils.Class.CreateClass(UUID, 'Core.UUID')
 }
 
 PackageData["CoreEventEvent"] = {
-	Location = "Core.Event.Event",
-	Namespace = "Core.Event.Event",
-	IsRunnable = true,
-	Data = [[
+    Location = "Core.Event.Event",
+    Namespace = "Core.Event.Event",
+    IsRunnable = true,
+    Data = [[
 ---@class Core.Event : object
 ---@field private funcs Core.Task[]
 ---@field private onceFuncs Core.Task[]
@@ -1204,10 +1233,10 @@ return Utils.Class.CreateClass(Event, "Core.Event")
 }
 
 PackageData["CoreEventEventPullAdapter"] = {
-	Location = "Core.Event.EventPullAdapter",
-	Namespace = "Core.Event.EventPullAdapter",
-	IsRunnable = true,
-	Data = [[
+    Location = "Core.Event.EventPullAdapter",
+    Namespace = "Core.Event.EventPullAdapter",
+    IsRunnable = true,
+    Data = [[
 local Event = require('Core.Event.Event')
 
 ---@class Core.EventPullAdapter
@@ -1313,10 +1342,10 @@ return EventPullAdapter
 }
 
 PackageData["CoreFileSystemFile"] = {
-	Location = "Core.FileSystem.File",
-	Namespace = "Core.FileSystem.File",
-	IsRunnable = true,
-	Data = [[
+    Location = "Core.FileSystem.File",
+    Namespace = "Core.FileSystem.File",
+    IsRunnable = true,
+    Data = [[
 local Path = require("Core.Path")
 
 ---@alias Core.FileSystem.File.OpenModes
