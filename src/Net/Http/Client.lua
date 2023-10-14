@@ -1,5 +1,6 @@
 local PortUsage = require('Core.PortUsage')
 
+local IPAddress = require("Net.Core.IPAddress")
 local NetworkClient = require('Net.Core.NetworkClient')
 local ApiClient = require('Net.Rest.Api.Client.Client')
 local DNSClient = require('DNS.Client.Client')
@@ -9,9 +10,9 @@ local ApiRequest = require('Net.Rest.Api.Request')
 local ApiResponse = require('Net.Rest.Api.Response')
 
 ---@class Http.Client : object
----@field private netClient Net.Core.NetworkClient
----@field private dnsClient DNS.Client
----@field private logger Core.Logger
+---@field private _NetClient Net.Core.NetworkClient
+---@field private _DnsClient DNS.Client
+---@field private _Logger Core.Logger
 ---@overload fun(logger: Core.Logger, dnsClient: DNS.Client?, networkClient: Net.Core.NetworkClient?) : Http.Client
 local HttpClient = {}
 
@@ -23,25 +24,25 @@ function HttpClient:__init(logger, dnsClient, networkClient)
 		networkClient = dnsClient:GetNetClient()
 	end
 
-	self.netClient = networkClient or NetworkClient(logger:subLogger('NetworkClient'))
-	self.dnsClient = dnsClient or DNSClient(self.netClient, logger:subLogger('DNSClient'))
-	self.logger = logger
+	self._NetClient = networkClient or NetworkClient(logger:subLogger('NetworkClient'))
+	self._DnsClient = dnsClient or DNSClient(self._NetClient, logger:subLogger('DNSClient'))
+	self._Logger = logger
 end
 
 ---@private
 ---@param address string
----@return string? address
+---@return Net.Core.IPAddress? address
 function HttpClient:getAddress(address)
 	if not address:match('^.*%..*$') then
-		return address
+		return IPAddress(address)
 	end
 
-	local getedAddress = self.dnsClient:GetWithAddress(address)
+	local getedAddress = self._DnsClient:GetWithAddress(address)
 	if not getedAddress then
 		return nil
 	end
 
-	return getedAddress.Id
+	return IPAddress(getedAddress.Id)
 end
 
 ---@param request Http.Request
@@ -52,22 +53,13 @@ function HttpClient:Send(request)
 		return HttpResponse(ApiResponse(nil, { Code = 404 }), request)
 	end
 
-	local apiClient = ApiClient(address, PortUsage.HTTP, PortUsage.HTTP, self.netClient,
-		self.logger:subLogger('ApiClient'))
+	local apiClient = ApiClient(address, PortUsage.HTTP, PortUsage.HTTP, self._NetClient,
+		self._Logger:subLogger('ApiClient'))
 
 	local apiRequest = ApiRequest(request.Method, request.Endpoint, request.Body, request.Options.Headers)
 	local apiResponse = apiClient:Send(apiRequest, request.Options.Timeout)
 
 	return HttpResponse(apiResponse, request)
-end
-
----@param method Net.Core.Method
----@param endpoint string
----@param body any
----@param options Http.Request.Options
----@return Http.Response response
-function HttpClient:Request(method, endpoint, body, options)
-	return self:Send(HttpRequest(method, endpoint, body, options))
 end
 
 return Utils.Class.CreateClass(HttpClient, 'Http.HttpClient')

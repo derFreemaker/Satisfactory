@@ -6,7 +6,7 @@ PackageData["DatabaseDbTable"] = {
     Namespace = "Database.DbTable",
     IsRunnable = true,
     Data = [[
-local Json = require("Core.Json")
+local Json = require("Core.Json.Json")
 local File = require("Core.FileSystem.File")
 
 local Dto = require("Database.Dto")

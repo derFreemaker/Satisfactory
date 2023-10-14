@@ -3,16 +3,16 @@ local Response = require('Net.Rest.Api.Response')
 local Extensions = require('Net.Core.NetworkContext.Api.Extensions')
 
 ---@class Net.Rest.Api.Client : object
----@field ServerIPAddress Core.IPAddress
+---@field ServerIPAddress Net.Core.IPAddress
 ---@field ServerPort integer
 ---@field ReturnPort integer
 ---@field private NetClient Net.Core.NetworkClient
 ---@field private logger Core.Logger
----@overload fun(serverIPAddress: Core.IPAddress, serverPort: integer, returnPort: integer, netClient: Net.Core.NetworkClient, logger: Core.Logger) : Net.Rest.Api.Client
+---@overload fun(serverIPAddress: Net.Core.IPAddress, serverPort: integer, returnPort: integer, netClient: Net.Core.NetworkClient, logger: Core.Logger) : Net.Rest.Api.Client
 local Client = {}
 
 ---@private
----@param serverIPAddress Core.IPAddress
+---@param serverIPAddress Net.Core.IPAddress
 ---@param serverPort integer
 ---@param returnPort integer
 ---@param netClient Net.Core.NetworkClient

@@ -67,9 +67,43 @@ local function writeToNewIndex(t, func)
     setmetatable(t, metatable)
 end
 
+---@param typeInfo Utils.Class.Type
+---@param key string
+local function searchInStatic(typeInfo, key)
+    local value = typeInfo.Static[key]
+
+    if value == nil then
+        if typeInfo.Name == "object" then
+            return nil
+        end
+
+        return searchInStatic(typeInfo.Base, key)
+    end
+
+    return value
+end
+
+---@param typeInfo Utils.Class.Type
+---@param key string
+---@param value any
+---@return boolean wasFound
+local function assignInStatic(typeInfo, key, value)
+    if typeInfo.Static[key] ~= nil then
+        typeInfo.Static[key] = value
+        return true
+    end
+
+    if typeInfo.Name == "object" then
+        return false
+    end
+
+    return assignInStatic(typeInfo.Base, key, value)
+end
+
 ---@class Utils.Class.MetatableHandler
 local MetatableHandler = {}
 
+---@param typeInfo Utils.Class.Type
 ---@return Utils.Class.Metatable templateMetatable
 function MetatableHandler.CreateTemplateMetatable(typeInfo)
     ---@type Utils.Class.Metatable
@@ -86,7 +120,7 @@ function MetatableHandler.CreateTemplateMetatable(typeInfo)
 
         local splittedKey = String.Split(key, "__")
         if Table.Contains(splittedKey, "Static") then
-            return typeInfo.Static[key]
+            return searchInStatic(typeInfo, key)
         end
 
         error("can only use static members in template")
@@ -104,7 +138,9 @@ function MetatableHandler.CreateTemplateMetatable(typeInfo)
 
         local splittedKey = String.Split(key, "__")
         if Table.Contains(splittedKey, "Static") then
-            typeInfo.Static[key] = value
+            if not assignInStatic(typeInfo, key, value) then
+                typeInfo.Static[key] = value
+            end
             return
         end
 
@@ -117,6 +153,7 @@ function MetatableHandler.CreateTemplateMetatable(typeInfo)
             local function blockMetaMethod()
                 error("cannot use meta method: " .. key .. " in class: " .. typeInfo.Name)
             end
+            ---@diagnostic disable-next-line: assign-type-mismatch
             metatable[key] = blockMetaMethod
         end
     end
@@ -140,7 +177,7 @@ function MetatableHandler.CreateMetatable(typeInfo, metatable)
         if type(key) == "string" then
             local splittedKey = String.Split(key, "__")
             if Table.Contains(splittedKey, "Static") then
-                return typeInfo.Static[key]
+                return searchInStatic(typeInfo, key)
             end
         end
 
@@ -159,7 +196,9 @@ function MetatableHandler.CreateMetatable(typeInfo, metatable)
         if type(key) == "string" then
             local splittedKey = String.Split(key, "__")
             if Table.Contains(splittedKey, "Static") then
-                typeInfo.Static[key] = value
+                if not assignInStatic(typeInfo, key, value) then
+                    typeInfo.Static[key] = value
+                end
                 return
             end
         end

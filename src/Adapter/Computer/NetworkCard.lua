@@ -51,7 +51,7 @@ function NetworkCard:CloseAllPorts()
 	self.networkCard:closeAll()
 end
 
----@param address Core.IPAddress
+---@param address Net.Core.IPAddress
 ---@param port integer
 ---@param ... any
 function NetworkCard:Send(address, port, ...)

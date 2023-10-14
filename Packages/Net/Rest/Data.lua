@@ -119,16 +119,16 @@ local Response = require('Net.Rest.Api.Response')
 local Extensions = require('Net.Core.NetworkContext.Api.Extensions')
 
 ---@class Net.Rest.Api.Client : object
----@field ServerIPAddress string
+---@field ServerIPAddress Net.Core.IPAddress
 ---@field ServerPort integer
 ---@field ReturnPort integer
 ---@field private NetClient Net.Core.NetworkClient
 ---@field private logger Core.Logger
----@overload fun(serverIPAddress: string, serverPort: integer, returnPort: integer, netClient: Net.Core.NetworkClient, logger: Core.Logger) : Net.Rest.Api.Client
+---@overload fun(serverIPAddress: Net.Core.IPAddress, serverPort: integer, returnPort: integer, netClient: Net.Core.NetworkClient, logger: Core.Logger) : Net.Rest.Api.Client
 local Client = {}
 
 ---@private
----@param serverIPAddress string
+---@param serverIPAddress Net.Core.IPAddress
 ---@param serverPort integer
 ---@param returnPort integer
 ---@param netClient Net.Core.NetworkClient
@@ -145,10 +145,11 @@ end
 ---@param timeout integer?
 ---@return Net.Rest.Api.Response response
 function Client:Send(request, timeout)
-	self.NetClient:Send(self.ServerIPAddress, self.ServerPort, 'Rest-Request', request:ExtractData(), {ReturnPort = self.ReturnPort})
+	self.NetClient:Send(self.ServerIPAddress, self.ServerPort, 'Rest-Request', request:ExtractData(),
+		{ ReturnPort = self.ReturnPort })
 	local context = self.NetClient:WaitForEvent('Rest-Response', self.ReturnPort, timeout or 5)
 	if not context then
-		return Response(nil, {Code = 408})
+		return Response(nil, { Code = 408 })
 	end
 
 	local response = Extensions:Static_NetworkContextToApiResponse(context)
@@ -316,7 +317,7 @@ local EndpointBase = {}
 function EndpointBase:__pairs()
 	local function iterator(tbl, key)
 		local newKey,
-			value = next(tbl, key)
+		value = next(tbl, key)
 		if type(newKey) == 'string' and type(value) == 'function' then
 			return newKey, value
 		end
@@ -375,25 +376,25 @@ local ResponseTemplates = {}
 ---@param value any
 ---@return Net.Rest.Api.Response
 function ResponseTemplates.Ok(value)
-	return RestApiResponse(value, {Code = StatusCodes.Status200OK})
+	return RestApiResponse(value, { Code = StatusCodes.Status200OK })
 end
 
 ---@param message string
 ---@return Net.Rest.Api.Response
 function ResponseTemplates.BadRequest(message)
-	return RestApiResponse(nil, {Code = StatusCodes.Status400BadRequest, Message = message})
+	return RestApiResponse(nil, { Code = StatusCodes.Status400BadRequest, Message = message })
 end
 
 ---@param message string
 ---@return Net.Rest.Api.Response
 function ResponseTemplates.NotFound(message)
-	return RestApiResponse(nil, {Code = StatusCodes.Status404NotFound, Message = message})
+	return RestApiResponse(nil, { Code = StatusCodes.Status404NotFound, Message = message })
 end
 
 ---@param message string
 ---@return Net.Rest.Api.Response
 function ResponseTemplates.InternalServerError(message)
-	return RestApiResponse(nil, {Code = StatusCodes.Status500InternalServerError, Message = message})
+	return RestApiResponse(nil, { Code = StatusCodes.Status500InternalServerError, Message = message })
 end
 
 return ResponseTemplates

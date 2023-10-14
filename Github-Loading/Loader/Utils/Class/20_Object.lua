@@ -68,7 +68,7 @@ local metaMethods = {
 local Object = {}
 
 ---@return Utils.Class.Type
-function Object:GetType()
+function Object:Static__GetType()
 	---@type Utils.Class.Metatable
 	local metatable = getmetatable(self)
 	return metatable.Type
@@ -76,7 +76,7 @@ end
 
 ---@return string typeName
 function Object:__tostring()
-	return self:GetType().Name
+	return self:Static__GetType().Name
 end
 
 local typeInfo = {}

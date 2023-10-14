@@ -93,10 +93,10 @@ end
 ---@param other Core.UUID
 ---@return boolean isSame
 function UUID:__eq(other)
-    if type(other) ~= "table" or not other.GetType or other:GetType() ~= "Core.UUID" then
+    if type(other) ~= "table" or not other.Static__GetType or other:Static__GetType() ~= "Core.UUID" then
         local typeString = type(other)
-        if type(other) == "table" and other.GetType then
-            typeString = other:GetType().Name
+        if type(other) == "table" and other.Static__GetType then
+            typeString = other:Static__GetType().Name
         end
         error("wrong argument #2: (Core.UUID expected; got " .. typeString .. ")")
         return false
@@ -149,7 +149,7 @@ end
 --#region - Serializable -
 
 function UUID:Static__Serialize()
-    return self:__tostring()
+    return tostring(self)
 end
 
 function UUID.Static__Deserialize(data)
@@ -158,4 +158,4 @@ end
 
 --#endregion
 
-return Utils.Class.CreateClass(UUID, 'Core.UUID')
+return Utils.Class.CreateClass(UUID, 'Core.UUID', require("Core.Json.Serializable"))

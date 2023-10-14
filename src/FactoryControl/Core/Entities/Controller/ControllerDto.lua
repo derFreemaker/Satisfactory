@@ -1,6 +1,6 @@
 ---@class FactoryControl.Core.Entities.ControllerDto : object
 ---@field Id Core.UUID
----@field IPAddress Core.IPAddress
+---@field IPAddress Net.Core.IPAddress
 local ControllerDto = {}
 
 

@@ -1,12 +1,18 @@
 require('Test.Simulator.Simulator')
 
--- local Path = require("Core.Path_new")
+local UUID = require("Core.UUID")
+local JsonSerializer = require("Core.Json.JsonSerializer")
 
--- local test = Path("/Github-Loading/Loader/../")
+local serializer = JsonSerializer()
+serializer:AddTypeInfo(UUID:Static__GetType())
 
--- print(test)
+local test = UUID.Static__Empty()
+print(test)
 
-local PackageData = {}
-PackageData[-511510070] = {}
+local json = serializer:Serialize({ Id = test })
+print(json)
+
+local testObj = serializer:Deserialize(json)
+print(testObj.Id)
 
 print("## END ##")

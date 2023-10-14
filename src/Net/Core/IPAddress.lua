@@ -1,6 +1,6 @@
----@class Core.IPAddress : Core.Json.Serializable
+---@class Net.Core.IPAddress : Core.Json.Serializable
 ---@field private _Address string
----@overload fun(address: string) : Core.IPAddress
+---@overload fun(address: string) : Net.Core.IPAddress
 local IPAddress = {}
 
 ---@private
@@ -15,13 +15,13 @@ end
 
 --#region - Serializable -
 
----@return table data
+---@return string data
 function IPAddress:Static__Serialize()
     return self._Address
 end
 
----@param data table
----@return Core.IPAddress
+---@param data string
+---@return Net.Core.IPAddress
 function IPAddress.Static__Deserialize(data)
     return IPAddress(data)
 end
