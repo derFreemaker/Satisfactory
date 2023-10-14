@@ -10,10 +10,10 @@ end
 ---@overload fun(pathOrNodes: (string | string[])?) : Core.Path
 local Path = {}
 
----@param path string
+---@param str string
 ---@return boolean isNode
-function Path.Static__IsNode(path)
-    if path:find("/") then
+function Path.Static__IsNode(str)
+    if str:find("/") then
         return false
     end
 
@@ -47,7 +47,7 @@ Path.__tostring = Path.GetPath
 
 ---@return boolean
 function Path:IsEmpty()
-    return #self.nodes == 0
+    return #self.nodes == 0 or (#self.nodes == 2 and self.nodes[1] == "" and self.nodes[2] == "")
 end
 
 ---@return boolean

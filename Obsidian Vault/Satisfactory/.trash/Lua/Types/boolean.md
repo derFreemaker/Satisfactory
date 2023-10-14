@@ -1,0 +1,1 @@
+a lua boolean (true / false)

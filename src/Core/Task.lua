@@ -1,17 +1,17 @@
 ---@class Core.Task : object
 ---@field package func function
----@field package passthrough table
+---@field package passthrough any
 ---@field package thread thread
 ---@field package closed boolean
 ---@field private success boolean
 ---@field private results any[]
 ---@field private traceback string?
----@overload fun(func: function, passthrough: table?) : Core.Task
+---@overload fun(func: function, passthrough: any) : Core.Task
 local Task = {}
 
 ---@private
 ---@param func function
----@param passthrough table
+---@param passthrough any
 function Task:__init(func, passthrough)
     self.func = func
     self.passthrough = passthrough
@@ -106,6 +106,7 @@ function Task:Close()
     self.closed = true
 end
 
+---@private
 ---@return string traceback
 function Task:Traceback()
     if self.traceback ~= nil then

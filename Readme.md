@@ -58,6 +58,7 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
     ├── Data.lua -> all modules of the package
     └── Info.lua -> contains information about the package
 
+
 ```
 
 ## Package Info File
@@ -69,13 +70,17 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
     "Name": "PackageName",
     "Version": "0.1.0-0",
     "Namespace": "PackageNamespace",
-    "RequiredPackages": [ "Package1", "Package2" ]
+    "RequiredPackages": [ "Package1", "Package2" ],
+    "ApplicationType": "Library"
 }
+
 
 ```
 
 "Version": "[Version]-[BuildNumber]" the BuildNumber will be increased by one erverytime the bundler bundles this package.
 The BuildNumber can only be an integer.
+
+"ApplicationType": can be "Library" or "Application" at the moment.
 
 ## Package Load Sequence
 
@@ -88,3 +93,6 @@ The BuildNumber can only be an integer.
 1. setting [Logger](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/__main.lua#L2) of Package
 2. running [Configure](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/__main.lua#L5) function
 3. running [Run](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/__main.lua#L9) function
+
+### More Information in Obsidian Vault
+Download: [Obsidian](https://obsidian.md)
