@@ -49,10 +49,11 @@ end
 function HttpClient:Send(request)
 	local address = self:getAddress(request.Address)
 	if not address then
-		return HttpResponse(ApiResponse(nil, {Code = 404}), request)
+		return HttpResponse(ApiResponse(nil, { Code = 404 }), request)
 	end
 
-	local apiClient = ApiClient(address, PortUsage.HTTP, PortUsage.HTTP, self.netClient, self.logger:subLogger('ApiClient'))
+	local apiClient = ApiClient(address, PortUsage.HTTP, PortUsage.HTTP, self.netClient,
+		self.logger:subLogger('ApiClient'))
 
 	local apiRequest = ApiRequest(request.Method, request.Endpoint, request.Body, request.Options.Headers)
 	local apiResponse = apiClient:Send(apiRequest, request.Options.Timeout)

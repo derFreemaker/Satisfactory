@@ -51,11 +51,11 @@ function NetworkCard:CloseAllPorts()
 	self.networkCard:closeAll()
 end
 
----@param address string
+---@param address Core.IPAddress
 ---@param port integer
 ---@param ... any
 function NetworkCard:Send(address, port, ...)
-	self.networkCard:send(address, port, ...)
+	self.networkCard:send(address:GetAddress(), port, ...)
 end
 
 ---@param port integer

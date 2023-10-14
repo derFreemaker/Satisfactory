@@ -144,13 +144,13 @@ local function downloadFiles(loaderBaseUrl, loaderBasePath, forceDownload, inter
 end
 
 ---@param loaderBasePath string
----@return Dictionary<string, any> loadedLoaderFiles
+---@return Dictionary<string, table> loadedLoaderFiles
 local function loadFiles(loaderBasePath)
 	---@type string[][]
 	local loadEntries = {}
 	---@type integer[]
 	local loadOrder = {}
-	---@type Dictionary<string, any>
+	---@type Dictionary<string, table>
 	local loadedLoaderFiles = {}
 
 	---@param path string
@@ -219,7 +219,7 @@ end
 ---@field private loaderBasePath string
 ---@field private forceDownload boolean
 ---@field private internetCard FIN.Components.FINComputerMod.InternetCard_C
----@field private loadedLoaderFiles Dictionary<string, any>
+---@field private loadedLoaderFiles Dictionary<string, table>
 ---@field Logger Github_Loading.Logger
 local Loader = {}
 

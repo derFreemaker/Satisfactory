@@ -1,5 +1,5 @@
 local NetworkCardAdapter = require('Adapter.Computer.NetworkCard')
-local Json = require('Core.Json')
+local Json = require('Core.Json.Json')
 local EventPullAdapter = require('Core.Event.EventPullAdapter')
 local Task = require('Core.Task')
 local NetworkPort = require('Net.Core.NetworkPort')
@@ -146,7 +146,7 @@ function NetworkClient:CloseAll()
 	self.Logger:LogTrace('closed all Ports')
 end
 
----@param ipAddress string
+---@param ipAddress Core.IPAddress
 ---@param port integer
 ---@param eventName string
 ---@param body any

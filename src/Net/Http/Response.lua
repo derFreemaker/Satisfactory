@@ -17,7 +17,7 @@ function HttpResponse:IsSuccess()
 	return self.ApiResponse.WasSuccessfull
 end
 
----@return any
+---@return table
 function HttpResponse:GetBody()
 	return self.ApiResponse.Body
 end

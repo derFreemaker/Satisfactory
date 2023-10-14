@@ -13,6 +13,7 @@ local HttpRequest = {}
 ---@param method Net.Core.Method
 ---@param endpoint string
 ---@param address string
+---@param body any
 ---@param options Http.Request.Options?
 function HttpRequest:__init(method, endpoint, address, body, options)
 	self.Method = method

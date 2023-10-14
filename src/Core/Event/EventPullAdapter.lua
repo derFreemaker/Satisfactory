@@ -69,9 +69,9 @@ function EventPullAdapter:Wait(timeout)
 	---@type table?
 	local eventPullData = nil
 	if timeout == nil then
-		eventPullData = {event.pull()}
+		eventPullData = { event.pull() }
 	else
-		eventPullData = {event.pull(timeout)}
+		eventPullData = { event.pull(timeout) }
 	end
 	if #eventPullData == 0 then
 		return false

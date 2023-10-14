@@ -1,9 +1,10 @@
-local Json = require('Core.Json')
+local Json = require('Core.Json.Json')
+local IPaddress = require("Net.Core.IPAddress")
 
 ---@class Net.Core.NetworkContext : object
 ---@field SignalName string
 ---@field SignalSender Satisfactory.Components.Object
----@field SenderIPAddress string
+---@field SenderIPAddress Core.IPAddress
 ---@field Port integer
 ---@field EventName string
 ---@field Header Dictionary<string, any>
@@ -16,7 +17,7 @@ local NetworkContext = {}
 function NetworkContext:__init(data)
 	self.SignalName = data[1]
 	self.SignalSender = data[2]
-	self.SenderIPAddress = data[3]
+	self.SenderIPAddress = IPaddress(data[3])
 	self.Port = data[4]
 	self.EventName = data[5]
 	self.Header = Json.decode(data[7] or 'null')

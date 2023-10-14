@@ -1,5 +1,6 @@
 local PortUsage = require('Core.PortUsage')
 
+local IPAddress = require("Net.Core.IPAddress")
 local NetworkClient = require('Net.Core.NetworkClient')
 local ApiClient = require('Net.Rest.Api.Client.Client')
 local ApiRequest = require('Net.Rest.Api.Request')
@@ -33,7 +34,7 @@ function Client.Static_WaitForHeartbeat(networkClient)
 end
 
 ---@param networkClient Net.Core.NetworkClient
----@return string id
+---@return Core.IPAddress id
 function Client.Static__GetServerAddress(networkClient)
 	Client.Static_WaitForHeartbeat(networkClient)
 	local netPort = networkClient:CreateNetworkPort(PortUsage.DNS)
@@ -50,16 +51,17 @@ function Client.Static__GetServerAddress(networkClient)
 		error('unable to get dns server address')
 	end
 	---@cast response Net.Core.NetworkContext
-	return response.Body
+	return IPAddress(response.Body)
 end
 
----@return string id
+---@return Core.IPAddress id
 function Client:RequestOrGetDNSServerIP()
 	if not self.apiClient then
 		self.Static_WaitForHeartbeat(self.networkClient)
 
 		local serverIPAddress = Client.Static__GetServerAddress(self.networkClient)
-		self.apiClient = ApiClient(serverIPAddress, PortUsage.HTTP, PortUsage.HTTP, self.networkClient, self.logger:subLogger('ApiClient'))
+		self.apiClient = ApiClient(serverIPAddress, PortUsage.HTTP, PortUsage.HTTP, self.networkClient,
+			self.logger:subLogger('ApiClient'))
 	end
 
 	return self.apiClient.ServerIPAddress

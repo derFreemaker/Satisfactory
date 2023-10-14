@@ -1,9 +1,9 @@
 ---@class Utils.Table
 local Table = {}
 
----@param obj any?
----@param seen any[]
----@return any
+---@param obj table?
+---@param seen table[]
+---@return table?
 local function copyTable(obj, copy, seen)
     if obj == nil then return nil end
     if seen[obj] then return seen[obj] end
@@ -20,8 +20,9 @@ local function copyTable(obj, copy, seen)
     return copy
 end
 
----@param t table
----@return table table
+---@generic TTable
+---@param t TTable
+---@return TTable table
 function Table.Copy(t)
     return copyTable(t, {}, {})
 end

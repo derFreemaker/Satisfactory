@@ -5,7 +5,7 @@ local Function = {}
 ---@param ... any
 ---@return boolean success, table data
 local function extractSuccess(success, ...)
-	return success, {...}
+	return success, { ... }
 end
 ---@param func function
 ---@param ... any
@@ -15,9 +15,9 @@ function Function.InvokeProtected(func, ...)
 		coroutine.yield(func(...))
 	end
 	local thread = coroutine.create(invokeFunc)
-	local results = {coroutine.resume(thread, ...)}
+	local results = { coroutine.resume(thread, ...) }
 	local success,
-		filteredResults = extractSuccess(table.unpack(results))
+	filteredResults = extractSuccess(table.unpack(results))
 	return thread, success, filteredResults
 end
 

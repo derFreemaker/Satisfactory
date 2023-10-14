@@ -8,11 +8,10 @@ local Address = require("DNS.Core.Entities.Address.Address")
 ---@overload fun(logger: Core.Logger) : DNS.Server.AddressDatabase
 local AddressDatabase = {}
 
-
 ---@private
 ---@param logger Core.Logger
 function AddressDatabase:__init(logger)
-    self.dbTable = DbTable("Addresses", Path("/Database/"), logger:subLogger("DbTable"))
+    self.dbTable = DbTable("Addresses", Path("/Database/Addresses"), logger:subLogger("DbTable"))
     self.dbTable:Load()
 end
 

@@ -52,4 +52,44 @@ function Class.Deconstruct(class)
     setmetatable(class, metatable)
 end
 
+---@param baseClassName string
+---@param type Utils.Class.Type
+---@return boolean hasBaseClass
+function Class.HasBaseClass(baseClassName, type)
+    local typeName = type.Name
+    if typeName == baseClassName then
+        return true
+    end
+
+    if typeName == "object" then
+        return false
+    end
+
+    return Class.HasBaseClass(baseClassName, type.Base)
+end
+
+---@param obj table
+---@return boolean isClass
+function Class.IsClass(obj)
+    if type(obj) ~= "table" then
+        return false
+    end
+
+    local metatable = getmetatable(obj)
+
+    if not metatable then
+        return false
+    end
+
+    if not metatable.Type then
+        return false
+    end
+
+    if not metatable.Type.Name then
+        return false
+    end
+
+    return true
+end
+
 return Class

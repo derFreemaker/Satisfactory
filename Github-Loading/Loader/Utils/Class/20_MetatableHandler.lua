@@ -80,7 +80,8 @@ function MetatableHandler.CreateTemplateMetatable(typeInfo)
     ---@return any value
     local function index(obj, key)
         if type(key) ~= "string" then
-            return rawget(obj, key)
+            error("can only use static members in template")
+            return {}
         end
 
         local splittedKey = String.Split(key, "__")
@@ -88,7 +89,7 @@ function MetatableHandler.CreateTemplateMetatable(typeInfo)
             return typeInfo.Static[key]
         end
 
-        return rawget(obj, key)
+        error("can only use static members in template")
     end
     metatable.__index = index
 
@@ -97,7 +98,7 @@ function MetatableHandler.CreateTemplateMetatable(typeInfo)
     ---@param value any
     local function newindex(obj, key, value)
         if type(key) ~= "string" then
-            rawset(obj, key, value)
+            error("can only use static members in template")
             return
         end
 
@@ -107,7 +108,7 @@ function MetatableHandler.CreateTemplateMetatable(typeInfo)
             return
         end
 
-        rawset(obj, key, value)
+        error("can only use static members in template")
     end
     metatable.__newindex = newindex
 

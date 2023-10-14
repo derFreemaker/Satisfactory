@@ -115,7 +115,7 @@ end
 ---|number
 ---|boolean
 
-local type_func_map = {
+json.type_func_map = {
 	['nil'] = encode_nil,
 	['table'] = encode_table,
 	['string'] = encode_string,
@@ -125,14 +125,14 @@ local type_func_map = {
 
 encode = function(val, stack)
 	local t = type(val)
-	local f = type_func_map[t]
+	local f = json.type_func_map[t]
 	if f then
 		return f(val, stack)
 	end
 	error("unexpected type '" .. t .. "'")
 end
 
----@param val any
+---@param val table
 ---@return string
 function json.encode(val)
 	return (encode(val))
@@ -227,7 +227,7 @@ local function parse_string(str, i)
 			local c = str:sub(j, j)
 			if c == 'u' then
 				local hex = str:match('^[dD][89aAbB]%x%x\\u%x%x%x%x', j + 1) or str:match('^%x%x%x%x', j + 1) or
-				decode_error(str, j - 1, 'invalid unicode escape in string')
+					decode_error(str, j - 1, 'invalid unicode escape in string')
 				res = res .. parse_unicode_escape(hex)
 				j = j + #hex
 			else
@@ -371,7 +371,7 @@ parse = function(str, idx)
 end
 
 ---@param str string
----@return any
+---@return table
 function json.decode(str)
 	if type(str) ~= 'string' then
 		error('expected argument of type string, got ' .. type(str))

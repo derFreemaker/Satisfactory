@@ -2,7 +2,7 @@ local math = math
 local string = string
 local random = math.random
 
----@class Core.UUID : object
+---@class Core.UUID : Core.Json.Serializable
 ---@field private head number[]
 ---@field private body number[]
 ---@field private tail number[]
@@ -145,5 +145,17 @@ function UUID:__tostring()
 
     return str
 end
+
+--#region - Serializable -
+
+function UUID:Static__Serialize()
+    return self:__tostring()
+end
+
+function UUID.Static__Deserialize(data)
+    return UUID.Static__Parse(data)
+end
+
+--#endregion
 
 return Utils.Class.CreateClass(UUID, 'Core.UUID')

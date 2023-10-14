@@ -10,7 +10,7 @@ local EndpointBase = {}
 function EndpointBase:__pairs()
 	local function iterator(tbl, key)
 		local newKey,
-			value = next(tbl, key)
+		value = next(tbl, key)
 		if type(newKey) == 'string' and type(value) == 'function' then
 			return newKey, value
 		end

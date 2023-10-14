@@ -30,8 +30,8 @@ local Table = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Table'][1]
 ---@field __unm (fun(self: object) : any)? -(self)
 ---@field __bnot (fun(self: object) : any)?  ~(self)
 ---@field __len (fun(self: object) : any)? #(self)
----@field __pairs (fun(t: table) : ((fun(t: table, key: any) : key: any, value: any), t: table, startKey: any))? pairs(self)
----@field __ipairs (fun(t: table) : ((fun(t: table, key: number) : key: number, value: any), t: table, startKey: number))? ipairs(self)
+---@field __pairs (fun(self: object) : ((fun(t: table, key: any) : key: any, value: any), t: table, startKey: any))? pairs(self)
+---@field __ipairs (fun(self: object) : ((fun(t: table, key: number) : key: number, value: any), t: table, startKey: number))? ipairs(self)
 
 ---@type Dictionary<string, boolean>
 local metaMethods = {
