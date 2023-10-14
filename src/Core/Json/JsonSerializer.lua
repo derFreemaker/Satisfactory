@@ -1,13 +1,36 @@
 local Json = require("Core.Json.Json")
 
----@class Core.Json.Serializer : object
+---@class Core.Json.Serializer
+---@field private _TypeInfos Utils.Class.Type[]
+---@overload fun(typeInfos: Utils.Class.Type[]?) : Core.Json.Serializer
 local Serializer = {}
+
+---@param typeInfos Utils.Class.Type[]?
+function Serializer:__init(typeInfos)
+    self._TypeInfos = typeInfos or {}
+end
+
+---@param typeInfo Utils.Class.Type
+---@return Core.Json.Serializer
+function Serializer:AddTypeInfo(typeInfo)
+    table.insert(self._TypeInfos, typeInfo)
+    return self
+end
+
+---@param typeInfos Utils.Class.Type[]
+---@return Core.Json.Serializer
+function Serializer:AddTypeInfos(typeInfos)
+    for _, typeInfo in ipairs(typeInfos) do
+        table.insert(self._TypeInfos, typeInfo)
+    end
+    return self
+end
 
 ---@private
 ---@param class object
 ---@return table data
 function Serializer:serializeClass(class)
-    local typeInfo = class:GetType()
+    local typeInfo = class:Static__GetType()
     if not Utils.Class.HasBaseClass("Core.Json.Serializable", typeInfo) then
         error("can not serialize class: " .. typeInfo.Name .. " use 'Core.Json.Serializable' as base class")
     end
@@ -15,7 +38,7 @@ function Serializer:serializeClass(class)
 
     local data = { __Type = typeInfo.Name, __Data = class:Static__Serialize() }
 
-    if type(data) == "table" then
+    if type(data.__Data) == "table" then
         for key, value in next, data.__Data, nil do
             data.__Data[key] = self:serializeInternal(value)
         end
@@ -24,6 +47,7 @@ function Serializer:serializeClass(class)
     return data
 end
 
+---@private
 ---@param obj any
 ---@return table data
 function Serializer:serializeInternal(obj)
@@ -61,6 +85,7 @@ function Serializer:Serialize(obj)
     return Json.encode(self:serializeInternal(obj))
 end
 
+---@private
 ---@param t table
 ---@return boolean isDeserializedClass
 local function isDeserializedClass(t)
@@ -77,13 +102,23 @@ end
 function Serializer:deserializeClass(t)
     local data = t.__Data
     ---@type Core.Json.Serializable
-    local classTemplate = require(t.__Type)
+    local classTemplate
 
-    for key, value in next, data, nil do
-        if type(value) == "table" and isDeserializedClass(value) then
-            data[key] = self:deserializeClass(value)
+    for _, typeInfo in ipairs(self._TypeInfos) do
+        if typeInfo.Name == t.__Type then
+            classTemplate = Utils.Class.CreateClassTemplate(typeInfo) --[[@as Core.Json.Serializable]]
+            break
         end
     end
+
+    if type(data) == "table" then
+        for key, value in next, data, nil do
+            if type(value) == "table" and isDeserializedClass(value) then
+                data[key] = self:deserializeClass(value)
+            end
+        end
+    end
+
 
     return classTemplate.Static__Deserialize(data)
 end
@@ -97,7 +132,7 @@ function Serializer:deserializeInternal(t)
     end
 
     for key, value in next, t, nil do
-        if Utils.Class.IsClass(value) then
+        if isDeserializedClass(value) then
             t[key] = self:deserializeClass(value)
         end
     end
@@ -117,4 +152,4 @@ function Serializer:Deserialize(str)
     return obj
 end
 
-return Utils.Class.CreateClass(Serializer, "Core.Json.Serializer")
+return Utils.Class.CreateClass(Serializer, "Core.Json.JsonSerializer")

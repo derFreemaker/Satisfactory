@@ -1,6 +1,45 @@
 ---@meta
 local PackageData = {}
 
+PackageData["NetCoreIPAddress"] = {
+    Location = "Net.Core.IPAddress",
+    Namespace = "Net.Core.IPAddress",
+    IsRunnable = true,
+    Data = [[
+---@class Net.Core.IPAddress : Core.Json.Serializable
+---@field private _Address string
+---@overload fun(address: string) : Net.Core.IPAddress
+local IPAddress = {}
+
+---@private
+---@param address string
+function IPAddress:__init(address)
+    self._Address = address
+end
+
+function IPAddress:GetAddress()
+    return self._Address
+end
+
+--#region - Serializable -
+
+---@return string data
+function IPAddress:Static__Serialize()
+    return self._Address
+end
+
+---@param data string
+---@return Net.Core.IPAddress
+function IPAddress.Static__Deserialize(data)
+    return IPAddress(data)
+end
+
+--#endregion
+
+return Utils.Class.CreateClass(IPAddress, "Core.IPAddress", require("Core.Json.Serializable"))
+]]
+}
+
 PackageData["NetCoreMethod"] = {
     Location = "Net.Core.Method",
     Namespace = "Net.Core.Method",
@@ -30,7 +69,7 @@ PackageData["NetCoreNetworkClient"] = {
     IsRunnable = true,
     Data = [[
 local NetworkCardAdapter = require('Adapter.Computer.NetworkCard')
-local Json = require('Core.Json')
+local Json = require('Core.Json.Json')
 local EventPullAdapter = require('Core.Event.EventPullAdapter')
 local Task = require('Core.Task')
 local NetworkPort = require('Net.Core.NetworkPort')
@@ -177,7 +216,7 @@ function NetworkClient:CloseAll()
 	self.Logger:LogTrace('closed all Ports')
 end
 
----@param ipAddress string
+---@param ipAddress Net.Core.IPAddress
 ---@param port integer
 ---@param eventName string
 ---@param body any
@@ -203,12 +242,13 @@ PackageData["NetCoreNetworkContext"] = {
     Namespace = "Net.Core.NetworkContext",
     IsRunnable = true,
     Data = [[
-local Json = require('Core.Json')
+local Json = require('Core.Json.Json')
+local IPaddress = require("Net.Core.IPAddress")
 
 ---@class Net.Core.NetworkContext : object
 ---@field SignalName string
 ---@field SignalSender Satisfactory.Components.Object
----@field SenderIPAddress string
+---@field SenderIPAddress Net.Core.IPAddress
 ---@field Port integer
 ---@field EventName string
 ---@field Header Dictionary<string, any>
@@ -221,7 +261,7 @@ local NetworkContext = {}
 function NetworkContext:__init(data)
 	self.SignalName = data[1]
 	self.SignalSender = data[2]
-	self.SenderIPAddress = data[3]
+	self.SenderIPAddress = IPaddress(data[3])
 	self.Port = data[4]
 	self.EventName = data[5]
 	self.Header = Json.decode(data[7] or 'null')
@@ -343,7 +383,7 @@ function NetworkPort:ClosePort()
 	end
 end
 
----@param ipAddress string
+---@param ipAddress Net.Core.IPAddress
 ---@param eventName string
 ---@param body any
 ---@param header Dictionary<string, any>?

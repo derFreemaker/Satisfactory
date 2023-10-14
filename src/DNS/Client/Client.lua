@@ -34,7 +34,7 @@ function Client.Static_WaitForHeartbeat(networkClient)
 end
 
 ---@param networkClient Net.Core.NetworkClient
----@return Core.IPAddress id
+---@return Net.Core.IPAddress id
 function Client.Static__GetServerAddress(networkClient)
 	Client.Static_WaitForHeartbeat(networkClient)
 	local netPort = networkClient:CreateNetworkPort(PortUsage.DNS)
@@ -54,7 +54,7 @@ function Client.Static__GetServerAddress(networkClient)
 	return IPAddress(response.Body)
 end
 
----@return Core.IPAddress id
+---@return Net.Core.IPAddress id
 function Client:RequestOrGetDNSServerIP()
 	if not self.apiClient then
 		self.Static_WaitForHeartbeat(self.networkClient)

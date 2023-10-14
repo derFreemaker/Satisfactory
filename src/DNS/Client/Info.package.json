@@ -1,7 +1,7 @@
 {
   "Name": "DNS.Client",
   "Namespace": "DNS.Client",
-  "Version": "0.1.1-51",
+  "Version": "0.1.1-52",
   "RequiredPackages": [
     "Core",
     "DNS.Core",

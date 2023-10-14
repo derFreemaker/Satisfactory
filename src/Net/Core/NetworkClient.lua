@@ -146,7 +146,7 @@ function NetworkClient:CloseAll()
 	self.Logger:LogTrace('closed all Ports')
 end
 
----@param ipAddress Core.IPAddress
+---@param ipAddress Net.Core.IPAddress
 ---@param port integer
 ---@param eventName string
 ---@param body any

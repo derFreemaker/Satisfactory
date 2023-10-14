@@ -7,7 +7,7 @@ PackageData["FactoryControlClientClient"] = {
     IsRunnable = true,
     Data = [[
 local ApiClient = require('Net.Rest.Api.Client.Client')
-local HttpRequest = require('Net.Rest.Api.Request')
+local ApiRequest = require('Net.Rest.Api.Request')
 
 ---@class FactoryControl.Controller.Client : object
 ---@field private restApiClient Net.Rest.Api.Client
@@ -19,7 +19,8 @@ local FactoryControlRestApiClient = {}
 ---@param netClient Net.Core.NetworkClient
 ---@param logger Core.Logger
 function FactoryControlRestApiClient:__init(netClient, logger)
-	self.restApiClient = ApiClient(Config.ServerIPAddress, Config.ServerPort, 1111, netClient, self.logger:subLogger('RestApiClient'))
+	self.restApiClient = ApiClient(Config.ServerIPAddress, Config.ServerPort, 1111, netClient,
+		self.logger:subLogger('RestApiClient'))
 end
 
 ---@private
@@ -29,7 +30,7 @@ end
 ---@param body any
 ---@return Net.Rest.Api.Response response
 function FactoryControlRestApiClient:request(method, endpoint, headers, body)
-	return self.restApiClient:Send(HttpRequest(method, endpoint, headers, body))
+	return self.restApiClient:Send(ApiRequest(method, endpoint, headers, body))
 end
 
 ---@return boolean
