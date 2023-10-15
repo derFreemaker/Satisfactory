@@ -16,6 +16,8 @@ local ObjectTypeInfo = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/Obj
 ---@field HasDeconstructor boolean
 ---@field HasIndex boolean
 ---@field HasNewIndex boolean
+---
+---@field Template table
 
 ---@class Utils.Class.TypeHandler
 local TypeHandler = {}

@@ -1,14 +1,14 @@
 ---@class Core.Json.Serializable : object
 local Serializable = {}
 
----@return table data
+---@return any ...
 function Serializable:Static__Serialize()
     error("function not overriden")
 end
 
----@param data table
----@return table obj
-function Serializable.Static__Deserialize(data)
+---@param ... any
+---@return any obj
+function Serializable.Static__Deserialize(...)
     error("function not overriden")
 end
 

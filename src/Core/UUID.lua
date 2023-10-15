@@ -148,10 +148,13 @@ end
 
 --#region - Serializable -
 
+---@return string data
 function UUID:Static__Serialize()
     return tostring(self)
 end
 
+---@param data string
+---@return Core.UUID?
 function UUID.Static__Deserialize(data)
     return UUID.Static__Parse(data)
 end

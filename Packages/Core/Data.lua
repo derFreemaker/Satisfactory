@@ -228,200 +228,6 @@ return Utils.Class.CreateClass(Logger, 'Core.Logger')
 ]]
 }
 
-PackageData["CorePath"] = {
-    Location = "Core.Path",
-    Namespace = "Core.Path",
-    IsRunnable = true,
-    Data = [[
----@param str string
----@return string str
-local function formatStr(str)
-    str = str:gsub("\\", "/")
-    return str
-end
-
----@class Core.Path
----@field private nodes string[]
----@overload fun(pathOrNodes: (string | string[])?) : Core.Path
-local Path = {}
-
----@param str string
----@return boolean isNode
-function Path.Static__IsNode(str)
-    if str:find("/") then
-        return false
-    end
-
-    return true
-end
-
----@private
----@param pathOrNodes string | string[]
-function Path:__init(pathOrNodes)
-    if not pathOrNodes then
-        self.nodes = {}
-        return
-    end
-
-    if type(pathOrNodes) == "string" then
-        pathOrNodes = formatStr(pathOrNodes)
-        self.nodes = Utils.String.Split(pathOrNodes, "/")
-        return
-    end
-
-    self.nodes = pathOrNodes
-end
-
----@return string path
-function Path:GetPath()
-    return Utils.String.Join(self.nodes, "/")
-end
-
----@private
-Path.__tostring = Path.GetPath
-
----@return boolean
-function Path:IsEmpty()
-    return #self.nodes == 0 or (#self.nodes == 2 and self.nodes[1] == "" and self.nodes[2] == "")
-end
-
----@return boolean
-function Path:IsFile()
-    return self.nodes[#self.nodes] ~= ""
-end
-
----@return boolean
-function Path:IsDir()
-    return self.nodes[#self.nodes] == ""
-end
-
----@return string
-function Path:GetParentFolder()
-    local copy = Utils.Table.Copy(self.nodes)
-    local lenght = #copy
-
-    if lenght > 0 then
-        if lenght > 1 and copy[lenght] == "" then
-            copy[lenght] = nil
-            copy[lenght - 1] = ""
-        else
-            copy[lenght] = nil
-        end
-    end
-
-    return Utils.String.Join(copy, "/")
-end
-
----@return Core.Path
-function Path:GetParentFolderPath()
-    local copy = self:Copy()
-    local lenght = #copy.nodes
-
-    if lenght > 0 then
-        if lenght > 1 and copy.nodes[lenght] == "" then
-            copy.nodes[lenght] = nil
-            copy.nodes[lenght - 1] = ""
-        else
-            copy.nodes[lenght] = nil
-        end
-    end
-
-    return copy
-end
-
----@return string fileName
-function Path:GetFileName()
-    if not self:IsFile() then
-        error("path is not a file: " .. self:GetPath())
-    end
-
-    return self.nodes[#self.nodes]
-end
-
----@return string fileExtension
-function Path:GetFileExtension()
-    if not self:IsFile() then
-        error("path is not a file: " .. self:GetPath())
-    end
-
-    local fileName = self.nodes[#self.nodes]
-
-    local _, _, extension = fileName:find("^.+(%..+)$")
-    return extension
-end
-
----@return string fileStem
-function Path:GetFileStem()
-    if not self:IsFile() then
-        error("path is not a file: " .. self:GetPath())
-    end
-
-    local fileName = self.nodes[#self.nodes]
-
-    local _, _, stem = fileName:find("^(.+)%..+$")
-    return stem
-end
-
----@return Core.Path
-function Path:Normalize()
-    ---@type string[]
-    local newNodes = {}
-
-    for index, value in ipairs(self.nodes) do
-        if value == "." then
-        elseif value == "" then
-            if index == 1 or index == #self.nodes then
-                newNodes[index] = ""
-            end
-        elseif value == ".." then
-            if index ~= 1 then
-                newNodes[#newNodes] = nil
-            end
-        else
-            newNodes[#newNodes + 1] = value
-        end
-    end
-
-    if not newNodes[#newNodes]:find("^.+%..+$") then
-        newNodes[#newNodes + 1] = ""
-    end
-
-    self.nodes = newNodes
-    return self
-end
-
----@param path string
----@return Core.Path
-function Path:Append(path)
-    path = formatStr(path)
-    local newNodes = Utils.String.Split(path, "/")
-
-    for _, value in ipairs(newNodes) do
-        self.nodes[#self.nodes + 1] = value
-    end
-
-    self:Normalize()
-
-    return self
-end
-
----@param path string
----@return Core.Path
-function Path:Extend(path)
-    local copy = self:Copy()
-    return copy:Append(path)
-end
-
----@return Core.Path
-function Path:Copy()
-    local copyNodes = Utils.Table.Copy(self.nodes)
-    return Path(copyNodes)
-end
-
-return Utils.Class.CreateClass(Path, "Core.Path")
-]]
-}
-
 PackageData["CorePortUsage"] = {
     Location = "Core.PortUsage",
     Namespace = "Core.PortUsage",
@@ -742,10 +548,13 @@ end
 
 --#region - Serializable -
 
+---@return string data
 function UUID:Static__Serialize()
     return tostring(self)
 end
 
+---@param data string
+---@return Core.UUID?
 function UUID.Static__Deserialize(data)
     return UUID.Static__Parse(data)
 end
@@ -963,7 +772,7 @@ PackageData["CoreFileSystemFile"] = {
     Namespace = "Core.FileSystem.File",
     IsRunnable = true,
     Data = [[
-local Path = require("Core.Path")
+local Path = require("Core.FileSystem.Path")
 
 ---@alias Core.FileSystem.File.OpenModes
 ---|"r" read only -> file stream can just read from file. If file doesn’t exist, will return nil
@@ -973,13 +782,13 @@ local Path = require("Core.Path")
 ---|"+a" append -> file stream can read the full file but can only write to the end of the existing file
 
 ---@class Core.FileSystem.File : object
----@field private path Core.Path
+---@field private path Core.FileSystem.Path
 ---@field private mode Core.FileSystem.File.OpenModes?
 ---@field private file FIN.Filesystem.File?
----@overload fun(path: string | Core.Path) : Core.FileSystem.File
+---@overload fun(path: string | Core.FileSystem.Path) : Core.FileSystem.File
 local File = {}
 
----@param path Core.Path | string
+---@param path Core.FileSystem.Path | string
 ---@param data string
 function File.Static__WriteAll(path, data)
     if type(path) == "string" then
@@ -995,7 +804,7 @@ function File.Static__WriteAll(path, data)
     file:close()
 end
 
----@param path Core.Path | string
+---@param path Core.FileSystem.Path | string
 ---@return string
 function File.Static__ReadAll(path)
     if type(path) == "string" then
@@ -1022,7 +831,7 @@ function File.Static__ReadAll(path)
 end
 
 ---@private
----@param path string | Core.Path
+---@param path string | Core.FileSystem.Path
 function File:__init(path)
     if type(path) == "string" then
         self.path = Path(path)
@@ -1135,6 +944,200 @@ function File:Clear()
 end
 
 return Utils.Class.CreateClass(File, "Core.FileSystem.File")
+]]
+}
+
+PackageData["CoreFileSystemPath"] = {
+    Location = "Core.FileSystem.Path",
+    Namespace = "Core.FileSystem.Path",
+    IsRunnable = true,
+    Data = [[
+---@param str string
+---@return string str
+local function formatStr(str)
+    str = str:gsub("\\", "/")
+    return str
+end
+
+---@class Core.FileSystem.Path
+---@field private nodes string[]
+---@overload fun(pathOrNodes: (string | string[])?) : Core.FileSystem.Path
+local Path = {}
+
+---@param str string
+---@return boolean isNode
+function Path.Static__IsNode(str)
+    if str:find("/") then
+        return false
+    end
+
+    return true
+end
+
+---@private
+---@param pathOrNodes string | string[]
+function Path:__init(pathOrNodes)
+    if not pathOrNodes then
+        self.nodes = {}
+        return
+    end
+
+    if type(pathOrNodes) == "string" then
+        pathOrNodes = formatStr(pathOrNodes)
+        self.nodes = Utils.String.Split(pathOrNodes, "/")
+        return
+    end
+
+    self.nodes = pathOrNodes
+end
+
+---@return string path
+function Path:GetPath()
+    return Utils.String.Join(self.nodes, "/")
+end
+
+---@private
+Path.__tostring = Path.GetPath
+
+---@return boolean
+function Path:IsEmpty()
+    return #self.nodes == 0 or (#self.nodes == 2 and self.nodes[1] == "" and self.nodes[2] == "")
+end
+
+---@return boolean
+function Path:IsFile()
+    return self.nodes[#self.nodes] ~= ""
+end
+
+---@return boolean
+function Path:IsDir()
+    return self.nodes[#self.nodes] == ""
+end
+
+---@return string
+function Path:GetParentFolder()
+    local copy = Utils.Table.Copy(self.nodes)
+    local lenght = #copy
+
+    if lenght > 0 then
+        if lenght > 1 and copy[lenght] == "" then
+            copy[lenght] = nil
+            copy[lenght - 1] = ""
+        else
+            copy[lenght] = nil
+        end
+    end
+
+    return Utils.String.Join(copy, "/")
+end
+
+---@return Core.FileSystem.Path
+function Path:GetParentFolderPath()
+    local copy = self:Copy()
+    local lenght = #copy.nodes
+
+    if lenght > 0 then
+        if lenght > 1 and copy.nodes[lenght] == "" then
+            copy.nodes[lenght] = nil
+            copy.nodes[lenght - 1] = ""
+        else
+            copy.nodes[lenght] = nil
+        end
+    end
+
+    return copy
+end
+
+---@return string fileName
+function Path:GetFileName()
+    if not self:IsFile() then
+        error("path is not a file: " .. self:GetPath())
+    end
+
+    return self.nodes[#self.nodes]
+end
+
+---@return string fileExtension
+function Path:GetFileExtension()
+    if not self:IsFile() then
+        error("path is not a file: " .. self:GetPath())
+    end
+
+    local fileName = self.nodes[#self.nodes]
+
+    local _, _, extension = fileName:find("^.+(%..+)$")
+    return extension
+end
+
+---@return string fileStem
+function Path:GetFileStem()
+    if not self:IsFile() then
+        error("path is not a file: " .. self:GetPath())
+    end
+
+    local fileName = self.nodes[#self.nodes]
+
+    local _, _, stem = fileName:find("^(.+)%..+$")
+    return stem
+end
+
+---@return Core.FileSystem.Path
+function Path:Normalize()
+    ---@type string[]
+    local newNodes = {}
+
+    for index, value in ipairs(self.nodes) do
+        if value == "." then
+        elseif value == "" then
+            if index == 1 or index == #self.nodes then
+                newNodes[index] = ""
+            end
+        elseif value == ".." then
+            if index ~= 1 then
+                newNodes[#newNodes] = nil
+            end
+        else
+            newNodes[#newNodes + 1] = value
+        end
+    end
+
+    if not newNodes[#newNodes]:find("^.+%..+$") then
+        newNodes[#newNodes + 1] = ""
+    end
+
+    self.nodes = newNodes
+    return self
+end
+
+---@param path string
+---@return Core.FileSystem.Path
+function Path:Append(path)
+    path = formatStr(path)
+    local newNodes = Utils.String.Split(path, "/")
+
+    for _, value in ipairs(newNodes) do
+        self.nodes[#self.nodes + 1] = value
+    end
+
+    self:Normalize()
+
+    return self
+end
+
+---@param path string
+---@return Core.FileSystem.Path
+function Path:Extend(path)
+    local copy = self:Copy()
+    return copy:Append(path)
+end
+
+---@return Core.FileSystem.Path
+function Path:Copy()
+    local copyNodes = Utils.Table.Copy(self.nodes)
+    return Path(copyNodes)
+end
+
+return Utils.Class.CreateClass(Path, "Core.Path")
 ]]
 }
 
@@ -1542,19 +1545,34 @@ PackageData["CoreJsonJsonSerializer"] = {
 local Json = require("Core.Json.Json")
 
 ---@class Core.Json.Serializer
----@field private _TypeInfos Utils.Class.Type[]
+---@field private _TypeInfos Dictionary<string, Utils.Class.Type>
 ---@overload fun(typeInfos: Utils.Class.Type[]?) : Core.Json.Serializer
 local Serializer = {}
 
 ---@param typeInfos Utils.Class.Type[]?
 function Serializer:__init(typeInfos)
-    self._TypeInfos = typeInfos or {}
+    self._TypeInfos = {}
+
+    for _, typeInfo in ipairs(typeInfos or {}) do
+        self._TypeInfos[typeInfo.Name] = typeInfo
+    end
+end
+
+function Serializer:AddDefaultTypeInfos()
+    self:AddTypeInfos({
+        require("Core.UUID"):Static__GetType()
+    })
 end
 
 ---@param typeInfo Utils.Class.Type
 ---@return Core.Json.Serializer
 function Serializer:AddTypeInfo(typeInfo)
-    table.insert(self._TypeInfos, typeInfo)
+    if not Utils.Class.HasBaseClass("Core.Json.Serializable", typeInfo) then
+        error("class type has not Core.Json.Serializable as base class", 2)
+    end
+    if not Utils.Table.ContainsKey(self._TypeInfos, typeInfo.Name) then
+        self._TypeInfos[typeInfo.Name] = typeInfo
+    end
     return self
 end
 
@@ -1562,7 +1580,7 @@ end
 ---@return Core.Json.Serializer
 function Serializer:AddTypeInfos(typeInfos)
     for _, typeInfo in ipairs(typeInfos) do
-        table.insert(self._TypeInfos, typeInfo)
+        self:AddTypeInfo(typeInfo)
     end
     return self
 end
@@ -1577,7 +1595,7 @@ function Serializer:serializeClass(class)
     end
     ---@cast class Core.Json.Serializable
 
-    local data = { __Type = typeInfo.Name, __Data = class:Static__Serialize() }
+    local data = { __Type = typeInfo.Name, __Data = { class:Static__Serialize() } }
 
     if type(data.__Data) == "table" then
         for key, value in next, data.__Data, nil do
@@ -1608,15 +1626,11 @@ function Serializer:serializeInternal(obj)
     end
 
     for key, value in next, obj, nil do
-        local valueType = type(value)
-        if Utils.Class.IsClass(value) then
-            ---@cast value object
-            obj[key] = self:serializeClass(value)
-        elseif not Utils.Table.ContainsKey(Json.type_func_map, valueType) then
-            error("can not serialize: " .. valueType .. " value: " .. tostring(value))
-            return {}
+        if type(value) == "table" then
+            obj[key] = self:serializeInternal(value)
         end
     end
+
     return obj
 end
 
@@ -1634,6 +1648,10 @@ local function isDeserializedClass(t)
         return false
     end
 
+    if not t.__Data then
+        return false
+    end
+
     return true
 end
 
@@ -1642,26 +1660,24 @@ end
 ---@return object class
 function Serializer:deserializeClass(t)
     local data = t.__Data
-    ---@type Core.Json.Serializable
-    local classTemplate
 
-    for _, typeInfo in ipairs(self._TypeInfos) do
-        if typeInfo.Name == t.__Type then
-            classTemplate = Utils.Class.CreateClassTemplate(typeInfo) --{{{@as Core.Json.Serializable}}}
-            break
-        end
+    local typeInfo = self._TypeInfos[t.__Type]
+    if not typeInfo then
+        error("unable to find typeInfo for class: " .. t.__Type)
     end
+
+    ---@type Core.Json.Serializable
+    local classTemplate = typeInfo.Template
 
     if type(data) == "table" then
         for key, value in next, data, nil do
-            if type(value) == "table" and isDeserializedClass(value) then
-                data[key] = self:deserializeClass(value)
+            if type(value) == "table" then
+                data[key] = self:deserializeInternal(value)
             end
         end
     end
 
-
-    return classTemplate.Static__Deserialize(data)
+    return classTemplate.Static__Deserialize(table.unpack(data))
 end
 
 ---@private
@@ -1673,8 +1689,8 @@ function Serializer:deserializeInternal(t)
     end
 
     for key, value in next, t, nil do
-        if isDeserializedClass(value) then
-            t[key] = self:deserializeClass(value)
+        if type(value) == "table" then
+            t[key] = self:deserializeInternal(value)
         end
     end
 
@@ -1705,14 +1721,14 @@ PackageData["CoreJsonSerializable"] = {
 ---@class Core.Json.Serializable : object
 local Serializable = {}
 
----@return table data
+---@return any ...
 function Serializable:Static__Serialize()
     error("function not overriden")
 end
 
----@param data table
----@return table obj
-function Serializable.Static__Deserialize(data)
+---@param ... any
+---@return any obj
+function Serializable.Static__Deserialize(...)
     error("function not overriden")
 end
 

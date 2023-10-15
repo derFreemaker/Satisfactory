@@ -13,16 +13,16 @@ local Dto = require("Database.Dto")
 
 ---@class Database.DbTable : object
 ---@field private name string
----@field private path Core.Path
+---@field private path Core.FileSystem.Path
 ---@field private data Dictionary<string | number, table>
 ---@field private dataChanged (string | number)[]
 ---@field private logger Core.Logger
----@overload fun(name: string, path: Core.Path, logger: Core.Logger) : Database.DbTable
+---@overload fun(name: string, path: Core.FileSystem.Path, logger: Core.Logger) : Database.DbTable
 local DbTable = {}
 
 ---@private
 ---@param name string
----@param path Core.Path
+---@param path Core.FileSystem.Path
 ---@param logger Core.Logger
 function DbTable:__init(name, path, logger)
     if not path:IsDir() then

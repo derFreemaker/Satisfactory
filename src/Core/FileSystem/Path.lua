@@ -5,9 +5,9 @@ local function formatStr(str)
     return str
 end
 
----@class Core.Path
+---@class Core.FileSystem.Path
 ---@field private nodes string[]
----@overload fun(pathOrNodes: (string | string[])?) : Core.Path
+---@overload fun(pathOrNodes: (string | string[])?) : Core.FileSystem.Path
 local Path = {}
 
 ---@param str string
@@ -77,7 +77,7 @@ function Path:GetParentFolder()
     return Utils.String.Join(copy, "/")
 end
 
----@return Core.Path
+---@return Core.FileSystem.Path
 function Path:GetParentFolderPath()
     local copy = self:Copy()
     local lenght = #copy.nodes
@@ -127,7 +127,7 @@ function Path:GetFileStem()
     return stem
 end
 
----@return Core.Path
+---@return Core.FileSystem.Path
 function Path:Normalize()
     ---@type string[]
     local newNodes = {}
@@ -156,7 +156,7 @@ function Path:Normalize()
 end
 
 ---@param path string
----@return Core.Path
+---@return Core.FileSystem.Path
 function Path:Append(path)
     path = formatStr(path)
     local newNodes = Utils.String.Split(path, "/")
@@ -171,13 +171,13 @@ function Path:Append(path)
 end
 
 ---@param path string
----@return Core.Path
+---@return Core.FileSystem.Path
 function Path:Extend(path)
     local copy = self:Copy()
     return copy:Append(path)
 end
 
----@return Core.Path
+---@return Core.FileSystem.Path
 function Path:Copy()
     local copyNodes = Utils.Table.Copy(self.nodes)
     return Path(copyNodes)

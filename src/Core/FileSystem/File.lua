@@ -1,4 +1,4 @@
-local Path = require("Core.Path")
+local Path = require("Core.FileSystem.Path")
 
 ---@alias Core.FileSystem.File.OpenModes
 ---|"r" read only -> file stream can just read from file. If file doesn’t exist, will return nil
@@ -8,13 +8,13 @@ local Path = require("Core.Path")
 ---|"+a" append -> file stream can read the full file but can only write to the end of the existing file
 
 ---@class Core.FileSystem.File : object
----@field private path Core.Path
+---@field private path Core.FileSystem.Path
 ---@field private mode Core.FileSystem.File.OpenModes?
 ---@field private file FIN.Filesystem.File?
----@overload fun(path: string | Core.Path) : Core.FileSystem.File
+---@overload fun(path: string | Core.FileSystem.Path) : Core.FileSystem.File
 local File = {}
 
----@param path Core.Path | string
+---@param path Core.FileSystem.Path | string
 ---@param data string
 function File.Static__WriteAll(path, data)
     if type(path) == "string" then
@@ -30,7 +30,7 @@ function File.Static__WriteAll(path, data)
     file:close()
 end
 
----@param path Core.Path | string
+---@param path Core.FileSystem.Path | string
 ---@return string
 function File.Static__ReadAll(path)
     if type(path) == "string" then
@@ -57,7 +57,7 @@ function File.Static__ReadAll(path)
 end
 
 ---@private
----@param path string | Core.Path
+---@param path string | Core.FileSystem.Path
 function File:__init(path)
     if type(path) == "string" then
         self.path = Path(path)

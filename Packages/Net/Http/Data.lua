@@ -56,7 +56,7 @@ end
 ---@param request Http.Request
 ---@return Http.Response response
 function HttpClient:Send(request)
-	local address = self:getAddress(request.Address)
+	local address = self:getAddress(request.Url)
 	if not address then
 		return HttpResponse(ApiResponse(nil, { Code = 404 }), request)
 	end
@@ -84,22 +84,22 @@ local Options = require('Net.Http.RequestOptions')
 ---@class Http.Request : object
 ---@field Method Net.Core.Method
 ---@field Endpoint string
----@field Address string
+---@field Url string
 ---@field Body any
 ---@field Options Http.Request.Options
----@overload fun(method: Net.Core.Method, endpoint: string, address: string, body: any, options: Http.Request.Options?) : Http.Request
+---@overload fun(method: Net.Core.Method, endpoint: string, url: string, body: any, options: Http.Request.Options?) : Http.Request
 local HttpRequest = {}
 
 ---@private
 ---@param method Net.Core.Method
 ---@param endpoint string
----@param address string
+---@param url string
 ---@param body any
 ---@param options Http.Request.Options?
-function HttpRequest:__init(method, endpoint, address, body, options)
+function HttpRequest:__init(method, endpoint, url, body, options)
 	self.Method = method
 	self.Endpoint = endpoint
-	self.Address = address
+	self.Url = url
 	self.Body = body
 	self.Options = options or Options()
 end

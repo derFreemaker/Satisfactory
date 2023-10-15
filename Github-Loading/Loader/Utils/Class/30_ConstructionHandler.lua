@@ -74,14 +74,14 @@ end
 
 ---@param typeInfo Utils.Class.Type
 ---@param data table
----@return Utils.Class template
 function ConstructionHandler.ConstructTemplate(typeInfo, data)
 	Table.Clear(data)
 
 	local metatable = MetatableHandler.CreateTemplateMetatable(typeInfo)
 	metatable.__call = construct
 
-	return setmetatable(data, metatable)
+	data = setmetatable(data, metatable)
+	typeInfo.Template = data
 end
 
 return ConstructionHandler

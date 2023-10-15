@@ -27,12 +27,15 @@ function Main:Run()
 		log('unable to create address on dns server or allready exists')
 	end
 
-	local request = HttpRequest('GET', 'AddressWithAddress', self.dnsClient:RequestOrGetDNSServerIP(), domain)
+	local dnsServerAddress = self.dnsClient:RequestOrGetDNSServerIP():GetAddress()
+
+	local request = HttpRequest('GET', 'AddressWithAddress', dnsServerAddress, domain)
 	local response = self.httpClient:Send(request)
 	assert(response:IsSuccess(), 'http request was not successfull')
 
 	local address = Address:Static__CreateFromData(response:GetBody())
-	assert(address.Id == self.netClient:GetId(), "got wrong address id back from dns server '" .. tostring(address.Id) .. "'")
+	assert(address.Id == self.netClient:GetId(),
+		"got wrong address id back from dns server '" .. tostring(address.Id) .. "'")
 
 	log(address.Address, address.Id)
 end

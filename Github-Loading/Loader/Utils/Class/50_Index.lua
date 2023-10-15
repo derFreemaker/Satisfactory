@@ -25,16 +25,6 @@ function Class.CreateClass(data, name, baseClass)
     return data
 end
 
----@param typeInfo Utils.Class.Type
----@return object class
-function Class.CreateClassTemplate(typeInfo)
-    local class = {}
-
-    ConstructionHandler.ConstructTemplate(typeInfo, class)
-
-    return class
-end
-
 ---@generic TClass
 ---@param class TClass
 function Class.Deconstruct(class)

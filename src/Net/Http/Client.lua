@@ -48,7 +48,7 @@ end
 ---@param request Http.Request
 ---@return Http.Response response
 function HttpClient:Send(request)
-	local address = self:getAddress(request.Address)
+	local address = self:getAddress(request.Url)
 	if not address then
 		return HttpResponse(ApiResponse(nil, { Code = 404 }), request)
 	end

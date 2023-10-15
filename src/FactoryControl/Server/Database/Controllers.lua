@@ -1,5 +1,5 @@
 local DbTable = require("Database.DbTable")
-local Path = require("Core.Path")
+local Path = require("Core.FileSystem.Path")
 
 ---@class FactoryControl.Server.Database.Controllers : object
 ---@field private _DbTable Database.DbTable
