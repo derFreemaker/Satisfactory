@@ -1549,6 +1549,7 @@ local Json = require("Core.Json.Json")
 ---@overload fun(typeInfos: Utils.Class.Type[]?) : Core.Json.Serializer
 local Serializer = {}
 
+---@private
 ---@param typeInfos Utils.Class.Type[]?
 function Serializer:__init(typeInfos)
     self._TypeInfos = {}

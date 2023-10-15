@@ -3,7 +3,7 @@ return {
     Namespace = "Net.Core",
     Version = "0.1.0-53",
     RequiredPackages = {
-        "Adapter",
+        "Adapter.Computer",
         "Core"
     },
 }
