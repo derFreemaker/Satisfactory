@@ -3,11 +3,14 @@ local Json = require("Core.Json.Json")
 ---@class Core.Json.Serializer
 ---@field private _TypeInfos Dictionary<string, Utils.Class.Type>
 ---@overload fun(typeInfos: Utils.Class.Type[]?) : Core.Json.Serializer
-local Serializer = {}
+local JsonSerializer = {}
+
+---@type Core.Json.Serializer
+JsonSerializer.Static__Serializer = Utils.Class.Placeholder
 
 ---@private
 ---@param typeInfos Utils.Class.Type[]?
-function Serializer:__init(typeInfos)
+function JsonSerializer:__init(typeInfos)
     self._TypeInfos = {}
 
     for _, typeInfo in ipairs(typeInfos or {}) do
@@ -15,7 +18,7 @@ function Serializer:__init(typeInfos)
     end
 end
 
-function Serializer:AddDefaultTypeInfos()
+function JsonSerializer:AddDefaultTypeInfos()
     self:AddTypeInfos({
         require("Core.UUID"):Static__GetType()
     })
@@ -23,7 +26,7 @@ end
 
 ---@param typeInfo Utils.Class.Type
 ---@return Core.Json.Serializer
-function Serializer:AddTypeInfo(typeInfo)
+function JsonSerializer:AddTypeInfo(typeInfo)
     if not Utils.Class.HasBaseClass("Core.Json.Serializable", typeInfo) then
         error("class type has not Core.Json.Serializable as base class", 2)
     end
@@ -35,7 +38,7 @@ end
 
 ---@param typeInfos Utils.Class.Type[]
 ---@return Core.Json.Serializer
-function Serializer:AddTypeInfos(typeInfos)
+function JsonSerializer:AddTypeInfos(typeInfos)
     for _, typeInfo in ipairs(typeInfos) do
         self:AddTypeInfo(typeInfo)
     end
@@ -45,14 +48,14 @@ end
 ---@private
 ---@param class object
 ---@return table data
-function Serializer:serializeClass(class)
+function JsonSerializer:serializeClass(class)
     local typeInfo = class:Static__GetType()
     if not Utils.Class.HasBaseClass("Core.Json.Serializable", typeInfo) then
         error("can not serialize class: " .. typeInfo.Name .. " use 'Core.Json.Serializable' as base class")
     end
     ---@cast class Core.Json.Serializable
 
-    local data = { __Type = typeInfo.Name, __Data = { class:Static__Serialize() } }
+    local data = { __Type = typeInfo.Name, __Data = { class:Serialize() } }
 
     if type(data.__Data) == "table" then
         for key, value in next, data.__Data, nil do
@@ -66,7 +69,7 @@ end
 ---@private
 ---@param obj any
 ---@return table data
-function Serializer:serializeInternal(obj)
+function JsonSerializer:serializeInternal(obj)
     local objType = type(obj)
     if objType ~= "table" then
         if not Utils.Table.ContainsKey(Json.type_func_map, objType) then
@@ -91,9 +94,9 @@ function Serializer:serializeInternal(obj)
     return obj
 end
 
----@param obj table
+---@param obj any
 ---@return string str
-function Serializer:Serialize(obj)
+function JsonSerializer:Serialize(obj)
     return Json.encode(self:serializeInternal(obj))
 end
 
@@ -115,7 +118,7 @@ end
 ---@private
 ---@param t table
 ---@return object class
-function Serializer:deserializeClass(t)
+function JsonSerializer:deserializeClass(t)
     local data = t.__Data
 
     local typeInfo = self._TypeInfos[t.__Type]
@@ -140,7 +143,7 @@ end
 ---@private
 ---@param t table
 ---@return any obj
-function Serializer:deserializeInternal(t)
+function JsonSerializer:deserializeInternal(t)
     if isDeserializedClass(t) then
         return self:deserializeClass(t)
     end
@@ -156,7 +159,7 @@ end
 
 ---@param str string
 ---@return any obj
-function Serializer:Deserialize(str)
+function JsonSerializer:Deserialize(str)
     local obj = Json.decode(str)
 
     if type(obj) == "table" then
@@ -166,4 +169,9 @@ function Serializer:Deserialize(str)
     return obj
 end
 
-return Utils.Class.CreateClass(Serializer, "Core.Json.JsonSerializer")
+Utils.Class.CreateClass(JsonSerializer, "Core.Json.JsonSerializer")
+
+JsonSerializer.Static__Serializer = JsonSerializer()
+JsonSerializer.Static__Serializer:AddDefaultTypeInfos()
+
+return JsonSerializer

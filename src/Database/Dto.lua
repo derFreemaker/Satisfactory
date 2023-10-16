@@ -1,24 +1,25 @@
 ---@class Database.Dto : object
----@field private key string | number
----@field private data table
----@field private dbTable Database.DbTable
----@overload fun(key: string | number, data: table, dbTable: Database.DbTable) : Database.Dto
+---@field private _Key string | number | Core.Json.Serializable
+---@field private _Data table
+---@field private _DbTable Database.DbTable
+---@overload fun(key: string | number | Core.Json.Serializable, data: table, dbTable: Database.DbTable) : Database.Dto
 local Dto = {}
 
 ---@private
----@param key string | number
+---@param key string | number | Core.Json.Serializable
 ---@param data table
 ---@param dbTable Database.DbTable
 function Dto:__init(key, data, dbTable)
-    self.key = key
-    self.data = data
-    self.dbTable = dbTable
+    self._Key = key
+    self._Data = data
+    self._DbTable = dbTable
 end
 
 ---@private
 ---@param key boolean | string | number | table
 function Dto:__index(key)
-    return self.data[key]
+    self._DbTable:ObjectChanged(self._Key)
+    return self._Data[key]
 end
 
 ---@pivate
@@ -31,8 +32,8 @@ function Dto:__newindex(key, value)
         error("unsupported key type: " .. keyType)
     end
 
-    self.data[key] = value
-    self.dbTable:ObjectChanged(self.key)
+    self._Data[key] = value
+    self._DbTable:ObjectChanged(self._Key)
 end
 
 return Utils.Class.CreateClass(Dto, "Database.Dto")

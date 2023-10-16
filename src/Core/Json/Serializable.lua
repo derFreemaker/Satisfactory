@@ -2,14 +2,14 @@
 local Serializable = {}
 
 ---@return any ...
-function Serializable:Static__Serialize()
-    error("function not overriden")
+function Serializable:Serialize()
+    error("function is not overriden")
 end
 
 ---@param ... any
 ---@return any obj
 function Serializable.Static__Deserialize(...)
-    error("function not overriden")
+    error("function is not overriden")
 end
 
 return Utils.Class.CreateClass(Serializable, "Core.Json.Serializable")

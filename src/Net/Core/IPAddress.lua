@@ -16,7 +16,7 @@ end
 --#region - Serializable -
 
 ---@return string data
-function IPAddress:Static__Serialize()
+function IPAddress:Serialize()
     return self._Address
 end
 

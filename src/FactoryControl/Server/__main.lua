@@ -21,7 +21,7 @@ function Main:Configure()
 	local netPort = self.netClient:CreateNetworkPort(PortUsage.HTTP)
 	netPort:OpenPort()
 	self.apiController = RestApiController(netPort, self.Logger:subLogger('RestApiController'))
-	self.apiController:AddRestApiEndpointBase(ControllerEndpoints())
+	self.apiController:AddRestApiEndpointBase(ControllerEndpoints(self.Logger:subLogger("ControllerEndpoints")))
 	self.Logger:LogDebug('setup endpoints')
 
 	self.dnsClient = DNSClient(self.netClient, self.Logger:subLogger('DNSClient'))

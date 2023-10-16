@@ -9,6 +9,9 @@ local random = math.random
 ---@overload fun(head: number[], body: number[], tail: number[]) : Core.UUID
 local UUID = {}
 
+---@type integer
+UUID.Static__GeneratedCount = 0
+
 --- Replaces 'x' in template with random character.
 ---@param amount integer
 ---@return number[] char
@@ -31,7 +34,7 @@ end
 
 ---@return Core.UUID
 function UUID.Static__New()
-    math.randomseed(os.time())
+    math.randomseed(computer.millis() + computer.time() + UUID.Static__GeneratedCount)
     local head = generateRandomChars(6)
     local body = generateRandomChars(4)
     local tail = generateRandomChars(6)
@@ -149,7 +152,7 @@ end
 --#region - Serializable -
 
 ---@return string data
-function UUID:Static__Serialize()
+function UUID:Serialize()
     return tostring(self)
 end
 
