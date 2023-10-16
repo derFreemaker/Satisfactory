@@ -3,6 +3,4 @@ sticker: lucide//database
 ---
 ## Tables
 
-- Controllers
-
----
+- Controllers (ControllerDto)
