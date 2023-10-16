@@ -44,7 +44,8 @@
       "Lua/Types",
       "/",
       "Projects",
-      "Projects/Factory Control"
+      "Projects/Factory Control",
+      "Projects/Github Loading"
     ],
     "Lua": [
       "Types"
@@ -86,7 +87,7 @@
   "spacesSyncTimeoutSeconds": 10,
   "spacesAutoBackup": true,
   "spacesAutoBackupInterval": 10,
-  "spacesAutoBackupLast": 1697289588017,
+  "spacesAutoBackupLast": 1697443838145,
   "spacesUseAlias": false,
   "precreateVaultSpace": true,
   "fmKeyAlias": "aliases",
