@@ -62,7 +62,8 @@
       "Projects/Factory Control/(...).ControllerDto",
       "Projects/Factory Control/(...).ControllerDto",
       "Projects/Factory Control/ControllerDto",
-      "Projects/Factory Control/Server"
+      "Projects/Factory Control/Server",
+      "Projects/Factory Control/ControllerDto/Feature"
     ],
     "Lua": [
       "Types"
@@ -104,7 +105,7 @@
   "spacesSyncTimeoutSeconds": 10,
   "spacesAutoBackup": true,
   "spacesAutoBackupInterval": 10,
-  "spacesAutoBackupLast": 1697447391992,
+  "spacesAutoBackupLast": 1697448588817,
   "spacesUseAlias": false,
   "precreateVaultSpace": true,
   "fmKeyAlias": "aliases",
