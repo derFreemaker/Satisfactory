@@ -1,0 +1,168 @@
+---@meta
+local PackageData = {}
+
+PackageData["DatabaseDbTable"] = {
+    Location = "Database.DbTable",
+    Namespace = "Database.DbTable",
+    IsRunnable = true,
+    Data = [[
+local JsonSerializer = require("Core.Json.JsonSerializer")
+local File = require("Core.FileSystem.File")
+
+local Dto = require("Database.Dto")
+
+---@class Database.DbTable : object
+---@field private _Name string
+---@field private _Path Core.FileSystem.Path
+---@field private _Data Dictionary<string | number, table>
+---@field private _DataChanged (string | number)[]
+---@field private _Logger Core.Logger
+---@field private _Serializer Core.Json.Serializer
+---@overload fun(name: string, path: Core.FileSystem.Path, logger: Core.Logger, serializer: Core.Json.Serializer?) : Database.DbTable
+local DbTable = {}
+
+---@private
+---@param name string
+---@param path Core.FileSystem.Path
+---@param logger Core.Logger
+---@param serializer Core.Json.Serializer
+function DbTable:__init(name, path, logger, serializer)
+    if not path:IsDir() then
+        error("path needs to be a folder: " .. path:GetPath())
+    end
+
+    self._Name = name
+    self._Path = path
+    self._Logger = logger
+    self._Data = {}
+
+    self._Serializer = serializer or JsonSerializer.Static__Serializer
+end
+
+function DbTable:Load()
+    self._Logger:LogTrace("loading Database Table: '" .. self._Name .. "'...")
+    local parentFolder = self._Path:GetParentFolderPath()
+    if not filesystem.exists(parentFolder:GetPath()) then
+        filesystem.createDir(parentFolder:GetPath(), true)
+    end
+
+    for _, fileName in ipairs(filesystem.childs(self._Path:GetPath())) do
+        local path = self._Path:Extend(fileName)
+
+        if path:IsFile() then
+            local data = File.Static__ReadAll(path)
+
+            local key = fileName:match("^(.+)%.dto%.json$")
+            self._Data[key] = self._Serializer:Deserialize(data)
+        end
+    end
+
+    self._Logger:LogTrace("loaded Database Table")
+end
+
+function DbTable:Save()
+    self._Logger:LogTrace("saving Database Table: '" .. self._Name .. "'...")
+
+    for _, key in pairs(self._DataChanged) do
+        local path = self._Path:Extend(tostring(key) .. ".dto.json")
+        local data = self._Data[key]
+
+        if not data then
+            filesystem.remove(path:GetPath())
+        else
+            File.Static__WriteAll(path, self._Serializer:Serialize(data))
+        end
+    end
+
+    self._Logger:LogTrace("saved Database Table")
+end
+
+---@param key string | number | Core.Json.Serializable
+function DbTable:ObjectChanged(key)
+    for _, value in pairs(self._DataChanged) do
+        if value == key then
+            return
+        end
+    end
+
+    table.insert(self._DataChanged, key)
+end
+
+---@param key string | number | Core.Json.Serializable
+---@param value table
+function DbTable:Set(key, value)
+    self._Data[key] = value
+    self:ObjectChanged(key)
+end
+
+---@param key string | number | Core.Json.Serializable
+function DbTable:Delete(key)
+    self._Data[key] = nil
+    self:ObjectChanged(key)
+end
+
+---@param key string | number | Core.Json.Serializable
+---@return table value
+function DbTable:Get(key)
+    local data = self._Data[key]
+    return Dto(key, data, self)
+end
+
+---@private
+---@return (fun(t: table, key: any) : key: any, value: any), table t, any startKey
+function DbTable:__pairs()
+    return next, self._Data, nil
+end
+
+return Utils.Class.CreateClass(DbTable, "Database.DbTable")
+]]
+}
+
+PackageData["DatabaseDto"] = {
+    Location = "Database.Dto",
+    Namespace = "Database.Dto",
+    IsRunnable = true,
+    Data = [[
+---@class Database.Dto : object
+---@field private _Key string | number | Core.Json.Serializable
+---@field private _Data table
+---@field private _DbTable Database.DbTable
+---@overload fun(key: string | number | Core.Json.Serializable, data: table, dbTable: Database.DbTable) : Database.Dto
+local Dto = {}
+
+---@private
+---@param key string | number | Core.Json.Serializable
+---@param data table
+---@param dbTable Database.DbTable
+function Dto:__init(key, data, dbTable)
+    self._Key = key
+    self._Data = data
+    self._DbTable = dbTable
+end
+
+---@private
+---@param key boolean | string | number | table
+function Dto:__index(key)
+    self._DbTable:ObjectChanged(self._Key)
+    return self._Data[key]
+end
+
+---@pivate
+---@param key boolean | string | number | table
+---@param value Json.SerializeableTypes
+function Dto:__newindex(key, value)
+    local keyType = type(key)
+
+    if not (keyType == "boolean" or keyType == "string" or keyType == "number" or keyType == "table") then
+        error("unsupported key type: " .. keyType)
+    end
+
+    self._Data[key] = value
+    self._DbTable:ObjectChanged(self._Key)
+end
+
+return Utils.Class.CreateClass(Dto, "Database.Dto")
+]]
+}
+
+return PackageData
