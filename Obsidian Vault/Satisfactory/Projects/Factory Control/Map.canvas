@@ -1,16 +1,28 @@
 {
 	"nodes":[
+		{"id":"4ffd4d5ab3be1ee7","type":"group","x":-2400,"y":-300,"width":2240,"height":1340,"label":"Server"},
+		{"id":"b3b1044564904f15","type":"group","x":-2320,"y":-200,"width":1600,"height":1160,"label":"ControllerDto Overview"},
 		{"id":"e6ffb0ef2a22bb3b","type":"group","x":320,"y":-340,"width":1100,"height":580,"label":"Controller"},
+		{"id":"671fe45195b08c01","type":"file","file":"Projects/Factory Control/Factory Control.md","x":8,"y":-860,"width":400,"height":260},
+		{"id":"020af15f29c7e13f","type":"text","text":"<h1 style=\"text-align: center;\">HTTP</h1>","x":-79,"y":-210,"width":175,"height":60},
+		{"id":"83276f4a2e80029e","type":"file","file":"Projects/Factory Control/ControllerDto/Feature/Feature.Type.md","x":-1720,"y":0,"width":400,"height":400},
+		{"id":"afbea57c2008b285","type":"file","file":"Projects/Factory Control/ControllerDto/Feature/FeatureDto.md","x":-1720,"y":480,"width":400,"height":400},
+		{"id":"8d03875dec32f1df","type":"file","file":"Projects/Factory Control/ControllerDto/Feature/SwitchDto.md","x":-2240,"y":-120,"width":240,"height":160},
+		{"id":"3d485dfd5fe5cace","type":"file","file":"Projects/Factory Control/ControllerDto/ControllerDto.md","x":-1200,"y":120,"width":400,"height":400},
 		{"id":"332e6b528164a721","type":"file","file":"Projects/Factory Control/Client/Client.md","x":380,"y":-280,"width":400,"height":200},
-		{"id":"dca42c2f3aa02d54","type":"file","file":"Projects/Factory Control/Server/Server.md","x":-740,"y":-240,"width":400,"height":110},
 		{"id":"60db06235321df17","type":"file","file":"Projects/Factory Control/Client/Feature.md","x":480,"y":10,"width":400,"height":140},
 		{"id":"2df62c63793c8185","type":"file","file":"Projects/Factory Control/Client/Feature Types.md","x":960,"y":-20,"width":400,"height":200},
-		{"id":"671fe45195b08c01","type":"file","file":"Projects/Factory Control/Factory Control.md","x":8,"y":-860,"width":400,"height":260},
-		{"id":"020af15f29c7e13f","type":"text","text":"<h1 style=\"text-align: center;\">HTTP</h1>","x":-79,"y":-210,"width":175,"height":60}
+		{"id":"dca42c2f3aa02d54","type":"file","file":"Projects/Factory Control/Server/Server.md","x":-600,"y":-235,"width":400,"height":110},
+		{"id":"b0c1dbc1f338775a","x":-640,"y":0,"width":400,"height":230,"type":"file","file":"Projects/Factory Control/Server/Database.md"}
 	],
 	"edges":[
 		{"id":"321fb451ab2c6137","fromNode":"dca42c2f3aa02d54","fromSide":"right","toNode":"332e6b528164a721","toSide":"left","fromEnd":"arrow"},
 		{"id":"606b84a4165e37fb","fromNode":"2df62c63793c8185","fromSide":"left","toNode":"60db06235321df17","toSide":"right"},
-		{"id":"5b55a911c285e4ea","fromNode":"60db06235321df17","fromSide":"top","toNode":"332e6b528164a721","toSide":"bottom"}
+		{"id":"5b55a911c285e4ea","fromNode":"60db06235321df17","fromSide":"top","toNode":"332e6b528164a721","toSide":"bottom"},
+		{"id":"e7540282aee7ea9a","fromNode":"83276f4a2e80029e","fromSide":"bottom","toNode":"afbea57c2008b285","toSide":"top"},
+		{"id":"5d334df366a24ad7","fromNode":"8d03875dec32f1df","fromSide":"right","toNode":"83276f4a2e80029e","toSide":"left"},
+		{"id":"9451a551cfbc528f","fromNode":"afbea57c2008b285","fromSide":"right","toNode":"3d485dfd5fe5cace","toSide":"bottom"},
+		{"id":"396a896ada2b83f4","fromNode":"3d485dfd5fe5cace","fromSide":"right","toNode":"b0c1dbc1f338775a","toSide":"left"},
+		{"id":"db74adfc4ce9c091","fromNode":"dca42c2f3aa02d54","fromSide":"bottom","toNode":"b0c1dbc1f338775a","toSide":"top"}
 	]
 }

@@ -4,20 +4,20 @@
     "type": "split",
     "children": [
       {
-        "id": "21a1892e7963d2bb",
+        "id": "06b25b1610040c9b",
         "type": "tabs",
         "children": [
           {
-            "id": "116b87151f387c3e",
+            "id": "03b05ee9be0d2283",
             "type": "leaf",
             "state": {
               "type": "canvas",
               "state": {
                 "file": "Projects/Factory Control/Map.canvas",
                 "viewState": {
-                  "x": -250.20666278257073,
-                  "y": -138.44945884275296,
-                  "zoom": -0.21584982763384145
+                  "x": -597.6502904047561,
+                  "y": 73.0021605147699,
+                  "zoom": -2.089261833325918
                 }
               }
             }
@@ -97,7 +97,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Projects/Factory Control/Server/Server.md",
+                "file": "Projects/Factory Control/Map.canvas",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,7 +114,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Projects/Factory Control/Server/Server.md",
+                "file": "Projects/Factory Control/Map.canvas",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -137,7 +137,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Projects/Factory Control/Server/Server.md"
+                "file": "Projects/Factory Control/Map.canvas"
               }
             }
           },
@@ -150,9 +150,19 @@
                 "sortOrder": "frequency"
               }
             }
+          },
+          {
+            "id": "0396a7912d62d9d8",
+            "type": "leaf",
+            "state": {
+              "type": "file-properties",
+              "state": {
+                "file": "Projects/Factory Control/Map.canvas"
+              }
+            }
           }
         ],
-        "currentTab": 4
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
@@ -171,10 +181,27 @@
       "markdown-importer:Markdown Importprogramm öffnen": false
     }
   },
-  "active": "116b87151f387c3e",
+  "active": "03b05ee9be0d2283",
   "lastOpenFiles": [
-    "Projects/Github Loading/Map.canvas",
+    "Projects/Factory Control/Server/Database.md",
     "Projects/Factory Control/Map.canvas",
+    "Projects/Factory Control/ControllerDto/ControllerDto.md",
+    "Projects/Factory Control/ControllerDto/(...).ControllerDto.md",
+    "Projects/Factory Control/ControllerDto/Feature/FeatureDto.md",
+    "Projects/Factory Control/ControllerDto/Feature/Feature.Type.md",
+    "Projects/Objects/Net.Core.IPAddress.md",
+    "Projects/Objects/Dictionary.md",
+    "Projects/Factory Control/ControllerDto/Feature/SwitchDto.md",
+    "Projects/Objects/boolean.md",
+    "Projects/Factory Control/ControllerDto/Feature/Feature.md",
+    "Projects/Objects/Core.UUID.md",
+    "Projects/Objects",
+    "Projects/Unbenannt.md",
+    "Projects/Factory Control/ControllerDto/Feature",
+    "Projects/Factory Control/(...).ControllerDto/Controller.md",
+    "Projects/Factory Control/(...).ControllerDto/ControllerDto.md",
+    "Projects/Factory Control/ControllerDto",
+    "Projects/Github Loading/Map.canvas",
     "Projects/Github Loading/Github Loading.md",
     "Projects/Github Loading/Github Loading.canvas",
     "Projects/Github Loading/Map - Kopie.canvas",
@@ -191,26 +218,9 @@
     "Projects/Github Loading",
     "Projects/Factory Control/Server/Feature in.md",
     "Projects/Factory Control/Server",
-    "Projects/Factory Control/Client/Client#.md",
-    "Projects/Factory Control/Client/Client.md",
     "Projects/Factory Control/Client",
-    "Projects/Factory Control/Server/Server.md",
-    "Projects/Factory Control/Factory Control.md",
     "Projects/Factory Control",
-    "Projects/Projects.md",
     "Projects",
-    "Core/Path.md",
-    "Context/~syncthing~spacesLastSync.log.tmp",
-    "Context/spacesLastSync.sync-conflict-20231014-024041-IOKGF7S.log",
-    "Context/spacesLastSync.sync-conflict-20231014-023938-IOKGF7S.log",
-    "Context/spacesLastSync.sync-conflict-20231014-023930-CPCXXO6.log",
-    "Core/UUID.md",
-    "Core/Task.md",
-    "Lua/Types/boolean.md",
-    "boolean.md",
-    "Lua/Types/table.md",
-    "Lua/Types/function.md",
-    "Lua/Types/any.md",
-    "Unbenannt.md"
+    "Context/~syncthing~spacesLastSync.log.tmp"
   ]
 }

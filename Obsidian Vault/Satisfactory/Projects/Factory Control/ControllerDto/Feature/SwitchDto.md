@@ -1,0 +1,2 @@
+- Base: [[FeatureDto]]
+- IsEnabled: [[boolean]]
