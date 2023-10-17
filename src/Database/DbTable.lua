@@ -103,7 +103,14 @@ end
 ---@private
 ---@return (fun(t: table, key: any) : key: any, value: any), table t, any startKey
 function DbTable:__pairs()
-    return next, self._Data, nil
+    ---@type Database.Dto[]
+    local dtoObjs = {}
+
+    for key, value in pairs(self._Data) do
+        dtoObjs[key] = Dto(key, value, self)
+    end
+
+    return next, dtoObjs, nil
 end
 
 return Utils.Class.CreateClass(DbTable, "Database.DbTable")

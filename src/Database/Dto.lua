@@ -18,8 +18,13 @@ end
 ---@private
 ---@param key boolean | string | number | table
 function Dto:__index(key)
-    self._DbTable:ObjectChanged(self._Key)
-    return self._Data[key]
+    local value = self._Data[key]
+
+    if type(value) == "table" then
+        self._DbTable:ObjectChanged(self._Key)
+    end
+
+    return value
 end
 
 ---@pivate

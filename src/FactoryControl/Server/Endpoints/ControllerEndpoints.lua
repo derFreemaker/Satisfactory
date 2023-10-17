@@ -41,7 +41,7 @@ function ControllerEndpoints:GET__ControllerById(request)
 	---@type Core.UUID
 	local id = request.Body
 
-	local controller = self._Controllers:GetController(id)
+	local controller = self._Controllers:GetControllerById(id)
 
 	if not controller then
 		return self.Templates:NotFound("Controller with id: " .. tostring(id))
@@ -50,7 +50,20 @@ function ControllerEndpoints:GET__ControllerById(request)
 	return self.Templates:Ok(controller)
 end
 
--- get controller with name
+---@param request Net.Rest.Api.Request
+---@return Net.Rest.Api.Response response
+function ControllerEndpoints:GET__ControllerByName(request)
+	---@type string
+	local name = request.Body
+
+	local controller = self._Controllers:GetControllerByName(name)
+
+	if not controller then
+		return self.Templates:NotFound("Controller with name: " .. name)
+	end
+
+	return self.Templates:Ok(controller)
+end
 
 return Utils.Class.CreateClass(ControllerEndpoints, 'FactoryControl.Server.ControllerEndpoints',
 	require('Net.Rest.Api.Server.EndpointBase'))

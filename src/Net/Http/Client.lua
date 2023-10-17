@@ -4,16 +4,15 @@ local IPAddress = require("Net.Core.IPAddress")
 local NetworkClient = require('Net.Core.NetworkClient')
 local ApiClient = require('Net.Rest.Api.Client.Client')
 local DNSClient = require('DNS.Client.Client')
-local HttpRequest = require('Net.Http.Request')
 local HttpResponse = require('Net.Http.Response')
 local ApiRequest = require('Net.Rest.Api.Request')
 local ApiResponse = require('Net.Rest.Api.Response')
 
----@class Http.Client : object
+---@class Net.Http.Client : object
 ---@field private _NetClient Net.Core.NetworkClient
 ---@field private _DnsClient DNS.Client
 ---@field private _Logger Core.Logger
----@overload fun(logger: Core.Logger, dnsClient: DNS.Client?, networkClient: Net.Core.NetworkClient?) : Http.Client
+---@overload fun(logger: Core.Logger, dnsClient: DNS.Client?, networkClient: Net.Core.NetworkClient?) : Net.Http.Client
 local HttpClient = {}
 
 ---@param logger Core.Logger
@@ -45,8 +44,8 @@ function HttpClient:getAddress(address)
 	return IPAddress(getedAddress.Id)
 end
 
----@param request Http.Request
----@return Http.Response response
+---@param request Net.Http.Request
+---@return Net.Http.Response response
 function HttpClient:Send(request)
 	local address = self:getAddress(request.Url)
 	if not address then

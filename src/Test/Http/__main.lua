@@ -8,7 +8,7 @@ local Address = require('DNS.Core.Entities.Address.Address')
 ---@class Test.Http.Main : Github_Loading.Entities.Main
 ---@field private netClient Net.Core.NetworkClient
 ---@field private dnsClient DNS.Client
----@field private httpClient Http.Client
+---@field private httpClient Net.Http.Client
 local Main = {}
 
 function Main:Configure()

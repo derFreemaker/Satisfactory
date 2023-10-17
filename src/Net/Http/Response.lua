@@ -1,12 +1,12 @@
----@class Http.Response : object
+---@class Net.Http.Response : object
 ---@field ApiResponse Net.Rest.Api.Response
----@field Request Http.Request
----@overload fun(apiResponse: Net.Rest.Api.Response, request: Http.Request) : Http.Response
+---@field Request Net.Http.Request
+---@overload fun(apiResponse: Net.Rest.Api.Response, request: Net.Http.Request) : Net.Http.Response
 local HttpResponse = {}
 
 ---@private
 ---@param apiResponse Net.Rest.Api.Response
----@param request Http.Request
+---@param request Net.Http.Request
 function HttpResponse:__init(apiResponse, request)
 	self.ApiResponse = apiResponse
 	self.Request = request
@@ -17,7 +17,7 @@ function HttpResponse:IsSuccess()
 	return self.ApiResponse.WasSuccessfull
 end
 
----@return table
+---@return any
 function HttpResponse:GetBody()
 	return self.ApiResponse.Body
 end

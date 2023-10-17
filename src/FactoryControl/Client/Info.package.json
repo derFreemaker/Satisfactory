@@ -6,6 +6,7 @@
     "Core",
     "FactoryControl.Core",
     "Net.Core",
+    "Net.Http",
     "Net.Rest"
   ],
   "PackageType": "Library"

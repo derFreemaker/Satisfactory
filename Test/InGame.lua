@@ -1,9 +1,3 @@
----@type FIN.Components.FINComputerMod.InternetCard_C
-local internetCard = computer.getPCIDevices(findClass('FINInternetCard'))[1]
-if not internetCard then
-	computer.beep(0.2)
-	error('No internet-card found!')
-	return
-end
+local currentPC = computer:getInstance()
 
-print(internetCard:getHash())
+print(currentPC.id, currentPC.nick)
