@@ -18,10 +18,12 @@ function JsonSerializer:__init(typeInfos)
     end
 end
 
-function JsonSerializer:AddDefaultTypeInfos()
-    self:AddTypeInfos({
-        require("Core.UUID"):Static__GetType()
-    })
+function JsonSerializer:AddTypesFromStatic()
+    for name, typeInfo in pairs(self.Static__Serializer._TypeInfos) do
+        if not Utils.Table.ContainsKey(self._TypeInfos, name) then
+            self._TypeInfos[name] = typeInfo
+        end
+    end
 end
 
 ---@param typeInfo Utils.Class.Type
@@ -172,6 +174,9 @@ end
 Utils.Class.CreateClass(JsonSerializer, "Core.Json.JsonSerializer")
 
 JsonSerializer.Static__Serializer = JsonSerializer()
-JsonSerializer.Static__Serializer:AddDefaultTypeInfos()
+JsonSerializer.Static__Serializer:AddTypeInfos({
+    -- UUID
+    require("Core.UUID"):Static__GetType()
+})
 
 return JsonSerializer

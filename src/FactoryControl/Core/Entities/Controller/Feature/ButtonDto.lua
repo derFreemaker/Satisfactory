@@ -1,23 +1,25 @@
 ---@class FactoryControl.Core.Entities.Controller.Feature.ButtonDto : FactoryControl.Core.Entities.Controller.Feature.FeatureDto
----@overload fun(id: Core.UUID) : FactoryControl.Core.Entities.Controller.Feature.ButtonDto
+---@overload fun(id: Core.UUID, name: string) : FactoryControl.Core.Entities.Controller.Feature.ButtonDto
 local ButtonFeatureDto = {}
 
 ---@private
 ---@param id Core.UUID
----@param baseFunc fun(id: Core.UUID, type: FactoryControl.Core.Entities.Controller.Feature.Type)
-function ButtonFeatureDto:__init(baseFunc, id)
-    baseFunc(id, "Button")
+---@param name string
+---@param baseFunc fun(id: Core.UUID, name: string, type: FactoryControl.Core.Entities.Controller.Feature.Type)
+function ButtonFeatureDto:__init(baseFunc, id, name)
+    baseFunc(id, name, "Button")
 end
 
----@return Core.UUID
+---@return Core.UUID id, string name
 function ButtonFeatureDto:Serialize()
-    return self.Id
+    return self.Id, self.Name
 end
 
 ---@param id Core.UUID
+---@param name string
 ---@return FactoryControl.Core.Entities.Controller.Feature.ButtonDto
-function ButtonFeatureDto.Static__Deserialize(id)
-    return ButtonFeatureDto(id)
+function ButtonFeatureDto.Static__Deserialize(id, name)
+    return ButtonFeatureDto(id, name)
 end
 
 return Utils.Class.CreateClass(ButtonFeatureDto, "FactoryControl.Core.Entities.Controller.Feature.ButtonDto",
