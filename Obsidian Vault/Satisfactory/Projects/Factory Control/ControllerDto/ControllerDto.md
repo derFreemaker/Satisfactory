@@ -5,5 +5,6 @@ Represents a Controller.
 ## Properties
 
 - Id: [[Core.UUID]]
+- Name: [[string]]
 - IPAddress: [[Net.Core.IPAddress]]
 - Features: [[Dictionary]]<[[Core.UUID]], [[FeatureDto]]>

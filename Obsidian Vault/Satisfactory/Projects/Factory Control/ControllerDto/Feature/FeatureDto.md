@@ -1,6 +1,6 @@
+Can be invoked/changed to effect the controller behavior.
 
 ---
-## Properties
-
 - Id: [[Core.UUID]]
+- Name: [[string]]
 - Type: [[Feature.Type]]

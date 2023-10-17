@@ -4,16 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "3dcfdbdd55634a4d",
+        "id": "ff316b908cc8cd78",
         "type": "tabs",
         "children": [
           {
-            "id": "a576d594ffe176d8",
+            "id": "ecb0c8a2a5d2e51a",
             "type": "leaf",
             "state": {
-              "type": "make-folder-view",
+              "type": "canvas",
               "state": {
-                "contextPath": "Projects/Github Loading"
+                "file": "Projects/Factory Control/Map.canvas",
+                "viewState": {
+                  "x": 756.6147709042727,
+                  "y": 305.07177761314597,
+                  "zoom": -1.9036908286137124
+                }
               }
             }
           }
@@ -92,6 +97,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "Projects/Factory Control/Map.canvas",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -108,6 +114,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "Projects/Factory Control/Map.canvas",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -129,7 +136,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "Projects/Factory Control/Map.canvas"
+              }
             }
           },
           {
@@ -147,7 +156,9 @@
             "type": "leaf",
             "state": {
               "type": "file-properties",
-              "state": {}
+              "state": {
+                "file": "Projects/Factory Control/Map.canvas"
+              }
             }
           }
         ],
@@ -170,10 +181,13 @@
       "markdown-importer:Markdown Importprogramm öffnen": false
     }
   },
-  "active": "63036358451a413c",
+  "active": "ecb0c8a2a5d2e51a",
   "lastOpenFiles": [
-    "Projects/Factory Control/Server/Database.md",
+    "Projects/Github Loading/Map.canvas",
     "Projects/Factory Control/Map.canvas",
+    "Projects/Factory Control/Client/Feature Types.md",
+    "Projects/Factory Control/ControllerDto/Feature/FeatureDto.md",
+    "Projects/Factory Control/Server/Database.md",
     "Projects/Factory Control/ControllerDto/Feature/ChartDto.md",
     "Projects/Objects/string.md",
     "Projects/Factory Control/ControllerDto/Feature/RadialDto.md",
@@ -182,7 +196,6 @@
     "Projects/Factory Control/ControllerDto/Feature/ButtonDto.md",
     "Projects/Factory Control/ControllerDto/ControllerDto.md",
     "Projects/Factory Control/ControllerDto/(...).ControllerDto.md",
-    "Projects/Factory Control/ControllerDto/Feature/FeatureDto.md",
     "Projects/Factory Control/ControllerDto/Feature/Feature.Type.md",
     "Projects/Objects/Net.Core.IPAddress.md",
     "Projects/Objects/Dictionary.md",
@@ -195,7 +208,6 @@
     "Projects/Factory Control/(...).ControllerDto/Controller.md",
     "Projects/Factory Control/(...).ControllerDto/ControllerDto.md",
     "Projects/Factory Control/ControllerDto",
-    "Projects/Github Loading/Map.canvas",
     "Projects/Github Loading/Github Loading.md",
     "Projects/Github Loading/Github Loading.canvas",
     "Projects/Github Loading/Map - Kopie.canvas",
@@ -203,7 +215,6 @@
     "Projects/Github Loading/Unbenannt.md",
     "Projects/Github Loading/Github Loader.md",
     "Projects/Github Loading/Lua Bundler.md",
-    "Projects/Github Loading/Package/Module.md",
     "Projects/Github Loading/Package",
     "Projects/Github Loading",
     "Projects/Factory Control/Server",

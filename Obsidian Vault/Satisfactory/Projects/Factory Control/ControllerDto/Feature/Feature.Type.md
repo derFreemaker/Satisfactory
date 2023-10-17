@@ -1,1 +1,1 @@
-"Switch" | "Button" | "Radial" | "Chart"
+"Switch", "Button", "Radial", "Chart"
