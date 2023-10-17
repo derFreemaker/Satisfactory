@@ -18,16 +18,17 @@ end
 ---@private
 ---@param method Net.Core.Method
 ---@param endpoint string
----@param headers Dictionary<string, any>?
 ---@param body any
+---@param headers Dictionary<string, any>?
 ---@return Net.Rest.Api.Response response
-function FactoryControlRestApiClient:request(method, endpoint, headers, body)
-	return self.restApiClient:Send(ApiRequest(method, endpoint, headers, body))
+function FactoryControlRestApiClient:request(method, endpoint, body, headers)
+	return self.restApiClient:Send(ApiRequest(method, endpoint, body, headers))
 end
 
----@return boolean
-function FactoryControlRestApiClient:CreateController()
-	local response = self:request('CREATE', 'Controller')
+---@param createController FactoryControl.Core.Entities.Controller.CreateDto
+---@return FactoryControl.Core.Entities.Controller.ControllerDto
+function FactoryControlRestApiClient:CreateController(createController)
+	local response = self:request('CREATE', 'Controller', createController)
 	return response.Body
 end
 

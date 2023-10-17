@@ -20,6 +20,19 @@ function TestConstructClass()
 	luaunit.assertNotIsNil(test())
 end
 
+function TestExtendClass()
+	local test = Utils.Class.CreateClass({}, 'CreateEmpty')
+	local testClassInstance = test()
+
+	local extended = Utils.Class.ExtendClass({ Test = "hi" }, test)
+	local extendedtestClassInstance = test()
+	local extendedClassInstance = extended()
+
+	luaunit.assertEquals(testClassInstance.Test, "hi")
+	luaunit.assertEquals(extendedtestClassInstance.Test, "hi")
+	luaunit.assertEquals(extendedClassInstance.Test, "hi")
+end
+
 function TestDeconstructClass()
 	local testClass = Utils.Class.CreateClass({}, 'CreateEmpty')
 	local test = testClass()

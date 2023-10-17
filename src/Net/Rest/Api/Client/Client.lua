@@ -1,6 +1,4 @@
 local Response = require('Net.Rest.Api.Response')
----@type Net.Rest.Api.Extensions
-local Extensions = require('Net.Core.NetworkContext.Api.Extensions')
 
 ---@class Net.Rest.Api.Client : object
 ---@field ServerIPAddress Net.Core.IPAddress
@@ -36,7 +34,7 @@ function Client:Send(request, timeout)
 		return Response(nil, { Code = 408 })
 	end
 
-	local response = Extensions:Static_NetworkContextToApiResponse(context)
+	local response = context:ToApiResponse()
 	return response
 end
 

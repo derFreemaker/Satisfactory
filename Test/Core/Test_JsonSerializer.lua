@@ -6,7 +6,7 @@ local JsonSerializer = require("Core.Json.JsonSerializer")
 
 function TestOverall()
     local serializer = JsonSerializer()
-    serializer:AddDefaultTypeInfos()
+    serializer:AddTypesFromStatic()
     local test = UUID.Static__Empty()
 
     local json = serializer:Serialize({ Id = test })

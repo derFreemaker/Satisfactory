@@ -24,6 +24,8 @@ local function construct(obj, ...)
 	MetatableHandler.CreateMetatable(typeInfo, classMetatable)
 	ConstructionHandler.ConstructClass(typeInfo, class, classMetatable, ...)
 
+	table.insert(typeInfo.Instances, class)
+
 	return class
 end
 
@@ -76,6 +78,8 @@ end
 ---@param data table
 function ConstructionHandler.ConstructTemplate(typeInfo, data)
 	Table.Clear(data)
+
+	typeInfo.Instances = setmetatable({}, { __mode = 'v' })
 
 	local metatable = MetatableHandler.CreateTemplateMetatable(typeInfo)
 	metatable.__call = construct

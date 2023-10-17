@@ -25,6 +25,26 @@ function Class.CreateClass(data, name, baseClass)
     return data
 end
 
+---@generic TClass : object
+---@param extensions TClass
+---@param class TClass
+---@return TClass
+function Class.ExtendClass(extensions, class)
+    ---@type Out<Utils.Class.Metatable>
+    local metatable = {}
+    if not Class.IsClass(class, metatable) then
+        error("provided class is not an class: " .. tostring(class))
+        return class
+    else
+        metatable = metatable.Return
+    end
+    local typeInfo = metatable.Type
+
+    MembersHandler.ExtendMembers(extensions, typeInfo)
+
+    return typeInfo.Template
+end
+
 ---@generic TClass
 ---@param class TClass
 function Class.Deconstruct(class)
@@ -69,8 +89,9 @@ function Class.HasBaseClass(baseClassName, type)
 end
 
 ---@param obj table
+---@param metatableOut Out<Utils.Class.Metatable>?
 ---@return boolean isClass
-function Class.IsClass(obj)
+function Class.IsClass(obj, metatableOut)
     if type(obj) ~= "table" then
         return false
     end
@@ -87,6 +108,10 @@ function Class.IsClass(obj)
 
     if not metatable.Type.Name then
         return false
+    end
+
+    if metatableOut then
+        metatableOut.Return = metatable
     end
 
     return true
