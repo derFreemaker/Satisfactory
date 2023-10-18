@@ -24,12 +24,19 @@ function TestExtendClass()
 	local test = Utils.Class.CreateClass({}, 'CreateEmpty')
 	local testClassInstance = test()
 
+	local testBaseClass = Utils.Class.CreateClass({}, "CreateEmptyWithBaseClass", test)
+	local testBaseClassInstance = testBaseClass()
+
 	local extended = Utils.Class.ExtendClass({ Test = "hi" }, test)
-	local extendedtestClassInstance = test()
+
+	local extendedTestClassInstance = test()
+	local extendedTestBaseClass = testBaseClass()
 	local extendedClassInstance = extended()
 
 	luaunit.assertEquals(testClassInstance.Test, "hi")
-	luaunit.assertEquals(extendedtestClassInstance.Test, "hi")
+	luaunit.assertEquals(testBaseClassInstance.Test, "hi")
+	luaunit.assertEquals(extendedTestClassInstance.Test, "hi")
+	luaunit.assertEquals(extendedTestBaseClass.Test, "hi")
 	luaunit.assertEquals(extendedClassInstance.Test, "hi")
 end
 

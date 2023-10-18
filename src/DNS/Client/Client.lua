@@ -1,4 +1,5 @@
-local PortUsage = require('Core.PortUsage')
+local PortUsage = require('Core.Usage_Port')
+local EventNameUsage = require("Core.Usage_EventName")
 
 local IPAddress = require("Net.Core.IPAddress")
 local NetworkClient = require('Net.Core.NetworkClient')
@@ -30,7 +31,7 @@ end
 
 ---@param networkClient Net.Core.NetworkClient
 function Client.Static_WaitForHeartbeat(networkClient)
-	networkClient:WaitForEvent('DNS', PortUsage.Heartbeats)
+	networkClient:WaitForEvent(EventNameUsage.DNS_Heartbeat, PortUsage.Heartbeats)
 end
 
 ---@param networkClient Net.Core.NetworkClient
@@ -45,7 +46,7 @@ function Client.Static__GetServerAddress(networkClient)
 	local try = 0
 	repeat
 		try = try + 1
-		response = netPort:WaitForEvent('ReturnDNSServerAddress', 10)
+		response = netPort:WaitForEvent(EventNameUsage.DNS_ReturnServerAddress, 10)
 	until response ~= nil or try == 10
 	if try == 10 then
 		error('unable to get dns server address')

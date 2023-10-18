@@ -14,7 +14,7 @@
 		{"id":"83276f4a2e80029e","type":"file","file":"Projects/Factory Control/ControllerDto/Feature/Feature.Type.md","x":1080,"y":888,"width":320,"height":120},
 		{"id":"671fe45195b08c01","type":"file","file":"Projects/Factory Control/Factory Control.md","x":200,"y":-40,"width":400,"height":260,"color":"1"},
 		{"id":"332e6b528164a721","type":"file","file":"Projects/Factory Control/Client/Client.md","x":860,"y":-660,"width":400,"height":200,"color":"2"},
-		{"id":"60db06235321df17","type":"file","file":"Projects/Factory Control/Client/Feature.md","x":960,"y":-370,"width":400,"height":140,"color":"2"},
+		{"id":"60db06235321df17","type":"file","file":"Projects/Factory Control/Client/Feature Info.md","x":960,"y":-370,"width":400,"height":140,"color":"2"},
 		{"id":"020af15f29c7e13f","type":"text","text":"<h1 style=\"text-align: center;\">HTTP</h1>","x":200,"y":-400,"width":175,"height":60}
 	],
 	"edges":[

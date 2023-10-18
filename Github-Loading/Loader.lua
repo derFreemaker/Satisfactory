@@ -397,10 +397,10 @@ end
 function Loader:Configure(program, package, logLevel)
 	self.Logger:LogTrace('configuring program...')
 	local Logger = require('Core.Logger')
-	program.Logger = Logger(package.Name, logLevel)
+	program._Logger = Logger(package.Name, logLevel)
 	local Task = require('Core.Task')
-	self.Logger:CopyListenersToCoreEvent(Task, program.Logger)
-	___logger:setLogger(program.Logger)
+	self.Logger:CopyListenersToCoreEvent(Task, program._Logger)
+	___logger:setLogger(program._Logger)
 	local thread,
 	success,
 	returns = Utils.Function.InvokeProtected(program.Configure, program)
@@ -418,7 +418,7 @@ end
 ---@param program Github_Loading.Entities.Main
 function Loader:Run(program)
 	self.Logger:LogTrace('running program...')
-	___logger:setLogger(program.Logger)
+	___logger:setLogger(program._Logger)
 	local thread,
 	success,
 	returns = Utils.Function.InvokeProtected(program.Run, program)

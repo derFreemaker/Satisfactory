@@ -1,1 +1,0 @@
-- can be invoked or read from server (maybe from other clients directly)

@@ -11,6 +11,9 @@ local ConstructionHandler = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Clas
 ---@class Utils.Class
 local Class = {}
 
+---@type any
+Class.Placeholder = {}
+
 ---@generic TClass
 ---@param data TClass
 ---@param name string

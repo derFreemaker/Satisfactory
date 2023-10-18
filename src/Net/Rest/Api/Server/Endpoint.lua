@@ -1,3 +1,5 @@
+local EventNameUsage = require("Core.Usage_EventName")
+
 local RestApiResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 
 ---@class Net.Rest.Api.Server.Endpoint : object
@@ -29,15 +31,22 @@ function Endpoint:Execute(request, context, netClient)
 		response = RestApiResponseTemplates.InternalServerError(tostring(self.task:GetTraceback()))
 	end
 	if context.Header.ReturnPort then
-		self.logger:LogTrace("sending response to '" .. context.SenderIPAddress .. "' on port: " .. context.Header.ReturnPort .. '...')
-		netClient:Send(context.SenderIPAddress, context.Header.ReturnPort, 'Rest-Response', response:ExtractData())
+		self.logger:LogTrace("sending response to '" ..
+			context.SenderIPAddress .. "' on port: " .. context.Header.ReturnPort .. '...')
+		netClient:Send(
+			context.SenderIPAddress,
+			context.Header.ReturnPort,
+			EventNameUsage.RestResponse,
+			response:ExtractData()
+		)
 	else
 		self.logger:LogTrace('sending no response')
 	end
 	if response.Headers.Message == nil then
 		self.logger:LogDebug('request finished with status code: ' .. response.Headers.Code)
 	else
-		self.logger:LogDebug('request finished with status code: ' .. response.Headers.Code .. " with message: '" .. response.Headers.Message .. "'")
+		self.logger:LogDebug('request finished with status code: ' ..
+			response.Headers.Code .. " with message: '" .. response.Headers.Message .. "'")
 	end
 end
 

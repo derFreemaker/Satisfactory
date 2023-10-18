@@ -11,14 +11,11 @@
             "id": "ecb0c8a2a5d2e51a",
             "type": "leaf",
             "state": {
-              "type": "canvas",
+              "type": "markdown",
               "state": {
-                "file": "Projects/Factory Control/Map.canvas",
-                "viewState": {
-                  "x": 756.6147709042727,
-                  "y": 305.07177761314597,
-                  "zoom": -1.9036908286137124
-                }
+                "file": "Projects/Class System/Type.md",
+                "mode": "source",
+                "source": false
               }
             }
           }
@@ -97,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Projects/Factory Control/Map.canvas",
+                "file": "Projects/Class System/Type.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,7 +111,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Projects/Factory Control/Map.canvas",
+                "file": "Projects/Class System/Type.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -137,7 +134,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Projects/Factory Control/Map.canvas"
+                "file": "Projects/Class System/Type.md"
               }
             }
           },
@@ -157,7 +154,7 @@
             "state": {
               "type": "file-properties",
               "state": {
-                "file": "Projects/Factory Control/Map.canvas"
+                "file": "Projects/Class System/Type.md"
               }
             }
           }
@@ -183,8 +180,16 @@
   },
   "active": "ecb0c8a2a5d2e51a",
   "lastOpenFiles": [
-    "Projects/Github Loading/Map.canvas",
+    "Projects/Class System/Template.md",
+    "Projects/Class System/Type.md",
+    "Projects/Class System/Class.md",
+    "Projects/Class System/Map.canvas",
     "Projects/Factory Control/Map.canvas",
+    "Projects/Unbenannt.md",
+    "Projects/Class System",
+    "Projects/Factory Control/Client/Controller.md",
+    "Projects/Factory Control/Client/Feature Info.md",
+    "Projects/Github Loading/Map.canvas",
     "Projects/Factory Control/Client/Feature Types.md",
     "Projects/Factory Control/ControllerDto/Feature/FeatureDto.md",
     "Projects/Factory Control/Server/Database.md",
@@ -203,7 +208,6 @@
     "Projects/Factory Control/ControllerDto/Feature/Feature.md",
     "Projects/Objects/Core.UUID.md",
     "Projects/Objects",
-    "Projects/Unbenannt.md",
     "Projects/Factory Control/ControllerDto/Feature",
     "Projects/Factory Control/(...).ControllerDto/Controller.md",
     "Projects/Factory Control/(...).ControllerDto/ControllerDto.md",
@@ -211,16 +215,11 @@
     "Projects/Github Loading/Github Loading.md",
     "Projects/Github Loading/Github Loading.canvas",
     "Projects/Github Loading/Map - Kopie.canvas",
-    "Projects/Github Loading/Readme.md",
-    "Projects/Github Loading/Unbenannt.md",
-    "Projects/Github Loading/Github Loader.md",
-    "Projects/Github Loading/Lua Bundler.md",
     "Projects/Github Loading/Package",
     "Projects/Github Loading",
     "Projects/Factory Control/Server",
     "Projects/Factory Control/Client",
     "Projects/Factory Control",
-    "Projects",
-    "Context/~syncthing~spacesLastSync.log.tmp"
+    "Projects"
   ]
 }

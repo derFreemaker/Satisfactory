@@ -7,26 +7,39 @@ metaMethods = table.unpack(LoadedLoaderFiles
 ---@cast MetatableHandler Utils.Class.MetatableHandler
 ---@cast metaMethods table
 
+---@class Utils.Class.Template
+
 ---@class Utils.Class.ConstructionHandler
 local ConstructionHandler = {}
 
+local function AddInstance(typeInfo, instance)
+	if not typeInfo then
+		return
+	end
+
+	table.insert(typeInfo.Instances, instance)
+
+	AddInstance(typeInfo.Base, instance)
+end
+
 ---@param obj object
+---@return Utils.Class.Template template
 local function construct(obj, ...)
 	---@type Utils.Class.Metatable
 	local metatable = getmetatable(obj)
 	local typeInfo = metatable.Type
 
-	local class,
+	local classInstance,
 	classMetatable = {}, {}
-	---@cast class table
+	---@cast classInstance Utils.Class.Template
 	---@cast classMetatable Utils.Class.Metatable
 
 	MetatableHandler.CreateMetatable(typeInfo, classMetatable)
-	ConstructionHandler.ConstructClass(typeInfo, class, classMetatable, ...)
+	ConstructionHandler.ConstructClass(typeInfo, classInstance, classMetatable, ...)
 
-	table.insert(typeInfo.Instances, class)
+	AddInstance(typeInfo, classInstance)
 
-	return class
+	return classInstance
 end
 
 ---@param typeInfo Utils.Class.Type

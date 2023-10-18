@@ -12,11 +12,11 @@ local Address = require('DNS.Core.Entities.Address.Address')
 local Main = {}
 
 function Main:Configure()
-	EventPullAdapter:Initialize(self.Logger:subLogger('EventPullAdapter'))
+	EventPullAdapter:Initialize(self._Logger:subLogger('EventPullAdapter'))
 
-	self.netClient = NetworkClient(self.Logger:subLogger('NetworkClient'))
-	self.dnsClient = DNSClient(self.netClient, self.Logger:subLogger('DNSClient'))
-	self.httpClient = HttpClient(self.Logger:subLogger('HttpClient'), self.dnsClient)
+	self.netClient = NetworkClient(self._Logger:subLogger('NetworkClient'))
+	self.dnsClient = DNSClient(self.netClient, self._Logger:subLogger('DNSClient'))
+	self.httpClient = HttpClient(self._Logger:subLogger('HttpClient'), self.dnsClient)
 end
 
 function Main:Run()

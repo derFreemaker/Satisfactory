@@ -1,3 +1,5 @@
+local EventNameUsage = require("Core.Usage_EventName")
+
 local Response = require('Net.Rest.Api.Response')
 
 ---@class Net.Rest.Api.Client : object
@@ -27,9 +29,9 @@ end
 ---@param timeout integer?
 ---@return Net.Rest.Api.Response response
 function Client:Send(request, timeout)
-	self.NetClient:Send(self.ServerIPAddress, self.ServerPort, 'Rest-Request', request:ExtractData(),
+	self.NetClient:Send(self.ServerIPAddress, self.ServerPort, EventNameUsage.RestRequest, request:ExtractData(),
 		{ ReturnPort = self.ReturnPort })
-	local context = self.NetClient:WaitForEvent('Rest-Response', self.ReturnPort, timeout or 5)
+	local context = self.NetClient:WaitForEvent(EventNameUsage.RestResponse, self.ReturnPort, timeout or 5)
 	if not context then
 		return Response(nil, { Code = 408 })
 	end

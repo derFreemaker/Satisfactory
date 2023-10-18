@@ -42,16 +42,4 @@ function Controllers:GetControllerById(id)
     return self._DbTable:Get(id)
 end
 
----@param name string
----@return FactoryControl.Core.Entities.Controller.ControllerDto? controller
-function Controllers:GetControllerByName(name)
-    for key, controller in pairs(self._DbTable) do
-        ---@cast key Core.UUID
-        ---@cast controller FactoryControl.Core.Entities.Controller.ControllerDto
-        if controller.Name == name then
-            return controller
-        end
-    end
-end
-
 return Utils.Class.CreateClass(Controllers, "FactoryControl.Server.Database.Controllers")

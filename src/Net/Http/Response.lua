@@ -17,6 +17,10 @@ function HttpResponse:IsSuccess()
 	return self.ApiResponse.WasSuccessfull
 end
 
+function HttpResponse:IsFaulted()
+	return not self:IsSuccess()
+end
+
 ---@return any
 function HttpResponse:GetBody()
 	return self.ApiResponse.Body

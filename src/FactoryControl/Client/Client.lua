@@ -1,41 +1,60 @@
-local FactoryControlConfig = require("FactoryControl.Core.Config")
-local HttpClient = require('Net.Http.Client')
-local HttpRequest = require('Net.Http.Request')
+local PortUsage = require("Core.Usage_Port")
+local EventNameUsage = require("Core.Usage_EventName")
 
----@class FactoryControl.Client.DataClient : object
----@field private _Client Net.Http.Client
----@field private logger Core.Logger
----@overload fun(netClient: Net.Core.NetworkClient, logger: Core.Logger) : FactoryControl.Client.DataClient
-local FactoryControlRestApiClient = {}
+local Controller = require("FactoryControl.Client.Entities.Controller.Controller")
 
----@private
----@param netClient Net.Core.NetworkClient
----@param logger Core.Logger
-function FactoryControlRestApiClient:__init(netClient, logger)
-	self._Client = HttpClient(self.logger:subLogger('RestApiClient'))
-end
+local ButtonPressed = require("FactoryControl.Client.Entities.Controller.Feature.Button.Pressed")
+
+---@class FactoryControl.Client.Client : object
+---@field private _Client FactoryControl.Client.DataClient
+---@field private _NetClient Net.Core.NetworkClient
+---@overload fun(client: FactoryControl.Client.DataClient, networkClient: Net.Core.NetworkClient) : FactoryControl.Client.Client
+local Client
 
 ---@private
----@param method Net.Core.Method
----@param endpoint string
----@param body any
----@param options Net.Http.Request.Options?
----@return Net.Http.Response response
-function FactoryControlRestApiClient:request(method, endpoint, body, options)
-	local request = HttpRequest(method, endpoint, FactoryControlConfig.DOMAIN, body, options)
-	return self._Client:Send(request)
+---@param client FactoryControl.Client.DataClient
+---@param networkClient Net.Core.NetworkClient
+function Client:__init(client, networkClient)
+    self._Client = client
+    self._NetClient = networkClient
 end
 
 ---@param createController FactoryControl.Core.Entities.Controller.CreateDto
----@return FactoryControl.Core.Entities.Controller.ControllerDto?
-function FactoryControlRestApiClient:CreateController(createController)
-	local response = self:request('CREATE', 'Controller', createController)
+---@return FactoryControl.Client.Entities.Controller? controller
+function Client:CreateController(createController)
+    local controllerDto = self._Client:CreateController(createController)
+    if not controllerDto then
+        return
+    end
 
-	if not response:IsSuccess() then
-		return
-	end
-
-	return response:GetBody()
+    return Controller(controllerDto, self)
 end
 
-return Utils.Class.CreateClass(FactoryControlRestApiClient, "FactoryControl.Client.DataClient")
+---@param id Core.UUID
+---@return boolean success
+function Client:DeleteControllerById(id)
+    return self._Client:DeleteControllerById(id)
+end
+
+---@param id Core.UUID
+---@return FactoryControl.Client.Entities.Controller? controller
+function Client:GetControllerById(id)
+    local controllerDto = self._Client:GetControllerById(id)
+    if not controllerDto then
+        return
+    end
+
+    return Controller(controllerDto, self)
+end
+
+---@param button FactoryControl.Client.Entities.Controller.Feature.Button
+function Client:PressButton(button)
+    self._NetClient:Send(
+        button.Owner.IPAddress,
+        PortUsage.FactoryControl,
+        EventNameUsage.FactoryControl,
+        ButtonPressed(button.Id)
+    )
+end
+
+return Utils.Class.CreateClass(Client, "FactoryControl.Client.Client")

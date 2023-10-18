@@ -110,4 +110,6 @@ typeInfo.HasDeconstructor = false
 typeInfo.HasIndex = false
 typeInfo.HasNewIndex = false
 
+typeInfo.Instances = setmetatable({}, { __mode = 'v' })
+
 return typeInfo
