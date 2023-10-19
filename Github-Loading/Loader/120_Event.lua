@@ -10,8 +10,8 @@ local Event = {}
 ---@return Github_Loading.Event
 function Event.new()
     return setmetatable({
-        funcs = {},
-        onceFuncs = {}
+        _Funcs = {},
+        _OnceFuncs = {}
     }, { __index = Event })
 end
 

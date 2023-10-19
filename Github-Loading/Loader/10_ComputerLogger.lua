@@ -1,7 +1,7 @@
 ---@class Computer.Logger
 ---@field private _LoggerHistory { [integer]: (Github_Loading.Logger | Core.Logger) }
 ---@field package CurrentLogger (Github_Loading.Logger | Core.Logger)?
-___logger = { LoggerHistory = {}, CurrentLogger = nil }
+___logger = { _LoggerHistory = {}, CurrentLogger = nil }
 
 function ___logger:initialize()
     local function wrapFunc(func)

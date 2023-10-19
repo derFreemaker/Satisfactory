@@ -3,8 +3,6 @@ local LoadedLoaderFiles = ({ ... })[1]
 local Utils = LoadedLoaderFiles["/Github-Loading/Loader/Utils"][1]
 ---@type Github_Loading.Event
 local Event = LoadedLoaderFiles["/Github-Loading/Loader/Event"][1]
----@type Github_Loading.Listener
-local Listener = LoadedLoaderFiles["/Github-Loading/Loader/Listener"][1]
 
 ---@alias Github_Loading.Logger.LogLevel
 ---|0 Trace

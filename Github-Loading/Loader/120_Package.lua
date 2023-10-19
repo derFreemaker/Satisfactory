@@ -26,8 +26,8 @@ function Package.new(info, forceDownload, packageLoader)
         Namespace = info.Namespace,
         Version = info.Version or 0.01,
         RequiredPackages = info.RequiredPackages,
-        forceDownload = forceDownload,
-        PackageLoader = packageLoader
+        _ForceDownload = forceDownload,
+        _PackageLoader = packageLoader
     }, { __index = Package })
 end
 
@@ -64,13 +64,13 @@ end
 
 function Package:Load()
     if self.RequiredPackages and #self.RequiredPackages ~= 0 then
-        self._PackageLoader.logger:LogDebug("loading required packages: " .. #self.RequiredPackages .. "...")
+        self._PackageLoader.Logger:LogDebug("loading required packages: " .. #self.RequiredPackages .. "...")
         for _, packageName in ipairs(self.RequiredPackages) do
             if not Utils.String.IsNilOrEmpty(packageName) then
                 self._PackageLoader:LoadPackage(packageName)
             end
         end
-        self._PackageLoader.logger:LogDebug("loaded required packages")
+        self._PackageLoader.Logger:LogDebug("loaded required packages")
     end
 
     local eventsModule = self:GetModule(self.Namespace .. ".__events")
