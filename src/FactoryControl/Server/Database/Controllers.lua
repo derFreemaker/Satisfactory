@@ -13,7 +13,7 @@ local Controllers = {}
 ---@private
 ---@param logger Core.Logger
 function Controllers:__init(logger)
-    self._DbTable = DbTable("Controllers", Path("/Database/Controllers"), logger:subLogger("DbTable"))
+    self._DbTable = DbTable("Controllers", Path("/Database/Controllers/"), logger:subLogger("DbTable"))
     self._Logger = logger
 
     self._DbTable:Load()

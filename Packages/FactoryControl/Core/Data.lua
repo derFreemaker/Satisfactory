@@ -8,19 +8,22 @@ PackageData["FactoryControlCore__events"] = {
     Data = [[
 local JsonSerializer = require("Core.Json.JsonSerializer")
 
-local EntityTypes = {
-    require("FactoryControl.Core.Entities.Controller.ControllerDto"):Static__GetType(),
-    require("FactoryControl.Core.Entities.Controller.Feature.SwitchDto"):Static__GetType(),
-    require("FactoryControl.Core.Entities.Controller.Feature.ButtonDto"):Static__GetType(),
-    require("FactoryControl.Core.Entities.Controller.Feature.RadialDto"):Static__GetType(),
-    require("FactoryControl.Core.Entities.Controller.Feature.ChartDto"):Static__GetType(),
-}
-
 ---@class FactoryControl.Core.Events : Github_Loading.Entities.Events
 local Events = {}
 
 function Events:OnLoaded()
-    JsonSerializer.Static__Serializer:AddTypeInfos(EntityTypes)
+    JsonSerializer.Static__Serializer:AddTypeInfos({
+        -- ControllerDto's
+        require("FactoryControl.Core.Entities.Controller.ControllerDto"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.CreateDto"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.ModifyDto"):Static__GetType(),
+
+        -- FeatureDto's
+        require("FactoryControl.Core.Entities.Controller.Feature.SwitchDto"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.Feature.ButtonDto"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.Feature.RadialDto"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.Feature.ChartDto"):Static__GetType(),
+    })
 end
 
 return Events
@@ -43,73 +46,93 @@ PackageData["FactoryControlCoreEntitiesControllerControllerDto"] = {
     Namespace = "FactoryControl.Core.Entities.Controller.ControllerDto",
     IsRunnable = true,
     Data = [[
----@class FactoryControl.Core.Entities.Controller.ControllerDto : Core.Json.Serializable
+---@class FactoryControl.Core.Entities.ControllerDto : Core.Json.Serializable
 ---@field Id Core.UUID
+---@field Name string
 ---@field IPAddress Net.Core.IPAddress
----@field Features Dictionary<string, FactoryControl.Core.Entities.Controller.Feature.FeatureDto>
----@overload fun(id: Core.UUID, ipAddress: Net.Core.IPAddress, features: Dictionary<string, FactoryControl.Core.Entities.Controller.Feature.FeatureDto>?) : FactoryControl.Core.Entities.Controller.ControllerDto
+---@field Features Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>
+---@overload fun(id: Core.UUID, name: string, ipAddress: Net.Core.IPAddress, features: Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>?) : FactoryControl.Core.Entities.ControllerDto
 local ControllerDto = {}
 
 ---@private
 ---@param id Core.UUID
+---@param name string
 ---@param ipAddress Net.Core.IPAddress
----@param features Dictionary<string, FactoryControl.Core.Entities.Controller.Feature.FeatureDto>?
-function ControllerDto:__init(id, ipAddress, features)
+---@param features Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>?
+function ControllerDto:__init(id, name, ipAddress, features)
     self.Id = id
+    self.Name = name
     self.IPAddress = ipAddress
     self.Features = features or {}
 end
 
----@return Core.UUID id, Net.Core.IPAddress ipAddress, Dictionary<string, FactoryControl.Core.Entities.Controller.Feature.FeatureDto> features
+---@return string name, Core.UUID id, Net.Core.IPAddress ipAddress, Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto> features
 function ControllerDto:Serialize()
-    return self.Id, self.IPAddress, self.Features
+    return self.Name, self.Id, self.IPAddress, self.Features
 end
 
----@param id Core.UUID
----@param ipAddress Net.Core.IPAddress
----@param features Dictionary<string, FactoryControl.Core.Entities.Controller.Feature.FeatureDto>
----@return FactoryControl.Core.Entities.Controller.ControllerDto
-function ControllerDto.Static__Deserialize(id, ipAddress, features)
-    return ControllerDto(id, ipAddress, features)
-end
-
-return Utils.Class.CreateClass(ControllerDto, "FactoryControl.Core.Entities.Controller.ControllerDto",
+return Utils.Class.CreateClass(ControllerDto, "FactoryControl.Core.Entities.ControllerDto",
     require("Core.Json.Serializable"))
 ]]
 }
 
-PackageData["FactoryControlCoreEntitiesControllerCreateControllerDto"] = {
-    Location = "FactoryControl.Core.Entities.Controller.CreateControllerDto",
-    Namespace = "FactoryControl.Core.Entities.Controller.CreateControllerDto",
+PackageData["FactoryControlCoreEntitiesControllerCreateDto"] = {
+    Location = "FactoryControl.Core.Entities.Controller.CreateDto",
+    Namespace = "FactoryControl.Core.Entities.Controller.CreateDto",
     IsRunnable = true,
     Data = [[
 ---@class FactoryControl.Core.Entities.Controller.CreateDto : Core.Json.Serializable
+---@field Name string
 ---@field IPAddress Net.Core.IPAddress
----@field Features Dictionary<string, FactoryControl.Core.Entities.Controller.Feature.FeatureDto>
----@overload fun(ipAddress: Net.Core.IPAddress, features: Dictionary<string, FactoryControl.Core.Entities.Controller.Feature.FeatureDto>?) : FactoryControl.Core.Entities.Controller.CreateDto
+---@field Features Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>
+---@overload fun(name: string, ipAddress: Net.Core.IPAddress, features: Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>?) : FactoryControl.Core.Entities.Controller.CreateDto
 local ControllerDto = {}
 
 ---@private
+---@param name string
 ---@param ipAddress Net.Core.IPAddress
----@param features Dictionary<string, FactoryControl.Core.Entities.Controller.Feature.FeatureDto>?
-function ControllerDto:__init(ipAddress, features)
+---@param features Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>?
+function ControllerDto:__init(name, ipAddress, features)
+    self.Name = name
     self.IPAddress = ipAddress
     self.Features = features or {}
 end
 
----@return Net.Core.IPAddress ipAddress, Dictionary<string, FactoryControl.Core.Entities.Controller.Feature.FeatureDto> features
+---@return string name, Net.Core.IPAddress ipAddress, Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto> features
 function ControllerDto:Serialize()
-    return self.IPAddress, self.Features
-end
-
----@param ipAddress Net.Core.IPAddress
----@param features Dictionary<string, FactoryControl.Core.Entities.Controller.Feature.FeatureDto>
----@return FactoryControl.Core.Entities.Controller.CreateDto
-function ControllerDto.Static__Deserialize(ipAddress, features)
-    return ControllerDto(ipAddress, features)
+    return self.Name, self.IPAddress, self.Features
 end
 
 return Utils.Class.CreateClass(ControllerDto, "FactoryControl.Core.Entities.Controller.CreateDto",
+    require("Core.Json.Serializable"))
+]]
+}
+
+PackageData["FactoryControlCoreEntitiesControllerModifyDto"] = {
+    Location = "FactoryControl.Core.Entities.Controller.ModifyDto",
+    Namespace = "FactoryControl.Core.Entities.Controller.ModifyDto",
+    IsRunnable = true,
+    Data = [[
+---@class FactoryControl.Core.Entities.Controller.ModifyDto : Core.Json.Serializable
+---@field Id Core.UUID
+---@field Features Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>
+---@overload fun(id: Core.UUID, features: Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>) : FactoryControl.Core.Entities.Controller.ModifyDto
+local ModifyDto = {}
+
+---@private
+---@param id Core.UUID
+---@param features Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>
+function ModifyDto:__init(id, features)
+    self.Id = id
+    self.Features = features
+end
+
+---@return Core.UUID id, Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>
+function ModifyDto:Serialize()
+    return self.Id, self.Features
+end
+
+return Utils.Class.CreateClass(ModifyDto, "FactoryControl.Core.Entities.Controller.ModifyDto",
     require("Core.Json.Serializable"))
 ]]
 }
@@ -119,30 +142,25 @@ PackageData["FactoryControlCoreEntitiesControllerFeatureButtonDto"] = {
     Namespace = "FactoryControl.Core.Entities.Controller.Feature.ButtonDto",
     IsRunnable = true,
     Data = [[
----@class FactoryControl.Core.Entities.Controller.Feature.ButtonDto : FactoryControl.Core.Entities.Controller.Feature.FeatureDto
----@overload fun(id: Core.UUID) : FactoryControl.Core.Entities.Controller.Feature.ButtonDto
+---@class FactoryControl.Core.Entities.Controller.Feature.ButtonDto : FactoryControl.Core.Entities.Controller.FeatureDto
+---@overload fun(id: Core.UUID, name: string) : FactoryControl.Core.Entities.Controller.Feature.ButtonDto
 local ButtonFeatureDto = {}
 
 ---@private
 ---@param id Core.UUID
----@param baseFunc fun(id: Core.UUID, type: FactoryControl.Core.Entities.Controller.Feature.Type)
-function ButtonFeatureDto:__init(baseFunc, id)
-    baseFunc(id, "Button")
+---@param name string
+---@param baseFunc fun(id: Core.UUID, name: string, type: FactoryControl.Core.Entities.Controller.Feature.Type)
+function ButtonFeatureDto:__init(baseFunc, id, name)
+    baseFunc(id, name, "Button")
 end
 
----@return Core.UUID
+---@return Core.UUID id, string name
 function ButtonFeatureDto:Serialize()
-    return self.Id
-end
-
----@param id Core.UUID
----@return FactoryControl.Core.Entities.Controller.Feature.ButtonDto
-function ButtonFeatureDto.Static__Deserialize(id)
-    return ButtonFeatureDto(id)
+    return self.Id, self.Name
 end
 
 return Utils.Class.CreateClass(ButtonFeatureDto, "FactoryControl.Core.Entities.Controller.Feature.ButtonDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --{{{@as FactoryControl.Core.Entities.Controller.Feature.FeatureDto}}})
+    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --{{{@as FactoryControl.Core.Entities.Controller.FeatureDto}}})
 ]]
 }
 
@@ -151,35 +169,35 @@ PackageData["FactoryControlCoreEntitiesControllerFeatureChartDto"] = {
     Namespace = "FactoryControl.Core.Entities.Controller.Feature.ChartDto",
     IsRunnable = true,
     Data = [[
----@class FactoryControl.Core.Entities.Controller.Feature.ChartDto : FactoryControl.Core.Entities.Controller.Feature.FeatureDto
+---@class FactoryControl.Core.Entities.Controller.Feature.ChartDto : FactoryControl.Core.Entities.Controller.FeatureDto
+---@field XAxisName string
+---@field YAxisName string
 ---@field Data Dictionary<number, any>
----@overload fun(id: Core.UUID, data: Dictionary<number, any>?) : FactoryControl.Core.Entities.Controller.Feature.ChartDto
+---@overload fun(id: Core.UUID, name: string, xAxisName: string, yAxisName: string, data: Dictionary<number, any>?) : FactoryControl.Core.Entities.Controller.Feature.ChartDto
 local ChartFeatureDto = {}
 
 ---@private
 ---@param id Core.UUID
+---@param name string
+---@param xAxisName string
+---@param yAxisName string
 ---@param data Dictionary<number, any>?
----@param baseFunc fun(id: Core.UUID, type: FactoryControl.Core.Entities.Controller.Feature.Type)
-function ChartFeatureDto:__init(baseFunc, id, data)
-    baseFunc(id, "Chart")
+---@param baseFunc fun(id: Core.UUID, name: string, type: FactoryControl.Core.Entities.Controller.Feature.Type)
+function ChartFeatureDto:__init(baseFunc, id, name, xAxisName, yAxisName, data)
+    baseFunc(id, name, "Chart")
 
+    self.XAxisName = xAxisName
+    self.YAxisName = yAxisName
     self.Data = data or {}
 end
 
----@return Core.UUID id, Dictionary<number, any> data
+---@return Core.UUID id, string name, string xAxisName, string yAxisName, Dictionary<number, any> data
 function ChartFeatureDto:Serialize()
-    return self.Id, self.Data
-end
-
----@param id Core.UUID
----@param data Dictionary<number, any>
----@return FactoryControl.Core.Entities.Controller.Feature.ChartDto
-function ChartFeatureDto.Static__Deserialize(id, data)
-    return ChartFeatureDto(id, data)
+    return self.Id, self.Name, self.XAxisName, self.YAxisName, self.Data
 end
 
 return Utils.Class.CreateClass(ChartFeatureDto, "FactoryControl.Core.Entities.Controller.Feature.ChartDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --{{{@as FactoryControl.Core.Entities.Controller.Feature.FeatureDto}}})
+    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --{{{@as FactoryControl.Core.Entities.Controller.FeatureDto}}})
 ]]
 }
 
@@ -194,17 +212,20 @@ PackageData["FactoryControlCoreEntitiesControllerFeatureFeatureDto"] = {
 ---|"Radial"
 ---|"Chart"
 
----@class FactoryControl.Core.Entities.Controller.Feature.FeatureDto : Core.Json.Serializable
+---@class FactoryControl.Core.Entities.Controller.FeatureDto : Core.Json.Serializable
 ---@field Id Core.UUID
+---@field Name string
 ---@field Type FactoryControl.Core.Entities.Controller.Feature.Type
----@overload fun(id: Core.UUID, type: FactoryControl.Core.Entities.Controller.Feature.Type) : FactoryControl.Core.Entities.Controller.Feature.FeatureDto
+---@overload fun(id: Core.UUID, name: string, type: FactoryControl.Core.Entities.Controller.Feature.Type) : FactoryControl.Core.Entities.Controller.FeatureDto
 local FeatureDto = {}
 
 ---@private
 ---@param id Core.UUID
+---@param name string
 ---@param type FactoryControl.Core.Entities.Controller.Feature.Type
-function FeatureDto:__init(id, type)
+function FeatureDto:__init(id, name, type)
     self.Id = id
+    self.Name = name
     self.Type = type
 end
 
@@ -218,52 +239,50 @@ PackageData["FactoryControlCoreEntitiesControllerFeatureRadialDto"] = {
     Namespace = "FactoryControl.Core.Entities.Controller.Feature.RadialDto",
     IsRunnable = true,
     Data = [[
----@class FactoryControl.Core.Entities.Controller.Feature.RadialDto : FactoryControl.Core.Entities.Controller.Feature.FeatureDto
+---@class FactoryControl.Core.Entities.Controller.Feature.RadialDto : FactoryControl.Core.Entities.Controller.FeatureDto
 ---@field Min number
 ---@field Max number
 ---@field Setting number
----@overload fun(id: Core.UUID, min: number?, max: number?, setting: number?) : FactoryControl.Core.Entities.Controller.Feature.RadialDto
+---@overload fun(id: Core.UUID, name: string, min: number?, max: number?, setting: number?) : FactoryControl.Core.Entities.Controller.Feature.RadialDto
 local RadialFeatureDto = {}
 
 ---@private
 ---@param id Core.UUID
+---@param name string
 ---@param min number
 ---@param max number
 ---@param setting number
----@param baseFunc fun(id: Core.UUID, type: FactoryControl.Core.Entities.Controller.Feature.Type)
-function RadialFeatureDto:__init(baseFunc, id, min, max, setting)
-    baseFunc(id, "Radial")
+---@param baseFunc fun(id: Core.UUID, name: string, type: FactoryControl.Core.Entities.Controller.Feature.Type)
+function RadialFeatureDto:__init(baseFunc, id, name, min, max, setting)
+    baseFunc(id, name, "Radial")
 
     self.Min = min or 0
     self.Max = max or 1
+
+    if self.Min > self.Max then
+        error("min: " .. self.Min .. " cannot be bigger then max: " .. self.Max)
+        return
+    end
 
     if setting == nil then
         setting = self.Min
     else
         if self.Min > setting or self.Max < setting then
             error("setting: " .. setting .. " is out of range: " .. self.Min .. " - " .. self.Max)
+            return
         end
     end
 
     self.Setting = setting
 end
 
----@return Core.UUID id, number min, number max, number setting
+---@return Core.UUID id, string name, number min, number max, number setting
 function RadialFeatureDto:Serialize()
-    return self.Id, self.Min, self.Max, self.Setting
-end
-
----@param id Core.UUID
----@param min number
----@param max number
----@param setting number
----@return FactoryControl.Core.Entities.Controller.Feature.RadialDto
-function RadialFeatureDto.Static__Deserialize(id, min, max, setting)
-    return RadialFeatureDto(id, min, max, setting)
+    return self.Id, self.Name, self.Min, self.Max, self.Setting
 end
 
 return Utils.Class.CreateClass(RadialFeatureDto, "FactoryControl.Core.Entities.Controller.Feature.RadialDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --{{{@as FactoryControl.Core.Entities.Controller.Feature.FeatureDto}}})
+    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --{{{@as FactoryControl.Core.Entities.Controller.FeatureDto}}})
 ]]
 }
 
@@ -272,17 +291,18 @@ PackageData["FactoryControlCoreEntitiesControllerFeatureSwitchDto"] = {
     Namespace = "FactoryControl.Core.Entities.Controller.Feature.SwitchDto",
     IsRunnable = true,
     Data = [[
----@class FactoryControl.Core.Entities.Controller.Feature.SwitchDto : FactoryControl.Core.Entities.Controller.Feature.FeatureDto
+---@class FactoryControl.Core.Entities.Controller.Feature.SwitchDto : FactoryControl.Core.Entities.Controller.FeatureDto
 ---@field IsEnabled boolean
----@overload fun(id: Core.UUID, isEnabled: boolean) : FactoryControl.Core.Entities.Controller.Feature.SwitchDto
+---@overload fun(id: Core.UUID, name: string, isEnabled: boolean) : FactoryControl.Core.Entities.Controller.Feature.SwitchDto
 local SwitchFeatureDto = {}
 
 ---@private
 ---@param id Core.UUID
+---@param name string
 ---@param isEnabled boolean?
----@param baseFunc fun(id: Core.UUID, type: FactoryControl.Core.Entities.Controller.Feature.Type)
-function SwitchFeatureDto:__init(baseFunc, id, isEnabled)
-    baseFunc(id, "Switch")
+---@param baseFunc fun(id: Core.UUID, name: string, type: FactoryControl.Core.Entities.Controller.Feature.Type)
+function SwitchFeatureDto:__init(baseFunc, id, name, isEnabled)
+    baseFunc(id, name, "Switch")
 
     if isEnabled == nil then
         self.IsEnabled = false
@@ -291,19 +311,13 @@ function SwitchFeatureDto:__init(baseFunc, id, isEnabled)
     self.IsEnabled = isEnabled
 end
 
+---@return Core.UUID id, string name, boolean isEnabled
 function SwitchFeatureDto:Serialize()
-    return self.Id, self.IsEnabled
-end
-
----@param id Core.UUID
----@param isEnabled boolean
----@return FactoryControl.Core.Entities.Controller.Feature.SwitchDto
-function SwitchFeatureDto.Static__Deserialize(id, isEnabled)
-    return SwitchFeatureDto(id, isEnabled)
+    return self.Id, self.Name, self.IsEnabled
 end
 
 return Utils.Class.CreateClass(SwitchFeatureDto, "FactoryControl.Core.Entities.Controller.Feature.SwitchDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --{{{@as FactoryControl.Core.Entities.Controller.Feature.FeatureDto}}})
+    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --{{{@as FactoryControl.Core.Entities.Controller.FeatureDto}}})
 ]]
 }
 

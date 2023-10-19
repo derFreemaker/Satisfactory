@@ -111,7 +111,14 @@ end
 ---@private
 ---@return (fun(t: table, key: any) : key: any, value: any), table t, any startKey
 function DbTable:__pairs()
-    return next, self._Data, nil
+    ---@type Database.Dto[]
+    local dtoObjs = {}
+
+    for key, value in pairs(self._Data) do
+        dtoObjs[key] = Dto(key, value, self)
+    end
+
+    return next, dtoObjs, nil
 end
 
 return Utils.Class.CreateClass(DbTable, "Database.DbTable")
@@ -124,14 +131,14 @@ PackageData["DatabaseDto"] = {
     IsRunnable = true,
     Data = [[
 ---@class Database.Dto : object
----@field private _Key string | number | Core.Json.Serializable
+---@field private _Key any
 ---@field private _Data table
 ---@field private _DbTable Database.DbTable
----@overload fun(key: string | number | Core.Json.Serializable, data: table, dbTable: Database.DbTable) : Database.Dto
+---@overload fun(key: any, data: table, dbTable: Database.DbTable) : Database.Dto
 local Dto = {}
 
 ---@private
----@param key string | number | Core.Json.Serializable
+---@param key any
 ---@param data table
 ---@param dbTable Database.DbTable
 function Dto:__init(key, data, dbTable)
@@ -141,19 +148,24 @@ function Dto:__init(key, data, dbTable)
 end
 
 ---@private
----@param key boolean | string | number | table
+---@param key any
 function Dto:__index(key)
-    self._DbTable:ObjectChanged(self._Key)
-    return self._Data[key]
+    local value = self._Data[key]
+
+    if type(value) == "table" then
+        return Dto(self._Key, value, self._DbTable)
+    end
+
+    return value
 end
 
 ---@pivate
----@param key boolean | string | number | table
+---@param key any
 ---@param value Json.SerializeableTypes
 function Dto:__newindex(key, value)
     local keyType = type(key)
 
-    if not (keyType == "boolean" or keyType == "string" or keyType == "number" or keyType == "table") then
+    if keyType ~= "boolean" and keyType ~= "string" and keyType ~= "number" and keyType ~= "table" then
         error("unsupported key type: " .. keyType)
     end
 

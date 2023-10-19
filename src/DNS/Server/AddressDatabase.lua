@@ -11,7 +11,7 @@ local AddressDatabase = {}
 ---@private
 ---@param logger Core.Logger
 function AddressDatabase:__init(logger)
-    self._DbTable = DbTable("Addresses", Path("/Database/Addresses"), logger:subLogger("DbTable"))
+    self._DbTable = DbTable("Addresses", Path("/Database/Addresses/"), logger:subLogger("DbTable"))
     self._DbTable:Load()
 end
 

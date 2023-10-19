@@ -6,22 +6,21 @@ PackageData["NetHttpClient"] = {
     Namespace = "Net.Http.Client",
     IsRunnable = true,
     Data = [[
-local PortUsage = require('Core.PortUsage')
+local PortUsage = require('Core.Usage_Port')
 
 local IPAddress = require("Net.Core.IPAddress")
 local NetworkClient = require('Net.Core.NetworkClient')
 local ApiClient = require('Net.Rest.Api.Client.Client')
 local DNSClient = require('DNS.Client.Client')
-local HttpRequest = require('Net.Http.Request')
 local HttpResponse = require('Net.Http.Response')
 local ApiRequest = require('Net.Rest.Api.Request')
 local ApiResponse = require('Net.Rest.Api.Response')
 
----@class Http.Client : object
+---@class Net.Http.Client : object
 ---@field private _NetClient Net.Core.NetworkClient
 ---@field private _DnsClient DNS.Client
 ---@field private _Logger Core.Logger
----@overload fun(logger: Core.Logger, dnsClient: DNS.Client?, networkClient: Net.Core.NetworkClient?) : Http.Client
+---@overload fun(logger: Core.Logger, dnsClient: DNS.Client?, networkClient: Net.Core.NetworkClient?) : Net.Http.Client
 local HttpClient = {}
 
 ---@param logger Core.Logger
@@ -45,7 +44,7 @@ function HttpClient:getAddress(address)
 		return IPAddress(address)
 	end
 
-	local getedAddress = self._DnsClient:GetWithAddress(address)
+	local getedAddress = self._DnsClient:GetWithUrl(address)
 	if not getedAddress then
 		return nil
 	end
@@ -53,8 +52,8 @@ function HttpClient:getAddress(address)
 	return IPAddress(getedAddress.Id)
 end
 
----@param request Http.Request
----@return Http.Response response
+---@param request Net.Http.Request
+---@return Net.Http.Response response
 function HttpClient:Send(request)
 	local address = self:getAddress(request.Url)
 	if not address then
@@ -81,13 +80,13 @@ PackageData["NetHttpRequest"] = {
     Data = [[
 local Options = require('Net.Http.RequestOptions')
 
----@class Http.Request : object
+---@class Net.Http.Request : object
 ---@field Method Net.Core.Method
 ---@field Endpoint string
 ---@field Url string
 ---@field Body any
----@field Options Http.Request.Options
----@overload fun(method: Net.Core.Method, endpoint: string, url: string, body: any, options: Http.Request.Options?) : Http.Request
+---@field Options Net.Http.Request.Options
+---@overload fun(method: Net.Core.Method, endpoint: string, url: string, body: any, options: Net.Http.Request.Options?) : Net.Http.Request
 local HttpRequest = {}
 
 ---@private
@@ -95,7 +94,7 @@ local HttpRequest = {}
 ---@param endpoint string
 ---@param url string
 ---@param body any
----@param options Http.Request.Options?
+---@param options Net.Http.Request.Options?
 function HttpRequest:__init(method, endpoint, url, body, options)
 	self.Method = method
 	self.Endpoint = endpoint
@@ -113,10 +112,10 @@ PackageData["NetHttpRequestOptions"] = {
     Namespace = "Net.Http.RequestOptions",
     IsRunnable = true,
     Data = [[
----@class Http.Request.Options : object
+---@class Net.Http.Request.Options : object
 ---@field Headers Dictionary<string, any>
 ---@field Timeout integer in seconds
----@overload fun() : Http.Request.Options
+---@overload fun() : Net.Http.Request.Options
 local HttpRequestOptions = {}
 
 ---@private
@@ -134,15 +133,15 @@ PackageData["NetHttpResponse"] = {
     Namespace = "Net.Http.Response",
     IsRunnable = true,
     Data = [[
----@class Http.Response : object
+---@class Net.Http.Response : object
 ---@field ApiResponse Net.Rest.Api.Response
----@field Request Http.Request
----@overload fun(apiResponse: Net.Rest.Api.Response, request: Http.Request) : Http.Response
+---@field Request Net.Http.Request
+---@overload fun(apiResponse: Net.Rest.Api.Response, request: Net.Http.Request) : Net.Http.Response
 local HttpResponse = {}
 
 ---@private
 ---@param apiResponse Net.Rest.Api.Response
----@param request Http.Request
+---@param request Net.Http.Request
 function HttpResponse:__init(apiResponse, request)
 	self.ApiResponse = apiResponse
 	self.Request = request
@@ -153,7 +152,11 @@ function HttpResponse:IsSuccess()
 	return self.ApiResponse.WasSuccessfull
 end
 
----@return table
+function HttpResponse:IsFaulted()
+	return not self:IsSuccess()
+end
+
+---@return any
 function HttpResponse:GetBody()
 	return self.ApiResponse.Body
 end

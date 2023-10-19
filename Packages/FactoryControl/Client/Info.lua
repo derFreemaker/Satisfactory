@@ -1,11 +1,11 @@
 return {
-    Name = "FactoryControlController",
-    Namespace = "FactoryControl.Controller",
-    Version = "0.1-2",
+    Name = "FactoryControl.Client",
+    Namespace = "FactoryControl.Client",
+    Version = "0.1-3",
     RequiredPackages = {
         "Core",
         "FactoryControl.Core",
         "Net.Core",
-        "Net.Rest"
+        "Net.Http"
     },
 }

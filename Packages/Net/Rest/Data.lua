@@ -1,32 +1,47 @@
 ---@meta
 local PackageData = {}
 
-PackageData["NetRestApiExtensions"] = {
-    Location = "Net.Rest.Api.Extensions",
-    Namespace = "Net.Core.NetworkContext.Api.Extensions",
+PackageData["NetRest__events"] = {
+    Location = "Net.Rest.__events",
+    Namespace = "Net.Rest.__events",
     IsRunnable = true,
     Data = [[
----@namespace Net.Core.NetworkContext.Api.Extensions
+---@class Net.Rest.Events : Github_Loading.Entities.Events
+local Events = {}
 
+function Events:OnLoaded()
+    require("Net.Rest.Api.NetworkContextExtensions")
+end
+
+return Events
+]]
+}
+
+PackageData["NetRestApiNetworkContextExtensions"] = {
+    Location = "Net.Rest.Api.NetworkContextExtensions",
+    Namespace = "Net.Rest.Api.NetworkContextExtensions",
+    IsRunnable = true,
+    Data = [[
+local NetworkContext = require("Net.Core.NetworkContext")
 local Request = require('Net.Rest.Api.Request')
 local Response = require('Net.Rest.Api.Response')
 
----@class Net.Rest.Api.Extensions : object
-local Extensions = {}
+---@class Net.Core.NetworkContext
+local NetworkContextExtensions = {}
 
----@param context Net.Core.NetworkContext
+--- ## Extension from Net.Rest
 ---@return Net.Rest.Api.Request
-function Extensions:Static_NetworkContextToApiRequest(context)
-	return Request(context.Body.Method, context.Body.Endpoint, context.Body.Body, context.Body.Headers)
+function NetworkContextExtensions:ToApiRequest()
+	return Request(self.Body.Method, self.Body.Endpoint, self.Body.Body, self.Body.Headers)
 end
 
----@param context Net.Core.NetworkContext
+--- ## Extension from Net.Rest
 ---@return Net.Rest.Api.Response
-function Extensions:Static_NetworkContextToApiResponse(context)
-	return Response(context.Body.Body, context.Body.Headers)
+function NetworkContextExtensions:ToApiResponse()
+	return Response(self.Body.Body, self.Body.Headers)
 end
 
-return Utils.Class.CreateClass(Extensions, 'Net.Core.NetworkContext.Api.Extensions')
+Utils.Class.ExtendClass(NetworkContextExtensions, NetworkContext --{{{@as Net.Core.NetworkContext}}})
 ]]
 }
 
@@ -114,16 +129,16 @@ PackageData["NetRestApiClientClient"] = {
     Namespace = "Net.Rest.Api.Client.Client",
     IsRunnable = true,
     Data = [[
+local EventNameUsage = require("Core.Usage_EventName")
+
 local Response = require('Net.Rest.Api.Response')
----@type Net.Rest.Api.Extensions
-local Extensions = require('Net.Core.NetworkContext.Api.Extensions')
 
 ---@class Net.Rest.Api.Client : object
 ---@field ServerIPAddress Net.Core.IPAddress
 ---@field ServerPort integer
 ---@field ReturnPort integer
----@field private NetClient Net.Core.NetworkClient
----@field private logger Core.Logger
+---@field private _NetClient Net.Core.NetworkClient
+---@field private _Logger Core.Logger
 ---@overload fun(serverIPAddress: Net.Core.IPAddress, serverPort: integer, returnPort: integer, netClient: Net.Core.NetworkClient, logger: Core.Logger) : Net.Rest.Api.Client
 local Client = {}
 
@@ -137,22 +152,22 @@ function Client:__init(serverIPAddress, serverPort, returnPort, netClient, logge
 	self.ServerIPAddress = serverIPAddress
 	self.ServerPort = serverPort
 	self.ReturnPort = returnPort
-	self.NetClient = netClient
-	self.logger = logger
+	self._NetClient = netClient
+	self._Logger = logger
 end
 
 ---@param request Net.Rest.Api.Request
 ---@param timeout integer?
 ---@return Net.Rest.Api.Response response
 function Client:Send(request, timeout)
-	self.NetClient:Send(self.ServerIPAddress, self.ServerPort, 'Rest-Request', request:ExtractData(),
+	self._NetClient:Send(self.ServerIPAddress, self.ServerPort, EventNameUsage.RestRequest, request:ExtractData(),
 		{ ReturnPort = self.ReturnPort })
-	local context = self.NetClient:WaitForEvent('Rest-Response', self.ReturnPort, timeout or 5)
+	local context = self._NetClient:WaitForEvent(EventNameUsage.RestResponse, self.ReturnPort, timeout or 5)
 	if not context then
 		return Response(nil, { Code = 408 })
 	end
 
-	local response = Extensions:Static_NetworkContextToApiResponse(context)
+	local response = context:ToApiResponse()
 	return response
 end
 
@@ -165,17 +180,17 @@ PackageData["NetRestApiServerController"] = {
     Namespace = "Net.Rest.Api.Server.Controller",
     IsRunnable = true,
     Data = [[
+local EventNameUsage = require("Core.Usage_EventName")
+
 local Task = require('Core.Task')
 local RestApiEndpoint = require('Net.Rest.Api.Server.Endpoint')
 local RestApiResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 local RestApiMethod = require('Net.Core.Method')
----@type Net.Rest.Api.Extensions
-local Extensions = require('Net.Core.NetworkContext.Api.Extensions')
 
 ---@class Net.Rest.Api.Server.Controller : object
----@field Endpoints Dictionary<string, Net.Rest.Api.Server.Endpoint>
----@field private netPort Net.Core.NetworkPort
----@field private logger Core.Logger
+---@field private _Endpoints Dictionary<Net.Core.Method, Dictionary<string, Net.Rest.Api.Server.Endpoint>>
+---@field private _NetPort Net.Core.NetworkPort
+---@field private _Logger Core.Logger
 ---@overload fun(netPort: Net.Core.NetworkPort, logger: Core.Logger) : Net.Rest.Api.Server.Controller
 local Controller = {}
 
@@ -183,35 +198,55 @@ local Controller = {}
 ---@param netPort Net.Core.NetworkPort
 ---@param logger Core.Logger
 function Controller:__init(netPort, logger)
-	self.Endpoints = {}
-	self.netPort = netPort
-	self.logger = logger
+	self._Endpoints = {}
+	self._NetPort = netPort
+	self._Logger = logger
 	netPort:AddListener('Rest-Request', Task(self.onMessageRecieved, self))
 end
 
 ---@private
 ---@param context Net.Core.NetworkContext
 function Controller:onMessageRecieved(context)
-	local request = Extensions:Static_NetworkContextToApiRequest(context)
-	self.logger:LogDebug("recieved request on endpoint: '" .. request.Endpoint .. "'")
+	local request = context:ToApiRequest()
+	self._Logger:LogDebug("recieved request on endpoint: '" .. request.Endpoint .. "'")
 	local endpoint = self:GetEndpoint(request.Method, request.Endpoint)
 	if endpoint == nil then
-		self.logger:LogTrace('found no endpoint')
+		self._Logger:LogTrace('found no endpoint')
 		if context.Header.ReturnPort then
-			self.netPort:GetNetClient():Send(context.SenderIPAddress, context.Header.ReturnPort, 'Rest-Response', RestApiResponseTemplates.NotFound('Unable to find endpoint'):ExtractData())
+			self._NetPort:GetNetClient():Send(
+				context.SenderIPAddress,
+				context.Header.ReturnPort,
+				EventNameUsage.RestResponse,
+				RestApiResponseTemplates.NotFound('Unable to find endpoint'):ExtractData())
 		end
 		return
 	end
-	self.logger:LogTrace('found endpoint: ' .. request.Endpoint)
-	endpoint:Execute(request, context, self.netPort:GetNetClient())
+	self._Logger:LogTrace('found endpoint: ' .. request.Endpoint)
+	endpoint:Execute(request, context, self._NetPort:GetNetClient())
 end
 
----@param method Net.Core.Method
+---@param endpointMethod Net.Core.Method
+---@return Dictionary<string, Net.Rest.Api.Server.Endpoint>?
+function Controller:GetSubEndpoints(endpointMethod)
+	for method, subEndpoints in pairs(self._Endpoints) do
+		if method == endpointMethod then
+			return subEndpoints
+		end
+	end
+end
+
+---@param endpointMethod Net.Core.Method
 ---@param endpointName string
 ---@return Net.Rest.Api.Server.Endpoint?
-function Controller:GetEndpoint(method, endpointName)
-	for name, endpoint in pairs(self.Endpoints) do
-		if name == method .. '__' .. endpointName then
+function Controller:GetEndpoint(endpointMethod, endpointName)
+	local subEndpoints = self:GetSubEndpoints(endpointMethod)
+
+	if not subEndpoints then
+		return
+	end
+
+	for name, endpoint in pairs(subEndpoints) do
+		if name == endpointName then
 			return endpoint
 		end
 	end
@@ -225,9 +260,16 @@ function Controller:AddEndpoint(method, name, task)
 	if self:GetEndpoint(method, name) ~= nil then
 		error('Endpoint allready exists')
 	end
-	local endpointName = method .. '__' .. name
-	self.Endpoints[endpointName] = RestApiEndpoint(task, self.logger:subLogger('RestApiEndpoint[' .. endpointName .. ']'))
-	self.logger:LogTrace("Added endpoint: '" .. method .. "' -> '" .. name .. "'")
+
+	local subEndpoints = self:GetSubEndpoints(method)
+
+	if not subEndpoints then
+		subEndpoints = {}
+		self._Endpoints[method] = subEndpoints
+	end
+
+	subEndpoints[name] = RestApiEndpoint(task, self._Logger:subLogger("RestApiEndpoint[" .. method .. ":" .. name .. "]"))
+	self._Logger:LogTrace("Added endpoint: " .. method .. ":" .. name)
 	return self
 end
 
@@ -236,7 +278,7 @@ function Controller:AddRestApiEndpointBase(endpoint)
 	for name, func in pairs(endpoint) do
 		if type(name) == 'string' and type(func) == 'function' then
 			local method,
-				endpointName = name:match('^(.+)__(.+)$')
+			endpointName = name:match('^(.+)__(.+)$')
 			if method ~= nil and endpoint ~= nil and RestApiMethod[method] then
 				self:AddEndpoint(method, endpointName, Task(func, endpoint))
 			end
@@ -253,11 +295,13 @@ PackageData["NetRestApiServerEndpoint"] = {
     Namespace = "Net.Rest.Api.Server.Endpoint",
     IsRunnable = true,
     Data = [[
+local EventNameUsage = require("Core.Usage_EventName")
+
 local RestApiResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 
 ---@class Net.Rest.Api.Server.Endpoint : object
----@field private task Core.Task
----@field private logger Core.Logger
+---@field private _Task Core.Task
+---@field private _Logger Core.Logger
 ---@overload fun(task: Core.Task, logger: Core.Logger) : Net.Rest.Api.Server.Endpoint
 local Endpoint = {}
 
@@ -265,34 +309,41 @@ local Endpoint = {}
 ---@param task Core.Task
 ---@param logger Core.Logger
 function Endpoint:__init(task, logger)
-	self.task = task
-	self.logger = logger
+	self._Task = task
+	self._Logger = logger
 end
 
 ---@param request Net.Rest.Api.Request
 ---@param context Net.Core.NetworkContext
 ---@param netClient Net.Core.NetworkClient
 function Endpoint:Execute(request, context, netClient)
-	self.logger:LogTrace('executing...')
-	___logger:setLogger(self.logger)
-	self.task:Execute(request)
-	self.task:LogError(self.logger)
+	self._Logger:LogTrace('executing...')
+	___logger:setLogger(self._Logger)
+	self._Task:Execute(request)
+	self._Task:LogError(self._Logger)
 	___logger:revert()
 	---@type Net.Rest.Api.Response
-	local response = self.task:GetResults()
-	if not self.task:IsSuccess() then
-		response = RestApiResponseTemplates.InternalServerError(tostring(self.task:GetTraceback()))
+	local response = self._Task:GetResults()
+	if not self._Task:IsSuccess() then
+		response = RestApiResponseTemplates.InternalServerError(tostring(self._Task:GetTraceback()))
 	end
 	if context.Header.ReturnPort then
-		self.logger:LogTrace("sending response to '" .. context.SenderIPAddress .. "' on port: " .. context.Header.ReturnPort .. '...')
-		netClient:Send(context.SenderIPAddress, context.Header.ReturnPort, 'Rest-Response', response:ExtractData())
+		self._Logger:LogTrace("sending response to '" ..
+			context.SenderIPAddress .. "' on port: " .. context.Header.ReturnPort .. '...')
+		netClient:Send(
+			context.SenderIPAddress,
+			context.Header.ReturnPort,
+			EventNameUsage.RestResponse,
+			response:ExtractData()
+		)
 	else
-		self.logger:LogTrace('sending no response')
+		self._Logger:LogTrace('sending no response')
 	end
 	if response.Headers.Message == nil then
-		self.logger:LogDebug('request finished with status code: ' .. response.Headers.Code)
+		self._Logger:LogDebug('request finished with status code: ' .. response.Headers.Code)
 	else
-		self.logger:LogDebug('request finished with status code: ' .. response.Headers.Code .. " with message: '" .. response.Headers.Message .. "'")
+		self._Logger:LogDebug('request finished with status code: ' ..
+			response.Headers.Code .. " with message: '" .. response.Headers.Message .. "'")
 	end
 end
 
@@ -377,6 +428,10 @@ local ResponseTemplates = {}
 ---@return Net.Rest.Api.Response
 function ResponseTemplates.Ok(value)
 	return RestApiResponse(value, { Code = StatusCodes.Status200OK })
+end
+
+function ResponseTemplates.Accepted(value)
+	return RestApiResponse(value, { Core = StatusCodes.Status202Accepted })
 end
 
 ---@param message string

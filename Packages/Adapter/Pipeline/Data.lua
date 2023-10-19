@@ -7,7 +7,8 @@ PackageData["AdapterPipelineValve"] = {
     IsRunnable = true,
     Data = [[
 ---@class Adapter.Pipeline.Valve : object
----@field private valve Satisfactory.Components.Factory.Build_Valve_C
+---@field private _IPAddress Net.Core.IPAddress
+---@field private _Valve Satisfactory.Components.Factory.Build_Valve_C
 ---@overload fun(id: FIN.UUID, valve: Satisfactory.Components.Factory.Build_Valve_C?)
 local Valve = {}
 
@@ -38,46 +39,51 @@ end
 ---@param idOrValve FIN.UUID | Satisfactory.Components.Factory.Build_Valve_C
 function Valve:__init(idOrValve)
 	if type(idOrValve) == 'string' then
-		self.valve = component.proxy(idOrValve) --{{{@as Satisfactory.Components.Factory.Build_Valve_C}}}
+		self._Valve = component.proxy(idOrValve) --{{{@as Satisfactory.Components.Factory.Build_Valve_C}}}
 		return
 	end
 	---@cast idOrValve Satisfactory.Components.Factory.Build_Valve_C
-	self.valve = idOrValve
+	self._Valve = idOrValve
 end
 
 ---@return FIN.UUID
 function Valve:GetId()
-	return self.valve.id
+	return self._Valve.id
+end
+
+---@return string
+function Valve:GetNick()
+	return self._Valve.nick
 end
 
 --- Closes the valve so nothing goes through it anymore.
 function Valve:Close()
-	self.valve.userFlowLimit = 0
+	self._Valve.userFlowLimit = 0
 end
 
 --- Opens the value so it can go as much through as the pipe allows.
 function Valve:Open()
-	self.valve.userFlowLimit = -1
+	self._Valve.userFlowLimit = -1
 end
 
 ---@param amountPct number
 function Valve:SetFlowLimitPercentage(amountPct)
-	self.valve.userFlowLimit = amountPct / 10
+	self._Valve.userFlowLimit = amountPct / 10
 end
 
 ---@param amount number 0 = nothing; 10 = max
 function Valve:SetFlowLimit(amount)
-	self.valve.userFlowLimit = amount
+	self._Valve.userFlowLimit = amount
 end
 
 ---@return number flowLimit
 function Valve:GetFlowLimitPercentage()
-	return self.valve.userFlowLimit * 10
+	return self._Valve.userFlowLimit * 10
 end
 
 ---@return number flowLimit
 function Valve:GetFlowLimit()
-	return self.valve.userFlowLimit
+	return self._Valve.userFlowLimit
 end
 
 return Utils.Class.CreateClass(Valve, 'Adapter.Pipeline.Valve')

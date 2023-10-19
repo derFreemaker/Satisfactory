@@ -6,7 +6,8 @@ PackageData["DNSClientClient"] = {
     Namespace = "DNS.Client.Client",
     IsRunnable = true,
     Data = [[
-local PortUsage = require('Core.PortUsage')
+local PortUsage = require('Core.Usage_Port')
+local EventNameUsage = require("Core.Usage_EventName")
 
 local IPAddress = require("Net.Core.IPAddress")
 local NetworkClient = require('Net.Core.NetworkClient')
@@ -17,9 +18,9 @@ local Address = require('DNS.Core.Entities.Address.Address')
 local CreateAddress = require('DNS.Core.Entities.Address.Create')
 
 ---@class DNS.Client : object
----@field private networkClient Net.Core.NetworkClient
----@field private apiClient Net.Rest.Api.Client
----@field private logger Core.Logger
+---@field private _NetworkClient Net.Core.NetworkClient
+---@field private _ApiClient Net.Rest.Api.Client
+---@field private _Logger Core.Logger
 ---@overload fun(networkClient: Net.Core.NetworkClient, logger: Core.Logger) : DNS.Client
 local Client = {}
 
@@ -27,18 +28,18 @@ local Client = {}
 ---@param networkClient Net.Core.NetworkClient?
 ---@param logger Core.Logger
 function Client:__init(networkClient, logger)
-	self.networkClient = networkClient or NetworkClient(logger:subLogger('NetworkClient'))
-	self.logger = logger
+	self._NetworkClient = networkClient or NetworkClient(logger:subLogger('NetworkClient'))
+	self._Logger = logger
 end
 
 ---@return Net.Core.NetworkClient
 function Client:GetNetClient()
-	return self.networkClient
+	return self._NetworkClient
 end
 
 ---@param networkClient Net.Core.NetworkClient
 function Client.Static_WaitForHeartbeat(networkClient)
-	networkClient:WaitForEvent('DNS', PortUsage.Heartbeats)
+	networkClient:WaitForEvent(EventNameUsage.DNS_Heartbeat, PortUsage.Heartbeats)
 end
 
 ---@param networkClient Net.Core.NetworkClient
@@ -53,7 +54,7 @@ function Client.Static__GetServerAddress(networkClient)
 	local try = 0
 	repeat
 		try = try + 1
-		response = netPort:WaitForEvent('ReturnDNSServerAddress', 10)
+		response = netPort:WaitForEvent(EventNameUsage.DNS_ReturnServerAddress, 10)
 	until response ~= nil or try == 10
 	if try == 10 then
 		error('unable to get dns server address')
@@ -64,31 +65,31 @@ end
 
 ---@return Net.Core.IPAddress id
 function Client:RequestOrGetDNSServerIP()
-	if not self.apiClient then
-		self.Static_WaitForHeartbeat(self.networkClient)
+	if not self._ApiClient then
+		self.Static_WaitForHeartbeat(self._NetworkClient)
 
-		local serverIPAddress = Client.Static__GetServerAddress(self.networkClient)
-		self.apiClient = ApiClient(serverIPAddress, PortUsage.HTTP, PortUsage.HTTP, self.networkClient,
-			self.logger:subLogger('ApiClient'))
+		local serverIPAddress = Client.Static__GetServerAddress(self._NetworkClient)
+		self._ApiClient = ApiClient(serverIPAddress, PortUsage.HTTP, PortUsage.HTTP, self._NetworkClient,
+			self._Logger:subLogger('ApiClient'))
 	end
 
-	return self.apiClient.ServerIPAddress
+	return self._ApiClient.ServerIPAddress
 end
 
 ---@private
 ---@param request Net.Rest.Api.Request
 function Client:InternalRequest(request)
-	Client.Static_WaitForHeartbeat(self.networkClient)
+	Client.Static_WaitForHeartbeat(self._NetworkClient)
 	self:RequestOrGetDNSServerIP()
 
-	return self.apiClient:Send(request)
+	return self._ApiClient:Send(request)
 end
 
----@param address string
----@param id string
+---@param url string
+---@param ipAddress Net.Core.IPAddress
 ---@return boolean success
-function Client:CreateAddress(address, id)
-	local createAddress = CreateAddress(address, id)
+function Client:CreateAddress(url, ipAddress)
+	local createAddress = CreateAddress(url, ipAddress:GetAddress())
 
 	local request = ApiRequest('CREATE', 'Address', createAddress:ExtractData())
 	local response = self:InternalRequest(request)
@@ -99,10 +100,10 @@ function Client:CreateAddress(address, id)
 	return response.Body
 end
 
----@param address string
+---@param url string
 ---@return boolean success
-function Client:DeleteAddress(address)
-	local request = ApiRequest('DELETE', 'Address', address)
+function Client:DeleteAddress(url)
+	local request = ApiRequest('DELETE', 'Address', url)
 	local response = self:InternalRequest(request)
 
 	if not response.WasSuccessfull then
@@ -111,10 +112,10 @@ function Client:DeleteAddress(address)
 	return response.Body
 end
 
----@param address string
+---@param url string
 ---@return DNS.Core.Entities.Address? address
-function Client:GetWithAddress(address)
-	local request = ApiRequest('GET', 'AddressWithAddress', address)
+function Client:GetWithUrl(url)
+	local request = ApiRequest('GET', 'AddressWithAddress', url)
 	local response = self:InternalRequest(request)
 
 	if not response.WasSuccessfull then
@@ -123,10 +124,10 @@ function Client:GetWithAddress(address)
 	return Address:Static__CreateFromData(response.Body)
 end
 
----@param id string
+---@param ipAddress Net.Core.IPAddress
 ---@return DNS.Core.Entities.Address? address
-function Client:GetWithId(id)
-	local request = ApiRequest('GET', 'AddressWithId', id)
+function Client:GetWithIPAddress(ipAddress)
+	local request = ApiRequest('GET', 'AddressWithId', ipAddress:GetAddress())
 	local response = self:InternalRequest(request)
 
 	if not response.WasSuccessfull then

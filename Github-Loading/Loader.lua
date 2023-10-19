@@ -398,11 +398,9 @@ function Loader:Configure(program, package, logLevel)
 	local Task = require('Core.Task')
 	self.Logger:CopyListenersToCoreEvent(Task, program.Logger)
 	___logger:setLogger(program.Logger)
-	local thread,
-	success,
-	returns = Utils.Function.InvokeProtected(program.Configure, program)
+	local _, success, returns = Utils.Function.InvokeProtected(program.Configure, program)
 	if not success then
-		self.Logger:LogError(debug.traceback(thread, returns[1]))
+		error("Unable complete configure function")
 	end
 	___logger:setLogger(self.Logger)
 	if returns[1] ~= 'not found' then

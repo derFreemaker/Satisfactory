@@ -6,7 +6,8 @@ PackageData["DNSServer__main"] = {
     Namespace = "DNS.Server.__main",
     IsRunnable = true,
     Data = [[
-local PortUsage = require('Core.PortUsage')
+local PortUsage = require('Core.Usage_Port')
+local EventNameUsage = require("Core.Usage_EventName")
 
 local DNSEndpoints = require('DNS.Server.Endpoints')
 local NetworkClient = require('Net.Core.NetworkClient')
@@ -14,37 +15,37 @@ local Task = require('Core.Task')
 local RestApiController = require('Net.Rest.Api.Server.Controller')
 
 ---@class DNS.Main : Github_Loading.Entities.Main
----@field private eventPullAdapter Core.EventPullAdapter
----@field private apiController Net.Rest.Api.Server.Controller
----@field private netPort Net.Core.NetworkPort
----@field private netClient Net.Core.NetworkClient
----@field private endpoints DNS.Endpoints
+---@field private _EventPullAdapter Core.EventPullAdapter
+---@field private _ApiController Net.Rest.Api.Server.Controller
+---@field private _NetPort Net.Core.NetworkPort
+---@field private _NetClient Net.Core.NetworkClient
+---@field private _Endpoints DNS.Endpoints
 local Main = {}
 
 ---@param context Net.Core.NetworkContext
 function Main:GetDNSServerAddress(context)
-	local netClient = self.netPort:GetNetClient()
-	local id = netClient:GetId()
+	local netClient = self._NetPort:GetNetClient()
+	local id = netClient:GetIPAddress():GetAddress()
 	self.Logger:LogDebug(context.SenderIPAddress .. ' requested DNS Server IP Address')
-	netClient:Send(context.SenderIPAddress, PortUsage.DNS, 'ReturnDNSServerAddress', id)
+	netClient:Send(context.SenderIPAddress, PortUsage.DNS, EventNameUsage.DNS_ReturnServerAddress, id)
 end
 
 function Main:Configure()
-	self.eventPullAdapter = require('Core.Event.EventPullAdapter'):Initialize(self.Logger:subLogger('EventPullAdapter'))
+	self._EventPullAdapter = require('Core.Event.EventPullAdapter'):Initialize(self.Logger:subLogger('EventPullAdapter'))
 
 	local dnsLogger = self.Logger:subLogger('DNSServerAddress')
-	self.netClient = NetworkClient(dnsLogger:subLogger('NetworkClient'))
-	self.netPort = self.netClient:CreateNetworkPort(PortUsage.DNS)
-	self.netPort:AddListener('GetDNSServerAddress', Task(self.GetDNSServerAddress, self))
-	self.netPort:OpenPort()
+	self._NetClient = NetworkClient(dnsLogger:subLogger('NetworkClient'))
+	self._NetPort = self._NetClient:CreateNetworkPort(PortUsage.DNS)
+	self._NetPort:AddListener('GetDNSServerAddress', Task(self.GetDNSServerAddress, self))
+	self._NetPort:OpenPort()
 	self.Logger:LogDebug('setup Get DNS Server IP Address')
 
 	self.Logger:LogTrace('setting up DNS Server endpoints...')
 	local endpointLogger = self.Logger:subLogger('Endpoints')
-	local netPort = self.netClient:CreateNetworkPort(PortUsage.HTTP)
-	self.apiController = RestApiController(netPort, endpointLogger:subLogger('ApiController'))
-	self.endpoints = DNSEndpoints(endpointLogger)
-	self.apiController:AddRestApiEndpointBase(self.endpoints)
+	local netPort = self._NetClient:CreateNetworkPort(PortUsage.HTTP)
+	self._ApiController = RestApiController(netPort, endpointLogger:subLogger('ApiController'))
+	self._Endpoints = DNSEndpoints(endpointLogger)
+	self._ApiController:AddRestApiEndpointBase(self._Endpoints)
 	netPort:OpenPort()
 	self.Logger:LogDebug('setup DNS Server endpoints')
 end
@@ -52,8 +53,8 @@ end
 function Main:Run()
 	self.Logger:LogInfo('started DNS Server')
 	while true do
-		self.netClient:BroadCast(PortUsage.Heartbeats, 'DNS')
-		self.eventPullAdapter:WaitForAll(3)
+		self._NetClient:BroadCast(PortUsage.Heartbeats, 'DNS')
+		self._EventPullAdapter:WaitForAll(3)
 	end
 end
 
@@ -72,15 +73,15 @@ local Address = require("DNS.Core.Entities.Address.Address")
 
 
 ---@class DNS.Server.AddressDatabase : object
----@field private dbTable Database.DbTable
+---@field private _DbTable Database.DbTable
 ---@overload fun(logger: Core.Logger) : DNS.Server.AddressDatabase
 local AddressDatabase = {}
 
 ---@private
 ---@param logger Core.Logger
 function AddressDatabase:__init(logger)
-    self.dbTable = DbTable("Addresses", Path("/Database/Addresses"), logger:subLogger("DbTable"))
-    self.dbTable:Load()
+    self._DbTable = DbTable("Addresses", Path("/Database/Addresses/"), logger:subLogger("DbTable"))
+    self._DbTable:Load()
 end
 
 ---@param createAddress DNS.Core.Entities.Address.Create
@@ -90,9 +91,9 @@ function AddressDatabase:Create(createAddress)
         return false
     end
     local address = Address:Static__CreateFromCreateAddress(createAddress)
-    self.dbTable:Set(address.Id, address:ExtractData())
+    self._DbTable:Set(address.Id, address:ExtractData())
 
-    self.dbTable:Save()
+    self._DbTable:Save()
     return true
 end
 
@@ -103,16 +104,16 @@ function AddressDatabase:Delete(addressAddress)
     if not address then
         return false
     end
-    self.dbTable:Delete(address.Id)
+    self._DbTable:Delete(address.Id)
 
-    self.dbTable:Save()
+    self._DbTable:Save()
     return true
 end
 
 ---@param id string
 ---@return DNS.Core.Entities.Address? address
 function AddressDatabase:GetWithId(id)
-    for addressId, data in pairs(self.dbTable) do
+    for addressId, data in pairs(self._DbTable) do
         if addressId == id then
             return Address:Static__CreateFromData(data)
         end
@@ -122,7 +123,7 @@ end
 ---@param addressAddress string
 ---@return DNS.Core.Entities.Address? createAddress
 function AddressDatabase:GetWithAddress(addressAddress)
-    for _, data in pairs(self.dbTable) do
+    for _, data in pairs(self._DbTable) do
         local address = Address:Static__CreateFromData(data)
         if address.Address == addressAddress then
             return address
@@ -145,8 +146,8 @@ local AddressEntities = {
 }
 
 ---@class DNS.Endpoints : Net.Rest.Api.Server.EndpointBase
----@field private addressDatabase DNS.Server.AddressDatabase
----@field private logger Core.Logger
+---@field private _AddressDatabase DNS.Server.AddressDatabase
+---@field private _Logger Core.Logger
 ---@overload fun(logger: Core.Logger) : DNS.Endpoints
 local Endpoints = {}
 
@@ -154,8 +155,8 @@ local Endpoints = {}
 ---@private
 ---@param logger Core.Logger
 function Endpoints:__init(logger)
-    self.addressDatabase = AddressDatabase(logger:subLogger("AddressDatabase"))
-    self.logger = logger
+    self._AddressDatabase = AddressDatabase(logger:subLogger("AddressDatabase"))
+    self._Logger = logger
 end
 
 ---@param request Net.Rest.Api.Request
@@ -164,14 +165,14 @@ function Endpoints:CREATE__Address(request)
     ---@type DNS.Core.Entities.Address.Create
     local createAddress = AddressEntities.Create:Static__CreateFromData(request.Body)
 
-    local success = self.addressDatabase:Create(createAddress)
+    local success = self._AddressDatabase:Create(createAddress)
     return self.Templates:Ok(success)
 end
 
 ---@param request Net.Rest.Api.Request
 ---@return Net.Rest.Api.Response response
 function Endpoints:DELETE__Address(request)
-    local success = self.addressDatabase:Delete(request.Body)
+    local success = self._AddressDatabase:Delete(request.Body)
     if not success then
         return self.Templates:NotFound("Unable to find address with given id")
     end
@@ -181,7 +182,7 @@ end
 ---@param request Net.Rest.Api.Request
 ---@return Net.Rest.Api.Response response
 function Endpoints:GET__AddressWithAddress(request)
-    local address = self.addressDatabase:GetWithAddress(request.Body)
+    local address = self._AddressDatabase:GetWithAddress(request.Body)
     if not address then
         return self.Templates:NotFound("Unable to find address with given address")
     end
@@ -191,7 +192,7 @@ end
 ---@param request Net.Rest.Api.Request
 ---@return Net.Rest.Api.Response response
 function Endpoints:GET__AddressWithId(request)
-    local address = self.addressDatabase:GetWithId(request.Body)
+    local address = self._AddressDatabase:GetWithId(request.Body)
     if not address then
         return self.Templates:NotFound("Unable to find address with given id")
     end

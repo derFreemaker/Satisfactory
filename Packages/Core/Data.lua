@@ -20,7 +20,7 @@ local Event = require('Core.Event.Event')
 ---@field OnLog Core.Event
 ---@field OnClear Core.Event
 ---@field Name string
----@field private logLevel Core.Logger.LogLevel
+---@field private _LogLevel Core.Logger.LogLevel
 ---@overload fun(name: string, logLevel: Core.Logger.LogLevel, onLog: Core.Event?, onClear: Core.Event?) : Core.Logger
 local Logger = {}
 
@@ -93,7 +93,7 @@ end
 ---@param onLog Core.Event?
 ---@param onClear Core.Event?
 function Logger:__init(name, logLevel, onLog, onClear)
-	self.logLevel = logLevel
+	self._LogLevel = logLevel
 	self.Name = (string.gsub(name, ' ', '_') or '')
 	self.OnLog = onLog or Event()
 	self.OnClear = onClear or Event()
@@ -103,7 +103,7 @@ end
 ---@return Core.Logger
 function Logger:subLogger(name)
 	name = self.Name .. '.' .. name
-	local logger = Logger(name, self.logLevel)
+	local logger = Logger(name, self._LogLevel)
 	return self:CopyListenersTo(logger)
 end
 
@@ -118,7 +118,7 @@ end
 ---@param message string
 ---@param logLevel Core.Logger.LogLevel
 function Logger:Log(message, logLevel)
-	if logLevel < self.logLevel then
+	if logLevel < self._LogLevel then
 		return
 	end
 
@@ -131,7 +131,7 @@ end
 ---@param maxLevel integer?
 ---@param properties string[]?
 function Logger:LogTable(t, logLevel, maxLevel, properties)
-	if logLevel < self.logLevel then
+	if logLevel < self._LogLevel then
 		return
 	end
 
@@ -149,7 +149,7 @@ end
 
 ---@param logLevel Core.Logger.LogLevel
 function Logger:FreeLine(logLevel)
-	if logLevel < self.logLevel then
+	if logLevel < self._LogLevel then
 		return
 	end
 
@@ -228,37 +228,19 @@ return Utils.Class.CreateClass(Logger, 'Core.Logger')
 ]]
 }
 
-PackageData["CorePortUsage"] = {
-    Location = "Core.PortUsage",
-    Namespace = "Core.PortUsage",
-    IsRunnable = true,
-    Data = [[
--- 0 .. 2^1023
-
----@enum Core.PortUsage
-local PortUsage = {
-	Heartbeats = 10,
-	DNS = 53,
-	HTTP = 80
-}
-
-return PortUsage
-]]
-}
-
 PackageData["CoreTask"] = {
     Location = "Core.Task",
     Namespace = "Core.Task",
     IsRunnable = true,
     Data = [[
 ---@class Core.Task : object
----@field package func function
----@field package passthrough any
----@field package thread thread
----@field package closed boolean
----@field private success boolean
----@field private results any[]
----@field private traceback string?
+---@field private _Func function
+---@field private _Passthrough any
+---@field private _Thread thread
+---@field private _Closed boolean
+---@field private _Success boolean
+---@field private _Results any[]
+---@field private _Traceback string?
 ---@overload fun(func: function, passthrough: any) : Core.Task
 local Task = {}
 
@@ -266,26 +248,26 @@ local Task = {}
 ---@param func function
 ---@param passthrough any
 function Task:__init(func, passthrough)
-    self.func = func
-    self.passthrough = passthrough
-    self.closed = false
-    self.success = true
-    self.results = {}
+    self._Func = func
+    self._Passthrough = passthrough
+    self._Closed = false
+    self._Success = true
+    self._Results = {}
 end
 
 ---@return boolean
 function Task:IsSuccess()
-    return self.success
+    return self._Success
 end
 
 ---@return any ... results
 function Task:GetResults()
-    return table.unpack(self.results)
+    return table.unpack(self._Results)
 end
 
 ---@return any[] results
 function Task:GetResultsArray()
-    return self.results
+    return self._Results
 end
 
 ---@return string
@@ -296,7 +278,7 @@ end
 ---@private
 ---@param ... any args
 function Task:invokeThread(...)
-    self.success, self.results = coroutine.resume(self.thread, ...)
+    self._Success, self._Results = coroutine.resume(self._Thread, ...)
 end
 
 ---@param ... any parameters
@@ -307,12 +289,12 @@ function Task:Execute(...)
     local function invokeFunc(...)
         ---@type any[]
         local result
-        if self.passthrough ~= nil then
-            result = { self.func(self.passthrough, ...) }
+        if self._Passthrough ~= nil then
+            result = { self._Func(self._Passthrough, ...) }
         else
-            result = { self.func(...) }
+            result = { self._Func(...) }
         end
-        if coroutine.isyieldable(self.thread) then
+        if coroutine.isyieldable(self._Thread) then
             --? Should always return here
             return coroutine.yield(result)
         end
@@ -320,26 +302,26 @@ function Task:Execute(...)
         return result
     end
 
-    self.thread = coroutine.create(invokeFunc)
-    self.closed = false
-    self.traceback = nil
+    self._Thread = coroutine.create(invokeFunc)
+    self._Closed = false
+    self._Traceback = nil
 
     self:invokeThread(...)
-    return table.unpack(self.results)
+    return table.unpack(self._Results)
 end
 
 ---@private
 function Task:CheckThreadState()
-    if self.thread == nil then
+    if self._Thread == nil then
         error("cannot resume a not started task")
     end
-    if self.closed then
+    if self._Closed then
         error("cannot resume a closed task")
     end
-    if coroutine.status(self.thread) == "running" then
+    if coroutine.status(self._Thread) == "running" then
         error("cannot resume running task")
     end
-    if coroutine.status(self.thread) == "dead" then
+    if coroutine.status(self._Thread) == "dead" then
         error("cannot resume dead task")
     end
 end
@@ -349,47 +331,89 @@ end
 function Task:Resume(...)
     self:CheckThreadState()
     self:invokeThread(...)
-    return table.unpack(self.results)
+    return table.unpack(self._Results)
 end
 
 function Task:Close()
-    if self.closed then return end
+    if self._Closed then return end
     self:Traceback()
-    coroutine.close(self.thread)
-    self.closed = true
+    coroutine.close(self._Thread)
+    self._Closed = true
 end
 
 ---@private
 ---@return string traceback
 function Task:Traceback()
-    if self.traceback ~= nil then
-        return self.traceback
+    if self._Traceback ~= nil then
+        return self._Traceback
     end
     local error = ""
-    if type(self.results) == "string" then
-        error = self.results --{{{@as string}}}
+    if type(self._Results) == "string" then
+        error = self._Results --{{{@as string}}}
     end
-    self.traceback = debug.traceback(self.thread, error)
-    return self.traceback
+    self._Traceback = debug.traceback(self._Thread, error)
+    return self._Traceback
 end
 
 ---@return "not created" | "dead" | "normal" | "running" | "suspended"
 function Task:State()
-    if self.thread == nil then
+    if self._Thread == nil then
         return "not created"
     end
-    return coroutine.status(self.thread);
+    return coroutine.status(self._Thread);
 end
 
 ---@param logger Core.Logger?
 function Task:LogError(logger)
     self:Close()
-    if not self.success and logger then
+    if not self._Success and logger then
         logger:LogError("Task: \n" .. self:Traceback() .. debug.traceback():sub(17))
     end
 end
 
 return Utils.Class.CreateClass(Task, "Core.Task")
+]]
+}
+
+PackageData["CoreUsage_EventName"] = {
+    Location = "Core.Usage_EventName",
+    Namespace = "Core.Usage_EventName",
+    IsRunnable = true,
+    Data = [[
+---@enum Core.EventNameUsage
+local EventNameUsage = {
+    -- DNS
+    DNS_Heartbeat = "DNS",
+    DNS_ReturnServerAddress = "Return-DNS-Server-Address",
+
+    -- Rest
+    RestRequest = "Rest-Request",
+    RestResponse = "Rest-Response",
+
+    -- FactoryControl
+    FactoryControl = "FactoryControl"
+}
+
+return EventNameUsage
+]]
+}
+
+PackageData["CoreUsage_Port"] = {
+    Location = "Core.Usage_Port",
+    Namespace = "Core.Usage_Port",
+    IsRunnable = true,
+    Data = [[
+-- 0 .. 2^1023
+
+---@enum Core.PortUsage
+local PortUsage = {
+	Heartbeats = 10,
+	DNS = 53,
+	HTTP = 80,
+	FactoryControl = 12500,
+}
+
+return PortUsage
 ]]
 }
 
@@ -403,9 +427,9 @@ local string = string
 local random = math.random
 
 ---@class Core.UUID : Core.Json.Serializable
----@field private head number[]
----@field private body number[]
----@field private tail number[]
+---@field private _Head number[]
+---@field private _Body number[]
+---@field private _Tail number[]
 ---@overload fun(head: number[], body: number[], tail: number[]) : Core.UUID
 local UUID = {}
 
@@ -441,6 +465,15 @@ function UUID.Static__New()
     return UUID(head, body, tail)
 end
 
+local emptyHead = { 48, 48, 48, 48, 48, 48 }
+local emptyBody = { 48, 48, 48, 48 }
+local emptyTail = { 48, 48, 48, 48, 48, 48 }
+
+---@return number[] head, number[] body, number[] tail
+local function getEmptyData()
+    return emptyHead, emptyBody, emptyTail
+end
+
 local emptyUUID = nil
 ---@return Core.UUID
 function UUID.Static__Empty()
@@ -448,7 +481,7 @@ function UUID.Static__Empty()
         return emptyUUID
     end
 
-    emptyUUID = UUID({ 48, 48, 48, 48, 48, 48 }, { 48, 48, 48, 48 }, { 48, 48, 48, 48, 48, 48 })
+    emptyUUID = UUID(getEmptyData())
 
     return UUID.Static__Empty()
 end
@@ -459,32 +492,42 @@ local function convertStringToCharArray(str)
     return { string.byte(str, 1, str:len()) }
 end
 
----@param str string
----@return Core.UUID?
-function UUID.Static__Parse(str)
+---@return number[] head, number[] body, number[] tail
+local function parse(str)
     local splitedStr = Utils.String.Split(str, "-")
     if not splitedStr[1] or splitedStr[1]:len() ~= 6
         or not splitedStr[2] or splitedStr[2]:len() ~= 4
         or not splitedStr[3] or splitedStr[3]:len() ~= 6
     then
-        return nil
+        error("Unable to parse: " .. tostring(str))
+        return getEmptyData()
     end
 
     local head = convertStringToCharArray(splitedStr[1])
     local body = convertStringToCharArray(splitedStr[2])
     local tail = convertStringToCharArray(splitedStr[3])
 
-    return UUID(head, body, tail)
+    return head, body, tail
+end
+
+---@param str string
+---@return Core.UUID?
+function UUID.Static__Parse(str)
+    return UUID(parse(str))
 end
 
 ---@private
----@param head number[]
+---@param headOrSring number[]
 ---@param body number[]
 ---@param tail number[]
-function UUID:__init(head, body, tail)
-    self.head = head
-    self.body = body
-    self.tail = tail
+function UUID:__init(headOrSring, body, tail)
+    if type(headOrSring) == "string" then
+        headOrSring, body, tail = parse(headOrSring)
+    end
+
+    self._Head = headOrSring
+    self._Body = body
+    self._Tail = tail
 end
 
 ---@private
@@ -505,20 +548,20 @@ function UUID:__eq(other)
         return false
     end
 
-    for i, char in ipairs(self.head) do
-        if char ~= other.head[i] then
+    for i, char in ipairs(self._Head) do
+        if char ~= other._Head[i] then
             return false
         end
     end
 
-    for i, char in ipairs(self.body) do
-        if char ~= other.body[i] then
+    for i, char in ipairs(self._Body) do
+        if char ~= other._Body[i] then
             return false
         end
     end
 
-    for i, char in ipairs(self.tail) do
-        if char ~= other.tail[i] then
+    for i, char in ipairs(self._Tail) do
+        if char ~= other._Tail[i] then
             return false
         end
     end
@@ -530,39 +573,24 @@ end
 function UUID:__tostring()
     local str = ""
 
-    for _, char in ipairs(self.head) do
+    for _, char in ipairs(self._Head) do
         str = str .. string.char(char)
     end
 
     str = str .. "-"
 
-    for _, char in ipairs(self.body) do
+    for _, char in ipairs(self._Body) do
         str = str .. string.char(char)
     end
 
     str = str .. "-"
 
-    for _, char in ipairs(self.tail) do
+    for _, char in ipairs(self._Tail) do
         str = str .. string.char(char)
     end
 
     return str
 end
-
---#region - Serializable -
-
----@return string data
-function UUID:Serialize()
-    return tostring(self)
-end
-
----@param data string
----@return Core.UUID?
-function UUID.Static__Deserialize(data)
-    return UUID.Static__Parse(data)
-end
-
---#endregion
 
 return Utils.Class.CreateClass(UUID, 'Core.UUID', require("Core.Json.Serializable"))
 ]]
@@ -574,22 +602,22 @@ PackageData["CoreEventEvent"] = {
     IsRunnable = true,
     Data = [[
 ---@class Core.Event : object
----@field private funcs Core.Task[]
----@field private onceFuncs Core.Task[]
+---@field private _Funcs Core.Task[]
+---@field private _OnceFuncs Core.Task[]
 ---@operator len() : integer
 ---@overload fun() : Core.Event
 local Event = {}
 
 ---@private
 function Event:__init()
-    self.funcs = {}
-    self.onceFuncs = {}
+    self._Funcs = {}
+    self._OnceFuncs = {}
 end
 
 ---@param task Core.Task
 ---@return Core.Event
 function Event:AddListener(task)
-    table.insert(self.funcs, task)
+    table.insert(self._Funcs, task)
     return self
 end
 
@@ -598,7 +626,7 @@ Event.On = Event.AddListener
 ---@param task Core.Task
 ---@return Core.Event
 function Event:AddListenerOnce(task)
-    table.insert(self.onceFuncs, task)
+    table.insert(self._OnceFuncs, task)
     return self
 end
 
@@ -607,11 +635,11 @@ Event.Once = Event.AddListenerOnce
 ---@param logger Core.Logger?
 ---@param ... any
 function Event:Trigger(logger, ...)
-    for _, task in ipairs(self.funcs) do
+    for _, task in ipairs(self._Funcs) do
         task:Execute(...)
     end
 
-    for _, task in ipairs(self.onceFuncs) do
+    for _, task in ipairs(self._OnceFuncs) do
         task:Execute(...)
     end
     self.OnceFuncs = {}
@@ -625,13 +653,13 @@ end
 function Event:Listeners()
     ---@type Core.Task[]
     local permanentTask = {}
-    for _, task in ipairs(self.funcs) do
+    for _, task in ipairs(self._Funcs) do
         table.insert(permanentTask, task)
     end
 
     ---@type Core.Task[]
     local onceTask = {}
-    for _, task in ipairs(self.onceFuncs) do
+    for _, task in ipairs(self._OnceFuncs) do
         table.insert(onceTask, task)
     end
     return {
@@ -642,16 +670,16 @@ end
 
 ---@return integer count
 function Event:GetCount()
-    return #self.funcs + #self.onceFuncs
+    return #self._Funcs + #self._OnceFuncs
 end
 
 ---@param event Core.Event
 ---@return Core.Event event
 function Event:CopyTo(event)
-    for _, listener in ipairs(self.funcs) do
+    for _, listener in ipairs(self._Funcs) do
         event:AddListener(listener)
     end
-    for _, listener in ipairs(self.onceFuncs) do
+    for _, listener in ipairs(self._OnceFuncs) do
         event:AddListenerOnce(listener)
     end
     return event
@@ -669,8 +697,8 @@ PackageData["CoreEventEventPullAdapter"] = {
 local Event = require('Core.Event.Event')
 
 ---@class Core.EventPullAdapter
----@field private events Dictionary<string, Core.Event>
----@field private logger Core.Logger
+---@field private _Events Dictionary<string, Core.Event>
+---@field private _Logger Core.Logger
 ---@field OnEventPull Core.Event
 local EventPullAdapter = {}
 
@@ -679,24 +707,24 @@ local EventPullAdapter = {}
 function EventPullAdapter:onEventPull(eventPullData)
 	---@type string[]
 	local removeEvent = {}
-	for name, event in pairs(self.events) do
+	for name, event in pairs(self._Events) do
 		if name == eventPullData[1] then
-			event:Trigger(self.logger, eventPullData)
+			event:Trigger(self._Logger, eventPullData)
 		end
 		if #event == 0 then
 			table.insert(removeEvent, name)
 		end
 	end
 	for _, name in ipairs(removeEvent) do
-		self.events[name] = nil
+		self._Events[name] = nil
 	end
 end
 
 ---@param logger Core.Logger
 ---@return Core.EventPullAdapter
 function EventPullAdapter:Initialize(logger)
-	self.events = {}
-	self.logger = logger
+	self._Events = {}
+	self._Logger = logger
 	self.OnEventPull = Event()
 	return self
 end
@@ -704,13 +732,13 @@ end
 ---@param signalName string
 ---@return Core.Event
 function EventPullAdapter:GetEvent(signalName)
-	for name, event in pairs(self.events) do
+	for name, event in pairs(self._Events) do
 		if name == signalName then
 			return event
 		end
 	end
 	local event = Event()
-	self.events[signalName] = event
+	self._Events[signalName] = event
 	return event
 end
 
@@ -733,7 +761,7 @@ end
 ---@param timeout number? in seconds
 ---@return boolean gotEvent
 function EventPullAdapter:Wait(timeout)
-	self.logger:LogTrace('## waiting for event pull ##')
+	self._Logger:LogTrace('## waiting for event pull ##')
 	---@type table?
 	local eventPullData = nil
 	if timeout == nil then
@@ -744,8 +772,8 @@ function EventPullAdapter:Wait(timeout)
 	if #eventPullData == 0 then
 		return false
 	end
-	self.logger:LogDebug("event with signalName: '" .. eventPullData[1] .. "' was recieved")
-	self.OnEventPull:Trigger(self.logger, eventPullData)
+	self._Logger:LogDebug("event with signalName: '" .. eventPullData[1] .. "' was recieved")
+	self.OnEventPull:Trigger(self._Logger, eventPullData)
 	self:onEventPull(eventPullData)
 	return true
 end
@@ -760,7 +788,7 @@ end
 --- Starts event pull loop
 --- ## will never return
 function EventPullAdapter:Run()
-	self.logger:LogDebug('## started event pull loop ##')
+	self._Logger:LogDebug('## started event pull loop ##')
 	while true do
 		self:Wait()
 	end
@@ -785,9 +813,9 @@ local Path = require("Core.FileSystem.Path")
 ---|"+a" append -> file stream can read the full file but can only write to the end of the existing file
 
 ---@class Core.FileSystem.File : object
----@field private path Core.FileSystem.Path
----@field private mode Core.FileSystem.File.OpenModes?
----@field private file FIN.Filesystem.File?
+---@field private _Path Core.FileSystem.Path
+---@field private _Mode Core.FileSystem.File.OpenModes?
+---@field private _File FIN.Filesystem.File?
 ---@overload fun(path: string | Core.FileSystem.Path) : Core.FileSystem.File
 local File = {}
 
@@ -837,27 +865,27 @@ end
 ---@param path string | Core.FileSystem.Path
 function File:__init(path)
     if type(path) == "string" then
-        self.path = Path(path)
+        self._Path = Path(path)
         return
     end
 
-    self.path = path
+    self._Path = path
 end
 
 ---@return string
 function File:GetPath()
-    return self.path:GetPath()
+    return self._Path:GetPath()
 end
 
 ---@return boolean exists
 function File:Exists()
-    return filesystem.exists(self.path:GetPath())
+    return filesystem.exists(self._Path:GetPath())
 end
 
 ---@return boolean isOpen
 ---@nodiscard
 function File:IsOpen()
-    if not self.file then
+    if not self._File then
         return false
     end
 
@@ -867,7 +895,7 @@ end
 ---@private
 function File:CheckState()
     if not self:IsOpen() then
-        error("file is not open: " .. self.path:GetPath(), 3)
+        error("file is not open: " .. self._Path:GetPath(), 3)
     end
 end
 
@@ -877,14 +905,14 @@ end
 function File:Open(mode)
     local file
 
-    if not filesystem.exists(self.path:GetPath()) then
-        local parentFolder = self.path:GetParentFolder()
+    if not filesystem.exists(self._Path:GetPath()) then
+        local parentFolder = self._Path:GetParentFolder()
         if not filesystem.exists(parentFolder) then
             error("parent folder does not exist: " .. parentFolder)
         end
 
         if mode == "r" then
-            file = filesystem.open(self.path:GetPath(), "w")
+            file = filesystem.open(self._Path:GetPath(), "w")
             file:write("")
             file:close()
             file = nil
@@ -893,8 +921,8 @@ function File:Open(mode)
         return false
     end
 
-    self.file = filesystem.open(self.path:GetPath(), mode)
-    self.mode = mode
+    self._File = filesystem.open(self._Path:GetPath(), mode)
+    self._Mode = mode
 
     return true
 end
@@ -903,26 +931,26 @@ end
 function File:Write(data)
     self:CheckState()
 
-    self.file:write(data)
+    self._File:write(data)
 end
 
 ---@param length integer
 function File:Read(length)
     self:CheckState()
 
-    return self.file:read(length)
+    return self._File:read(length)
 end
 
 ---@param offset integer
 function File:Seek(offset)
     self:CheckState()
 
-    self.file:seek(offset)
+    self._File:seek(offset)
 end
 
 function File:Close()
-    self.file:close()
-    self.file = nil
+    self._File:close()
+    self._File = nil
 end
 
 function File:Clear()
@@ -931,18 +959,18 @@ function File:Clear()
         self:Close()
     end
 
-    if not filesystem.exists(self.path:GetPath()) then
+    if not filesystem.exists(self._Path:GetPath()) then
         return
     end
 
-    filesystem.remove(self.path:GetPath())
+    filesystem.remove(self._Path:GetPath())
 
-    local file = filesystem.open(self.path:GetPath(), "w")
+    local file = filesystem.open(self._Path:GetPath(), "w")
     file:write("")
     file:close()
 
     if isOpen then
-        self.file = filesystem.open(self.path:GetPath(), self.mode)
+        self._File = filesystem.open(self._Path:GetPath(), self._Mode)
     end
 end
 
@@ -963,7 +991,7 @@ local function formatStr(str)
 end
 
 ---@class Core.FileSystem.Path
----@field private nodes string[]
+---@field private _Nodes string[]
 ---@overload fun(pathOrNodes: (string | string[])?) : Core.FileSystem.Path
 local Path = {}
 
@@ -981,22 +1009,22 @@ end
 ---@param pathOrNodes string | string[]
 function Path:__init(pathOrNodes)
     if not pathOrNodes then
-        self.nodes = {}
+        self._Nodes = {}
         return
     end
 
     if type(pathOrNodes) == "string" then
         pathOrNodes = formatStr(pathOrNodes)
-        self.nodes = Utils.String.Split(pathOrNodes, "/")
+        self._Nodes = Utils.String.Split(pathOrNodes, "/")
         return
     end
 
-    self.nodes = pathOrNodes
+    self._Nodes = pathOrNodes
 end
 
 ---@return string path
 function Path:GetPath()
-    return Utils.String.Join(self.nodes, "/")
+    return Utils.String.Join(self._Nodes, "/")
 end
 
 ---@private
@@ -1004,22 +1032,22 @@ Path.__tostring = Path.GetPath
 
 ---@return boolean
 function Path:IsEmpty()
-    return #self.nodes == 0 or (#self.nodes == 2 and self.nodes[1] == "" and self.nodes[2] == "")
+    return #self._Nodes == 0 or (#self._Nodes == 2 and self._Nodes[1] == "" and self._Nodes[2] == "")
 end
 
 ---@return boolean
 function Path:IsFile()
-    return self.nodes[#self.nodes] ~= ""
+    return self._Nodes[#self._Nodes] ~= ""
 end
 
 ---@return boolean
 function Path:IsDir()
-    return self.nodes[#self.nodes] == ""
+    return self._Nodes[#self._Nodes] == ""
 end
 
 ---@return string
 function Path:GetParentFolder()
-    local copy = Utils.Table.Copy(self.nodes)
+    local copy = Utils.Table.Copy(self._Nodes)
     local lenght = #copy
 
     if lenght > 0 then
@@ -1037,14 +1065,14 @@ end
 ---@return Core.FileSystem.Path
 function Path:GetParentFolderPath()
     local copy = self:Copy()
-    local lenght = #copy.nodes
+    local lenght = #copy._Nodes
 
     if lenght > 0 then
-        if lenght > 1 and copy.nodes[lenght] == "" then
-            copy.nodes[lenght] = nil
-            copy.nodes[lenght - 1] = ""
+        if lenght > 1 and copy._Nodes[lenght] == "" then
+            copy._Nodes[lenght] = nil
+            copy._Nodes[lenght - 1] = ""
         else
-            copy.nodes[lenght] = nil
+            copy._Nodes[lenght] = nil
         end
     end
 
@@ -1057,7 +1085,7 @@ function Path:GetFileName()
         error("path is not a file: " .. self:GetPath())
     end
 
-    return self.nodes[#self.nodes]
+    return self._Nodes[#self._Nodes]
 end
 
 ---@return string fileExtension
@@ -1066,7 +1094,7 @@ function Path:GetFileExtension()
         error("path is not a file: " .. self:GetPath())
     end
 
-    local fileName = self.nodes[#self.nodes]
+    local fileName = self._Nodes[#self._Nodes]
 
     local _, _, extension = fileName:find("^.+(%..+)$")
     return extension
@@ -1078,7 +1106,7 @@ function Path:GetFileStem()
         error("path is not a file: " .. self:GetPath())
     end
 
-    local fileName = self.nodes[#self.nodes]
+    local fileName = self._Nodes[#self._Nodes]
 
     local _, _, stem = fileName:find("^(.+)%..+$")
     return stem
@@ -1089,10 +1117,10 @@ function Path:Normalize()
     ---@type string[]
     local newNodes = {}
 
-    for index, value in ipairs(self.nodes) do
+    for index, value in ipairs(self._Nodes) do
         if value == "." then
         elseif value == "" then
-            if index == 1 or index == #self.nodes then
+            if index == 1 or index == #self._Nodes then
                 newNodes[index] = ""
             end
         elseif value == ".." then
@@ -1108,7 +1136,7 @@ function Path:Normalize()
         newNodes[#newNodes + 1] = ""
     end
 
-    self.nodes = newNodes
+    self._Nodes = newNodes
     return self
 end
 
@@ -1119,7 +1147,7 @@ function Path:Append(path)
     local newNodes = Utils.String.Split(path, "/")
 
     for _, value in ipairs(newNodes) do
-        self.nodes[#self.nodes + 1] = value
+        self._Nodes[#self._Nodes + 1] = value
     end
 
     self:Normalize()
@@ -1136,7 +1164,7 @@ end
 
 ---@return Core.FileSystem.Path
 function Path:Copy()
-    local copyNodes = Utils.Table.Copy(self.nodes)
+    local copyNodes = Utils.Table.Copy(self._Nodes)
     return Path(copyNodes)
 end
 
@@ -1261,10 +1289,10 @@ end
 
 ---@alias Json.SerializeableTypes
 ---|nil
----|table
----|string
----|number
 ---|boolean
+---|number
+---|string
+---|table
 
 json.type_func_map = {
 	['nil'] = encode_nil,
@@ -1565,10 +1593,12 @@ function JsonSerializer:__init(typeInfos)
     end
 end
 
-function JsonSerializer:AddDefaultTypeInfos()
-    self:AddTypeInfos({
-        require("Core.UUID"):Static__GetType()
-    })
+function JsonSerializer:AddTypesFromStatic()
+    for name, typeInfo in pairs(self.Static__Serializer._TypeInfos) do
+        if not Utils.Table.ContainsKey(self._TypeInfos, name) then
+            self._TypeInfos[name] = typeInfo
+        end
+    end
 end
 
 ---@param typeInfo Utils.Class.Type
@@ -1684,7 +1714,7 @@ function JsonSerializer:deserializeClass(t)
         end
     end
 
-    return classTemplate.Static__Deserialize(table.unpack(data))
+    return classTemplate:Static__Deserialize(table.unpack(data))
 end
 
 ---@private
@@ -1719,7 +1749,10 @@ end
 Utils.Class.CreateClass(JsonSerializer, "Core.Json.JsonSerializer")
 
 JsonSerializer.Static__Serializer = JsonSerializer()
-JsonSerializer.Static__Serializer:AddDefaultTypeInfos()
+JsonSerializer.Static__Serializer:AddTypeInfos({
+    -- UUID
+    require("Core.UUID"):Static__GetType()
+})
 
 return JsonSerializer
 ]]
@@ -1735,13 +1768,13 @@ local Serializable = {}
 
 ---@return any ...
 function Serializable:Serialize()
-    error("function is not overriden")
+    return tostring(self)
 end
 
 ---@param ... any
 ---@return any obj
-function Serializable.Static__Deserialize(...)
-    error("function is not overriden")
+function Serializable:Static__Deserialize(...)
+    return self(...)
 end
 
 return Utils.Class.CreateClass(Serializable, "Core.Json.Serializable")
