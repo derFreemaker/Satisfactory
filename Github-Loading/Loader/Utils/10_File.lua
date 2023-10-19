@@ -2,37 +2,58 @@
 local File = {}
 
 ---@type Dictionary<string, FIN.Filesystem.File>
-local openFiles = {}
+local OpenFiles = {}
 
 ---@return string key
 local function getUniqeKey(key)
-    if openFiles[key] then
+    if OpenFiles[key] then
         return getUniqeKey(key .. "$")
     end
 
     return key
 end
 
-local filesystemOpenFunc = filesystem.open
+local OpenFileFunc = filesystem.open
+
+---@class Uitls.File.WrappedFile : FIN.Filesystem.File
+---@field _File FIN.Filesystem.File
+---@field _OpenFilesKey string
+local WrappedFile = {}
+
+---@package
 ---@param path string
 ---@param mode FIN.Filesystem.openmode
 ---@return FIN.Filesystem.File
----@diagnostic disable-next-line
-function filesystem.open(path, mode)
-    local file = filesystemOpenFunc(path, mode)
+function WrappedFile.new(path, mode)
+    local key = getUniqeKey(path)
 
-    path = getUniqeKey(path)
-    openFiles[path] = file
+    local instance = setmetatable({
+        _File = OpenFileFunc(path, mode),
+        _OpenFilesKey = key,
+    }, { __index = WrappedFile })
 
-    local fileCloseFunc = file.close
-    ---@diagnostic disable-next-line
-    function file:close()
-        fileCloseFunc(self)
-        openFiles[path] = nil
-    end
-
-    return file
+    OpenFiles[key] = instance
+    return instance
 end
+
+function WrappedFile:read(length)
+    return self._File:read(length)
+end
+
+function WrappedFile:seek(offset)
+    self._File:seek(offset)
+end
+
+function WrappedFile:write(data)
+    self._File:write(data)
+end
+
+function WrappedFile:close()
+    self._File:close()
+    OpenFiles[self._OpenFilesKey] = nil
+end
+
+filesystem.open = WrappedFile.new
 
 ---@alias Utils.File.writeModes
 ---|"w" write -> file stream can read and write creates the file if it doesn’t exist
@@ -91,4 +112,4 @@ function File.Clear(path)
     file:close()
 end
 
-return File, openFiles
+return File, OpenFiles
