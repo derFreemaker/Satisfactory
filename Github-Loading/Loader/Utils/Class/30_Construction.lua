@@ -2,7 +2,7 @@ local LoadedLoaderFiles = ({ ... })[1]
 ---@type Utils.Table
 local Table = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Table'][1]
 ---@type Utils.Class.MetatableHandler
-local MetatableHandler = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/MetatableHandler'][1]
+local MetatableHandler = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/Metatable'][1]
 
 ---@class Utils.Class.Template
 

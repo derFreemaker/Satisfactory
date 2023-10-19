@@ -2,11 +2,11 @@ local LoadedLoaderFiles = ({ ... })[1]
 ---@type Utils.Table
 local Table = LoadedLoaderFiles["/Github-Loading/Loader/Utils/Table"][1]
 ---@type Utils.Class.MembersHandler
-local MembersHandler = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/MembersHandler'][1]
+local MembersHandler = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/Members'][1]
 ---@type Utils.Class.TypeHandler
-local TypeHandler = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/TypeHandler'][1]
+local TypeHandler = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/Type'][1]
 ---@type Utils.Class.ConstructionHandler
-local ConstructionHandler = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/ConstructionHandler'][1]
+local ConstructionHandler = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/Construction'][1]
 
 ---@class Utils.Class
 local Class = {}
