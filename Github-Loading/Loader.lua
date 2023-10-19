@@ -231,19 +231,14 @@ local Loader = {}
 ---@param internetCard FIN.Components.FINComputerMod.InternetCard_C
 ---@return Github_Loading.Loader
 function Loader.new(loaderBaseUrl, loaderBasePath, forceDownload, internetCard)
-	local metatable = {
-		__index = Loader
-	}
 	return setmetatable(
 		{
-			loaderBaseUrl = loaderBaseUrl,
-			loaderBasePath = loaderBasePath,
-			forceDownload = forceDownload,
-			internetCard = internetCard,
-			loadedLoaderFiles = {}
-		},
-		metatable
-	)
+			_LoaderBaseUrl = loaderBaseUrl,
+			_LoaderBasePath = loaderBasePath,
+			_ForceDownload = forceDownload,
+			_InternetCard = internetCard,
+			_LoadedLoaderFiles = {}
+		}, { __index = Loader })
 end
 
 function Loader:LoadFiles()
