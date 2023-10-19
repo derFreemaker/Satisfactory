@@ -19,27 +19,27 @@ local DNSClient = require('DNS.Client.Client')
 local Main = {}
 
 function Main:Configure()
-	self._EventPullAdapter = EventPullAdapter:Initialize(self._Logger:subLogger('EventPullAdapter'))
+	self._EventPullAdapter = EventPullAdapter:Initialize(self.Logger:subLogger('EventPullAdapter'))
 
-	self._NetClient = NetworkClient(self._Logger:subLogger('NetworkClient'))
+	self._NetClient = NetworkClient(self.Logger:subLogger('NetworkClient'))
 	local netPort = self._NetClient:CreateNetworkPort(PortUsage.HTTP)
 	netPort:OpenPort()
-	self._ApiController = RestApiController(netPort, self._Logger:subLogger('RestApiController'))
+	self._ApiController = RestApiController(netPort, self.Logger:subLogger('RestApiController'))
 
-	local databaseAccessLayer = Database(self._Logger:subLogger("DatabaseAccessLayer"))
+	local databaseAccessLayer = Database(self.Logger:subLogger("DatabaseAccessLayer"))
 
 	self._ApiController:AddRestApiEndpointBase(
-		ControllerEndpoints(self._Logger:subLogger("ControllerEndpoints"), databaseAccessLayer))
+		ControllerEndpoints(self.Logger:subLogger("ControllerEndpoints"), databaseAccessLayer))
 
-	self._Logger:LogDebug('setup endpoints')
+	self.Logger:LogDebug('setup endpoints')
 
-	self._DnsClient = DNSClient(self._NetClient, self._Logger:subLogger('DNSClient'))
+	self._DnsClient = DNSClient(self._NetClient, self.Logger:subLogger('DNSClient'))
 	self._DnsClient:CreateAddress(Config.DOMAIN, self._NetClient:GetIPAddress())
-	self._Logger:LogDebug('registered dns client on server')
+	self.Logger:LogDebug('registered dns client on server')
 end
 
 function Main:Run()
-	self._Logger:LogInfo('started server')
+	self.Logger:LogInfo('started server')
 	self._EventPullAdapter:Run()
 end
 

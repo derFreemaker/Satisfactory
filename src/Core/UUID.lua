@@ -3,9 +3,9 @@ local string = string
 local random = math.random
 
 ---@class Core.UUID : Core.Json.Serializable
----@field private head number[]
----@field private body number[]
----@field private tail number[]
+---@field private _Head number[]
+---@field private _Body number[]
+---@field private _Tail number[]
 ---@overload fun(head: number[], body: number[], tail: number[]) : Core.UUID
 local UUID = {}
 
@@ -101,9 +101,9 @@ function UUID:__init(headOrSring, body, tail)
         headOrSring, body, tail = parse(headOrSring)
     end
 
-    self.head = headOrSring
-    self.body = body
-    self.tail = tail
+    self._Head = headOrSring
+    self._Body = body
+    self._Tail = tail
 end
 
 ---@private
@@ -124,20 +124,20 @@ function UUID:__eq(other)
         return false
     end
 
-    for i, char in ipairs(self.head) do
-        if char ~= other.head[i] then
+    for i, char in ipairs(self._Head) do
+        if char ~= other._Head[i] then
             return false
         end
     end
 
-    for i, char in ipairs(self.body) do
-        if char ~= other.body[i] then
+    for i, char in ipairs(self._Body) do
+        if char ~= other._Body[i] then
             return false
         end
     end
 
-    for i, char in ipairs(self.tail) do
-        if char ~= other.tail[i] then
+    for i, char in ipairs(self._Tail) do
+        if char ~= other._Tail[i] then
             return false
         end
     end
@@ -149,19 +149,19 @@ end
 function UUID:__tostring()
     local str = ""
 
-    for _, char in ipairs(self.head) do
+    for _, char in ipairs(self._Head) do
         str = str .. string.char(char)
     end
 
     str = str .. "-"
 
-    for _, char in ipairs(self.body) do
+    for _, char in ipairs(self._Body) do
         str = str .. string.char(char)
     end
 
     str = str .. "-"
 
-    for _, char in ipairs(self.tail) do
+    for _, char in ipairs(self._Tail) do
         str = str .. string.char(char)
     end
 

@@ -1,11 +1,11 @@
 ---@class Core.Task : object
----@field package func function
----@field package passthrough any
----@field package thread thread
----@field package closed boolean
----@field private success boolean
----@field private results any[]
----@field private traceback string?
+---@field private _Func function
+---@field private _Passthrough any
+---@field private _Thread thread
+---@field private _Closed boolean
+---@field private _Success boolean
+---@field private _Results any[]
+---@field private _Traceback string?
 ---@overload fun(func: function, passthrough: any) : Core.Task
 local Task = {}
 
@@ -13,26 +13,26 @@ local Task = {}
 ---@param func function
 ---@param passthrough any
 function Task:__init(func, passthrough)
-    self.func = func
-    self.passthrough = passthrough
-    self.closed = false
-    self.success = true
-    self.results = {}
+    self._Func = func
+    self._Passthrough = passthrough
+    self._Closed = false
+    self._Success = true
+    self._Results = {}
 end
 
 ---@return boolean
 function Task:IsSuccess()
-    return self.success
+    return self._Success
 end
 
 ---@return any ... results
 function Task:GetResults()
-    return table.unpack(self.results)
+    return table.unpack(self._Results)
 end
 
 ---@return any[] results
 function Task:GetResultsArray()
-    return self.results
+    return self._Results
 end
 
 ---@return string
@@ -43,7 +43,7 @@ end
 ---@private
 ---@param ... any args
 function Task:invokeThread(...)
-    self.success, self.results = coroutine.resume(self.thread, ...)
+    self._Success, self._Results = coroutine.resume(self._Thread, ...)
 end
 
 ---@param ... any parameters
@@ -54,12 +54,12 @@ function Task:Execute(...)
     local function invokeFunc(...)
         ---@type any[]
         local result
-        if self.passthrough ~= nil then
-            result = { self.func(self.passthrough, ...) }
+        if self._Passthrough ~= nil then
+            result = { self._Func(self._Passthrough, ...) }
         else
-            result = { self.func(...) }
+            result = { self._Func(...) }
         end
-        if coroutine.isyieldable(self.thread) then
+        if coroutine.isyieldable(self._Thread) then
             --? Should always return here
             return coroutine.yield(result)
         end
@@ -67,26 +67,26 @@ function Task:Execute(...)
         return result
     end
 
-    self.thread = coroutine.create(invokeFunc)
-    self.closed = false
-    self.traceback = nil
+    self._Thread = coroutine.create(invokeFunc)
+    self._Closed = false
+    self._Traceback = nil
 
     self:invokeThread(...)
-    return table.unpack(self.results)
+    return table.unpack(self._Results)
 end
 
 ---@private
 function Task:CheckThreadState()
-    if self.thread == nil then
+    if self._Thread == nil then
         error("cannot resume a not started task")
     end
-    if self.closed then
+    if self._Closed then
         error("cannot resume a closed task")
     end
-    if coroutine.status(self.thread) == "running" then
+    if coroutine.status(self._Thread) == "running" then
         error("cannot resume running task")
     end
-    if coroutine.status(self.thread) == "dead" then
+    if coroutine.status(self._Thread) == "dead" then
         error("cannot resume dead task")
     end
 end
@@ -96,42 +96,42 @@ end
 function Task:Resume(...)
     self:CheckThreadState()
     self:invokeThread(...)
-    return table.unpack(self.results)
+    return table.unpack(self._Results)
 end
 
 function Task:Close()
-    if self.closed then return end
+    if self._Closed then return end
     self:Traceback()
-    coroutine.close(self.thread)
-    self.closed = true
+    coroutine.close(self._Thread)
+    self._Closed = true
 end
 
 ---@private
 ---@return string traceback
 function Task:Traceback()
-    if self.traceback ~= nil then
-        return self.traceback
+    if self._Traceback ~= nil then
+        return self._Traceback
     end
     local error = ""
-    if type(self.results) == "string" then
-        error = self.results --[[@as string]]
+    if type(self._Results) == "string" then
+        error = self._Results --[[@as string]]
     end
-    self.traceback = debug.traceback(self.thread, error)
-    return self.traceback
+    self._Traceback = debug.traceback(self._Thread, error)
+    return self._Traceback
 end
 
 ---@return "not created" | "dead" | "normal" | "running" | "suspended"
 function Task:State()
-    if self.thread == nil then
+    if self._Thread == nil then
         return "not created"
     end
-    return coroutine.status(self.thread);
+    return coroutine.status(self._Thread);
 end
 
 ---@param logger Core.Logger?
 function Task:LogError(logger)
     self:Close()
-    if not self.success and logger then
+    if not self._Success and logger then
         logger:LogError("Task: \n" .. self:Traceback() .. debug.traceback():sub(17))
     end
 end

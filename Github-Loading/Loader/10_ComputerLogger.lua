@@ -1,5 +1,5 @@
 ---@class Computer.Logger
----@field private LoggerHistory { [integer]: (Github_Loading.Logger | Core.Logger) }
+---@field private _LoggerHistory { [integer]: (Github_Loading.Logger | Core.Logger) }
 ---@field package CurrentLogger (Github_Loading.Logger | Core.Logger)?
 ___logger = { LoggerHistory = {}, CurrentLogger = nil }
 
@@ -22,20 +22,20 @@ function ___logger:setLogger(logger)
     if logger == nil then
         return
     end
-    table.insert(self.LoggerHistory, logger)
-    self.CurrentLogger = logger
+    table.insert(self._LoggerHistory, logger)
+    self._CurrentLogger = logger
 end
 
 function ___logger:revert()
-    local loggerHistoryLength = #self.LoggerHistory
+    local loggerHistoryLength = #self._LoggerHistory
     if loggerHistoryLength == 1 then
         error("Should never remove last logger")
         return
     end
-    local logger = self.LoggerHistory[loggerHistoryLength]
-    self.LoggerHistory[loggerHistoryLength] = nil
+    local logger = self._LoggerHistory[loggerHistoryLength]
+    self._LoggerHistory[loggerHistoryLength] = nil
     if logger == nil then return end
-    self.CurrentLogger = logger
+    self._CurrentLogger = logger
 end
 
 ---@param ... any
@@ -48,7 +48,7 @@ function ___logger:log(...)
             message = message .. "   " .. (tostring(arg) or "nil")
         end
     end
-    local currentLogger = self.CurrentLogger
+    local currentLogger = self._CurrentLogger
     if currentLogger then
         pcall(currentLogger.Log, currentLogger, "[LOG]: " .. message, 10)
     end
@@ -61,7 +61,7 @@ function ___logger:error(message, level)
     message = message or "no error message"
     level = level or 1
     level = level + 1
-    local currentLogger = self.CurrentLogger
+    local currentLogger = self._CurrentLogger
     if currentLogger then
         local debugInfo = debug.getinfo(level)
         local errorMessage = "[ERROR-LOG] " .. debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
@@ -80,7 +80,7 @@ local asserFunc = assert
 function ___logger:assert(condition, message, ...)
     message = message or "assertation failed"
     if not condition then
-        local currentLogger = self.CurrentLogger
+        local currentLogger = self._CurrentLogger
         if currentLogger then
             local debugInfo = debug.getinfo(2)
             local errorMessage = "[ASSERT-LOG] " ..
@@ -95,7 +95,7 @@ end
 local panicFunc = computer.panic
 ---@param errorMsg string
 function ___logger:panic(errorMsg) ---@diagnostic disable-line
-    local currentLogger = self.CurrentLogger
+    local currentLogger = self._CurrentLogger
     if currentLogger then
         local debugInfo = debug.getinfo(2)
         local errorMessage = "[PANIC-LOG] " .. debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. errorMsg

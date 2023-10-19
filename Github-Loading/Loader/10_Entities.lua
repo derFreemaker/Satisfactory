@@ -2,7 +2,7 @@
 local Entities = {}
 
 ---@class Github_Loading.Entities.Main
----@field _Logger Core.Logger
+---@field Logger Core.Logger
 local Main = {}
 
 ---@param mainModule Github_Loading.Entities.Main

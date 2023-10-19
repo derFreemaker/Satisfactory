@@ -11,8 +11,8 @@ local Utils = LoadedLoaderFiles["/Github-Loading/Loader/Utils"][1]
 ---@field RequiredPackages string[]?
 
 ---@class Github_Loading.Package : Github_Loading.Package.InfoFile
----@field private forceDownload boolean
----@field private PackageLoader Github_Loading.PackageLoader
+---@field private _ForceDownload boolean
+---@field private _PackageLoader Github_Loading.PackageLoader
 ---@field Modules Dictionary<string, Github_Loading.Module>
 local Package = {}
 
@@ -47,7 +47,7 @@ end
 function Package:Download(url, path)
     local dataFileUrl = url .. "/Data.lua"
     local dataFilePath = filesystem.path(path, "Data.lua")
-    if not self.PackageLoader:internalDownload(dataFileUrl, dataFilePath, self.forceDownload) then return false end
+    if not self._PackageLoader:internalDownload(dataFileUrl, dataFilePath, self._ForceDownload) then return false end
 
     ---@type Dictionary<string, Github_Loading.Module.Data>
     local dataContent = filesystem.doFile(dataFilePath)
@@ -64,13 +64,13 @@ end
 
 function Package:Load()
     if self.RequiredPackages and #self.RequiredPackages ~= 0 then
-        self.PackageLoader.logger:LogDebug("loading required packages: " .. #self.RequiredPackages .. "...")
+        self._PackageLoader.logger:LogDebug("loading required packages: " .. #self.RequiredPackages .. "...")
         for _, packageName in ipairs(self.RequiredPackages) do
             if not Utils.String.IsNilOrEmpty(packageName) then
-                self.PackageLoader:LoadPackage(packageName)
+                self._PackageLoader:LoadPackage(packageName)
             end
         end
-        self.PackageLoader.logger:LogDebug("loaded required packages")
+        self._PackageLoader.logger:LogDebug("loaded required packages")
     end
 
     local eventsModule = self:GetModule(self.Namespace .. ".__events")

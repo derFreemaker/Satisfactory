@@ -1,8 +1,8 @@
 local Event = require('Core.Event.Event')
 
 ---@class Core.EventPullAdapter
----@field private events Dictionary<string, Core.Event>
----@field private logger Core.Logger
+---@field private _Events Dictionary<string, Core.Event>
+---@field private _Logger Core.Logger
 ---@field OnEventPull Core.Event
 local EventPullAdapter = {}
 
@@ -11,24 +11,24 @@ local EventPullAdapter = {}
 function EventPullAdapter:onEventPull(eventPullData)
 	---@type string[]
 	local removeEvent = {}
-	for name, event in pairs(self.events) do
+	for name, event in pairs(self._Events) do
 		if name == eventPullData[1] then
-			event:Trigger(self.logger, eventPullData)
+			event:Trigger(self._Logger, eventPullData)
 		end
 		if #event == 0 then
 			table.insert(removeEvent, name)
 		end
 	end
 	for _, name in ipairs(removeEvent) do
-		self.events[name] = nil
+		self._Events[name] = nil
 	end
 end
 
 ---@param logger Core.Logger
 ---@return Core.EventPullAdapter
 function EventPullAdapter:Initialize(logger)
-	self.events = {}
-	self.logger = logger
+	self._Events = {}
+	self._Logger = logger
 	self.OnEventPull = Event()
 	return self
 end
@@ -36,13 +36,13 @@ end
 ---@param signalName string
 ---@return Core.Event
 function EventPullAdapter:GetEvent(signalName)
-	for name, event in pairs(self.events) do
+	for name, event in pairs(self._Events) do
 		if name == signalName then
 			return event
 		end
 	end
 	local event = Event()
-	self.events[signalName] = event
+	self._Events[signalName] = event
 	return event
 end
 
@@ -65,7 +65,7 @@ end
 ---@param timeout number? in seconds
 ---@return boolean gotEvent
 function EventPullAdapter:Wait(timeout)
-	self.logger:LogTrace('## waiting for event pull ##')
+	self._Logger:LogTrace('## waiting for event pull ##')
 	---@type table?
 	local eventPullData = nil
 	if timeout == nil then
@@ -76,8 +76,8 @@ function EventPullAdapter:Wait(timeout)
 	if #eventPullData == 0 then
 		return false
 	end
-	self.logger:LogDebug("event with signalName: '" .. eventPullData[1] .. "' was recieved")
-	self.OnEventPull:Trigger(self.logger, eventPullData)
+	self._Logger:LogDebug("event with signalName: '" .. eventPullData[1] .. "' was recieved")
+	self.OnEventPull:Trigger(self._Logger, eventPullData)
 	self:onEventPull(eventPullData)
 	return true
 end
@@ -92,7 +92,7 @@ end
 --- Starts event pull loop
 --- ## will never return
 function EventPullAdapter:Run()
-	self.logger:LogDebug('## started event pull loop ##')
+	self._Logger:LogDebug('## started event pull loop ##')
 	while true do
 		self:Wait()
 	end

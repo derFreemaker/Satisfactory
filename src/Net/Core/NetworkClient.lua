@@ -5,7 +5,10 @@ local Task = require('Core.Task')
 local NetworkPort = require('Net.Core.NetworkPort')
 local NetworkContext = require('Net.Core.NetworkContext')
 
+local IPAddress = require("Net.Core.IPAddress")
+
 ---@class Net.Core.NetworkClient : object
+---@field private _IPAddress Net.Core.IPAddress
 ---@field private _Ports Dictionary<integer | "all", Net.Core.NetworkPort>
 ---@field private _NetworkCard Adapter.Computer.NetworkCard
 ---@field private _Serializer Core.Json.Serializer
@@ -32,7 +35,12 @@ end
 
 ---@return Net.Core.IPAddress
 function NetworkClient:GetIPAddress()
-	return self._NetworkCard:GetIPAddress()
+	if self._IPAddress then
+		return self._IPAddress
+	end
+
+	self._IPAddress = IPAddress(self._NetworkCard:GetIPAddress())
+	return self._IPAddress
 end
 
 ---@return string nick

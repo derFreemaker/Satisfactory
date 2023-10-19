@@ -217,11 +217,11 @@ local function loadFiles(loaderBasePath)
 end
 
 ---@class Github_Loading.Loader
----@field private loaderBaseUrl string
----@field private loaderBasePath string
----@field private forceDownload boolean
----@field private internetCard FIN.Components.FINComputerMod.InternetCard_C
----@field private loadedLoaderFiles Dictionary<string, table>
+---@field private _LoaderBaseUrl string
+---@field private _LoaderBasePath string
+---@field private _ForceDownload boolean
+---@field private _InternetCard FIN.Components.FINComputerMod.InternetCard_C
+---@field private _LoadedLoaderFiles Dictionary<string, table>
 ---@field Logger Github_Loading.Logger
 local Loader = {}
 
@@ -247,13 +247,13 @@ function Loader.new(loaderBaseUrl, loaderBasePath, forceDownload, internetCard)
 end
 
 function Loader:LoadFiles()
-	self.loadedLoaderFiles = loadFiles(self.loaderBasePath)
+	self._LoadedLoaderFiles = loadFiles(self._LoaderBasePath)
 end
 
 ---@param moduleToGet string
 ---@return any ...
 function Loader:Get(moduleToGet)
-	local module = self.loadedLoaderFiles[moduleToGet]
+	local module = self._LoadedLoaderFiles[moduleToGet]
 	if not module then
 		return
 	end
@@ -288,7 +288,7 @@ end
 
 ---@param logLevel Github_Loading.Logger.LogLevel
 function Loader:Load(logLevel)
-	assert(downloadFiles(self.loaderBaseUrl, self.loaderBasePath, self.forceDownload, self.internetCard),
+	assert(downloadFiles(self._LoaderBaseUrl, self._LoaderBasePath, self._ForceDownload, self._InternetCard),
 		'Unable to download loader Files')
 	self:LoadFiles()
 
@@ -303,7 +303,7 @@ end
 ---@return boolean diffrentVersionFound
 function Loader:CheckVersion()
 	self.Logger:LogTrace('checking Version...')
-	local versionFilePath = self.loaderBasePath .. '/Github-Loading/Version.current.txt'
+	local versionFilePath = self._LoaderBasePath .. '/Github-Loading/Version.current.txt'
 	local OldVersionString = Utils.File.ReadAll(versionFilePath)
 	local NewVersionString = self:Get('/Github-Loading/Version.latest')
 	Utils.File.Write(versionFilePath, 'w', NewVersionString, true)
@@ -364,8 +364,8 @@ end
 function Loader:LoadProgram(option, baseUrl, forceDownload)
 	---@type Github_Loading.PackageLoader
 	local PackageLoader = self:Get('/Github-Loading/Loader/PackageLoader')
-	PackageLoader = PackageLoader.new(baseUrl .. '/Packages', self.loaderBasePath .. '/Packages',
-		self.Logger:subLogger('PackageLoader'), self.internetCard)
+	PackageLoader = PackageLoader.new(baseUrl .. '/Packages', self._LoaderBasePath .. '/Packages',
+		self.Logger:subLogger('PackageLoader'), self._InternetCard)
 	PackageLoader:setGlobal()
 	self.Logger:LogDebug('setup PackageLoader')
 
@@ -399,10 +399,10 @@ end
 function Loader:Configure(program, package, logLevel)
 	self.Logger:LogTrace('configuring program...')
 	local Logger = require('Core.Logger')
-	program._Logger = Logger(package.Name, logLevel)
+	program.Logger = Logger(package.Name, logLevel)
 	local Task = require('Core.Task')
-	self.Logger:CopyListenersToCoreEvent(Task, program._Logger)
-	___logger:setLogger(program._Logger)
+	self.Logger:CopyListenersToCoreEvent(Task, program.Logger)
+	___logger:setLogger(program.Logger)
 	local thread,
 	success,
 	returns = Utils.Function.InvokeProtected(program.Configure, program)
@@ -420,7 +420,7 @@ end
 ---@param program Github_Loading.Entities.Main
 function Loader:Run(program)
 	self.Logger:LogTrace('running program...')
-	___logger:setLogger(program._Logger)
+	___logger:setLogger(program.Logger)
 	local thread,
 	success,
 	returns = Utils.Function.InvokeProtected(program.Run, program)
@@ -436,7 +436,7 @@ end
 
 function Loader:Cleanup()
 	---@type FIN.Filesystem.File[]
-	local openFiles = self.loadedLoaderFiles["/Github-Loading/Loader/Utils/10_File.lua"][2]
+	local openFiles = self._LoadedLoaderFiles["/Github-Loading/Loader/Utils/10_File.lua"][2]
 
 	for _, file in pairs(openFiles) do
 		file:close()

@@ -1,15 +1,15 @@
 local ValveAdapter = require('Adapter.Pipeline.Valve')
 
 ---@class PowerPlant.Coal.Main : Github_Loading.Entities.Main
----@field private hotSteamValves Adapter.Pipeline.Valve[]
+---@field private _HotSteamValves Adapter.Pipeline.Valve[]
 local Main = {}
 
 function Main:Configure()
-	self.hotSteamValves = ValveAdapter.Static__FindAllValvesInNetworkAndAddAdapter()
+	self._HotSteamValves = ValveAdapter.Static__FindAllValvesInNetworkAndAddAdapter()
 end
 
 function Main:Run()
-	for _, valve in pairs(self.hotSteamValves) do
+	for _, valve in pairs(self._HotSteamValves) do
 		log(valve:GetId(), valve:GetFlowLimit())
 	end
 end

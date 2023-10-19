@@ -7,9 +7,9 @@ local Utils = LoadedLoaderFiles['/Github-Loading/Loader/Utils'][1]
 ---@class Github_Loading.PackageLoader
 ---@field Packages Github_Loading.Package[]
 ---@field logger Github_Loading.Logger
----@field private packagesUrl string
----@field private packagesPath string
----@field private internetCard FIN.Components.FINComputerMod.InternetCard_C
+---@field private _PackagesUrl string
+---@field private _PackagesPath string
+---@field private _InternetCard FIN.Components.FINComputerMod.InternetCard_C
 local PackageLoader = {}
 
 ---@param url string
@@ -17,7 +17,7 @@ local PackageLoader = {}
 ---@param forceDownload boolean
 ---@return boolean
 function PackageLoader:internalDownload(url, path, forceDownload)
-	return Utils.DownloadToFile(url, path, forceDownload, self.internetCard, self.logger)
+	return Utils.DownloadToFile(url, path, forceDownload, self._InternetCard, self.logger)
 end
 
 ---@param url string
@@ -88,10 +88,10 @@ function PackageLoader:DownloadPackage(packageName, forceDownload)
 	self.logger:LogTrace("downloading package: '" .. packageName .. "'...")
 	forceDownload = forceDownload or false
 	packageName = packageName:gsub('%.', '/')
-	local packagePath = self.packagesPath .. '/' .. packageName
+	local packagePath = self._PackagesPath .. '/' .. packageName
 	assert(not (not filesystem.exists(packagePath) and not filesystem.createDir(packagePath, true)),
 		"Unable to create folder for package: '" .. packageName .. "'")
-	local packageUrl = self.packagesUrl .. '/' .. packageName
+	local packageUrl = self._PackagesUrl .. '/' .. packageName
 	local success,
 	package = self:internalDownloadPackage(packageUrl, packagePath, forceDownload)
 	if not success or not package or not package:Download(packageUrl, packagePath) then

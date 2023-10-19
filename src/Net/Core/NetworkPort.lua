@@ -2,9 +2,9 @@ local Event = require('Core.Event.Event')
 
 ---@class Net.Core.NetworkPort : object
 ---@field Port integer | "all"
----@field private events Dictionary<string, Core.Event>
----@field private netClient Net.Core.NetworkClient
----@field private logger Core.Logger
+---@field private _Events Dictionary<string, Core.Event>
+---@field private _NetClient Net.Core.NetworkClient
+---@field private _Logger Core.Logger
 ---@overload fun(port: integer | "all", logger: Core.Logger, netClient: Net.Core.NetworkClient) : Net.Core.NetworkPort
 local NetworkPort = {}
 
@@ -14,35 +14,35 @@ local NetworkPort = {}
 ---@param netClient Net.Core.NetworkClient
 function NetworkPort:__init(port, logger, netClient)
 	self.Port = port
-	self.events = {}
-	self.logger = logger
-	self.netClient = netClient
+	self._Events = {}
+	self._Logger = logger
+	self._NetClient = netClient
 end
 
 ---@return Dictionary<string, Core.Event>
 function NetworkPort:GetEvents()
-	return Utils.Table.Copy(self.events)
+	return Utils.Table.Copy(self._Events)
 end
 
 ---@return integer
 function NetworkPort:GetEventsCount()
-	return #self.events
+	return #self._Events
 end
 
 ---@return Net.Core.NetworkClient
 function NetworkPort:GetNetClient()
-	return self.netClient
+	return self._NetClient
 end
 
 ---@param context Net.Core.NetworkContext
 function NetworkPort:Execute(context)
-	self.logger:LogTrace("got triggered with event: '" .. context.EventName .. "'")
-	for name, event in pairs(self.events) do
+	self._Logger:LogTrace("got triggered with event: '" .. context.EventName .. "'")
+	for name, event in pairs(self._Events) do
 		if name == context.EventName or name == 'all' then
-			event:Trigger(self.logger, context)
+			event:Trigger(self._Logger, context)
 		end
 		if event:GetCount() == 0 then
-			self.events[name] = nil
+			self._Events[name] = nil
 		end
 	end
 end
@@ -51,13 +51,13 @@ end
 ---@param eventName string | "all"
 ---@return Core.Event
 function NetworkPort:CreateOrGetEvent(eventName)
-	for name, event in pairs(self.events) do
+	for name, event in pairs(self._Events) do
 		if name == eventName then
 			return event
 		end
 	end
 	local event = Event()
-	self.events[eventName] = event
+	self._Events[eventName] = event
 	return event
 end
 
@@ -87,20 +87,20 @@ NetworkPort.Once = NetworkPort.AddListenerOnce
 ---@param timeout number?
 ---@return Net.Core.NetworkContext?
 function NetworkPort:WaitForEvent(eventName, timeout)
-	return self.netClient:WaitForEvent(eventName, self.Port, timeout)
+	return self._NetClient:WaitForEvent(eventName, self.Port, timeout)
 end
 
 function NetworkPort:OpenPort()
 	local port = self.Port
 	if type(port) == 'number' then
-		self.netClient:Open(port)
+		self._NetClient:Open(port)
 	end
 end
 
 function NetworkPort:ClosePort()
 	local port = self.Port
 	if type(port) == 'number' then
-		self.netClient:Close(port)
+		self._NetClient:Close(port)
 	end
 end
 
@@ -114,7 +114,7 @@ function NetworkPort:SendMessage(ipAddress, eventName, body, header)
 		error('Unable to send a message over all ports')
 	end
 	---@cast port integer
-	self.netClient:Send(ipAddress, port, eventName, body, header)
+	self._NetClient:Send(ipAddress, port, eventName, body, header)
 end
 
 ---@param eventName string
@@ -126,7 +126,7 @@ function NetworkPort:BroadCastMessage(eventName, body, header)
 		error('Unable to broadcast a message over all ports')
 	end
 	---@cast port integer
-	self.netClient:BroadCast(port, eventName, body, header)
+	self._NetClient:BroadCast(port, eventName, body, header)
 end
 
 return Utils.Class.CreateClass(NetworkPort, 'Core.Net.NetworkPort')

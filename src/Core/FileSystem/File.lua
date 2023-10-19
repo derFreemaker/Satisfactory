@@ -8,9 +8,9 @@ local Path = require("Core.FileSystem.Path")
 ---|"+a" append -> file stream can read the full file but can only write to the end of the existing file
 
 ---@class Core.FileSystem.File : object
----@field private path Core.FileSystem.Path
----@field private mode Core.FileSystem.File.OpenModes?
----@field private file FIN.Filesystem.File?
+---@field private _Path Core.FileSystem.Path
+---@field private _Mode Core.FileSystem.File.OpenModes?
+---@field private _File FIN.Filesystem.File?
 ---@overload fun(path: string | Core.FileSystem.Path) : Core.FileSystem.File
 local File = {}
 
@@ -60,27 +60,27 @@ end
 ---@param path string | Core.FileSystem.Path
 function File:__init(path)
     if type(path) == "string" then
-        self.path = Path(path)
+        self._Path = Path(path)
         return
     end
 
-    self.path = path
+    self._Path = path
 end
 
 ---@return string
 function File:GetPath()
-    return self.path:GetPath()
+    return self._Path:GetPath()
 end
 
 ---@return boolean exists
 function File:Exists()
-    return filesystem.exists(self.path:GetPath())
+    return filesystem.exists(self._Path:GetPath())
 end
 
 ---@return boolean isOpen
 ---@nodiscard
 function File:IsOpen()
-    if not self.file then
+    if not self._File then
         return false
     end
 
@@ -90,7 +90,7 @@ end
 ---@private
 function File:CheckState()
     if not self:IsOpen() then
-        error("file is not open: " .. self.path:GetPath(), 3)
+        error("file is not open: " .. self._Path:GetPath(), 3)
     end
 end
 
@@ -100,14 +100,14 @@ end
 function File:Open(mode)
     local file
 
-    if not filesystem.exists(self.path:GetPath()) then
-        local parentFolder = self.path:GetParentFolder()
+    if not filesystem.exists(self._Path:GetPath()) then
+        local parentFolder = self._Path:GetParentFolder()
         if not filesystem.exists(parentFolder) then
             error("parent folder does not exist: " .. parentFolder)
         end
 
         if mode == "r" then
-            file = filesystem.open(self.path:GetPath(), "w")
+            file = filesystem.open(self._Path:GetPath(), "w")
             file:write("")
             file:close()
             file = nil
@@ -116,8 +116,8 @@ function File:Open(mode)
         return false
     end
 
-    self.file = filesystem.open(self.path:GetPath(), mode)
-    self.mode = mode
+    self._File = filesystem.open(self._Path:GetPath(), mode)
+    self._Mode = mode
 
     return true
 end
@@ -126,26 +126,26 @@ end
 function File:Write(data)
     self:CheckState()
 
-    self.file:write(data)
+    self._File:write(data)
 end
 
 ---@param length integer
 function File:Read(length)
     self:CheckState()
 
-    return self.file:read(length)
+    return self._File:read(length)
 end
 
 ---@param offset integer
 function File:Seek(offset)
     self:CheckState()
 
-    self.file:seek(offset)
+    self._File:seek(offset)
 end
 
 function File:Close()
-    self.file:close()
-    self.file = nil
+    self._File:close()
+    self._File = nil
 end
 
 function File:Clear()
@@ -154,18 +154,18 @@ function File:Clear()
         self:Close()
     end
 
-    if not filesystem.exists(self.path:GetPath()) then
+    if not filesystem.exists(self._Path:GetPath()) then
         return
     end
 
-    filesystem.remove(self.path:GetPath())
+    filesystem.remove(self._Path:GetPath())
 
-    local file = filesystem.open(self.path:GetPath(), "w")
+    local file = filesystem.open(self._Path:GetPath(), "w")
     file:write("")
     file:close()
 
     if isOpen then
-        self.file = filesystem.open(self.path:GetPath(), self.mode)
+        self._File = filesystem.open(self._Path:GetPath(), self._Mode)
     end
 end
 

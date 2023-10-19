@@ -5,7 +5,7 @@ local FactoryControlClient = require("FactoryControl.Client.Client")
 local Main = {}
 
 function Main:Configure()
-    self._Client = FactoryControlClient(self._Logger:subLogger("ApiClient"))
+    self._Client = FactoryControlClient(self.Logger:subLogger("ApiClient"))
 end
 
 function Main:Run()
