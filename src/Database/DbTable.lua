@@ -23,6 +23,10 @@ function DbTable:__init(name, path, logger, serializer)
         error("path needs to be a folder: " .. path:GetPath())
     end
 
+    if not filesystem.exists(path:GetPath()) then
+        filesystem.createDir(path:GetPath(), true)
+    end
+
     self._Name = name
     self._Path = path
     self._Logger = logger
