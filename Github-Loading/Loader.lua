@@ -7,11 +7,11 @@ local LoaderFiles = {
 			'Utils',
 			{
 				"Class",
-				{ "20_MembersHandler.lua" },
-				{ "20_MetatableHandler.lua" },
+				{ "20_Members.lua" },
+				{ "20_Metatable.lua" },
 				{ "20_Object.lua" },
-				{ "30_ConstructionHandler.lua" },
-				{ "30_TypeHandler.lua" },
+				{ "30_Construction.lua" },
+				{ "30_Type.lua" },
 				{ "50_Index.lua" }
 			},
 			{ '10_File.lua' },

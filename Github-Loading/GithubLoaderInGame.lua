@@ -22,7 +22,7 @@ local showDriveUUID = false
 -- ########## Don't touch that ########## --
 local LoaderFilesUrl = BaseUrl .. '/Github-Loading'
 local LoaderUrl = LoaderFilesUrl .. '/Loader.lua'
-local LoaderFilesPath = 'Loader'
+local LoaderFilesPath = ''
 local LoaderPath = LoaderFilesPath .. '/Loader.lua'
 
 ---@type FIN.Components.FINComputerMod.InternetCard_C
