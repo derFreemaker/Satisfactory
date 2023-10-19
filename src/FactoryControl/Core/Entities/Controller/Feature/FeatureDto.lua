@@ -4,11 +4,11 @@
 ---|"Radial"
 ---|"Chart"
 
----@class FactoryControl.Core.Entities.Controller.Feature.FeatureDto : Core.Json.Serializable
+---@class FactoryControl.Core.Entities.Controller.FeatureDto : Core.Json.Serializable
 ---@field Id Core.UUID
 ---@field Name string
 ---@field Type FactoryControl.Core.Entities.Controller.Feature.Type
----@overload fun(id: Core.UUID, name: string, type: FactoryControl.Core.Entities.Controller.Feature.Type) : FactoryControl.Core.Entities.Controller.Feature.FeatureDto
+---@overload fun(id: Core.UUID, name: string, type: FactoryControl.Core.Entities.Controller.Feature.Type) : FactoryControl.Core.Entities.Controller.FeatureDto
 local FeatureDto = {}
 
 ---@private

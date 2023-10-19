@@ -1,13 +1,12 @@
 {
-  "Name": "FactoryControlController",
-  "Namespace": "FactoryControl.Controller",
+  "Name": "FactoryControl.Client",
+  "Namespace": "FactoryControl.Client",
   "Version": "0.1-2",
   "RequiredPackages": [
     "Core",
     "FactoryControl.Core",
     "Net.Core",
-    "Net.Http",
-    "Net.Rest"
+    "Net.Http"
   ],
   "PackageType": "Library"
 }

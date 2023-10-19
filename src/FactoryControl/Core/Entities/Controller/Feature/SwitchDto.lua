@@ -1,4 +1,4 @@
----@class FactoryControl.Core.Entities.Controller.Feature.SwitchDto : FactoryControl.Core.Entities.Controller.Feature.FeatureDto
+---@class FactoryControl.Core.Entities.Controller.Feature.SwitchDto : FactoryControl.Core.Entities.Controller.FeatureDto
 ---@field IsEnabled boolean
 ---@overload fun(id: Core.UUID, name: string, isEnabled: boolean) : FactoryControl.Core.Entities.Controller.Feature.SwitchDto
 local SwitchFeatureDto = {}
@@ -23,13 +23,5 @@ function SwitchFeatureDto:Serialize()
     return self.Id, self.Name, self.IsEnabled
 end
 
----@param id Core.UUID
----@param name string
----@param isEnabled boolean
----@return FactoryControl.Core.Entities.Controller.Feature.SwitchDto
-function SwitchFeatureDto.Static__Deserialize(id, name, isEnabled)
-    return SwitchFeatureDto(id, name, isEnabled)
-end
-
 return Utils.Class.CreateClass(SwitchFeatureDto, "FactoryControl.Core.Entities.Controller.Feature.SwitchDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --[[@as FactoryControl.Core.Entities.Controller.Feature.FeatureDto]])
+    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --[[@as FactoryControl.Core.Entities.Controller.FeatureDto]])

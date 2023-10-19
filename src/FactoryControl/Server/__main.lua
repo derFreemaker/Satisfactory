@@ -12,35 +12,35 @@ local ControllerEndpoints = require('FactoryControl.Server.Endpoints.Controller'
 local DNSClient = require('DNS.Client.Client')
 
 ---@class FactoryControl.Server.Main : Github_Loading.Entities.Main
----@field private eventPullAdapter Core.EventPullAdapter
----@field private apiController Net.Rest.Api.Server.Controller
----@field private dnsClient DNS.Client
----@field private netClient Net.Core.NetworkClient
+---@field private _EventPullAdapter Core.EventPullAdapter
+---@field private _ApiController Net.Rest.Api.Server.Controller
+---@field private _DnsClient DNS.Client
+---@field private _NetClient Net.Core.NetworkClient
 local Main = {}
 
 function Main:Configure()
-	self.eventPullAdapter = EventPullAdapter:Initialize(self._Logger:subLogger('EventPullAdapter'))
+	self._EventPullAdapter = EventPullAdapter:Initialize(self._Logger:subLogger('EventPullAdapter'))
 
-	self.netClient = NetworkClient(self._Logger:subLogger('NetworkClient'))
-	local netPort = self.netClient:CreateNetworkPort(PortUsage.HTTP)
+	self._NetClient = NetworkClient(self._Logger:subLogger('NetworkClient'))
+	local netPort = self._NetClient:CreateNetworkPort(PortUsage.HTTP)
 	netPort:OpenPort()
-	self.apiController = RestApiController(netPort, self._Logger:subLogger('RestApiController'))
+	self._ApiController = RestApiController(netPort, self._Logger:subLogger('RestApiController'))
 
 	local databaseAccessLayer = Database(self._Logger:subLogger("DatabaseAccessLayer"))
 
-	self.apiController:AddRestApiEndpointBase(
+	self._ApiController:AddRestApiEndpointBase(
 		ControllerEndpoints(self._Logger:subLogger("ControllerEndpoints"), databaseAccessLayer))
 
 	self._Logger:LogDebug('setup endpoints')
 
-	self.dnsClient = DNSClient(self.netClient, self._Logger:subLogger('DNSClient'))
-	self.dnsClient:CreateAddress(Config.DOMAIN, self.netClient:GetId())
+	self._DnsClient = DNSClient(self._NetClient, self._Logger:subLogger('DNSClient'))
+	self._DnsClient:CreateAddress(Config.DOMAIN, self._NetClient:GetIPAddress())
 	self._Logger:LogDebug('registered dns client on server')
 end
 
 function Main:Run()
 	self._Logger:LogInfo('started server')
-	self.eventPullAdapter:Run()
+	self._EventPullAdapter:Run()
 end
 
 return Main

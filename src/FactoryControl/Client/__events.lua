@@ -7,6 +7,15 @@ function Events:OnLoaded()
     JsonSerializer.Static__Serializer:AddTypeInfos({
         -- Button
         require("FactoryControl.Client.Entities.Controller.Feature.Button.Pressed"):Static__GetType(),
+
+        -- Switch
+        require("FactoryControl.Client.Entities.Controller.Feature.Switch.Update"):Static__GetType(),
+
+        -- Radial
+        require("FactoryControl.Client.Entities.Controller.Feature.Radial.Update"):Static__GetType(),
+
+        -- Chart
+        require("FactoryControl.Client.Entities.Controller.Feature.Chart.Update"):Static__GetType(),
     })
 end
 

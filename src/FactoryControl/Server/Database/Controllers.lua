@@ -20,10 +20,14 @@ function Controllers:__init(logger)
 end
 
 ---@param createController FactoryControl.Core.Entities.Controller.CreateDto
----@return FactoryControl.Core.Entities.Controller.ControllerDto controller
+---@return FactoryControl.Core.Entities.ControllerDto? controller
 function Controllers:CreateController(createController)
     local controller = ControllerDto(UUID.Static__New(), createController.Name,
         createController.IPAddress, createController.Features)
+
+    if self:GetControllerByName(createController.Name) then
+        return nil
+    end
 
     self._DbTable:Set(controller.Id, controller)
     self._DbTable:Save()
@@ -37,9 +41,22 @@ function Controllers:DeleteController(id)
 end
 
 ---@param id Core.UUID
----@return FactoryControl.Core.Entities.Controller.ControllerDto? controller
+---@return FactoryControl.Core.Entities.ControllerDto? controller
 function Controllers:GetControllerById(id)
     return self._DbTable:Get(id)
+end
+
+---@param name string
+---@return FactoryControl.Core.Entities.ControllerDto? controller
+function Controllers:GetControllerByName(name)
+    for key, controller in pairs(self._DbTable) do
+        ---@cast key Core.UUID
+        ---@cast controller FactoryControl.Core.Entities.ControllerDto
+
+        if controller.Name == name then
+            return controller
+        end
+    end
 end
 
 return Utils.Class.CreateClass(Controllers, "FactoryControl.Server.Database.Controllers")

@@ -4,7 +4,7 @@
 		{"id":"5d6084da74eb1e3e","type":"file","file":"Projects/Github Loading/Github Loader.md","x":-540,"y":-10,"width":400,"height":450},
 		{"id":"5ba48c63139e3e31","type":"text","text":"<h1 style=\"text-align: center\">Packages</h1>","x":80,"y":300,"width":220,"height":60},
 		{"id":"d8cd574a6907d2d3","type":"text","text":"<h2 style=\"text-align: center\">bundles source code to package</h2>","x":880,"y":1160,"width":457,"height":60},
-		{"id":"6e40fdfd1805949b","type":"file","file":"Projects/Github Loading/Lua Bundler.md","x":1520,"y":1080,"width":400,"height":426},
+		{"id":"6e40fdfd1805949b","type":"file","file":"Projects/Github Loading/Lua Bundler.md","x":1520,"y":1080,"width":400,"height":520},
 		{"id":"b98eff6918619390","type":"file","file":"Projects/Github Loading/Package/Module.md","x":1137,"y":-80,"width":400,"height":380},
 		{"id":"5a3008d7d73e6fe7","type":"file","file":"Projects/Github Loading/Github Loading.md","x":-100,"y":830,"width":400,"height":360}
 	],

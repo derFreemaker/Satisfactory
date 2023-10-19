@@ -1,4 +1,4 @@
----@class FactoryControl.Core.Entities.Controller.Feature.RadialDto : FactoryControl.Core.Entities.Controller.Feature.FeatureDto
+---@class FactoryControl.Core.Entities.Controller.Feature.RadialDto : FactoryControl.Core.Entities.Controller.FeatureDto
 ---@field Min number
 ---@field Max number
 ---@field Setting number
@@ -40,15 +40,5 @@ function RadialFeatureDto:Serialize()
     return self.Id, self.Name, self.Min, self.Max, self.Setting
 end
 
----@param id Core.UUID
----@param name string
----@param min number
----@param max number
----@param setting number
----@return FactoryControl.Core.Entities.Controller.Feature.RadialDto
-function RadialFeatureDto.Static__Deserialize(id, name, min, max, setting)
-    return RadialFeatureDto(id, name, min, max, setting)
-end
-
 return Utils.Class.CreateClass(RadialFeatureDto, "FactoryControl.Core.Entities.Controller.Feature.RadialDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --[[@as FactoryControl.Core.Entities.Controller.Feature.FeatureDto]])
+    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --[[@as FactoryControl.Core.Entities.Controller.FeatureDto]])

@@ -1,16 +1,16 @@
 local LoadedLoaderFiles = ({ ... })[1]
 ---@type Utils.Table
 local Table = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Table'][1]
-local MetatableHandler,
-metaMethods = table.unpack(LoadedLoaderFiles
-	['/Github-Loading/Loader/Utils/Class/MetatableHandler'])
----@cast MetatableHandler Utils.Class.MetatableHandler
----@cast metaMethods table
+---@type Utils.Class.MetatableHandler
+local MetatableHandler = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/MetatableHandler'][1]
 
 ---@class Utils.Class.Template
 
 ---@class Utils.Class.ConstructionHandler
 local ConstructionHandler = {}
+
+ConstructionHandler.SearchInBase = MetatableHandler.SearchInBase
+ConstructionHandler.SetNormal = MetatableHandler.SetNormal
 
 local function AddInstance(typeInfo, instance)
 	if not typeInfo then
@@ -52,7 +52,7 @@ function ConstructionHandler.ConstructClass(typeInfo, class, classMetatable, ...
 
 	local function constructMembers()
 		for key, value in pairs(typeInfo.MetaMethods) do
-			if metaMethods[key] then
+			if Table.ContainsKey(MetatableHandler.MetaMethods, key) then
 				classMetatable[key] = value
 			end
 		end

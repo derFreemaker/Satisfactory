@@ -8,6 +8,7 @@ function Events:OnLoaded()
         -- ControllerDto's
         require("FactoryControl.Core.Entities.Controller.ControllerDto"):Static__GetType(),
         require("FactoryControl.Core.Entities.Controller.CreateDto"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.ModifyDto"):Static__GetType(),
 
         -- FeatureDto's
         require("FactoryControl.Core.Entities.Controller.Feature.SwitchDto"):Static__GetType(),

@@ -3,8 +3,7 @@
   "Namespace": "FactoryControl.Core",
   "Version": "0.1-51",
   "RequiredPackages": [
-    "Core",
-    "Net.Rest"
+    "Core"
   ],
   "PackageType": "Library"
 }

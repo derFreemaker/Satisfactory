@@ -111,8 +111,7 @@ function PackageLoader:LoadPackage(packageName, forceDownload)
 		return package
 	end
 	local success
-	success,
-	package = self:DownloadPackage(packageName, forceDownload)
+	success, package = self:DownloadPackage(packageName, forceDownload)
 	if success then
 		---@cast package Github_Loading.Package
 		table.insert(self.Packages, package)

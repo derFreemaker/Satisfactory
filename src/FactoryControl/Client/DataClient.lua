@@ -10,7 +10,7 @@ local DataClient = {}
 
 ---@private
 ---@param logger Core.Logger
-function DataClient:__init(netClient, logger)
+function DataClient:__init(logger)
 	self._Logger = logger
 	self._Client = HttpClient(self._Logger:subLogger('RestApiClient'))
 end
@@ -26,12 +26,25 @@ function DataClient:request(method, endpoint, body, options)
 	return self._Client:Send(request)
 end
 
+---@param name string
+---@param ipAddress Net.Core.IPAddress
+---@return FactoryControl.Core.Entities.ControllerDto?
+function DataClient:Connect(name, ipAddress)
+	local response = self:request("CONNECT", "Controller", { name, ipAddress })
+
+	if response:IsFaulted() then
+		return
+	end
+
+	return response:GetBody()
+end
+
 ---@param createController FactoryControl.Core.Entities.Controller.CreateDto
----@return FactoryControl.Core.Entities.Controller.ControllerDto?
+---@return FactoryControl.Core.Entities.ControllerDto?
 function DataClient:CreateController(createController)
 	local response = self:request('CREATE', 'Controller', createController)
 
-	if not response:IsFaulted() then
+	if response:IsFaulted() then
 		return
 	end
 
@@ -47,11 +60,36 @@ function DataClient:DeleteControllerById(id)
 end
 
 ---@param id Core.UUID
----@return FactoryControl.Core.Entities.Controller.ControllerDto?
+---@param modifyController FactoryControl.Core.Entities.Controller.ModifyDto
+---@return FactoryControl.Core.Entities.ControllerDto?
+function DataClient:ModifyControllerById(id, modifyController)
+	local response = self:request("POST", "ModifyControllerById", { id, modifyController })
+
+	if response:IsFaulted() then
+		return
+	end
+
+	return response:GetBody()
+end
+
+---@param id Core.UUID
+---@return FactoryControl.Core.Entities.ControllerDto?
 function DataClient:GetControllerById(id)
 	local response = self:request("GET", "ControllerById", id)
 
-	if not response:IsFaulted() then
+	if response:IsFaulted() then
+		return
+	end
+
+	return response:GetBody()
+end
+
+---@param name string
+---@return FactoryControl.Core.Entities.ControllerDto?
+function DataClient:GetControllerByName(name)
+	local response = self:request("GET", "ControllerByName", name)
+
+	if response:IsFaulted() then
 		return
 	end
 

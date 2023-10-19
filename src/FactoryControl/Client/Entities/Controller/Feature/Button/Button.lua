@@ -1,3 +1,5 @@
+local Pressed = require("FactoryControl.Client.Entities.Controller.Feature.Button.Pressed")
+
 ---@class FactoryControl.Client.Entities.Controller.Feature.Button : FactoryControl.Client.Entities.Controller.Feature
 ---@overload fun(buttonDto: FactoryControl.Core.Entities.Controller.Feature.ButtonDto, controller: FactoryControl.Client.Entities.Controller) : FactoryControl.Client.Entities.Controller.Feature.Button
 local Button = {}
@@ -10,10 +12,10 @@ function Button:__init(baseFunc, buttonDto, controller)
     baseFunc(buttonDto.Id, buttonDto.Name, "Button", controller)
 end
 
--- //TODO: complete
-
 function Button:Press()
+    local pressed = Pressed(self.Id)
 
+    self._Client:ButtonPressed(self.Owner.IPAddress, pressed)
 end
 
 return Utils.Class.CreateClass(Button, "FactoryControl.Client.Entities.Controller.Feature.Button",

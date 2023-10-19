@@ -6,21 +6,21 @@ local ChartFeature = require("FactoryControl.Client.Entities.Controller.Feature.
 ---@class FactoryControl.Client.Entities.Controller : FactoryControl.Client.Entities.Entity
 ---@field Name string
 ---@field IPAddress Net.Core.IPAddress
----@field Features Dictionary<Core.UUID, FactoryControl.Client.Entities.Controller.Feature>
----@overload fun(controllerDto: FactoryControl.Core.Entities.Controller.ControllerDto, client: FactoryControl.Client.Client) : FactoryControl.Client.Entities.Controller
+---@field protected Features Dictionary<string, FactoryControl.Client.Entities.Controller.Feature>
+---@overload fun(controllerDto: FactoryControl.Core.Entities.ControllerDto, client: FactoryControl.Client) : FactoryControl.Client.Entities.Controller
 local Controller = {}
 
 ---@private
----@param controllerDto FactoryControl.Core.Entities.Controller.ControllerDto
----@param client FactoryControl.Client.Client
----@param baseFunc fun(id: Core.UUID, client: FactoryControl.Client.Client)
+---@param controllerDto FactoryControl.Core.Entities.ControllerDto
+---@param client FactoryControl.Client
+---@param baseFunc fun(id: Core.UUID, client: FactoryControl.Client)
 function Controller:__init(baseFunc, controllerDto, client)
     baseFunc(controllerDto.Id, client)
 
     self.Name = controllerDto.Name
     self.IPAddress = controllerDto.IPAddress
 
-    ---@type Dictionary<Core.UUID, FactoryControl.Client.Entities.Controller.Feature>
+    ---@type Dictionary<string, FactoryControl.Client.Entities.Controller.Feature>
     local features = {}
 
     for id, feature in pairs(controllerDto.Features) do
@@ -40,6 +40,11 @@ function Controller:__init(baseFunc, controllerDto, client)
     end
 
     self.Features = features
+end
+
+---@return Dictionary<string, FactoryControl.Client.Entities.Controller.Feature>
+function Controller:GetFeatures()
+    return self.Features
 end
 
 return Utils.Class.CreateClass(Controller, "FactoryControl.Client.Entities.Controller",

@@ -1,4 +1,5 @@
 ---@class Adapter.Pipeline.Valve : object
+---@field private _IPAddress Net.Core.IPAddress
 ---@field private valve Satisfactory.Components.Factory.Build_Valve_C
 ---@overload fun(id: FIN.UUID, valve: Satisfactory.Components.Factory.Build_Valve_C?)
 local Valve = {}
@@ -40,6 +41,11 @@ end
 ---@return FIN.UUID
 function Valve:GetId()
 	return self.valve.id
+end
+
+---@return string
+function Valve:GetNick()
+	return self.valve.nick
 end
 
 --- Closes the valve so nothing goes through it anymore.

@@ -139,7 +139,7 @@ function JsonSerializer:deserializeClass(t)
         end
     end
 
-    return classTemplate.Static__Deserialize(table.unpack(data))
+    return classTemplate:Static__Deserialize(table.unpack(data))
 end
 
 ---@private

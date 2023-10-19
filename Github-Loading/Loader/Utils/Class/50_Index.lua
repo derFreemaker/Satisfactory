@@ -14,6 +14,9 @@ local Class = {}
 ---@type any
 Class.Placeholder = {}
 
+Class.SearchInBase = ConstructionHandler.SearchInBase
+Class.SetNormal = ConstructionHandler.SetNormal
+
 ---@generic TClass
 ---@param data TClass
 ---@param name string

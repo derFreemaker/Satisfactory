@@ -13,17 +13,16 @@ function IPAddress:GetAddress()
     return self._Address
 end
 
---#region - Serializable -
-
----@return string data
-function IPAddress:Serialize()
-    return self._Address
+---@private
+function IPAddress:__newindex()
+    error("Net.Core.IPAddress is read only.")
 end
 
----@param data string
----@return Net.Core.IPAddress
-function IPAddress.Static__Deserialize(data)
-    return IPAddress(data)
+--#region - Serializable -
+
+---@return string address
+function IPAddress:Serialize()
+    return self._Address
 end
 
 --#endregion

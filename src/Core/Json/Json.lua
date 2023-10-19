@@ -110,10 +110,10 @@ end
 
 ---@alias Json.SerializeableTypes
 ---|nil
----|table
----|string
----|number
 ---|boolean
+---|number
+---|string
+---|table
 
 json.type_func_map = {
 	['nil'] = encode_nil,

@@ -1,4 +1,4 @@
----@class FactoryControl.Core.Entities.Controller.Feature.ChartDto : FactoryControl.Core.Entities.Controller.Feature.FeatureDto
+---@class FactoryControl.Core.Entities.Controller.Feature.ChartDto : FactoryControl.Core.Entities.Controller.FeatureDto
 ---@field XAxisName string
 ---@field YAxisName string
 ---@field Data Dictionary<number, any>
@@ -25,15 +25,5 @@ function ChartFeatureDto:Serialize()
     return self.Id, self.Name, self.XAxisName, self.YAxisName, self.Data
 end
 
----@param id Core.UUID
----@param name string
----@param xAxisName string
----@param yAxisName string
----@param data Dictionary<number, any>
----@return FactoryControl.Core.Entities.Controller.Feature.ChartDto
-function ChartFeatureDto.Static__Deserialize(id, name, xAxisName, yAxisName, data)
-    return ChartFeatureDto(id, name, xAxisName, yAxisName, data)
-end
-
 return Utils.Class.CreateClass(ChartFeatureDto, "FactoryControl.Core.Entities.Controller.Feature.ChartDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --[[@as FactoryControl.Core.Entities.Controller.Feature.FeatureDto]])
+    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --[[@as FactoryControl.Core.Entities.Controller.FeatureDto]])

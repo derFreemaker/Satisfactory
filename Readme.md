@@ -16,11 +16,13 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
 ### Checks
 
 - **Packages** in [RequiredPackages](https://github.com/derFreemaker/Satisfactory/blob/05084fcd3c762d58193abb0072917733042324c6/PackageTemplate/Info.package.json#L5) exist
+- **Package Circle Reference** -> checks if two packages depend on each other
 - **require({module})** -> checks if module exists after a bundle would happen
 
 ### Autocorrection
 
 - adds missing package to [RequiredPackages](https://github.com/derFreemaker/Satisfactory/blob/05084fcd3c762d58193abb0072917733042324c6/PackageTemplate/Info.package.json#L5) of the package
+- removes unused packages from [RequiredPackages](https://github.com/derFreemaker/Satisfactory/blob/05084fcd3c762d58193abb0072917733042324c6/PackageTemplate/Info.package.json#L5) of the package
 
 ## Push Pipeline
 
@@ -59,6 +61,7 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
     └── Info.lua -> contains information about the package
 
 
+
 ```
 
 ## Package Info File
@@ -73,6 +76,7 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
     "RequiredPackages": [ "Package1", "Package2" ],
     "ApplicationType": "Library"
 }
+
 
 
 ```
@@ -95,4 +99,5 @@ The BuildNumber can only be an integer.
 3. running [Run](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/__main.lua#L9) function
 
 ### More Information in Obsidian Vault
+
 Download: [Obsidian](https://obsidian.md)

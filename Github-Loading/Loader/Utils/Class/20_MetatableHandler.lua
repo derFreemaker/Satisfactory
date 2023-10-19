@@ -100,8 +100,17 @@ local function assignInStatic(typeInfo, key, value)
     return assignInStatic(typeInfo.Base, key, value)
 end
 
+local searchInBase = {}
+local setNormal = {}
+
 ---@class Utils.Class.MetatableHandler
 local MetatableHandler = {}
+
+MetatableHandler.MetaMethods = metaMethods
+MetatableHandler.OverrideMetaMethods = overrideMetaMethods
+MetatableHandler.BlockedNewIndex = blockedNewIndex
+MetatableHandler.SearchInBase = searchInBase
+MetatableHandler.SetNormal = setNormal
 
 ---@param typeInfo Utils.Class.Type
 ---@return Utils.Class.Metatable templateMetatable
@@ -170,14 +179,17 @@ function MetatableHandler.CreateMetatable(typeInfo, metatable)
     ---@param key any
     ---@return any value
     local function index(obj, key)
-        if typeInfo.HasIndex and type(key) == "number" then
-            return typeInfo.MetaMethods.__index(obj, key)
-        end
-
         if type(key) == "string" then
             local splittedKey = String.Split(key, "__")
             if Table.Contains(splittedKey, "Static") then
                 return searchInStatic(typeInfo, key)
+            end
+        end
+
+        if typeInfo.HasIndex then
+            local value = typeInfo.MetaMethods.__index(obj, key)
+            if value ~= searchInBase then
+                return value
             end
         end
 
@@ -189,16 +201,18 @@ function MetatableHandler.CreateMetatable(typeInfo, metatable)
     ---@param key any
     ---@param value any
     local function newindex(obj, key, value)
-        if typeInfo.HasIndex and type(key) == "number" then
-            typeInfo.MetaMethods.__newindex(obj, key, value)
-        end
-
         if type(key) == "string" then
             local splittedKey = String.Split(key, "__")
             if Table.Contains(splittedKey, "Static") then
                 if not assignInStatic(typeInfo, key, value) then
                     typeInfo.Static[key] = value
                 end
+                return
+            end
+        end
+
+        if typeInfo.HasIndex then
+            if typeInfo.MetaMethods.__newindex(obj, key, value) ~= setNormal then
                 return
             end
         end
@@ -225,4 +239,4 @@ function MetatableHandler.LockMetatables(typeInfo)
     writeToNewIndex(typeInfo.Static, letOnlyStaticNamesThrough_NewIndex)
 end
 
-return MetatableHandler, metaMethods, overrideMetaMethods, blockedNewIndex
+return MetatableHandler

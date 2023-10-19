@@ -41,6 +41,15 @@ function UUID.Static__New()
     return UUID(head, body, tail)
 end
 
+local emptyHead = { 48, 48, 48, 48, 48, 48 }
+local emptyBody = { 48, 48, 48, 48 }
+local emptyTail = { 48, 48, 48, 48, 48, 48 }
+
+---@return number[] head, number[] body, number[] tail
+local function getEmptyData()
+    return emptyHead, emptyBody, emptyTail
+end
+
 local emptyUUID = nil
 ---@return Core.UUID
 function UUID.Static__Empty()
@@ -48,7 +57,7 @@ function UUID.Static__Empty()
         return emptyUUID
     end
 
-    emptyUUID = UUID({ 48, 48, 48, 48, 48, 48 }, { 48, 48, 48, 48 }, { 48, 48, 48, 48, 48, 48 })
+    emptyUUID = UUID(getEmptyData())
 
     return UUID.Static__Empty()
 end
@@ -59,30 +68,40 @@ local function convertStringToCharArray(str)
     return { string.byte(str, 1, str:len()) }
 end
 
----@param str string
----@return Core.UUID?
-function UUID.Static__Parse(str)
+---@return number[] head, number[] body, number[] tail
+local function parse(str)
     local splitedStr = Utils.String.Split(str, "-")
     if not splitedStr[1] or splitedStr[1]:len() ~= 6
         or not splitedStr[2] or splitedStr[2]:len() ~= 4
         or not splitedStr[3] or splitedStr[3]:len() ~= 6
     then
-        return nil
+        error("Unable to parse: " .. tostring(str))
+        return getEmptyData()
     end
 
     local head = convertStringToCharArray(splitedStr[1])
     local body = convertStringToCharArray(splitedStr[2])
     local tail = convertStringToCharArray(splitedStr[3])
 
-    return UUID(head, body, tail)
+    return head, body, tail
+end
+
+---@param str string
+---@return Core.UUID?
+function UUID.Static__Parse(str)
+    return UUID(parse(str))
 end
 
 ---@private
----@param head number[]
+---@param headOrSring number[]
 ---@param body number[]
 ---@param tail number[]
-function UUID:__init(head, body, tail)
-    self.head = head
+function UUID:__init(headOrSring, body, tail)
+    if type(headOrSring) == "string" then
+        headOrSring, body, tail = parse(headOrSring)
+    end
+
+    self.head = headOrSring
     self.body = body
     self.tail = tail
 end
@@ -148,20 +167,5 @@ function UUID:__tostring()
 
     return str
 end
-
---#region - Serializable -
-
----@return string data
-function UUID:Serialize()
-    return tostring(self)
-end
-
----@param data string
----@return Core.UUID?
-function UUID.Static__Deserialize(data)
-    return UUID.Static__Parse(data)
-end
-
---#endregion
 
 return Utils.Class.CreateClass(UUID, 'Core.UUID', require("Core.Json.Serializable"))

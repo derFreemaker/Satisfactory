@@ -1,4 +1,4 @@
----@class FactoryControl.Core.Entities.Controller.Feature.ButtonDto : FactoryControl.Core.Entities.Controller.Feature.FeatureDto
+---@class FactoryControl.Core.Entities.Controller.Feature.ButtonDto : FactoryControl.Core.Entities.Controller.FeatureDto
 ---@overload fun(id: Core.UUID, name: string) : FactoryControl.Core.Entities.Controller.Feature.ButtonDto
 local ButtonFeatureDto = {}
 
@@ -15,12 +15,5 @@ function ButtonFeatureDto:Serialize()
     return self.Id, self.Name
 end
 
----@param id Core.UUID
----@param name string
----@return FactoryControl.Core.Entities.Controller.Feature.ButtonDto
-function ButtonFeatureDto.Static__Deserialize(id, name)
-    return ButtonFeatureDto(id, name)
-end
-
 return Utils.Class.CreateClass(ButtonFeatureDto, "FactoryControl.Core.Entities.Controller.Feature.ButtonDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --[[@as FactoryControl.Core.Entities.Controller.Feature.FeatureDto]])
+    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --[[@as FactoryControl.Core.Entities.Controller.FeatureDto]])

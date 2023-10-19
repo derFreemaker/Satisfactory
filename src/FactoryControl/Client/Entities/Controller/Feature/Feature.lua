@@ -12,7 +12,7 @@ local Feature = {}
 ---@param name string
 ---@param featureType FactoryControl.Core.Entities.Controller.Feature.Type
 ---@param controller FactoryControl.Client.Entities.Controller
----@param baseFunc fun(id: Core.UUID, client: FactoryControl.Client.Client)
+---@param baseFunc fun(id: Core.UUID, client: FactoryControl.Client)
 function Feature:__init(baseFunc, id, name, featureType, controller)
     baseFunc(id, controller._Client)
 

@@ -29,8 +29,13 @@ function NetworkCard:__init(idOrIndexOrNetworkCard)
 end
 
 ---@return FIN.UUID
-function NetworkCard:GetId()
+function NetworkCard:GetIPAddress()
 	return self.networkCard.id
+end
+
+---@return string nick
+function NetworkCard:GetNick()
+	return self.networkCard.nick
 end
 
 function NetworkCard:Listen()

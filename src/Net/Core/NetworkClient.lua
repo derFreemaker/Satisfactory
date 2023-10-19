@@ -30,9 +30,14 @@ function NetworkClient:__init(logger, networkCard, serializer)
 	EventPullAdapter:AddListener('NetworkMessage', Task(self.networkMessageRecieved, self))
 end
 
----@return FIN.UUID
-function NetworkClient:GetId()
-	return self._NetworkCard:GetId()
+---@return Net.Core.IPAddress
+function NetworkClient:GetIPAddress()
+	return self._NetworkCard:GetIPAddress()
+end
+
+---@return string nick
+function NetworkClient:GetNick()
+	return self._NetworkCard:GetNick()
 end
 
 ---@private
