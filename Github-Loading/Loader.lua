@@ -396,6 +396,10 @@ function Loader:Configure(program, package, logLevel)
 	self.Logger:LogTrace('configuring program...')
 	local Logger = require('Core.Logger')
 	program.Logger = Logger(package.Name, logLevel)
+
+	-- //TODO: move into hosting class
+	require("Core.Event.EventPullAdapter"):Initialize(program.Logger:subLogger("EventPullAdapter"))
+
 	local Task = require('Core.Task')
 	self.Logger:CopyListenersToCoreEvent(Task, program.Logger)
 	___logger:setLogger(program.Logger)

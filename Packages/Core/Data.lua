@@ -697,6 +697,7 @@ PackageData["CoreEventEventPullAdapter"] = {
 local Event = require('Core.Event.Event')
 
 ---@class Core.EventPullAdapter
+---@field private _Initialized boolean
 ---@field private _Events Dictionary<string, Core.Event>
 ---@field private _Logger Core.Logger
 ---@field OnEventPull Core.Event
@@ -723,9 +724,15 @@ end
 ---@param logger Core.Logger
 ---@return Core.EventPullAdapter
 function EventPullAdapter:Initialize(logger)
+	if self._Initialized then
+		return self
+	end
+
 	self._Events = {}
 	self._Logger = logger
 	self.OnEventPull = Event()
+	self._Initialized = true
+
 	return self
 end
 
