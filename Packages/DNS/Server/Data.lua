@@ -151,7 +151,6 @@ local AddressEntities = {
 ---@overload fun(logger: Core.Logger) : DNS.Endpoints
 local Endpoints = {}
 
-
 ---@private
 ---@param logger Core.Logger
 function Endpoints:__init(logger)

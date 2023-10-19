@@ -93,7 +93,7 @@ end
 
 ---@param endpoint Net.Rest.Api.Server.EndpointBase
 function Controller:AddRestApiEndpointBase(endpoint)
-	for name, func in pairs(endpoint) do
+	for name, func in next, endpoint, nil do
 		if type(name) == 'string' and type(func) == 'function' then
 			local method,
 			endpointName = name:match('^(.+)__(.+)$')

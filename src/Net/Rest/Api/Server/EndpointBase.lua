@@ -4,24 +4,6 @@ local RestApiResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates'
 ---@field protected Templates Core.Rest.Api.Server.EndpointBase.ResponseTemplates
 local EndpointBase = {}
 
----@return fun(self: object, key: any) : key: any, value: any
----@return Net.Rest.Api.Server.EndpointBase tbl
----@return any startPoint
-function EndpointBase:__pairs()
-	local function iterator(tbl, key)
-		local newKey,
-		value = next(tbl, key)
-		if type(newKey) == 'string' and type(value) == 'function' then
-			return newKey, value
-		end
-		if newKey == nil and value == nil then
-			return nil, nil
-		end
-		return iterator(tbl, newKey)
-	end
-	return iterator, self, nil
-end
-
 ---@class Core.Rest.Api.Server.EndpointBase.ResponseTemplates
 local Templates = {}
 
