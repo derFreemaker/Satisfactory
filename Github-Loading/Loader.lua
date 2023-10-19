@@ -278,6 +278,7 @@ function Loader:setupLogger(logLevel)
 	___logger:setLogger(self.Logger)
 	self.Logger:Clear()
 	self.Logger:Log('###### LOG START: ' .. tostring(({ computer.magicTime() })[2]) .. ' ######', 10)
+	self.Logger:Log("###### Loader Version: " .. tostring(self:Get('/Github-Loading/Version.latest')) .. " ######", 10)
 	self.Logger.OnLog:AddListener(Listener.new(logConsole))
 end
 
