@@ -13,7 +13,7 @@ local CreateController = require("FactoryControl.Core.Entities.Controller.Create
 ---@field private _NetClient Net.Core.NetworkClient
 ---@field private _Logger Core.Logger
 ---@overload fun(logger: Core.Logger, client: FactoryControl.Client.DataClient?, networkClient: Net.Core.NetworkClient?) : FactoryControl.Client
-local Client
+local Client = {}
 
 ---@private
 ---@param logger Core.Logger
