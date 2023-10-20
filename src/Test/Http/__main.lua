@@ -22,12 +22,25 @@ end
 function Main:Run()
 	local domain = 'factoryControl.de'
 
+	log("waiting for heartbeat")
+	self._DnsClient.Static_WaitForHeartbeat(self._NetClient)
+	log("got heartbeat")
+
+	local address = self._DnsClient.Static__GetServerAddress(self._NetClient)
+	log(address)
+
+
+
+	log("creating address")
 	local success = self._DnsClient:CreateAddress(domain, self._NetClient:GetIPAddress())
 	if not success then
 		log('unable to create address on dns server or allready exists')
+	else
+		log("created address")
 	end
 
 	local dnsServerAddress = self._DnsClient:RequestOrGetDNSServerIP():GetAddress()
+	log("dns server address", dnsServerAddress)
 
 	local request = HttpRequest('GET', 'AddressWithAddress', dnsServerAddress, domain)
 	local response = self._HttpClient:Send(request)
