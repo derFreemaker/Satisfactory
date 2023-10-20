@@ -3,6 +3,7 @@ local Events = {}
 
 function Events:OnLoaded()
     require("Net.Rest.Api.NetworkContextExtensions")
+    require("Net.Rest.Hosting.HostExtensions")
 end
 
 return Events

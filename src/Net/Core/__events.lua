@@ -8,6 +8,9 @@ function Events:OnLoaded()
         -- IPAddress
         require("Net.Core.IPAddress"):Static__GetType(),
     })
+
+    -- Loading Host Extensions
+    require("Net.Core.Hosting.HostExtensions")
 end
 
 return Events

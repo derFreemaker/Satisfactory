@@ -64,6 +64,21 @@ function NetworkClient:networkMessageRecieved(data)
 	end
 end
 
+---@param port (integer | "all")?
+---@return Net.Core.NetworkPort
+function NetworkClient:GetOrCreateNetworkPort(port)
+	port = port or 'all'
+
+	local networkPort = self:GetNetworkPort(port)
+	if networkPort then
+		return networkPort
+	end
+
+	networkPort = NetworkPort(port, self._Logger:subLogger('NetworkPort[' .. port .. ']'), self)
+	self._Ports[port] = networkPort
+	return networkPort
+end
+
 ---@param port integer | "all"
 ---@return Net.Core.NetworkPort?
 function NetworkClient:GetNetworkPort(port)
@@ -73,12 +88,6 @@ function NetworkClient:GetNetworkPort(port)
 		end
 	end
 	return nil
-end
-
----@param port integer | "all"
----@return Net.Core.NetworkPort
-function NetworkClient:GetOrCreateNetworkPort(port)
-	return self:GetNetworkPort(port) or self:CreateNetworkPort(port)
 end
 
 ---@param onRecivedEventName (string | "all")?
@@ -111,26 +120,11 @@ end
 
 NetworkClient.Once = NetworkClient.AddListenerOnce
 
----@param port (integer | "all")?
----@return Net.Core.NetworkPort
-function NetworkClient:CreateNetworkPort(port)
-	port = port or 'all'
-
-	local networkPort = self:GetNetworkPort(port)
-	if networkPort then
-		return networkPort
-	end
-
-	networkPort = NetworkPort(port, self._Logger:subLogger('NetworkPort[' .. port .. ']'), self)
-	self._Ports[port] = networkPort
-	return networkPort
-end
-
 ---@param eventName string | "all"
 ---@param port integer | "all"
----@param timeout number?
+---@param timeoutSeconds number?
 ---@return Net.Core.NetworkContext?
-function NetworkClient:WaitForEvent(eventName, port, timeout)
+function NetworkClient:WaitForEvent(eventName, port, timeoutSeconds)
 	self._Logger:LogDebug("waiting for event: '" .. eventName .. "' on port: " .. port)
 	local result
 	---@param context Net.Core.NetworkContext
@@ -139,7 +133,7 @@ function NetworkClient:WaitForEvent(eventName, port, timeout)
 	end
 	self:AddListenerOnce(eventName, port, Task(set)):OpenPort()
 	repeat
-		if not EventPullAdapter:Wait(timeout) then
+		if not EventPullAdapter:Wait(timeoutSeconds) then
 			break
 		end
 	until result ~= nil

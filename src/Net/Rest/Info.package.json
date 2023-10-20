@@ -4,6 +4,7 @@
   "Version": "0.1.0-51",
   "RequiredPackages": [
     "Core",
+    "Hosting",
     "Net.Core"
   ],
   "PackageType": "Library"

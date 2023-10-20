@@ -1,4 +1,4 @@
-local EventNameUsage = require("Core.Usage_EventName")
+local EventNameUsage = require("Core.Usage.Usage_EventName")
 
 local Task = require('Core.Task')
 local RestApiEndpoint = require('Net.Rest.Api.Server.Endpoint')
@@ -92,7 +92,7 @@ function Controller:AddEndpoint(method, name, task)
 end
 
 ---@param endpoint Net.Rest.Api.Server.EndpointBase
-function Controller:AddRestApiEndpointBase(endpoint)
+function Controller:AddEndpointBase(endpoint)
 	for name, func in next, endpoint, nil do
 		if type(name) == 'string' and type(func) == 'function' then
 			local method,

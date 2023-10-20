@@ -1,4 +1,4 @@
-local EventNameUsage = require("Core.Usage_EventName")
+local EventNameUsage = require("Core.Usage.Usage_EventName")
 
 local RestApiResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 

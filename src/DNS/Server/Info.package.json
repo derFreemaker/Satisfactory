@@ -6,7 +6,7 @@
     "Core",
     "Database",
     "DNS.Core",
-    "Net.Core",
+    "Hosting",
     "Net.Rest"
   ],
   "PackageType": "Application"

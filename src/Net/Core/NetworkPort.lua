@@ -49,14 +49,25 @@ end
 
 ---@protected
 ---@param eventName string | "all"
----@return Core.Event
-function NetworkPort:CreateOrGetEvent(eventName)
+---@return Core.Event?
+function NetworkPort:GetEvent(eventName)
 	for name, event in pairs(self._Events) do
 		if name == eventName then
 			return event
 		end
 	end
-	local event = Event()
+end
+
+---@protected
+---@param eventName string | "all"
+---@return Core.Event
+function NetworkPort:CreateOrGetEvent(eventName)
+	local event = self:GetEvent(eventName)
+	if event then
+		return event
+	end
+
+	event = Event()
 	self._Events[eventName] = event
 	return event
 end
@@ -70,8 +81,6 @@ function NetworkPort:AddListener(onRecivedEventName, listener)
 	return self
 end
 
-NetworkPort.On = NetworkPort.AddListener
-
 ---@param onRecivedEventName string | "all"
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
@@ -81,13 +90,21 @@ function NetworkPort:AddListenerOnce(onRecivedEventName, listener)
 	return self
 end
 
-NetworkPort.Once = NetworkPort.AddListenerOnce
+---@param eventName string | "all"
+function NetworkPort:RemoveListener(eventName)
+	local event = self:GetEvent(eventName)
+	if not event then
+		return
+	end
+
+	self._Events[eventName] = nil
+end
 
 ---@param eventName string
----@param timeout number?
+---@param timeoutSeconds number?
 ---@return Net.Core.NetworkContext?
-function NetworkPort:WaitForEvent(eventName, timeout)
-	return self._NetClient:WaitForEvent(eventName, self.Port, timeout)
+function NetworkPort:WaitForEvent(eventName, timeoutSeconds)
+	return self._NetClient:WaitForEvent(eventName, self.Port, timeoutSeconds)
 end
 
 function NetworkPort:OpenPort()

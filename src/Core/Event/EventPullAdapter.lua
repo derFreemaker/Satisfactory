@@ -69,16 +69,16 @@ function EventPullAdapter:AddListenerOnce(signalName, task)
 	return self
 end
 
----@param timeout number? in seconds
+---@param timeoutSeconds number? in seconds
 ---@return boolean gotEvent
-function EventPullAdapter:Wait(timeout)
+function EventPullAdapter:Wait(timeoutSeconds)
 	self._Logger:LogTrace('## waiting for event pull ##')
 	---@type table?
 	local eventPullData = nil
-	if timeout == nil then
+	if timeoutSeconds == nil then
 		eventPullData = { event.pull() }
 	else
-		eventPullData = { event.pull(timeout) }
+		eventPullData = { event.pull(timeoutSeconds) }
 	end
 	if #eventPullData == 0 then
 		return false
@@ -90,9 +90,9 @@ function EventPullAdapter:Wait(timeout)
 end
 
 --- Waits for all events in the event queue to be handled
----@param timeout number? in seconds
-function EventPullAdapter:WaitForAll(timeout)
-	while self:Wait(timeout) do
+---@param timeoutSeconds number? in seconds
+function EventPullAdapter:WaitForAll(timeoutSeconds)
+	while self:Wait(timeoutSeconds) do
 	end
 end
 
