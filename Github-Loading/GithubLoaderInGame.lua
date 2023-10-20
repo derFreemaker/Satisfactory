@@ -20,6 +20,7 @@ local BaseUrl = 'https://raw.githubusercontent.com/derFreemaker/Satisfactory/dev
 local showDriveUUID = false
 
 -- ########## Don't touch that ########## --
+-- ! Changing this can cause the game to crash, because of some file watch bug in the mod code.
 local LoaderFilesUrl = BaseUrl .. '/Github-Loading'
 local LoaderUrl = LoaderFilesUrl .. '/Loader.lua'
 local LoaderFilesPath = ''
