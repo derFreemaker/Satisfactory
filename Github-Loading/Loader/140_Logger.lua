@@ -47,25 +47,24 @@ local function tableToLineTree(node, maxLevel, properties, level, padding)
         local keys = {}
         if type(properties) == 'string' then
             local propSet = {}
-            for p in string.gmatch(properties, "%b{}") do
+            for p in string.gmatch(properties, '%b{}') do
                 local propName = string.sub(p, 2, -2)
-                for k in string.gmatch(propName, "[^,%s]+") do
+                for k in string.gmatch(propName, '[^,%s]+') do
                     propSet[k] = true
                 end
             end
-            for k in pairs(node) do
+            for k in next, node, nil do
                 if propSet[k] then
                     keys[#keys + 1] = k
                 end
             end
         else
-            for k in pairs(node) do
+            for k in next, node, nil do
                 if not properties or properties[k] then
                     keys[#keys + 1] = k
                 end
             end
         end
-        table.sort(keys)
 
         for i, k in ipairs(keys) do
             local line = ''
