@@ -10,7 +10,8 @@ local Event = LoadedLoaderFiles["/Github-Loading/Loader/Event"][1]
 ---|3 Info
 ---|4 Warning
 ---|5 Error
----|10 Write
+---|6 Fatal
+---|10 Write (will only write content no information like normal a log)
 
 ---@enum Github_Loading.Logger.LogLevel.ToName
 local LogLevelToName = {
@@ -19,6 +20,7 @@ local LogLevelToName = {
     [3] = "Info",
     [4] = "Warning",
     [5] = "Error",
+    [6] = "Fatal",
     [10] = "Write"
 }
 

@@ -6,6 +6,7 @@ local Event = require('Core.Event.Event')
 ---|3 Info
 ---|4 Warning
 ---|5 Error
+---|6 Fatal
 ---|10 Write (will only write content no information like normal a log)
 
 ---@enum Core.Logger.LogLevel.ToName
@@ -15,6 +16,7 @@ local LogLevelToName = {
 	[3] = "Info",
 	[4] = "Warning",
 	[5] = "Error",
+	[6] = "Fatal",
 	[10] = "Write"
 }
 
@@ -228,6 +230,10 @@ end
 ---@param ... any
 function Logger:LogError(...)
 	self:Log(5, ...)
+end
+
+function Logger:LogFatal(...)
+	self:Log(6, ...)
 end
 
 function Logger:LogWrite(...)
