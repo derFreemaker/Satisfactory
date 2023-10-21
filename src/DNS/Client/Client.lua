@@ -38,7 +38,7 @@ end
 function Client.Static__GetServerAddress(networkClient)
 	local netPort = networkClient:GetOrCreateNetworkPort(Usage.Ports.DNS)
 
-	netPort:BroadCastMessage('GetDNSServerAddress', nil, nil)
+	netPort:BroadCastMessage(Usage.Events.DNS_GetServerAddress, nil, nil)
 	---@type Net.Core.NetworkContext?
 	local response
 	local try = 0

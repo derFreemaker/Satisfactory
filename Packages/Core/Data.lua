@@ -1755,6 +1755,7 @@ PackageData["CoreUsageUsage_EventName"] = {
 local EventNameUsage = {
     -- DNS
     DNS_Heartbeat = "DNS",
+    DNS_GetServerAddress = "Get-DNS-Server-Address",
     DNS_ReturnServerAddress = "Return-DNS-Server-Address",
 
     -- Rest
