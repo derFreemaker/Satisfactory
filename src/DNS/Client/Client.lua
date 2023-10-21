@@ -36,7 +36,6 @@ end
 ---@param networkClient Net.Core.NetworkClient
 ---@return Net.Core.IPAddress id
 function Client.Static__GetServerAddress(networkClient)
-	Client.Static_WaitForHeartbeat(networkClient)
 	local netPort = networkClient:GetOrCreateNetworkPort(Usage.Ports.DNS)
 
 	netPort:BroadCastMessage('GetDNSServerAddress', nil, nil)
@@ -57,8 +56,6 @@ end
 ---@return Net.Core.IPAddress id
 function Client:RequestOrGetDNSServerIP()
 	if not self._ApiClient then
-		self.Static_WaitForHeartbeat(self._NetworkClient)
-
 		local serverIPAddress = Client.Static__GetServerAddress(self._NetworkClient)
 		self._ApiClient = ApiClient(serverIPAddress, Usage.Ports.HTTP, Usage.Ports.HTTP, self._NetworkClient,
 			self._Logger:subLogger('ApiClient'))
@@ -70,7 +67,6 @@ end
 ---@private
 ---@param request Net.Rest.Api.Request
 function Client:InternalRequest(request)
-	Client.Static_WaitForHeartbeat(self._NetworkClient)
 	self:RequestOrGetDNSServerIP()
 
 	return self._ApiClient:Send(request)

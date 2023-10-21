@@ -1,6 +1,32 @@
 ---@meta
 local PackageData = {}
 
+PackageData["DNSClient__events"] = {
+    Location = "DNS.Client.__events",
+    Namespace = "DNS.Client.__events",
+    IsRunnable = true,
+    Data = [[
+local Task = require("Core.Task")
+
+local Host = require("Hosting.Host")
+local DNSClient = require("DNS.Client.Client")
+
+---@class DNS.Client.Events : Github_Loading.Entities.Events
+local Events = {}
+
+function Events:OnLoaded()
+    ---@param host Hosting.Host
+    local function readyTaskWaitForDNSServer(host)
+        DNSClient.Static_WaitForHeartbeat(host:GetNetworkClient())
+    end
+
+    table.insert(Host._Static__ReadyTasks, Task(readyTaskWaitForDNSServer))
+end
+
+return Events
+]]
+}
+
 PackageData["DNSClientClient"] = {
     Location = "DNS.Client.Client",
     Namespace = "DNS.Client.Client",
@@ -44,7 +70,6 @@ end
 ---@param networkClient Net.Core.NetworkClient
 ---@return Net.Core.IPAddress id
 function Client.Static__GetServerAddress(networkClient)
-	Client.Static_WaitForHeartbeat(networkClient)
 	local netPort = networkClient:GetOrCreateNetworkPort(Usage.Ports.DNS)
 
 	netPort:BroadCastMessage('GetDNSServerAddress', nil, nil)
@@ -65,8 +90,6 @@ end
 ---@return Net.Core.IPAddress id
 function Client:RequestOrGetDNSServerIP()
 	if not self._ApiClient then
-		self.Static_WaitForHeartbeat(self._NetworkClient)
-
 		local serverIPAddress = Client.Static__GetServerAddress(self._NetworkClient)
 		self._ApiClient = ApiClient(serverIPAddress, Usage.Ports.HTTP, Usage.Ports.HTTP, self._NetworkClient,
 			self._Logger:subLogger('ApiClient'))
@@ -78,7 +101,6 @@ end
 ---@private
 ---@param request Net.Rest.Api.Request
 function Client:InternalRequest(request)
-	Client.Static_WaitForHeartbeat(self._NetworkClient)
 	self:RequestOrGetDNSServerIP()
 
 	return self._ApiClient:Send(request)

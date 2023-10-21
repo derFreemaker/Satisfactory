@@ -9,6 +9,9 @@ local JsonSerializer = require("Core.Json.JsonSerializer")
 ---@overload fun(logger: Core.Logger, name: string?, jsonSerializer: Core.Json.Serializer?) : Hosting.Host
 local Host = {}
 
+---@type Core.Task[]
+Host._Static__ReadyTasks = {}
+
 --#region - Core -
 
 ---@private
@@ -34,7 +37,12 @@ function Host:Ready()
         return
     end
 
-    self._Logger:LogDebug(self._Name .. " started")
+    for _, task in pairs(self._Static__ReadyTasks) do
+        task:Execute(self)
+        task:LogError(self._Logger)
+    end
+
+    self._Logger:LogInfo(self._Name .. " started")
     self._Ready = true
 end
 
@@ -46,6 +54,11 @@ end
 
 ---@param timeoutSeconds number?
 function Host:RunCycle(timeoutSeconds)
+    if not self._Ready then
+        error("cannot run cycle whitout a ready call")
+    end
+
+    self._Logger:LogTrace("running cycle")
     EventPullAdapter:WaitForAll(timeoutSeconds)
 end
 
