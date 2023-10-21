@@ -6,7 +6,7 @@ local Event = require('Core.Event.Event')
 ---|3 Info
 ---|4 Warning
 ---|5 Error
----|10 Write
+---|10 Write (will only write content no information like normal a log)
 
 ---@enum Core.Logger.LogLevel.ToName
 local LogLevelToName = {
@@ -165,7 +165,12 @@ function Logger:Log(logLevel, ...)
 		return
 	end
 
-	message = "[" .. self.Name .. "]: " .. LogLevelToName[logLevel] .. "\n    " .. message:gsub("\n", "\n    ")
+	if not logLevel == 10 then
+		message = ({ computer.magicTime() })[2]
+			.. "[" .. self.Name .. "]: "
+			.. LogLevelToName[logLevel] .. "\n"
+			.. "    " .. message:gsub("\n", "\n    ")
+	end
 	self.OnLog:Trigger(nil, message)
 end
 

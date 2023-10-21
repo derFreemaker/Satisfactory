@@ -181,7 +181,12 @@ function Logger:Log(logLevel, ...)
         return
     end
 
-    message = "[" .. self.Name .. "]: " .. LogLevelToName[logLevel] .. "\n    " .. message:gsub("\n", "\n    ")
+    if not logLevel == 10 then
+        message = ({ computer.magicTime() })[2]
+            .. "[" .. self.Name .. "]: "
+            .. LogLevelToName[logLevel] .. "\n"
+            .. "    " .. message:gsub("\n", "\n    ")
+    end
     self.OnLog:Trigger(nil, message)
 end
 
