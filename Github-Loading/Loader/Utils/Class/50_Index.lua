@@ -94,7 +94,7 @@ function Class.HasBaseClass(baseClassName, type)
     return Class.HasBaseClass(baseClassName, type.Base)
 end
 
----@param obj table
+---@param obj any
 ---@param metatableOut Out<Utils.Class.Metatable>?
 ---@return boolean isClass
 function Class.IsClass(obj, metatableOut)

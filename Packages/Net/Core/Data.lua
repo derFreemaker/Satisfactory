@@ -107,7 +107,7 @@ local IPAddress = require("Net.Core.IPAddress")
 
 ---@class Net.Core.NetworkClient : object
 ---@field private _IPAddress Net.Core.IPAddress
----@field private _Ports Dictionary<integer | "all", Net.Core.NetworkPort>
+---@field private _Ports Dictionary<integer | "all", Net.Core.NetworkPort?>
 ---@field private _NetworkCard Adapter.Computer.NetworkCard
 ---@field private _Serializer Core.Json.Serializer
 ---@field private _Logger Core.Logger
@@ -146,20 +146,10 @@ function NetworkClient:GetNick()
 	return self._NetworkCard:GetNick()
 end
 
----@private
----@param data any[]
-function NetworkClient:networkMessageRecieved(data)
-	local context = NetworkContext(data, self._Serializer)
-	self._Logger:LogDebug("recieved network message with event: '" ..
-		context.EventName .. "' on port: " .. context.Port)
-	for i, port in pairs(self._Ports) do
-		if port.Port == context.Port or port.Port == 'all' then
-			port:Execute(context)
-		end
-		if port:GetEventsCount() == 0 then
-			port:ClosePort()
-		end
-	end
+---@param port integer | "all"
+---@return Net.Core.NetworkPort?
+function NetworkClient:GetNetworkPort(port)
+	return self._Ports[port]
 end
 
 ---@param port (integer | "all")?
@@ -177,15 +167,43 @@ function NetworkClient:GetOrCreateNetworkPort(port)
 	return networkPort
 end
 
----@param port integer | "all"
----@return Net.Core.NetworkPort?
-function NetworkClient:GetNetworkPort(port)
-	for portNumber, networkPort in pairs(self._Ports) do
-		if portNumber == port then
-			return networkPort
+---@param port integer | "all" | Net.Core.NetworkPort?
+function NetworkClient:RemoveNetworkPort(port)
+	if port == "all" or type(port) == "number" then
+		port = self:GetNetworkPort(port)
+	end
+	---@cast port Net.Core.NetworkPort?
+
+	if not port then
+		return
+	end
+
+	port:ClosePort()
+	self._Ports[port] = nil
+end
+
+---@private
+---@param data any[]
+function NetworkClient:networkMessageRecieved(data)
+	local context = NetworkContext(data, self._Serializer)
+	self._Logger:LogDebug("recieved network message with event: '" ..
+		context.EventName .. "' on port: " .. context.Port)
+
+	local port = self:GetNetworkPort(context.Port)
+	if port then
+		port:Execute(context)
+		if port:GetEventsCount() == 0 then
+			self:RemoveNetworkPort(port)
 		end
 	end
-	return nil
+
+	local allPort = self:GetNetworkPort("all")
+	if allPort then
+		allPort:Execute(context)
+		if allPort:GetEventsCount() == 0 then
+			self:RemoveNetworkPort(allPort)
+		end
+	end
 end
 
 ---@param onRecivedEventName (string | "all")?
@@ -201,8 +219,6 @@ function NetworkClient:AddListener(onRecivedEventName, onRecivedPort, listener)
 	return networkPort
 end
 
-NetworkClient.On = NetworkClient.AddListener
-
 ---@param onRecivedEventName string | "all"
 ---@param onRecivedPort integer | "all"
 ---@param listener Core.Task
@@ -215,8 +231,6 @@ function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listen
 	networkPort:AddListenerOnce(onRecivedEventName, listener)
 	return networkPort
 end
-
-NetworkClient.Once = NetworkClient.AddListenerOnce
 
 ---@param eventName string | "all"
 ---@param port integer | "all"
@@ -368,7 +382,7 @@ function NetworkPort:Execute(context)
 			event:Trigger(self._Logger, context)
 		end
 		if event:GetCount() == 0 then
-			self._Events[name] = nil
+			self:RemoveListener(name)
 		end
 	end
 end
@@ -418,11 +432,6 @@ end
 
 ---@param eventName string | "all"
 function NetworkPort:RemoveListener(eventName)
-	local event = self:GetEvent(eventName)
-	if not event then
-		return
-	end
-
 	self._Events[eventName] = nil
 end
 

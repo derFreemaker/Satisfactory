@@ -42,7 +42,7 @@ function NetworkPort:Execute(context)
 			event:Trigger(self._Logger, context)
 		end
 		if event:GetCount() == 0 then
-			self._Events[name] = nil
+			self:RemoveListener(name)
 		end
 	end
 end
@@ -92,11 +92,6 @@ end
 
 ---@param eventName string | "all"
 function NetworkPort:RemoveListener(eventName)
-	local event = self:GetEvent(eventName)
-	if not event then
-		return
-	end
-
 	self._Events[eventName] = nil
 end
 
