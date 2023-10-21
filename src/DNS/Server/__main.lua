@@ -7,20 +7,15 @@ local Host = require("Hosting.Host")
 local DNSEndpoints = require('DNS.Server.Endpoints')
 
 ---@class DNS.Main : Github_Loading.Entities.Main
----@field private _ApiController Net.Rest.Api.Server.Controller
----@field private _NetPort Net.Core.NetworkPort
 ---@field private _NetClient Net.Core.NetworkClient
----@field private _Endpoints DNS.Endpoints
----
 ---@field private _Host Hosting.Host
 local Main = {}
 
 ---@param context Net.Core.NetworkContext
 function Main:GetDNSServerAddress(context)
-	local netClient = self._NetPort:GetNetClient()
-	local id = netClient:GetIPAddress():GetAddress()
+	local id = self._NetClient:GetIPAddress():GetAddress()
 	self.Logger:LogDebug(context.SenderIPAddress .. ' requested DNS Server IP Address')
-	netClient:Send(context.SenderIPAddress, Usage.Ports.DNS, Usage.Events.DNS_ReturnServerAddress, id)
+	self._NetClient:Send(context.SenderIPAddress, Usage.Ports.DNS, Usage.Events.DNS_ReturnServerAddress, id)
 end
 
 function Main:Configure()
@@ -32,6 +27,8 @@ function Main:Configure()
 	local endpointLogger = self.Logger:subLogger("Endpoints")
 	self._Host:AddEndpointBase(Usage.Ports.HTTP, endpointLogger, DNSEndpoints(endpointLogger))
 	self.Logger:LogDebug('setup DNS Server endpoints')
+
+	self._NetClient = self._Host:GetNetworkClient()
 end
 
 function Main:Run()
