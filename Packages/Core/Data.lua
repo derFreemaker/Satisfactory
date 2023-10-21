@@ -58,19 +58,18 @@ local function tableToLineTree(node, maxLevel, properties, level, padding)
 					propSet[k] = true
 				end
 			end
-			for k in pairs(node) do
+			for k in next, node, nil do
 				if propSet[k] then
 					keys[#keys + 1] = k
 				end
 			end
 		else
-			for k in pairs(node) do
+			for k in next, node, nil do
 				if not properties or properties[k] then
 					keys[#keys + 1] = k
 				end
 			end
 		end
-		table.sort(keys)
 
 		for i, k in ipairs(keys) do
 			local line = ''
@@ -680,6 +679,8 @@ PackageData["CoreEventEventPullAdapter"] = {
     Data = [[
 local Event = require('Core.Event.Event')
 
+--- Assists in handling events from `event.pull()`
+---
 ---@class Core.EventPullAdapter
 ---@field private _Initialized boolean
 ---@field private _Events Dictionary<string, Core.Event>
@@ -749,7 +750,10 @@ function EventPullAdapter:AddListenerOnce(signalName, task)
 	return self
 end
 
----@param timeoutSeconds number? in seconds
+--- Waits for an event to be handled or timeout to run out
+--- Returns true if event was handled and false if timeout ran out
+---
+---@param timeoutSeconds number?
 ---@return boolean gotEvent
 function EventPullAdapter:Wait(timeoutSeconds)
 	self._Logger:LogTrace('## waiting for event pull ##')
@@ -773,8 +777,9 @@ function EventPullAdapter:Wait(timeoutSeconds)
 	return true
 end
 
---- Waits for all events in the event queue to be handled
----@param timeoutSeconds number? in seconds
+--- Waits for all events in the event queue to be handled or timeout to run out
+---
+---@param timeoutSeconds number?
 function EventPullAdapter:WaitForAll(timeoutSeconds)
 	while self:Wait(timeoutSeconds) do
 	end

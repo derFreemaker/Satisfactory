@@ -131,12 +131,15 @@ function NetworkClient:WaitForEvent(eventName, port, timeoutSeconds)
 	local function set(context)
 		result = context
 	end
-	self:AddListenerOnce(eventName, port, Task(set)):OpenPort()
-	repeat
-		if not EventPullAdapter:Wait(timeoutSeconds) then
-			break
-		end
-	until result ~= nil
+
+	local netPort = self:AddListenerOnce(eventName, port, Task(set))
+	netPort:OpenPort()
+
+	EventPullAdapter:WaitForAll(timeoutSeconds)
+
+	if netPort:GetEventsCount() == 0 then
+		netPort:ClosePort()
+	end
 	return result
 end
 
