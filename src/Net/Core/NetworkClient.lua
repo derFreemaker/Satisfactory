@@ -53,7 +53,7 @@ end
 function NetworkClient:networkMessageRecieved(data)
 	local context = NetworkContext(data, self._Serializer)
 	self._Logger:LogDebug("recieved network message with event: '" ..
-		context.EventName .. "' on port: '" .. context.Port .. "'")
+		context.EventName .. "' on port: " .. context.Port)
 	for i, port in pairs(self._Ports) do
 		if port.Port == context.Port or port.Port == 'all' then
 			port:Execute(context)
@@ -131,15 +131,9 @@ function NetworkClient:WaitForEvent(eventName, port, timeoutSeconds)
 	local function set(context)
 		result = context
 	end
-
-	local netPort = self:AddListenerOnce(eventName, port, Task(set))
-	netPort:OpenPort()
+	self:AddListenerOnce(eventName, port, Task(set)):OpenPort()
 
 	EventPullAdapter:WaitForAll(timeoutSeconds)
-
-	if netPort:GetEventsCount() == 0 then
-		netPort:ClosePort()
-	end
 	return result
 end
 

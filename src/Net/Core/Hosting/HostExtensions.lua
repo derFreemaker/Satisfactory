@@ -1,3 +1,12 @@
+---@type Out<Github_Loading.Module>
+local Host = {}
+if not PackageLoader:TryGetModule("Hosting.Host", Host) then
+    return
+end
+---@type Hosting.Host
+Host = Host.Return:Load()
+-- Run only if module Hosting.Host is loaded
+
 local NetworkClient = require("Net.Core.NetworkClient")
 
 ---@class Hosting.Host
@@ -76,4 +85,4 @@ function HostExtensions:RemoveCallableEvent(eventName, port)
     netPort:RemoveListener(eventName)
 end
 
-return Utils.Class.ExtendClass(HostExtensions, require("Hosting.Host") --[[@as Hosting.Host]])
+return Utils.Class.ExtendClass(HostExtensions, Host)

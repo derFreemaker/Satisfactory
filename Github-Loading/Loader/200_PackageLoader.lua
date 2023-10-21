@@ -125,6 +125,7 @@ function PackageLoader:LoadPackage(packageName, forceDownload)
 end
 
 ---@param moduleToGet string
+---@return Github_Loading.Module
 function PackageLoader:GetModule(moduleToGet)
 	self.Logger:LogTrace("geting module: '" .. moduleToGet .. "'")
 
@@ -136,7 +137,24 @@ function PackageLoader:GetModule(moduleToGet)
 		end
 	end
 
-	error("module could not be found: '" .. moduleToGet .. "'", 2)
+	error("module could not be found: '" .. moduleToGet .. "'")
+end
+
+---@param moduleToGet string
+---@param outModule Out<Github_Loading.Module>
+function PackageLoader:TryGetModule(moduleToGet, outModule)
+	self.Logger:LogTrace("try geting module: '" .. moduleToGet .. "'")
+
+	for _, package in ipairs(self.Packages) do
+		local module = package:GetModule(moduleToGet)
+		if module then
+			self.Logger:LogDebug("try geted module: '" .. moduleToGet .. "'")
+			outModule.Return = module
+			return true
+		end
+	end
+
+	return false
 end
 
 ---@param moduleToGet string

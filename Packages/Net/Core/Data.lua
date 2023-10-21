@@ -151,7 +151,7 @@ end
 function NetworkClient:networkMessageRecieved(data)
 	local context = NetworkContext(data, self._Serializer)
 	self._Logger:LogDebug("recieved network message with event: '" ..
-		context.EventName .. "' on port: '" .. context.Port .. "'")
+		context.EventName .. "' on port: " .. context.Port)
 	for i, port in pairs(self._Ports) do
 		if port.Port == context.Port or port.Port == 'all' then
 			port:Execute(context)
@@ -229,15 +229,9 @@ function NetworkClient:WaitForEvent(eventName, port, timeoutSeconds)
 	local function set(context)
 		result = context
 	end
-
-	local netPort = self:AddListenerOnce(eventName, port, Task(set))
-	netPort:OpenPort()
+	self:AddListenerOnce(eventName, port, Task(set)):OpenPort()
 
 	EventPullAdapter:WaitForAll(timeoutSeconds)
-
-	if netPort:GetEventsCount() == 0 then
-		netPort:ClosePort()
-	end
 	return result
 end
 
@@ -573,6 +567,15 @@ PackageData["NetCoreHostingHostExtensions"] = {
     Namespace = "Net.Core.Hosting.HostExtensions",
     IsRunnable = true,
     Data = [[
+---@type Out<Github_Loading.Module>
+local Host = {}
+if not PackageLoader:TryGetModule("Hosting.Host", Host) then
+    return
+end
+---@type Hosting.Host
+Host = Host.Return:Load()
+-- Run only if module Hosting.Host is loaded
+
 local NetworkClient = require("Net.Core.NetworkClient")
 
 ---@class Hosting.Host
@@ -651,7 +654,7 @@ function HostExtensions:RemoveCallableEvent(eventName, port)
     netPort:RemoveListener(eventName)
 end
 
-return Utils.Class.ExtendClass(HostExtensions, require("Hosting.Host") --{{{@as Hosting.Host}}})
+return Utils.Class.ExtendClass(HostExtensions, Host)
 ]]
 }
 

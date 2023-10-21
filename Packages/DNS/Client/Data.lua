@@ -6,21 +6,11 @@ PackageData["DNSClient__events"] = {
     Namespace = "DNS.Client.__events",
     IsRunnable = true,
     Data = [[
-local Task = require("Core.Task")
-
-local Host = require("Hosting.Host")
-local DNSClient = require("DNS.Client.Client")
-
 ---@class DNS.Client.Events : Github_Loading.Entities.Events
 local Events = {}
 
 function Events:OnLoaded()
-    ---@param host Hosting.Host
-    local function readyTaskWaitForDNSServer(host)
-        DNSClient.Static_WaitForHeartbeat(host:GetNetworkClient())
-    end
-
-    table.insert(Host._Static__ReadyTasks, Task(readyTaskWaitForDNSServer))
+    require("DNS.Client.Hosting.HostExtensions")
 end
 
 return Events
@@ -158,6 +148,33 @@ function Client:GetWithIPAddress(ipAddress)
 end
 
 return Utils.Class.CreateClass(Client, 'DNS.Client')
+]]
+}
+
+PackageData["DNSClientHostingHostExtensions"] = {
+    Location = "DNS.Client.Hosting.HostExtensions",
+    Namespace = "DNS.Client.Hosting.HostExtensions",
+    IsRunnable = true,
+    Data = [[
+---@type Out<Github_Loading.Module>
+local Host = {}
+if not PackageLoader:TryGetModule("Hosting.Host", Host) then
+    return
+end
+---@type Hosting.Host
+Host = Host.Return:Load()
+-- Run only if module Hosting.Host is loaded
+
+local Task = require("Core.Task")
+
+local DNSClient = require("DNS.Client.Client")
+
+---@param host Hosting.Host
+local function readyTaskWaitForDNSServer(host)
+    DNSClient.Static_WaitForHeartbeat(host:GetNetworkClient())
+end
+
+table.insert(Host._Static__ReadyTasks, Task(readyTaskWaitForDNSServer))
 ]]
 }
 

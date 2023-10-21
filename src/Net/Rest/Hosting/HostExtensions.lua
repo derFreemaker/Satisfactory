@@ -1,3 +1,12 @@
+---@type Out<Github_Loading.Module>
+local Host = {}
+if not PackageLoader:TryGetModule("Hosting.Host", Host) then
+    return
+end
+---@type Hosting.Host
+Host = Host.Return:Load()
+-- Run only if module Hosting.Host is loaded
+
 local ApiController = require("Net.Rest.Api.Server.Controller")
 
 ---@class Hosting.Host
@@ -18,4 +27,4 @@ function HostExtensions:AddEndpointBase(port, endpointLogger, endpointBase)
     self.ApiControllers[port] = apiController
 end
 
-return Utils.Class.ExtendClass(HostExtensions, require("Hosting.Host") --[[@as Hosting.Host]])
+return Utils.Class.ExtendClass(HostExtensions, Host)
