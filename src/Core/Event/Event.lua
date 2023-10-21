@@ -34,10 +34,12 @@ Event.Once = Event.AddListenerOnce
 function Event:Trigger(logger, ...)
     for _, task in ipairs(self._Funcs) do
         task:Execute(...)
+        task:LogError(logger)
     end
 
     for _, task in ipairs(self._OnceFuncs) do
         task:Execute(...)
+        task:LogError(logger)
     end
     self.OnceFuncs = {}
 end

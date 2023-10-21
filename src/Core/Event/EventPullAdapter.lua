@@ -16,7 +16,7 @@ function EventPullAdapter:onEventPull(eventPullData)
 		if name == eventPullData[1] then
 			event:Trigger(self._Logger, eventPullData)
 		end
-		if #event == 0 then
+		if event:GetCount() == 0 then
 			table.insert(removeEvent, name)
 		end
 	end
@@ -83,7 +83,11 @@ function EventPullAdapter:Wait(timeoutSeconds)
 	if #eventPullData == 0 then
 		return false
 	end
-	self._Logger:LogDebug("event with signalName: '" .. eventPullData[1] .. "' was recieved")
+
+	self._Logger:LogDebug("event with signalName: '"
+		.. eventPullData[1] .. "' was recieved from component: "
+		.. tostring(eventPullData[2]))
+
 	self.OnEventPull:Trigger(self._Logger, eventPullData)
 	self:onEventPull(eventPullData)
 	return true
