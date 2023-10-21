@@ -147,7 +147,7 @@ local function formatMessage(...)
 		if i == 1 then
 			message = formatMessagePart(messagePart)
 		else
-			message = message .. "\n-> " .. formatMessagePart(messagePart)
+			message = message .. "\n" .. formatMessagePart(messagePart)
 		end
 	end
 	return message
@@ -165,7 +165,7 @@ function Logger:Log(logLevel, ...)
 		return
 	end
 
-	message = "[" .. self.Name .. "]: " .. LogLevelToName[logLevel] .. "\n" .. message:gsub("\n", "\n    ")
+	message = "[" .. self.Name .. "]: " .. LogLevelToName[logLevel] .. "\n    " .. message:gsub("\n", "\n    ")
 	self.OnLog:Trigger(nil, message)
 end
 
