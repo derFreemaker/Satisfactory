@@ -85,4 +85,14 @@ function Table.Clean(t)
     end
 end
 
+---@param t table
+---@return integer count
+function Table.Count(t)
+    local count = 0
+    for _, _ in next, t, nil do
+        count = count + 1
+    end
+    return count
+end
+
 return Table
