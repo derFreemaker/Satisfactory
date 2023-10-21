@@ -29,7 +29,8 @@ end
 function Main:Configure()
 	self._Host = Host(self.Logger:subLogger("Host"), "DNS")
 
-	self._Host:AddCallableEvent("GetDNSServerAddress", Usage.Ports.DNS, Task(self.GetDNSServerAddress, self))
+	self._Host:AddCallableEvent(Usage.Events.DNS_ReturnServerAddress, Usage.Ports.DNS,
+		Task(self.GetDNSServerAddress, self))
 	self.Logger:LogDebug('setup Get DNS Server IP Address')
 
 	local endpointLogger = self.Logger:subLogger("Endpoints")
