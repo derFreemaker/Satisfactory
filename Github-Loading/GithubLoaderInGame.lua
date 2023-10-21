@@ -3,9 +3,9 @@ local option = nil
 local showExtendOptionDetails = false
 
 -- logLevel
--- 0 = Trace / 1 = Debug / 2 = Info / 3 = Warning / 4 = Error
-local loaderLogLevel = 2
-local programLogLevel = 2
+-- 1 = Trace / 2 = Debug / 3 = Info / 4 = Warning / 5 = Error / 6 = Fatal
+local loaderLogLevel = 3
+local programLogLevel = 3
 
 -- forceDownload
 local loaderForceDownload = false
