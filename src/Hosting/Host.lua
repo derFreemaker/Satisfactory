@@ -25,7 +25,7 @@ function Host:__init(logger, name, jsonSerializer)
     self._Ready = false
 
     EventPullAdapter:Initialize(logger:subLogger("EventPullAdapter"))
-    self._Logger:LogDebug(self._Name .. "starting...")
+    self._Logger:LogDebug(self._Name .. " starting...")
 end
 
 function Host:GetJsonSerializer()

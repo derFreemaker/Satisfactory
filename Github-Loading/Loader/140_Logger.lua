@@ -5,18 +5,28 @@ local Utils = LoadedLoaderFiles["/Github-Loading/Loader/Utils"][1]
 local Event = LoadedLoaderFiles["/Github-Loading/Loader/Event"][1]
 
 ---@alias Github_Loading.Logger.LogLevel
----|0 Trace
----|1 Debug
----|2 Info
----|3 Warning
----|4 Error
+---|1 Trace
+---|2 Debug
+---|3 Info
+---|4 Warning
+---|5 Error
 ---|10 Write
+
+---@enum Github_Loading.Logger.LogLevel.ToName
+local LogLevelToName = {
+    [1] = "Trace",
+    [2] = "Debug",
+    [3] = "Info",
+    [4] = "Warning",
+    [5] = "Error",
+    [10] = "Write"
+}
 
 ---@class Github_Loading.Logger
 ---@field OnLog Github_Loading.Event
 ---@field OnClear Github_Loading.Event
 ---@field Name string
----@field LogLevel number
+---@field _LogLevel number
 local Logger = {}
 
 ---@param node table
@@ -87,7 +97,7 @@ end
 ---@return Github_Loading.Logger
 function Logger.new(name, logLevel)
     return setmetatable({
-        LogLevel = logLevel,
+        _LogLevel = logLevel,
         Name = (string.gsub(name, " ", "_") or ""),
         OnLog = Event.new(),
         OnClear = Event.new()
@@ -99,7 +109,7 @@ end
 function Logger:subLogger(name)
     name = self.Name .. "." .. name
     return setmetatable({
-        LogLevel = self.LogLevel,
+        _LogLevel = self._LogLevel,
         Name = name:gsub(" ", "_"),
         OnLog = Utils.Table.Copy(self.OnLog),
         OnClear = Utils.Table.Copy(self.OnClear)
@@ -123,73 +133,118 @@ function Logger:CopyListenersToCoreEvent(Task, logger)
     return logger
 end
 
----@param message string
----@param logLevel Github_Loading.Logger.LogLevel
-function Logger:Log(message, logLevel)
-    if logLevel < self.LogLevel then
+---@param obj any
+---@return string messagePart
+local function formatMessagePart(obj)
+    if obj == nil then
+        return "nil"
+    end
+
+    if type(obj) == "table" then
+        local str = ""
+        for _, line in ipairs(tableToLineTree(obj)) do
+            str = str .. "\n" .. line
+        end
+        return str
+    end
+
+    return tostring(obj)
+end
+
+---@param ... any
+---@return string?
+local function formatMessage(...)
+    local messages = { ... }
+    if #messages == 0 then
+        return
+    end
+    local message = ""
+    for i, messagePart in pairs(messages) do
+        if i == 1 then
+            message = formatMessagePart(messagePart)
+        else
+            message = message .. "\n-> " .. formatMessagePart(messagePart)
+        end
+    end
+    return message
+end
+
+---@param logLevel Core.Logger.LogLevel
+---@param ... any
+function Logger:Log(logLevel, ...)
+    if logLevel < self._LogLevel then
         return
     end
 
-    message = "[" .. self.Name .. "] " .. tostring(message)
+    local message = formatMessage(...)
+    if not message then
+        return
+    end
+
+    message = "[" .. self.Name .. "]: " .. LogLevelToName[logLevel] .. "\n" .. message:gsub("\n", "\n    ")
     self.OnLog:Trigger(nil, message)
 end
 
 ---@param t table
----@param logLevel Github_Loading.Logger.LogLevel
+---@param logLevel Core.Logger.LogLevel
 ---@param maxLevel integer?
 ---@param properties string[]?
 function Logger:LogTable(t, logLevel, maxLevel, properties)
-    if logLevel < self.LogLevel then
+    if logLevel < self._LogLevel then
         return
     end
 
-    if t == nil or type(t) ~= "table" then return end
-    for _, line in ipairs(tableToLineTree(t, maxLevel, properties)) do
-        self:Log(line, logLevel)
+    if t == nil or type(t) ~= 'table' then
+        return
     end
+
+    local str = ""
+    for _, line in ipairs(tableToLineTree(t, maxLevel, properties)) do
+        str = str .. "\n" .. line
+    end
+    self:Log(logLevel, str)
 end
 
 function Logger:Clear()
     self.OnClear:Trigger()
 end
 
----@param logLevel Github_Loading.Logger.LogLevel
+---@param logLevel Core.Logger.LogLevel
 function Logger:FreeLine(logLevel)
-    if logLevel < self.LogLevel then
+    if logLevel < self._LogLevel then
         return
     end
 
-    self.OnLog:Trigger(self, "")
+    self.OnLog:Trigger(self, '')
 end
 
----@param message any
-function Logger:LogTrace(message)
-    if message == nil then return end
-    self:Log("TRACE " .. tostring(message), 0)
+---@param ... any
+function Logger:LogTrace(...)
+    self:Log(1, ...)
 end
 
----@param message any
-function Logger:LogDebug(message)
-    if message == nil then return end
-    self:Log("DEBUG " .. tostring(message), 1)
+---@param ... any
+function Logger:LogDebug(...)
+    self:Log(2, ...)
 end
 
----@param message any
-function Logger:LogInfo(message)
-    if message == nil then return end
-    self:Log("INFO " .. tostring(message), 2)
+---@param ... any
+function Logger:LogInfo(...)
+    self:Log(3, ...)
 end
 
----@param message any
-function Logger:LogWarning(message)
-    if message == nil then return end
-    self:Log("WARN " .. tostring(message), 3)
+---@param ... any
+function Logger:LogWarning(...)
+    self:Log(4, ...)
 end
 
----@param message any
-function Logger:LogError(message)
-    if message == nil then return end
-    self:Log("ERROR " .. tostring(message), 4)
+---@param ... any
+function Logger:LogError(...)
+    self:Log(5, ...)
+end
+
+function Logger:LogWrite(...)
+    self:Log(10, ...)
 end
 
 return Logger

@@ -1,12 +1,22 @@
 local Event = require('Core.Event.Event')
 
 ---@alias Core.Logger.LogLevel
----|0 Trace
----|1 Debug
----|2 Info
----|3 Warning
----|4 Error
+---|1 Trace
+---|2 Debug
+---|3 Info
+---|4 Warning
+---|5 Error
 ---|10 Write
+
+---@enum Core.Logger.LogLevel.ToName
+local LogLevelToName = {
+	[1] = "Trace",
+	[2] = "Debug",
+	[3] = "Info",
+	[4] = "Warning",
+	[5] = "Error",
+	[10] = "Write"
+}
 
 ---@class Core.Logger : object
 ---@field OnLog Core.Event
@@ -107,14 +117,55 @@ function Logger:CopyListenersTo(logger)
 	return logger
 end
 
----@param message string
+---@param obj any
+---@return string messagePart
+local function formatMessagePart(obj)
+	if obj == nil then
+		return "nil"
+	end
+
+	if type(obj) == "table" then
+		local str = ""
+		for _, line in ipairs(tableToLineTree(obj)) do
+			str = str .. "\n" .. line
+		end
+		return str
+	end
+
+	return tostring(obj)
+end
+
+---@param ... any
+---@return string?
+local function formatMessage(...)
+	local messages = { ... }
+	if #messages == 0 then
+		return
+	end
+	local message = ""
+	for i, messagePart in pairs(messages) do
+		if i == 1 then
+			message = formatMessagePart(messagePart)
+		else
+			message = message .. "\n-> " .. formatMessagePart(messagePart)
+		end
+	end
+	return message
+end
+
 ---@param logLevel Core.Logger.LogLevel
-function Logger:Log(message, logLevel)
+---@param ... any
+function Logger:Log(logLevel, ...)
 	if logLevel < self._LogLevel then
 		return
 	end
 
-	message = '[' .. self.Name .. '] ' .. message
+	local message = formatMessage(...)
+	if not message then
+		return
+	end
+
+	message = "[" .. self.Name .. "]: " .. LogLevelToName[logLevel] .. "\n" .. message:gsub("\n", "\n    ")
 	self.OnLog:Trigger(nil, message)
 end
 
@@ -130,9 +181,12 @@ function Logger:LogTable(t, logLevel, maxLevel, properties)
 	if t == nil or type(t) ~= 'table' then
 		return
 	end
+
+	local str = ""
 	for _, line in ipairs(tableToLineTree(t, maxLevel, properties)) do
-		self:Log(line, logLevel)
+		str = str .. "\n" .. line
 	end
+	self:Log(logLevel, str)
 end
 
 function Logger:Clear()
@@ -149,71 +203,32 @@ function Logger:FreeLine(logLevel)
 end
 
 ---@param ... any
----@return string?
-local function formatMessage(...)
-	local messages = { ... }
-	if #messages == 0 then
-		return nil
-	end
-	local message = ""
-	for i, arg in pairs(messages) do
-		if i == 1 then
-			message = tostring(arg) or "nil"
-		else
-			message = message .. "   " .. (tostring(arg) or "nil")
-		end
-	end
-	return message
-end
-
----@param ... any
 function Logger:LogTrace(...)
-	local message = formatMessage(...)
-	if not message then
-		return
-	end
-
-	self:Log('TRACE ' .. tostring(message), 0)
+	self:Log(1, ...)
 end
 
 ---@param ... any
 function Logger:LogDebug(...)
-	local message = formatMessage(...)
-	if not message then
-		return
-	end
-
-	self:Log('DEBUG ' .. tostring(message), 1)
+	self:Log(2, ...)
 end
 
 ---@param ... any
 function Logger:LogInfo(...)
-	local message = formatMessage(...)
-	if not message then
-		return
-	end
-
-	self:Log('INFO ' .. tostring(message), 2)
+	self:Log(3, ...)
 end
 
 ---@param ... any
 function Logger:LogWarning(...)
-	local message = formatMessage(...)
-	if not message then
-		return
-	end
-
-	self:Log('WARN ' .. tostring(message), 3)
+	self:Log(4, ...)
 end
 
 ---@param ... any
 function Logger:LogError(...)
-	local message = formatMessage(...)
-	if not message then
-		return
-	end
+	self:Log(5, ...)
+end
 
-	self:Log('ERROR ' .. tostring(message), 4)
+function Logger:LogWrite(...)
+	self:Log(10, ...)
 end
 
 return Utils.Class.CreateClass(Logger, 'Core.Logger')
