@@ -6,8 +6,7 @@ PackageData["DNSClientClient"] = {
     Namespace = "DNS.Client.Client",
     IsRunnable = true,
     Data = [[
-local PortUsage = require('Core.Usage_Port')
-local EventNameUsage = require("Core.Usage_EventName")
+local Usage = require("Core.Usage.Usage")
 
 local IPAddress = require("Net.Core.IPAddress")
 local NetworkClient = require('Net.Core.NetworkClient')
@@ -39,14 +38,14 @@ end
 
 ---@param networkClient Net.Core.NetworkClient
 function Client.Static_WaitForHeartbeat(networkClient)
-	networkClient:WaitForEvent(EventNameUsage.DNS_Heartbeat, PortUsage.Heartbeats)
+	networkClient:WaitForEvent(Usage.Events.DNS_Heartbeat, Usage.Ports.Heartbeats)
 end
 
 ---@param networkClient Net.Core.NetworkClient
 ---@return Net.Core.IPAddress id
 function Client.Static__GetServerAddress(networkClient)
 	Client.Static_WaitForHeartbeat(networkClient)
-	local netPort = networkClient:CreateNetworkPort(PortUsage.DNS)
+	local netPort = networkClient:GetOrCreateNetworkPort(Usage.Ports.DNS)
 
 	netPort:BroadCastMessage('GetDNSServerAddress', nil, nil)
 	---@type Net.Core.NetworkContext?
@@ -54,7 +53,7 @@ function Client.Static__GetServerAddress(networkClient)
 	local try = 0
 	repeat
 		try = try + 1
-		response = netPort:WaitForEvent(EventNameUsage.DNS_ReturnServerAddress, 10)
+		response = netPort:WaitForEvent(Usage.Events.DNS_ReturnServerAddress, 10)
 	until response ~= nil or try == 10
 	if try == 10 then
 		error('unable to get dns server address')
@@ -69,7 +68,7 @@ function Client:RequestOrGetDNSServerIP()
 		self.Static_WaitForHeartbeat(self._NetworkClient)
 
 		local serverIPAddress = Client.Static__GetServerAddress(self._NetworkClient)
-		self._ApiClient = ApiClient(serverIPAddress, PortUsage.HTTP, PortUsage.HTTP, self._NetworkClient,
+		self._ApiClient = ApiClient(serverIPAddress, Usage.Ports.HTTP, Usage.Ports.HTTP, self._NetworkClient,
 			self._Logger:subLogger('ApiClient'))
 	end
 

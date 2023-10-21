@@ -1,12 +1,12 @@
 return {
     Name = "DNS.Server",
     Namespace = "DNS.Server",
-    Version = "0.1.4-59",
+    Version = "0.1.4-60",
     RequiredPackages = {
         "Core",
         "Database",
         "DNS.Core",
-        "Net.Core",
+        "Hosting",
         "Net.Rest"
     },
 }

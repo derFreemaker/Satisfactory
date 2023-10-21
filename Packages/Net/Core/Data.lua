@@ -16,6 +16,9 @@ function Events:OnLoaded()
         -- IPAddress
         require("Net.Core.IPAddress"):Static__GetType(),
     })
+
+    -- Loading Host Extensions
+    require("Net.Core.Hosting.HostExtensions")
 end
 
 return Events
@@ -154,6 +157,21 @@ function NetworkClient:networkMessageRecieved(data)
 	end
 end
 
+---@param port (integer | "all")?
+---@return Net.Core.NetworkPort
+function NetworkClient:GetOrCreateNetworkPort(port)
+	port = port or 'all'
+
+	local networkPort = self:GetNetworkPort(port)
+	if networkPort then
+		return networkPort
+	end
+
+	networkPort = NetworkPort(port, self._Logger:subLogger('NetworkPort[' .. port .. ']'), self)
+	self._Ports[port] = networkPort
+	return networkPort
+end
+
 ---@param port integer | "all"
 ---@return Net.Core.NetworkPort?
 function NetworkClient:GetNetworkPort(port)
@@ -163,12 +181,6 @@ function NetworkClient:GetNetworkPort(port)
 		end
 	end
 	return nil
-end
-
----@param port integer | "all"
----@return Net.Core.NetworkPort
-function NetworkClient:GetOrCreateNetworkPort(port)
-	return self:GetNetworkPort(port) or self:CreateNetworkPort(port)
 end
 
 ---@param onRecivedEventName (string | "all")?
@@ -201,26 +213,11 @@ end
 
 NetworkClient.Once = NetworkClient.AddListenerOnce
 
----@param port (integer | "all")?
----@return Net.Core.NetworkPort
-function NetworkClient:CreateNetworkPort(port)
-	port = port or 'all'
-
-	local networkPort = self:GetNetworkPort(port)
-	if networkPort then
-		return networkPort
-	end
-
-	networkPort = NetworkPort(port, self._Logger:subLogger('NetworkPort[' .. port .. ']'), self)
-	self._Ports[port] = networkPort
-	return networkPort
-end
-
 ---@param eventName string | "all"
 ---@param port integer | "all"
----@param timeout number?
+---@param timeoutSeconds number?
 ---@return Net.Core.NetworkContext?
-function NetworkClient:WaitForEvent(eventName, port, timeout)
+function NetworkClient:WaitForEvent(eventName, port, timeoutSeconds)
 	self._Logger:LogDebug("waiting for event: '" .. eventName .. "' on port: " .. port)
 	local result
 	---@param context Net.Core.NetworkContext
@@ -229,7 +226,7 @@ function NetworkClient:WaitForEvent(eventName, port, timeout)
 	end
 	self:AddListenerOnce(eventName, port, Task(set)):OpenPort()
 	repeat
-		if not EventPullAdapter:Wait(timeout) then
+		if not EventPullAdapter:Wait(timeoutSeconds) then
 			break
 		end
 	until result ~= nil
@@ -376,14 +373,25 @@ end
 
 ---@protected
 ---@param eventName string | "all"
----@return Core.Event
-function NetworkPort:CreateOrGetEvent(eventName)
+---@return Core.Event?
+function NetworkPort:GetEvent(eventName)
 	for name, event in pairs(self._Events) do
 		if name == eventName then
 			return event
 		end
 	end
-	local event = Event()
+end
+
+---@protected
+---@param eventName string | "all"
+---@return Core.Event
+function NetworkPort:CreateOrGetEvent(eventName)
+	local event = self:GetEvent(eventName)
+	if event then
+		return event
+	end
+
+	event = Event()
 	self._Events[eventName] = event
 	return event
 end
@@ -397,8 +405,6 @@ function NetworkPort:AddListener(onRecivedEventName, listener)
 	return self
 end
 
-NetworkPort.On = NetworkPort.AddListener
-
 ---@param onRecivedEventName string | "all"
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
@@ -408,13 +414,21 @@ function NetworkPort:AddListenerOnce(onRecivedEventName, listener)
 	return self
 end
 
-NetworkPort.Once = NetworkPort.AddListenerOnce
+---@param eventName string | "all"
+function NetworkPort:RemoveListener(eventName)
+	local event = self:GetEvent(eventName)
+	if not event then
+		return
+	end
+
+	self._Events[eventName] = nil
+end
 
 ---@param eventName string
----@param timeout number?
+---@param timeoutSeconds number?
 ---@return Net.Core.NetworkContext?
-function NetworkPort:WaitForEvent(eventName, timeout)
-	return self._NetClient:WaitForEvent(eventName, self.Port, timeout)
+function NetworkPort:WaitForEvent(eventName, timeoutSeconds)
+	return self._NetClient:WaitForEvent(eventName, self.Port, timeoutSeconds)
 end
 
 function NetworkPort:OpenPort()
@@ -543,6 +557,93 @@ local StatusCodes = {
 }
 
 return StatusCodes
+]]
+}
+
+PackageData["NetCoreHostingHostExtensions"] = {
+    Location = "Net.Core.Hosting.HostExtensions",
+    Namespace = "Net.Core.Hosting.HostExtensions",
+    IsRunnable = true,
+    Data = [[
+local NetworkClient = require("Net.Core.NetworkClient")
+
+---@class Hosting.Host
+---@field private _NetworkClient Net.Core.NetworkClient
+local HostExtensions = {}
+
+---@private
+function HostExtensions:CheckNetworkClient()
+    if self._NetworkClient then
+        return
+    end
+
+    self._NetworkClient = NetworkClient(self._Logger:subLogger("NetworkClient"), nil, self._JsonSerializer)
+end
+
+---@param networkClient Net.Core.NetworkClient
+function HostExtensions:SetNetworkClient(networkClient)
+    self._NetworkClient = networkClient
+end
+
+---@return Net.Core.NetworkClient
+function HostExtensions:GetNetworkClient()
+    self:CheckNetworkClient()
+
+    return self._NetworkClient
+end
+
+---@param port integer | "all"
+---@return Net.Core.NetworkPort networkPort
+function HostExtensions:CreateNetworkPort(port)
+    self:CheckNetworkClient()
+
+    return self._NetworkClient:GetOrCreateNetworkPort(port)
+end
+
+---@param port integer | "all"
+---@param outNetworkPort Out<Net.Core.NetworkPort>
+---@return boolean exists
+function HostExtensions:NetworkPortExists(port, outNetworkPort)
+    self:CheckNetworkClient()
+
+    local netPort = self._NetworkClient:GetNetworkPort(port)
+    if not netPort then
+        return false
+    end
+
+    outNetworkPort.Return = netPort
+    return true
+end
+
+---@param port integer | "all"
+---@return Net.Core.NetworkPort networkPort
+function HostExtensions:GetNetworkPort(port)
+    ---@type Out<Net.Core.NetworkPort>
+    local outNetPort = {}
+    if self:NetworkPortExists(port, outNetPort) then
+        return outNetPort.Return
+    end
+
+    return self:CreateNetworkPort(port)
+end
+
+---@param eventName string
+---@param port integer | "all"
+---@param task Core.Task
+function HostExtensions:AddCallableEvent(eventName, port, task)
+    local netPort = self:CreateNetworkPort(port)
+    netPort:AddListener(eventName, task)
+    netPort:OpenPort()
+end
+
+---@param eventName string
+---@param port integer | "all"
+function HostExtensions:RemoveCallableEvent(eventName, port)
+    local netPort = self:GetNetworkPort(port)
+    netPort:RemoveListener(eventName)
+end
+
+return Utils.Class.ExtendClass(HostExtensions, require("Hosting.Host") --{{{@as Hosting.Host}}})
 ]]
 }
 

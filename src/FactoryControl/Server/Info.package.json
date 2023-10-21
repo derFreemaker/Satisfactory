@@ -1,7 +1,7 @@
 {
   "Name": "FactoryControlServer",
   "Namespace": "FactoryControl.Server",
-  "Version": "0.1-55",
+  "Version": "0.1-56",
   "RequiredPackages": [
     "Core",
     "Database",

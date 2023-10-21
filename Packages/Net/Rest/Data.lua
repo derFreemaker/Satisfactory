@@ -11,6 +11,7 @@ local Events = {}
 
 function Events:OnLoaded()
     require("Net.Rest.Api.NetworkContextExtensions")
+    require("Net.Rest.Hosting.HostExtensions")
 end
 
 return Events
@@ -129,7 +130,7 @@ PackageData["NetRestApiClientClient"] = {
     Namespace = "Net.Rest.Api.Client.Client",
     IsRunnable = true,
     Data = [[
-local EventNameUsage = require("Core.Usage_EventName")
+local EventNameUsage = require("Core.Usage.Usage_EventName")
 
 local Response = require('Net.Rest.Api.Response')
 
@@ -180,7 +181,7 @@ PackageData["NetRestApiServerController"] = {
     Namespace = "Net.Rest.Api.Server.Controller",
     IsRunnable = true,
     Data = [[
-local EventNameUsage = require("Core.Usage_EventName")
+local EventNameUsage = require("Core.Usage.Usage_EventName")
 
 local Task = require('Core.Task')
 local RestApiEndpoint = require('Net.Rest.Api.Server.Endpoint')
@@ -274,7 +275,7 @@ function Controller:AddEndpoint(method, name, task)
 end
 
 ---@param endpoint Net.Rest.Api.Server.EndpointBase
-function Controller:AddRestApiEndpointBase(endpoint)
+function Controller:AddEndpointBase(endpoint)
 	for name, func in next, endpoint, nil do
 		if type(name) == 'string' and type(func) == 'function' then
 			local method,
@@ -295,7 +296,7 @@ PackageData["NetRestApiServerEndpoint"] = {
     Namespace = "Net.Rest.Api.Server.Endpoint",
     IsRunnable = true,
     Data = [[
-local EventNameUsage = require("Core.Usage_EventName")
+local EventNameUsage = require("Core.Usage.Usage_EventName")
 
 local RestApiResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 
@@ -435,6 +436,35 @@ function ResponseTemplates.InternalServerError(message)
 end
 
 return ResponseTemplates
+]]
+}
+
+PackageData["NetRestHostingHostExtensions"] = {
+    Location = "Net.Rest.Hosting.HostExtensions",
+    Namespace = "Net.Rest.Hosting.HostExtensions",
+    IsRunnable = true,
+    Data = [[
+local ApiController = require("Net.Rest.Api.Server.Controller")
+
+---@class Hosting.Host
+local HostExtensions = {}
+
+---@type Dictionary<integer | "all", Net.Rest.Api.Server.Controller>
+HostExtensions.ApiControllers = {}
+
+---@param port integer | "all"
+---@param endpointLogger Core.Logger
+---@param endpointBase Net.Rest.Api.Server.EndpointBase
+function HostExtensions:AddEndpointBase(port, endpointLogger, endpointBase)
+    local netPort = self._NetworkClient:GetOrCreateNetworkPort(port)
+    local apiController = self.ApiControllers[port] or ApiController(netPort, endpointLogger:subLogger("ApiController"))
+    apiController:AddEndpointBase(endpointBase)
+    netPort:OpenPort()
+
+    self.ApiControllers[port] = apiController
+end
+
+return Utils.Class.ExtendClass(HostExtensions, require("Hosting.Host") --{{{@as Hosting.Host}}})
 ]]
 }
 

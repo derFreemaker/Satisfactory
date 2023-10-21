@@ -375,48 +375,6 @@ return Utils.Class.CreateClass(Task, "Core.Task")
 ]]
 }
 
-PackageData["CoreUsage_EventName"] = {
-    Location = "Core.Usage_EventName",
-    Namespace = "Core.Usage_EventName",
-    IsRunnable = true,
-    Data = [[
----@enum Core.EventNameUsage
-local EventNameUsage = {
-    -- DNS
-    DNS_Heartbeat = "DNS",
-    DNS_ReturnServerAddress = "Return-DNS-Server-Address",
-
-    -- Rest
-    RestRequest = "Rest-Request",
-    RestResponse = "Rest-Response",
-
-    -- FactoryControl
-    FactoryControl = "FactoryControl"
-}
-
-return EventNameUsage
-]]
-}
-
-PackageData["CoreUsage_Port"] = {
-    Location = "Core.Usage_Port",
-    Namespace = "Core.Usage_Port",
-    IsRunnable = true,
-    Data = [[
--- 0 .. 2^1023
-
----@enum Core.PortUsage
-local PortUsage = {
-	Heartbeats = 10,
-	DNS = 53,
-	HTTP = 80,
-	FactoryControl = 12500,
-}
-
-return PortUsage
-]]
-}
-
 PackageData["CoreUUID"] = {
     Location = "Core.UUID",
     Namespace = "Core.UUID",
@@ -765,16 +723,16 @@ function EventPullAdapter:AddListenerOnce(signalName, task)
 	return self
 end
 
----@param timeout number? in seconds
+---@param timeoutSeconds number? in seconds
 ---@return boolean gotEvent
-function EventPullAdapter:Wait(timeout)
+function EventPullAdapter:Wait(timeoutSeconds)
 	self._Logger:LogTrace('## waiting for event pull ##')
 	---@type table?
 	local eventPullData = nil
-	if timeout == nil then
+	if timeoutSeconds == nil then
 		eventPullData = { event.pull() }
 	else
-		eventPullData = { event.pull(timeout) }
+		eventPullData = { event.pull(timeoutSeconds) }
 	end
 	if #eventPullData == 0 then
 		return false
@@ -786,9 +744,9 @@ function EventPullAdapter:Wait(timeout)
 end
 
 --- Waits for all events in the event queue to be handled
----@param timeout number? in seconds
-function EventPullAdapter:WaitForAll(timeout)
-	while self:Wait(timeout) do
+---@param timeoutSeconds number? in seconds
+function EventPullAdapter:WaitForAll(timeoutSeconds)
+	while self:Wait(timeoutSeconds) do
 	end
 end
 
@@ -1785,6 +1743,60 @@ function Serializable:Static__Deserialize(...)
 end
 
 return Utils.Class.CreateClass(Serializable, "Core.Json.Serializable")
+]]
+}
+
+PackageData["CoreUsageUsage_EventName"] = {
+    Location = "Core.Usage.Usage_EventName",
+    Namespace = "Core.Usage.Usage_EventName",
+    IsRunnable = true,
+    Data = [[
+---@enum Core.EventNameUsage
+local EventNameUsage = {
+    -- DNS
+    DNS_Heartbeat = "DNS",
+    DNS_ReturnServerAddress = "Return-DNS-Server-Address",
+
+    -- Rest
+    RestRequest = "Rest-Request",
+    RestResponse = "Rest-Response",
+
+    -- FactoryControl
+    FactoryControl = "FactoryControl"
+}
+
+return EventNameUsage
+]]
+}
+
+PackageData["CoreUsageUsage_Port"] = {
+    Location = "Core.Usage.Usage_Port",
+    Namespace = "Core.Usage.Usage_Port",
+    IsRunnable = true,
+    Data = [[
+-- 0 .. 2^1023
+
+---@enum Core.PortUsage
+local PortUsage = {
+	Heartbeats = 10,
+	DNS = 53,
+	HTTP = 80,
+	FactoryControl = 12500,
+}
+
+return PortUsage
+]]
+}
+
+PackageData["CoreUsageUsage"] = {
+    Location = "Core.Usage.Usage",
+    Namespace = "Core.Usage.Usage",
+    IsRunnable = true,
+    Data = [[
+return {
+    Ports = require("Core.Usage.Usage_Port"),
+    Events = require("Core.Usage.Usage_EventName")
+}
 ]]
 }
 

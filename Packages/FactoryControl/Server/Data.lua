@@ -7,7 +7,7 @@ PackageData["FactoryControlServer__main"] = {
     IsRunnable = true,
     Data = [[
 local Config = require('FactoryControl.Core.Config')
-local PortUsage = require('Core.Usage_Port')
+local PortUsage = require('Core.Usage.Usage_Port')
 
 local EventPullAdapter = require('Core.Event.EventPullAdapter')
 local NetworkClient = require('Net.Core.NetworkClient')
@@ -30,13 +30,13 @@ function Main:Configure()
 	self._EventPullAdapter = EventPullAdapter:Initialize(self.Logger:subLogger('EventPullAdapter'))
 
 	self._NetClient = NetworkClient(self.Logger:subLogger('NetworkClient'))
-	local netPort = self._NetClient:CreateNetworkPort(PortUsage.HTTP)
+	local netPort = self._NetClient:GetOrCreateNetworkPort(PortUsage.HTTP)
 	netPort:OpenPort()
 	self._ApiController = RestApiController(netPort, self.Logger:subLogger('RestApiController'))
 
 	local databaseAccessLayer = Database(self.Logger:subLogger("DatabaseAccessLayer"))
 
-	self._ApiController:AddRestApiEndpointBase(
+	self._ApiController:AddEndpointBase(
 		ControllerEndpoints(self.Logger:subLogger("ControllerEndpoints"), databaseAccessLayer))
 
 	self.Logger:LogDebug('setup endpoints')

@@ -36,8 +36,7 @@ PackageData["FactoryControlClientClient"] = {
     Namespace = "FactoryControl.Client.Client",
     IsRunnable = true,
     Data = [[
-local PortUsage = require("Core.Usage_Port")
-local EventNameUsage = require("Core.Usage_EventName")
+local Usage = require("Core.Usage.Usage")
 
 local DataClient = require("FactoryControl.Client.DataClient")
 local NetworkClient = require("Net.Core.NetworkClient")
@@ -147,8 +146,8 @@ end
 function Client:ButtonPressed(ipAddress, buttonPressed)
     self._NetClient:Send(
         ipAddress,
-        PortUsage.FactoryControl,
-        EventNameUsage.FactoryControl,
+        Usage.Ports.FactoryControl,
+        Usage.Events.FactoryControl,
         buttonPressed
     )
 end
@@ -158,8 +157,8 @@ end
 function Client:UpdateSwitch(ipAddress, switchUpdate)
     self._NetClient:Send(
         ipAddress,
-        PortUsage.FactoryControl,
-        EventNameUsage.FactoryControl,
+        Usage.Ports.FactoryControl,
+        Usage.Events.FactoryControl,
         switchUpdate
     )
 end
@@ -169,8 +168,8 @@ end
 function Client:UpdateRadial(ipAddress, radialUpdate)
     self._NetClient:Send(
         ipAddress,
-        PortUsage.FactoryControl,
-        EventNameUsage.FactoryControl,
+        Usage.Ports.FactoryControl,
+        Usage.Events.FactoryControl,
         radialUpdate
     )
 end
@@ -180,8 +179,8 @@ end
 function Client:UpdateChart(ipAddress, chartUpdate)
     self._NetClient:Send(
         ipAddress,
-        PortUsage.FactoryControl,
-        EventNameUsage.FactoryControl,
+        Usage.Ports.FactoryControl,
+        Usage.Events.FactoryControl,
         chartUpdate
     )
 end

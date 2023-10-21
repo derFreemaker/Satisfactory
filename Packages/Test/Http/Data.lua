@@ -34,8 +34,8 @@ function Main:Run()
 	self._DnsClient.Static_WaitForHeartbeat(self._NetClient)
 	log("got heartbeat")
 
-	local address = self._DnsClient.Static__GetServerAddress(self._NetClient)
-	log(address)
+	local ipAddress = self._DnsClient.Static__GetServerAddress(self._NetClient)
+	log(ipAddress)
 
 
 
