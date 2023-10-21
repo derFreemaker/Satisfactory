@@ -18,6 +18,11 @@ function IPAddress:__newindex()
     error("Net.Core.IPAddress is read only.")
 end
 
+---@private
+function IPAddress:__tostring()
+    return self:GetAddress()
+end
+
 --#region - Serializable -
 
 ---@return string address

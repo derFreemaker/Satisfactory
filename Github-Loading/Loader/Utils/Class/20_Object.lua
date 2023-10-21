@@ -74,9 +74,16 @@ function Object:Static__GetType()
 	return metatable.Type
 end
 
+---@protected
 ---@return string typeName
 function Object:__tostring()
 	return self:Static__GetType().Name
+end
+
+---@protected
+---@return string
+function Object.__concat(left, right)
+	return tostring(left) .. tostring(right)
 end
 
 local typeInfo = {}
