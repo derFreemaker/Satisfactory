@@ -350,7 +350,7 @@ end
 
 ---@return integer
 function NetworkPort:GetEventsCount()
-	return #self._Events
+	return Utils.Table.Count(self._Events)
 end
 
 ---@return Net.Core.NetworkClient
