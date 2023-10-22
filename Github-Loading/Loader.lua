@@ -399,9 +399,9 @@ function Loader:Configure(program, package, logLevel)
 	local Task = require('Core.Task')
 	self.Logger:CopyListenersToCoreEvent(Task, program.Logger)
 	___logger:setLogger(program.Logger)
-	local thread, success, returns = Utils.Function.InvokeProtected(program.Configure, program)
+	local success, errorMsg, returns = Utils.Function.InvokeProtected(program.Configure, program)
 	if not success then
-		self.Logger:LogError(debug.traceback(thread, returns[1]))
+		self.Logger:LogError(errorMsg)
 		error("Unable to complete configure function")
 	end
 	___logger:setLogger(self.Logger)
@@ -416,11 +416,10 @@ end
 function Loader:Run(program)
 	self.Logger:LogTrace('running program...')
 	___logger:setLogger(program.Logger)
-	local thread,
-	success,
-	returns = Utils.Function.InvokeProtected(program.Run, program)
+	local success, errorMsg, returns = Utils.Function.InvokeProtected(program.Run, program)
 	if not success then
-		self.Logger:LogError(debug.traceback(thread, returns[1]))
+		self.Logger:LogError(errorMsg)
+		error("program stoped")
 	end
 	___logger:setLogger(self.Logger)
 	if returns[1] == '$%not found%$' then

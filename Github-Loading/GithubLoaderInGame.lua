@@ -101,16 +101,16 @@ local function Run()
 end
 
 repeat
+	local result
 	local thread =
 		coroutine.create(
 			function()
-				coroutine.yield(Run())
+				result = Run()
 			end
 		)
-	local success,
-	result = coroutine.resume(thread)
+	local success, errorMsg = coroutine.resume(thread)
 	if not success then
-		print(debug.traceback(thread, result))
+		print(debug.traceback(thread, errorMsg))
 	end
 	coroutine.close(thread)
 until not result or type(result) ~= 'boolean'

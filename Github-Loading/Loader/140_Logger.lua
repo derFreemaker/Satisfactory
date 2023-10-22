@@ -142,6 +142,10 @@ local function formatMessagePart(obj)
     end
 
     if type(obj) == "table" then
+        if Utils.Class.IsClass(obj) then
+            return tostring(obj)
+        end
+
         local str = ""
         for _, line in ipairs(tableToLineTree(obj)) do
             str = str .. "\n" .. line

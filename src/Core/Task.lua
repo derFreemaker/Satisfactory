@@ -5,6 +5,7 @@
 ---@field private _Closed boolean
 ---@field private _Success boolean
 ---@field private _Results any[]
+---@field private _Error string?
 ---@field private _Traceback string?
 ---@overload fun(func: function, passthrough: any) : Core.Task
 local Task = {}
@@ -43,28 +44,19 @@ end
 ---@private
 ---@param ... any args
 function Task:invokeThread(...)
-    self._Success, self._Results = coroutine.resume(self._Thread, ...)
+    self._Success, self._Error = coroutine.resume(self._Thread, ...)
 end
 
 ---@param ... any parameters
 ---@return any ... results
 function Task:Execute(...)
     ---@param ... any parameters
-    ---@return any[] returns
     local function invokeFunc(...)
-        ---@type any[]
-        local result
         if self._Passthrough ~= nil then
-            result = { self._Func(self._Passthrough, ...) }
+            self._Results = { self._Func(self._Passthrough, ...) }
         else
-            result = { self._Func(...) }
+            self._Results = { self._Func(...) }
         end
-        if coroutine.isyieldable(self._Thread) then
-            --? Should always return here
-            return coroutine.yield(result)
-        end
-        --! Should never return here
-        return result
     end
 
     self._Thread = coroutine.create(invokeFunc)
@@ -101,7 +93,9 @@ end
 
 function Task:Close()
     if self._Closed then return end
-    self:Traceback()
+    if not self._Success then
+        self:Traceback()
+    end
     coroutine.close(self._Thread)
     self._Closed = true
 end
@@ -109,14 +103,10 @@ end
 ---@private
 ---@return string traceback
 function Task:Traceback()
-    if self._Traceback ~= nil then
+    if self._Traceback ~= nil or self._Closed then
         return self._Traceback
     end
-    local error = ""
-    if type(self._Results) == "string" then
-        error = self._Results --[[@as string]]
-    end
-    self._Traceback = debug.traceback(self._Thread, error)
+    self._Traceback = debug.traceback(self._Thread, self._Error or "")
     return self._Traceback
 end
 

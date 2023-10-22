@@ -27,11 +27,15 @@ end
 ---@param ... any
 ---@return boolean success, any ...
 function Listener:Execute(logger, ...)
-    local success, results
+    local success, results, errorMsg
     if self._Parent ~= nil then
-        _, success, results = Utils.Function.InvokeProtected(self._Func, self._Parent, ...)
+        success, errorMsg, results = Utils.Function.InvokeProtected(self._Func, self._Parent, ...)
     else
-        _, success, results = Utils.Function.InvokeProtected(self._Func, ...)
+        success, errorMsg, results = Utils.Function.InvokeProtected(self._Func, ...)
+    end
+
+    if not success and logger then
+        logger:LogError(errorMsg)
     end
     return success, table.unpack(results)
 end
