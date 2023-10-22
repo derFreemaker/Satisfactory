@@ -106,7 +106,7 @@ function Task:Traceback()
     if self._Traceback ~= nil or self._Closed then
         return self._Traceback
     end
-    self._Traceback = debug.traceback(self._Thread, self._Error or "")
+    self._Traceback = debug.traceback(self._Thread, self._Error or "") .. debug.traceback():sub(17)
     return self._Traceback
 end
 
@@ -122,7 +122,7 @@ end
 function Task:LogError(logger)
     self:Close()
     if not self._Success and logger then
-        logger:LogError("Task: \n" .. self:Traceback() .. debug.traceback():sub(17))
+        logger:LogError("Task [Error]:\n" .. self:Traceback())
     end
 end
 
