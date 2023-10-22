@@ -245,7 +245,11 @@ function NetworkClient:WaitForEvent(eventName, port, timeoutSeconds)
 	end
 	self:AddListenerOnce(eventName, port, Task(set)):OpenPort()
 
-	EventPullAdapter:WaitForAll(timeoutSeconds)
+	while result == nil do
+		if not EventPullAdapter:Wait(timeoutSeconds) then
+			break
+		end
+	end
 	return result
 end
 

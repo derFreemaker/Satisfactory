@@ -602,16 +602,12 @@ function Event:AddListener(task)
     return self
 end
 
-Event.On = Event.AddListener
-
 ---@param task Core.Task
 ---@return Core.Event
 function Event:AddListenerOnce(task)
     table.insert(self._OnceFuncs, task)
     return self
 end
-
-Event.Once = Event.AddListenerOnce
 
 ---@param logger Core.Logger?
 ---@param ... any
