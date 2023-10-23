@@ -1,9 +1,11 @@
 ---
 sticker: lucide//download-cloud
 ---
+
 - Loads packages from Github
 
 ---
+
 ## Push Pipeline
 
 1. bundle the code with task: "bundle all" or "bundle all optimized" for smaller files

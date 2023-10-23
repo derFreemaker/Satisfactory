@@ -92,15 +92,51 @@ function DbTable:ObjectChanged(key)
     table.insert(self._DataChanged, key)
 end
 
+---@private
+---@param key string | number | Core.Json.Serializable
+---@return string | number
+function DbTable:_FormatKeyForStorage(key)
+    local typeName = type(key)
+    if typeName ~= "string" and typeName ~= "number" then
+        if not Utils.Class.HasBaseClass(key, "Core.Json.Serializable") then
+            error("key is not a string, number or Serializable")
+        end
+
+        key = self._Serializer:Serialize(key)
+        ---@cast key string
+    end
+
+    return key
+end
+
+---@private
+---@param key string | number
+---@return string | number | Core.Json.Serializable
+function DbTable:_FormatKeyForUsage(key)
+    if type(key) == "number" then
+        return key
+    end
+
+    ---@type Out<any>
+    local outObj = {}
+    if self._Serializer:TryDeserialize(key, outObj) then
+        return outObj.Return
+    end
+
+    return key
+end
+
 ---@param key string | number | Core.Json.Serializable
 ---@param value table
 function DbTable:Set(key, value)
+    key = self:_FormatKeyForStorage(key)
     self._Data[key] = value
     self:ObjectChanged(key)
 end
 
 ---@param key string | number | Core.Json.Serializable
 function DbTable:Delete(key)
+    key = self:_FormatKeyForStorage(key)
     self._Data[key] = nil
     self:ObjectChanged(key)
 end
@@ -108,6 +144,7 @@ end
 ---@param key string | number | Core.Json.Serializable
 ---@return table value
 function DbTable:Get(key)
+    key = self:_FormatKeyForStorage(key)
     local data = self._Data[key]
     return Dto(key, data, self)
 end
@@ -119,7 +156,7 @@ function DbTable:__pairs()
     local dtoObjs = {}
 
     for key, value in pairs(self._Data) do
-        dtoObjs[key] = Dto(key, value, self)
+        dtoObjs[key] = Dto(self:_FormatKeyForUsage(key), value, self)
     end
 
     return next, dtoObjs, nil
@@ -168,9 +205,13 @@ end
 ---@param value Json.SerializeableTypes
 function Dto:__newindex(key, value)
     local keyType = type(key)
-
-    if keyType ~= "boolean" and keyType ~= "string" and keyType ~= "number" and keyType ~= "table" then
+    if keyType ~= "string" and keyType ~= "number" and keyType ~= "table" then
         error("unsupported key type: " .. keyType)
+    end
+
+    local valueType = type(value)
+    if valueType ~= "boolean" and valueType ~= "string" and valueType ~= "number" and valueType ~= "table" and valueType ~= "nil" then
+        error("unsupported value type: " .. valueType)
     end
 
     self._Data[key] = value

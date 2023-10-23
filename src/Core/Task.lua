@@ -69,16 +69,21 @@ end
 
 ---@private
 function Task:CheckThreadState()
-    if self._Thread == nil then
+    local state = self:State()
+
+    if state == "not created" then
         error("cannot resume a not started task")
     end
+
     if self._Closed then
         error("cannot resume a closed task")
     end
-    if coroutine.status(self._Thread) == "running" then
+
+    if state == "running" then
         error("cannot resume running task")
     end
-    if coroutine.status(self._Thread) == "dead" then
+
+    if state == "dead" then
         error("cannot resume dead task")
     end
 end
@@ -106,7 +111,8 @@ function Task:Traceback()
     if self._Traceback ~= nil or self._Closed then
         return self._Traceback
     end
-    self._Traceback = debug.traceback(self._Thread, self._Error or "") .. debug.traceback():sub(17)
+    self._Traceback = debug.traceback(self._Thread, self._Error or "")
+        .. "\n[THREAD START]\n" .. debug.traceback():sub(18)
     return self._Traceback
 end
 

@@ -32,6 +32,8 @@ local ApiRequest = require('Net.Rest.Api.Request')
 local Address = require('DNS.Core.Entities.Address.Address')
 local CreateAddress = require('DNS.Core.Entities.Address.Create')
 
+-- //TODO: rewrite DNS Client
+
 ---@class DNS.Client : object
 ---@field private _NetworkClient Net.Core.NetworkClient
 ---@field private _ApiClient Net.Rest.Api.Client

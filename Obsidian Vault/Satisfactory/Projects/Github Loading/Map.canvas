@@ -6,7 +6,7 @@
 		{"id":"d8cd574a6907d2d3","type":"text","text":"<h2 style=\"text-align: center\">bundles source code to package</h2>","x":880,"y":1160,"width":457,"height":60},
 		{"id":"6e40fdfd1805949b","type":"file","file":"Projects/Github Loading/Lua Bundler.md","x":1520,"y":1080,"width":400,"height":520},
 		{"id":"b98eff6918619390","type":"file","file":"Projects/Github Loading/Package/Module.md","x":1137,"y":-80,"width":400,"height":380},
-		{"id":"5a3008d7d73e6fe7","type":"file","file":"Projects/Github Loading/Github Loading.md","x":-100,"y":830,"width":400,"height":360}
+		{"id":"5a3008d7d73e6fe7","type":"file","file":"Projects/Github Loading/Github Loading.md","x":-260,"y":860,"width":400,"height":360}
 	],
 	"edges":[
 		{"id":"cb73144cde0cff60","fromNode":"b98eff6918619390","fromSide":"bottom","toNode":"852415121b2e5ebf","toSide":"right"},

@@ -48,6 +48,11 @@ function NetworkClient:GetNick()
 	return self._NetworkCard:GetNick()
 end
 
+---@return Core.Json.Serializer serializer
+function NetworkClient:GetJsonSerializer()
+	return self._Serializer
+end
+
 ---@param port integer | "all"
 ---@return Net.Core.NetworkPort?
 function NetworkClient:GetNetworkPort(port)

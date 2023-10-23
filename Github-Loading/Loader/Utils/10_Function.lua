@@ -5,7 +5,7 @@ local Function = {}
 ---@param ... any
 ---@return boolean success, string? error, any[] returns
 function Function.InvokeProtected(func, ...)
-	local results
+	local results = {}
 	local function invokeFunc(...)
 		results = { func(...) }
 	end

@@ -1,9 +1,11 @@
 local EventNameUsage = require("Core.Usage.Usage_EventName")
 
 local Task = require('Core.Task')
-local RestApiEndpoint = require('Net.Rest.Api.Server.Endpoint')
-local RestApiResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
-local RestApiMethod = require('Net.Core.Method')
+
+local Method = require('Net.Core.Method')
+local Endpoint = require("Net.Rest.Api.Server.Endpoint")
+
+local ResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 
 ---@class Net.Rest.Api.Server.Controller : object
 ---@field private _Endpoints Dictionary<Net.Core.Method, Dictionary<string, Net.Rest.Api.Server.Endpoint>>
@@ -16,92 +18,75 @@ local Controller = {}
 ---@param netPort Net.Core.NetworkPort
 ---@param logger Core.Logger
 function Controller:__init(netPort, logger)
-	self._Endpoints = {}
-	self._NetPort = netPort
-	self._Logger = logger
-	netPort:AddListener('Rest-Request', Task(self.onMessageRecieved, self))
+    self._Endpoints = {}
+    self._NetPort = netPort
+    self._Logger = logger
+    netPort:AddListener(EventNameUsage.RestRequest, Task(self.onMessageRecieved, self))
 end
 
 ---@private
 ---@param context Net.Core.NetworkContext
 function Controller:onMessageRecieved(context)
-	local request = context:ToApiRequest()
-	self._Logger:LogDebug("recieved request on endpoint: '" .. request.Endpoint .. "'")
-	local endpoint = self:GetEndpoint(request.Method, request.Endpoint)
-	if endpoint == nil then
-		self._Logger:LogTrace('found no endpoint')
-		if context.Header.ReturnPort then
-			self._NetPort:GetNetClient():Send(
-				context.SenderIPAddress,
-				context.Header.ReturnPort,
-				EventNameUsage.RestResponse,
-				RestApiResponseTemplates.NotFound('Unable to find endpoint'):ExtractData())
-		end
-		return
-	end
-	self._Logger:LogTrace('found endpoint: ' .. request.Endpoint)
-	endpoint:Execute(request, context, self._NetPort:GetNetClient())
+    local request = context:GetApiRequest()
+
+    local endpoint = self:GetEndpoint(request.Method, request.Endpoint)
+    if not endpoint then
+        self._Logger:LogTrace('found no endpoint:', request.Endpoint)
+        if context.Header.ReturnPort then
+            self._NetPort:GetNetClient():Send(
+                context.Header.ReturnIPAddress,
+                context.Header.ReturnPort,
+                EventNameUsage.RestResponse,
+                ResponseTemplates.NotFound('Unable to find endpoint'))
+        end
+        return
+    end
+    self._Logger:LogTrace('found endpoint:', request.Endpoint)
+    endpoint:Execute(request, context, self._NetPort:GetNetClient())
 end
 
 ---@param endpointMethod Net.Core.Method
 ---@return Dictionary<string, Net.Rest.Api.Server.Endpoint>?
-function Controller:GetSubEndpoints(endpointMethod)
-	for method, subEndpoints in pairs(self._Endpoints) do
-		if method == endpointMethod then
-			return subEndpoints
-		end
-	end
+function Controller:GetMethodEndpoints(endpointMethod)
+    return self._Endpoints[endpointMethod]
 end
 
 ---@param endpointMethod Net.Core.Method
----@param endpointName string
+---@param endpointUrl Net.Rest.Uri
 ---@return Net.Rest.Api.Server.Endpoint?
-function Controller:GetEndpoint(endpointMethod, endpointName)
-	local subEndpoints = self:GetSubEndpoints(endpointMethod)
+function Controller:GetEndpoint(endpointMethod, endpointUrl)
+    local methodEndpoints = self:GetMethodEndpoints(endpointMethod)
+    if not methodEndpoints then
+        return
+    end
 
-	if not subEndpoints then
-		return
-	end
-
-	for name, endpoint in pairs(subEndpoints) do
-		if name == endpointName then
-			return endpoint
-		end
-	end
+    for uriStr, endpoint in pairs(methodEndpoints) do
+        local uriPattern = "^" .. uriStr:gsub("{.*}", ".*") .. "$"
+        if tostring(endpointUrl):match(uriPattern) then
+            self._Logger:LogDebug("found endpoint: " .. tostring(endpointUrl) .. " -> " .. uriStr)
+            return endpoint
+        end
+    end
 end
 
 ---@param method Net.Core.Method
----@param name string
+---@param endpointUrl string
 ---@param task Core.Task
----@return Net.Rest.Api.Server.Controller
-function Controller:AddEndpoint(method, name, task)
-	if self:GetEndpoint(method, name) ~= nil then
-		error('Endpoint allready exists')
-	end
+function Controller:AddEndpoint(method, endpointUrl, task)
+    local methodEndpoints = self:GetMethodEndpoints(method)
+    if not methodEndpoints then
+        methodEndpoints = {}
+        self._Endpoints[method] = methodEndpoints
+    end
 
-	local subEndpoints = self:GetSubEndpoints(method)
+    local endpoint = methodEndpoints[tostring(endpointUrl)]
+    if endpoint then
+        self._Logger:LogWarning('Endpoint already exists: ' .. tostring(endpointUrl))
+        return
+    end
 
-	if not subEndpoints then
-		subEndpoints = {}
-		self._Endpoints[method] = subEndpoints
-	end
-
-	subEndpoints[name] = RestApiEndpoint(task, self._Logger:subLogger("RestApiEndpoint[" .. method .. ":" .. name .. "]"))
-	self._Logger:LogTrace("Added endpoint: " .. method .. ":" .. name)
-	return self
+    endpoint = Endpoint(endpointUrl, task, self._Logger:subLogger("Endpoint[" .. endpointUrl .. "]"))
+    methodEndpoints[endpointUrl] = endpoint
 end
 
----@param endpoint Net.Rest.Api.Server.EndpointBase
-function Controller:AddEndpointBase(endpoint)
-	for name, func in next, endpoint, nil do
-		if type(name) == 'string' and type(func) == 'function' then
-			local method,
-			endpointName = name:match('^(.+)__(.+)$')
-			if method ~= nil and endpoint ~= nil and RestApiMethod[method] then
-				self:AddEndpoint(method, endpointName, Task(func, endpoint))
-			end
-		end
-	end
-end
-
-return Utils.Class.CreateClass(Controller, 'Net.Rest.Api.Server.Controller')
+return Utils.Class.CreateClass(Controller, "Net.Rest.Api.Server.Controller")

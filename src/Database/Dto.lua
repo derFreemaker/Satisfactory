@@ -32,9 +32,13 @@ end
 ---@param value Json.SerializeableTypes
 function Dto:__newindex(key, value)
     local keyType = type(key)
-
-    if keyType ~= "boolean" and keyType ~= "string" and keyType ~= "number" and keyType ~= "table" then
+    if keyType ~= "string" and keyType ~= "number" and keyType ~= "table" then
         error("unsupported key type: " .. keyType)
+    end
+
+    local valueType = type(value)
+    if valueType ~= "boolean" and valueType ~= "string" and valueType ~= "number" and valueType ~= "table" and valueType ~= "nil" then
+        error("unsupported value type: " .. valueType)
     end
 
     self._Data[key] = value

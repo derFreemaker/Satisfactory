@@ -18,26 +18,26 @@ local Client = {}
 ---@param netClient Net.Core.NetworkClient
 ---@param logger Core.Logger
 function Client:__init(serverIPAddress, serverPort, returnPort, netClient, logger)
-	self.ServerIPAddress = serverIPAddress
-	self.ServerPort = serverPort
-	self.ReturnPort = returnPort
-	self._NetClient = netClient
-	self._Logger = logger
+    self.ServerIPAddress = serverIPAddress
+    self.ServerPort = serverPort
+    self.ReturnPort = returnPort
+    self._NetClient = netClient
+    self._Logger = logger
 end
 
 ---@param request Net.Rest.Api.Request
 ---@param timeout integer?
 ---@return Net.Rest.Api.Response response
 function Client:Send(request, timeout)
-	self._NetClient:Send(self.ServerIPAddress, self.ServerPort, EventNameUsage.RestRequest, request:ExtractData(),
-		{ ReturnPort = self.ReturnPort })
-	local context = self._NetClient:WaitForEvent(EventNameUsage.RestResponse, self.ReturnPort, timeout or 5)
-	if not context then
-		return Response(nil, { Code = 408 })
-	end
+    self._NetClient:Send(self.ServerIPAddress, self.ServerPort, EventNameUsage.RestRequest, request,
+        { ReturnPort = self.ReturnPort })
+    local context = self._NetClient:WaitForEvent(EventNameUsage.RestResponse, self.ReturnPort, timeout or 5)
+    if not context then
+        return Response(nil, { Code = 408 })
+    end
 
-	local response = context:ToApiResponse()
-	return response
+    local response = context:GetApiResponse()
+    return response
 end
 
 return Utils.Class.CreateClass(Client, 'Net.Rest.Api.Client')

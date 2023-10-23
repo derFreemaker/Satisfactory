@@ -115,12 +115,14 @@ end
 ---@param other Core.UUID
 ---@return boolean isSame
 function UUID:__eq(other)
-    if type(other) ~= "table" or not other.Static__GetType or other:Static__GetType() ~= "Core.UUID" then
-        local typeString = type(other)
-        if type(other) == "table" and other.Static__GetType then
-            typeString = other:Static__GetType().Name
+    local other_Static__GetType = other.Static__GetType
+    if type(other) ~= "table" or not other_Static__GetType or other_Static__GetType(other) ~= "Core.UUID" then
+        local typeName = type(other)
+        if type(other) == "table" and other_Static__GetType then
+            typeName = other_Static__GetType(other).Name
         end
-        error("wrong argument #2: (Core.UUID expected; got " .. typeString .. ")")
+
+        error("wrong argument #2: (Core.UUID expected; got " .. typeName .. ")")
         return false
     end
 

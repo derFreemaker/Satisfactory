@@ -146,6 +146,11 @@ function NetworkClient:GetNick()
 	return self._NetworkCard:GetNick()
 end
 
+---@return Core.Json.Serializer serializer
+function NetworkClient:GetJsonSerializer()
+	return self._Serializer
+end
+
 ---@param port integer | "all"
 ---@return Net.Core.NetworkPort?
 function NetworkClient:GetNetworkPort(port)
@@ -305,13 +310,17 @@ PackageData["NetCoreNetworkContext"] = {
 local JsonSerializer = require('Core.Json.JsonSerializer')
 local IPaddress = require("Net.Core.IPAddress")
 
+---@class Net.Core.NetworkContext.Header : Dictionary<string, any>
+---@field ReturnIPAddress Net.Core.IPAddress
+---@field ReturnPort integer
+
 ---@class Net.Core.NetworkContext : object
 ---@field SignalName string
 ---@field SignalSender Satisfactory.Components.Object
 ---@field SenderIPAddress Net.Core.IPAddress
 ---@field Port integer
 ---@field EventName string
----@field Header Dictionary<string, any>
+---@field Header Net.Core.NetworkContext.Header
 ---@field Body any
 ---@overload fun(data: any[], serializer: Core.Json.Serializer?) : Net.Core.NetworkContext
 local NetworkContext = {}
@@ -329,8 +338,12 @@ function NetworkContext:__init(data, serializer)
 	self.SenderIPAddress = IPaddress(data[3])
 	self.Port = data[4]
 	self.EventName = data[5]
-	self.Header = serializer:Deserialize(data[7] or 'null')
+	self.Header = serializer:Deserialize(data[7] or 'null') or {}
 	self.Body = serializer:Deserialize(data[6] or 'null')
+
+	if not self.Header.ReturnIPAddress then
+		self.Header.ReturnIPAddress = self.SenderIPAddress
+	end
 end
 
 return Utils.Class.CreateClass(NetworkContext, 'Core.Net.NetworkContext')

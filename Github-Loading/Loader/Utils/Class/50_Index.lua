@@ -81,7 +81,7 @@ end
 ---@param baseClassName string
 ---@param type Utils.Class.Type
 ---@return boolean hasBaseClass
-function Class.HasBaseClass(baseClassName, type)
+function Class.HasTypeBaseClass(baseClassName, type)
     local typeName = type.Name
     if typeName == baseClassName then
         return true
@@ -91,7 +91,21 @@ function Class.HasBaseClass(baseClassName, type)
         return false
     end
 
-    return Class.HasBaseClass(baseClassName, type.Base)
+    return Class.HasTypeBaseClass(baseClassName, type.Base)
+end
+
+---@param obj any
+---@param className string
+---@return boolean hasBaseClass
+function Class.HasBaseClass(obj, className)
+    ---@type Out<Utils.Class.Metatable>
+    local metatable = {}
+    if not Class.IsClass(obj, metatable) then
+        return false
+    end
+    metatable = metatable.Return
+
+    return Class.HasTypeBaseClass(className, metatable.Type)
 end
 
 ---@param obj any

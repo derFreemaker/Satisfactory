@@ -331,16 +331,21 @@ end
 
 ---@private
 function Task:CheckThreadState()
-    if self._Thread == nil then
+    local state = self:State()
+
+    if state == "not created" then
         error("cannot resume a not started task")
     end
+
     if self._Closed then
         error("cannot resume a closed task")
     end
-    if coroutine.status(self._Thread) == "running" then
+
+    if state == "running" then
         error("cannot resume running task")
     end
-    if coroutine.status(self._Thread) == "dead" then
+
+    if state == "dead" then
         error("cannot resume dead task")
     end
 end
@@ -368,7 +373,8 @@ function Task:Traceback()
     if self._Traceback ~= nil or self._Closed then
         return self._Traceback
     end
-    self._Traceback = debug.traceback(self._Thread, self._Error or "") .. debug.traceback():sub(17)
+    self._Traceback = debug.traceback(self._Thread, self._Error or "")
+        .. "\n[THREAD START]\n" .. debug.traceback():sub(18)
     return self._Traceback
 end
 
@@ -514,12 +520,14 @@ end
 ---@param other Core.UUID
 ---@return boolean isSame
 function UUID:__eq(other)
-    if type(other) ~= "table" or not other.Static__GetType or other:Static__GetType() ~= "Core.UUID" then
-        local typeString = type(other)
-        if type(other) == "table" and other.Static__GetType then
-            typeString = other:Static__GetType().Name
+    local other_Static__GetType = other.Static__GetType
+    if type(other) ~= "table" or not other_Static__GetType or other_Static__GetType(other) ~= "Core.UUID" then
+        local typeName = type(other)
+        if type(other) == "table" and other_Static__GetType then
+            typeName = other_Static__GetType(other).Name
         end
-        error("wrong argument #2: (Core.UUID expected; got " .. typeString .. ")")
+
+        error("wrong argument #2: (Core.UUID expected; got " .. typeName .. ")")
         return false
     end
 
@@ -1594,7 +1602,7 @@ end
 ---@param typeInfo Utils.Class.Type
 ---@return Core.Json.Serializer
 function JsonSerializer:AddTypeInfo(typeInfo)
-    if not Utils.Class.HasBaseClass("Core.Json.Serializable", typeInfo) then
+    if not Utils.Class.HasTypeBaseClass("Core.Json.Serializable", typeInfo) then
         error("class type has not Core.Json.Serializable as base class", 2)
     end
     if not Utils.Table.ContainsKey(self._TypeInfos, typeInfo.Name) then
@@ -1613,15 +1621,10 @@ function JsonSerializer:AddTypeInfos(typeInfos)
 end
 
 ---@private
----@param class object
+---@param class Core.Json.Serializable
 ---@return table data
 function JsonSerializer:serializeClass(class)
     local typeInfo = class:Static__GetType()
-    if not Utils.Class.HasBaseClass("Core.Json.Serializable", typeInfo) then
-        error("can not serialize class: " .. typeInfo.Name .. " use 'Core.Json.Serializable' as base class")
-    end
-    ---@cast class Core.Json.Serializable
-
     local data = { __Type = typeInfo.Name, __Data = { class:Serialize() } }
 
     if type(data.__Data) == "table" then
@@ -1647,8 +1650,8 @@ function JsonSerializer:serializeInternal(obj)
         return obj
     end
 
-    if Utils.Class.IsClass(obj) then
-        ---@cast obj object
+    if Utils.Class.HasBaseClass(obj, "Core.Json.Serializable") then
+        ---@cast obj Core.Json.Serializable
         return self:serializeClass(obj)
     end
 
@@ -1734,6 +1737,16 @@ function JsonSerializer:Deserialize(str)
     end
 
     return obj
+end
+
+---@param str string
+---@param outObj Out<any>
+---@return boolean couldDeserialize
+function JsonSerializer:TryDeserialize(str, outObj)
+    local success, _, results = Utils.Function.InvokeProtected(self.Deserialize, self, str)
+    outObj.Return = results[1]
+
+    return success
 end
 
 Utils.Class.CreateClass(JsonSerializer, "Core.Json.JsonSerializer")

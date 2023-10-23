@@ -29,7 +29,7 @@ end
 ---@param typeInfo Utils.Class.Type
 ---@return Core.Json.Serializer
 function JsonSerializer:AddTypeInfo(typeInfo)
-    if not Utils.Class.HasBaseClass("Core.Json.Serializable", typeInfo) then
+    if not Utils.Class.HasTypeBaseClass("Core.Json.Serializable", typeInfo) then
         error("class type has not Core.Json.Serializable as base class", 2)
     end
     if not Utils.Table.ContainsKey(self._TypeInfos, typeInfo.Name) then
@@ -48,15 +48,10 @@ function JsonSerializer:AddTypeInfos(typeInfos)
 end
 
 ---@private
----@param class object
+---@param class Core.Json.Serializable
 ---@return table data
 function JsonSerializer:serializeClass(class)
     local typeInfo = class:Static__GetType()
-    if not Utils.Class.HasBaseClass("Core.Json.Serializable", typeInfo) then
-        error("can not serialize class: " .. typeInfo.Name .. " use 'Core.Json.Serializable' as base class")
-    end
-    ---@cast class Core.Json.Serializable
-
     local data = { __Type = typeInfo.Name, __Data = { class:Serialize() } }
 
     if type(data.__Data) == "table" then
@@ -82,8 +77,8 @@ function JsonSerializer:serializeInternal(obj)
         return obj
     end
 
-    if Utils.Class.IsClass(obj) then
-        ---@cast obj object
+    if Utils.Class.HasBaseClass(obj, "Core.Json.Serializable") then
+        ---@cast obj Core.Json.Serializable
         return self:serializeClass(obj)
     end
 
@@ -169,6 +164,16 @@ function JsonSerializer:Deserialize(str)
     end
 
     return obj
+end
+
+---@param str string
+---@param outObj Out<any>
+---@return boolean couldDeserialize
+function JsonSerializer:TryDeserialize(str, outObj)
+    local success, _, results = Utils.Function.InvokeProtected(self.Deserialize, self, str)
+    outObj.Return = results[1]
+
+    return success
 end
 
 Utils.Class.CreateClass(JsonSerializer, "Core.Json.JsonSerializer")
