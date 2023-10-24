@@ -43,7 +43,7 @@ function Main:Run()
 	self._Host:Ready()
 	while true do
 		self._NetClient:BroadCast(Usage.Ports.Heartbeats, 'DNS')
-		self._Host:RunCycle(3)
+		self._Host:RunCycle(20)
 	end
 end
 

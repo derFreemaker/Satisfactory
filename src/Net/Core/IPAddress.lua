@@ -13,6 +13,11 @@ function IPAddress:GetAddress()
     return self._Address
 end
 
+---@param ipAddress Net.Core.IPAddress
+function IPAddress:Equals(ipAddress)
+    return self:GetAddress() == ipAddress:GetAddress()
+end
+
 ---@private
 function IPAddress:__newindex()
     error("Net.Core.IPAddress is read only.")
@@ -32,4 +37,4 @@ end
 
 --#endregion
 
-return Utils.Class.CreateClass(IPAddress, "Core.IPAddress", require("Core.Json.Serializable"))
+return Utils.Class.CreateClass(IPAddress, "Net.Core.IPAddress", require("Core.Json.Serializable"))

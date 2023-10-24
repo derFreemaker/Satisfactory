@@ -46,11 +46,12 @@ function Main:Run()
 	local response = self._HttpClient:Send(request)
 	assert(response:IsSuccess(), 'http request was not successfull')
 
-	local address = Address:Static__CreateFromData(response:GetBody())
-	assert(address.Id == self._NetClient:GetIPAddress():GetAddress(),
+	---@type DNS.Core.Entities.Address
+	local address = response:GetBody()
+	assert(address.IPAddress:Equals(self._NetClient:GetIPAddress()),
 		"got wrong address id back from dns server '" .. tostring(address.Id) .. "'")
 
-	log(address.Address, address.Id)
+	log(address.Id, address.Url, address.IPAddress)
 end
 
 return Main
