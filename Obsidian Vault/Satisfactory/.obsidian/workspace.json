@@ -13,7 +13,7 @@
             "state": {
               "type": "canvas",
               "state": {
-                "file": "Projects/DNS/Map.canvas",
+                "file": "Code Projects/DNS/Map.canvas",
                 "viewState": {
                   "x": 0,
                   "y": 0,
@@ -97,7 +97,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Projects/DNS/Map.canvas",
+                "file": "Code Projects/DNS/Map.canvas",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,7 +114,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Projects/DNS/Map.canvas",
+                "file": "Code Projects/DNS/Map.canvas",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -137,7 +137,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Projects/DNS/Map.canvas"
+                "file": "Code Projects/DNS/Map.canvas"
               }
             }
           },
@@ -157,7 +157,7 @@
             "state": {
               "type": "file-properties",
               "state": {
-                "file": "Projects/DNS/Map.canvas"
+                "file": "Code Projects/DNS/Map.canvas"
               }
             }
           }
@@ -183,14 +183,14 @@
   },
   "active": "63036358451a413c",
   "lastOpenFiles": [
-    "Projects/DNS/Map.canvas",
-    "Projects/DNS",
-    "InGame Factories",
+    "Code Projects/DNS/Map.canvas",
+    "Code Projects/DNS",
+    "Factories",
     "Objects/Objects.md",
-    "Projects/Factory Control/Map.canvas",
-    "Projects/Github Loading/Map.canvas",
+    "Code Projects/Factory Control/Map.canvas",
+    "Code Projects/Github Loading/Map.canvas",
     "Context/~syncthing~spacesLastSync.log.tmp",
-    "Projects/Github Loading/Lua Bundler.md",
+    "Code Projects/Github Loading/Lua Bundler.md",
     "Projects/Class System/Type.md",
     "Projects/Class System/Template.md",
     "Projects/Class System/Class.md",
@@ -198,31 +198,31 @@
     "Projects/Unbenannt.md",
     "Projects/Class System",
     "Projects/Factory Control/Client/Controller.md",
-    "Projects/Factory Control/Client/Feature Info.md",
+    "Code Projects/Factory Control/Client/Feature Info.md",
     "Projects/Factory Control/Client/Feature Types.md",
-    "Projects/Factory Control/ControllerDto/Feature/FeatureDto.md",
-    "Projects/Factory Control/Server/Database.md",
-    "Projects/Factory Control/ControllerDto/Feature/ChartDto.md",
+    "Code Projects/Factory Control/ControllerDto/Feature/FeatureDto.md",
+    "Code Projects/Factory Control/Server/Database.md",
+    "Code Projects/Factory Control/ControllerDto/Feature/ChartDto.md",
     "Objects/string.md",
-    "Projects/Factory Control/ControllerDto/Feature/RadialDto.md",
+    "Code Projects/Factory Control/ControllerDto/Feature/RadialDto.md",
     "Objects/number.md",
-    "Projects/Factory Control/ControllerDto/Feature/SwitchDto.md",
-    "Projects/Factory Control/ControllerDto/Feature/ButtonDto.md",
-    "Projects/Factory Control/ControllerDto/ControllerDto.md",
+    "Code Projects/Factory Control/ControllerDto/Feature/SwitchDto.md",
+    "Code Projects/Factory Control/ControllerDto/Feature/ButtonDto.md",
+    "Code Projects/Factory Control/ControllerDto/ControllerDto.md",
     "Projects/Factory Control/ControllerDto/(...).ControllerDto.md",
-    "Projects/Factory Control/ControllerDto/Feature/Feature.Type.md",
+    "Code Projects/Factory Control/ControllerDto/Feature/Feature.Type.md",
     "Objects/Net.Core.IPAddress.md",
     "Objects/Dictionary.md",
     "Objects/boolean.md",
-    "Projects/Factory Control/ControllerDto/Feature/Feature.md",
+    "Code Projects/Factory Control/ControllerDto/Feature/Feature.md",
     "Objects/Core.UUID.md",
     "Objects",
-    "Projects/Factory Control/ControllerDto/Feature",
-    "Projects/Factory Control/ControllerDto",
+    "Code Projects/Factory Control/ControllerDto/Feature",
+    "Code Projects/Factory Control/ControllerDto",
     "Projects/Github Loading/Github Loading.canvas",
     "Projects/Github Loading/Map - Kopie.canvas",
-    "Projects/Github Loading/Package",
-    "Projects/Github Loading",
-    "Projects/Factory Control/Server"
+    "Code Projects/Github Loading/Package",
+    "Code Projects/Github Loading",
+    "Code Projects/Factory Control/Server"
   ]
 }
