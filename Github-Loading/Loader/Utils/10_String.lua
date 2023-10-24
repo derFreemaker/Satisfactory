@@ -1,10 +1,13 @@
 ---@class Utils.String
 local String = {}
 
----@param str string
----@param seperator string
+---@param str string?
+---@param seperator string?
 ---@return string[]
 function String.Split(str, seperator)
+    if str == nil then
+        return {}
+    end
     if seperator == nil then
         seperator = "%s"
     end
