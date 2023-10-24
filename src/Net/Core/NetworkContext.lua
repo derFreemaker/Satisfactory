@@ -29,8 +29,8 @@ function NetworkContext:__init(data, serializer)
 	self.SenderIPAddress = IPaddress(data[3])
 	self.Port = data[4]
 	self.EventName = data[5]
-	self.Header = serializer:Deserialize(data[7] or 'null') or {}
 	self.Body = serializer:Deserialize(data[6] or 'null')
+	self.Header = serializer:Deserialize(data[7] or 'null') or {}
 
 	if not self.Header.ReturnIPAddress then
 		self.Header.ReturnIPAddress = self.SenderIPAddress

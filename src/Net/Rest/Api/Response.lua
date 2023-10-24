@@ -22,9 +22,16 @@ function Response:__init(body, header)
     end
 end
 
----@return any body, (Net.Rest.Api.Response.Header | Dictionary<string, any>) headers
+---@return Net.Rest.Api.Response.Header headers, any body
 function Response:Serialize()
-    return self.Body, self.Headers
+    return self.Headers, self.Body
+end
+
+---@param headers Net.Rest.Api.Response.Header
+---@param body any
+---@return Net.Rest.Api.Response
+function Response.Static__Deserialize(headers, body)
+    return Response(body, headers)
 end
 
 return Utils.Class.CreateClass(Response, "Net.Rest.Api.Response",
