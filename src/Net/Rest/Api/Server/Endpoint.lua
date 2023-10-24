@@ -6,6 +6,8 @@ local UUID = require("Core.UUID")
 
 ---@class Net.Rest.Api.Server.Endpoint : object
 ---@field private _EndpointUriPattern string
+---@field private _EndpointUriTemplate string
+---@field private _ParameterTypes string[]
 ---@field private _Task Core.Task
 ---@field private _Logger Core.Logger
 ---@overload fun(endpointUriPattern: string, task: Core.Task, logger: Core.Logger) : Net.Rest.Api.Server.Endpoint
@@ -17,23 +19,24 @@ local Endpoint = {}
 ---@param logger Core.Logger
 function Endpoint:__init(endpointUriPattern, task, logger)
     self._EndpointUriPattern = endpointUriPattern
+    self._EndpointUriTemplate = endpointUriPattern:gsub("{[a-zA-Z0-9]*:[a-zA-Z0-9\\.]*}", "(.+)")
+
+    self._ParameterTypes = {}
+    for parameterType in endpointUriPattern:gmatch("{[a-zA-Z0-9]*:([a-zA-Z0-9\\.]*)}") do
+        table.insert(self._ParameterTypes, parameterType)
+    end
+
     self._Task = task
     self._Logger = logger
 end
 
 ---@private
----@param uriPattern string
 ---@param uri string
 ---@return any[] parameters
-local function getUriParameters(uriPattern, uri)
-    local parameterTypes = {}
-    for parameterType in uriPattern:gmatch("{[a-zA-Z0-9]*:([a-zA-Z0-9\\.]*)}") do
-        table.insert(parameterTypes, parameterType)
-    end
+function Endpoint:GetUriParameters(uri)
+    local parameters = { uri:match(self._EndpointUriTemplate) }
 
-    uriPattern = uriPattern:gsub("{[a-zA-Z0-9]*:[a-zA-Z0-9\\.]*}", "(.+)")
-    local parameters = { uri:match(uriPattern) }
-
+    local parameterTypes = self._ParameterTypes
     for i = 1, #parameters, 1 do
         local parameterType = parameterTypes[i]
         local parameter = parameters[i]
@@ -61,8 +64,8 @@ end
 ---@param uri string
 ---@param netClient Net.Core.NetworkClient
 ---@return any[]? parameters
-function Endpoint:GetUriParameters(uri, context, netClient)
-    local success, errorMsg, returns = Utils.Function.InvokeProtected(getUriParameters, self._EndpointUriPattern, uri)
+function Endpoint:ParseUriParameters(uri, context, netClient)
+    local success, errorMsg, returns = Utils.Function.InvokeProtected(self.GetUriParameters, self, uri)
 
     if not success and context.Header.ReturnPort then
         local response = ResponseTemplates.InternalServerError(errorMsg or "uri parameters could not be parsed")
@@ -87,7 +90,7 @@ function Endpoint:Execute(request, context, netClient)
     self._Logger:LogTrace('executing...')
     ___logger:setLogger(self._Logger)
 
-    local uriParameters = self:GetUriParameters(tostring(request.Endpoint), context, netClient)
+    local uriParameters = self:ParseUriParameters(tostring(request.Endpoint), context, netClient)
     if not uriParameters then
         return
     end
@@ -101,7 +104,7 @@ function Endpoint:Execute(request, context, netClient)
     self._Task:Close()
 
     if not self._Task:IsSuccess() then
-        response = ResponseTemplates.InternalServerError(tostring(self._Task:GetTraceback()))
+        response = ResponseTemplates.InternalServerError(self._Task:GetTraceback() or "no error")
     end
     if context.Header.ReturnPort then
         self._Logger:LogTrace("sending response to '" ..

@@ -1,7 +1,4 @@
 local AddressDatabase = require("DNS.Server.AddressDatabase")
-local AddressEntities = {
-    Create = require("DNS.Core.Entities.Address.Create")
-}
 
 ---@class DNS.Endpoints : Net.Rest.Api.Server.EndpointBase
 ---@field private _AddressDatabase DNS.Server.AddressDatabase
@@ -17,10 +14,10 @@ function Endpoints:__init(baseFunc, logger, controller)
 
     self._AddressDatabase = AddressDatabase(logger:subLogger("AddressDatabase"))
 
-    self:AddEndpoint("GET", "/Address/Create", self.CreateAddress)
+    self:AddEndpoint("CREATE", "/Address/Create", self.CreateAddress)
     self:AddEndpoint("DELETE", "/Address/{id:Core.UUID}/Delete", self.DeletetAddress)
     self:AddEndpoint("GET", "/Address/Id/{id:Core.UUID}/", self.GetAddressWithId)
-    self:AddEndpoint("GET", "Address/Address/{address:string}", self.GetAddressWithAddress)
+    self:AddEndpoint("GET", "Address/Url/{url:string}", self.GetAddressWithAddress)
 end
 
 ---@param createAddress DNS.Core.Entities.Address.Create

@@ -5,10 +5,9 @@ local NetworkClient = require('Net.Core.NetworkClient')
 local ApiClient = require('Net.Rest.Api.Client.Client')
 local ApiRequest = require('Net.Rest.Api.Request')
 
-local Address = require('DNS.Core.Entities.Address.Address')
 local CreateAddress = require('DNS.Core.Entities.Address.Create')
 
--- //TODO: rewrite DNS Client
+local Uri = require("Net.Rest.Uri")
 
 ---@class DNS.Client : object
 ---@field private _NetworkClient Net.Core.NetworkClient
@@ -67,10 +66,14 @@ function Client:RequestOrGetDNSServerIP()
 end
 
 ---@private
----@param request Net.Rest.Api.Request
-function Client:InternalRequest(request)
+---@param method Net.Core.Method
+---@param url string
+---@param body any
+---@param headers Dictionary<string, any>?
+function Client:InternalRequest(method, url, body, headers)
 	self:RequestOrGetDNSServerIP()
 
+	local request = ApiRequest(method, Uri(url), body, headers)
 	return self._ApiClient:Send(request)
 end
 
@@ -78,10 +81,9 @@ end
 ---@param ipAddress Net.Core.IPAddress
 ---@return boolean success
 function Client:CreateAddress(url, ipAddress)
-	local createAddress = CreateAddress(url, ipAddress:GetAddress())
+	local createAddress = CreateAddress(url, ipAddress)
 
-	local request = ApiRequest('CREATE', 'Address', createAddress:ExtractData())
-	local response = self:InternalRequest(request)
+	local response = self:InternalRequest('CREATE', '/Address/Create', createAddress)
 
 	if not response.WasSuccessfull then
 		return false
@@ -89,11 +91,10 @@ function Client:CreateAddress(url, ipAddress)
 	return response.Body
 end
 
----@param url string
+---@param id Core.UUID
 ---@return boolean success
-function Client:DeleteAddress(url)
-	local request = ApiRequest('DELETE', 'Address', url)
-	local response = self:InternalRequest(request)
+function Client:DeleteAddress(id)
+	local response = self:InternalRequest('DELETE', "/Address/" .. tostring(id) .. "/Delete")
 
 	if not response.WasSuccessfull then
 		return false
@@ -101,28 +102,26 @@ function Client:DeleteAddress(url)
 	return response.Body
 end
 
----@param url string
+---@param id Core.UUID
 ---@return DNS.Core.Entities.Address? address
-function Client:GetWithUrl(url)
-	local request = ApiRequest('GET', 'AddressWithAddress', url)
-	local response = self:InternalRequest(request)
+function Client:GetWithUrl(id)
+	local response = self:InternalRequest('GET', "/Address/Id/" .. tostring(id))
 
 	if not response.WasSuccessfull then
 		return nil
 	end
-	return Address:Static__CreateFromData(response.Body)
+	return response.Body
 end
 
----@param ipAddress Net.Core.IPAddress
+---@param url string
 ---@return DNS.Core.Entities.Address? address
-function Client:GetWithIPAddress(ipAddress)
-	local request = ApiRequest('GET', 'AddressWithId', ipAddress:GetAddress())
-	local response = self:InternalRequest(request)
+function Client:GetWithIPAddress(url)
+	local response = self:InternalRequest('GET', "/Address/Url/" .. url)
 
 	if not response.WasSuccessfull then
 		return nil
 	end
-	return Address:Static__CreateFromData(response.Body)
+	return response.Body
 end
 
 return Utils.Class.CreateClass(Client, 'DNS.Client')

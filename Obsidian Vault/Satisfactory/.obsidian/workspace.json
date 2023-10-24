@@ -13,11 +13,11 @@
             "state": {
               "type": "canvas",
               "state": {
-                "file": "Projects/Github Loading/Map.canvas",
+                "file": "Projects/DNS/Map.canvas",
                 "viewState": {
-                  "x": 690,
-                  "y": 960.1405940594059,
-                  "zoom": -0.4100293785610265
+                  "x": 0,
+                  "y": 0,
+                  "zoom": 0
                 }
               }
             }
@@ -97,7 +97,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Projects/Github Loading/Map.canvas",
+                "file": "Projects/DNS/Map.canvas",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,7 +114,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Projects/Github Loading/Map.canvas",
+                "file": "Projects/DNS/Map.canvas",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -137,7 +137,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Projects/Github Loading/Map.canvas"
+                "file": "Projects/DNS/Map.canvas"
               }
             }
           },
@@ -157,7 +157,7 @@
             "state": {
               "type": "file-properties",
               "state": {
-                "file": "Projects/Github Loading/Map.canvas"
+                "file": "Projects/DNS/Map.canvas"
               }
             }
           }
@@ -181,16 +181,20 @@
       "markdown-importer:Markdown Importprogramm öffnen": false
     }
   },
-  "active": "67a4bff8f897b1a6",
+  "active": "63036358451a413c",
   "lastOpenFiles": [
+    "Projects/DNS/Map.canvas",
+    "Projects/DNS",
+    "InGame Factories",
+    "Objects/Objects.md",
+    "Projects/Factory Control/Map.canvas",
+    "Projects/Github Loading/Map.canvas",
     "Context/~syncthing~spacesLastSync.log.tmp",
     "Projects/Github Loading/Lua Bundler.md",
-    "Projects/Github Loading/Map.canvas",
     "Projects/Class System/Type.md",
     "Projects/Class System/Template.md",
     "Projects/Class System/Class.md",
     "Projects/Class System/Map.canvas",
-    "Projects/Factory Control/Map.canvas",
     "Projects/Unbenannt.md",
     "Projects/Class System",
     "Projects/Factory Control/Client/Controller.md",
@@ -199,30 +203,26 @@
     "Projects/Factory Control/ControllerDto/Feature/FeatureDto.md",
     "Projects/Factory Control/Server/Database.md",
     "Projects/Factory Control/ControllerDto/Feature/ChartDto.md",
-    "Projects/Objects/string.md",
+    "Objects/string.md",
     "Projects/Factory Control/ControllerDto/Feature/RadialDto.md",
-    "Projects/Objects/number.md",
+    "Objects/number.md",
     "Projects/Factory Control/ControllerDto/Feature/SwitchDto.md",
     "Projects/Factory Control/ControllerDto/Feature/ButtonDto.md",
     "Projects/Factory Control/ControllerDto/ControllerDto.md",
     "Projects/Factory Control/ControllerDto/(...).ControllerDto.md",
     "Projects/Factory Control/ControllerDto/Feature/Feature.Type.md",
-    "Projects/Objects/Net.Core.IPAddress.md",
-    "Projects/Objects/Dictionary.md",
-    "Projects/Objects/boolean.md",
+    "Objects/Net.Core.IPAddress.md",
+    "Objects/Dictionary.md",
+    "Objects/boolean.md",
     "Projects/Factory Control/ControllerDto/Feature/Feature.md",
-    "Projects/Objects/Core.UUID.md",
-    "Projects/Objects",
+    "Objects/Core.UUID.md",
+    "Objects",
     "Projects/Factory Control/ControllerDto/Feature",
-    "Projects/Factory Control/(...).ControllerDto/Controller.md",
     "Projects/Factory Control/ControllerDto",
     "Projects/Github Loading/Github Loading.canvas",
     "Projects/Github Loading/Map - Kopie.canvas",
     "Projects/Github Loading/Package",
     "Projects/Github Loading",
-    "Projects/Factory Control/Server",
-    "Projects/Factory Control/Client",
-    "Projects/Factory Control",
-    "Projects"
+    "Projects/Factory Control/Server"
   ]
 }
