@@ -29,8 +29,7 @@ local function construct(obj, ...)
 	local metatable = getmetatable(obj)
 	local typeInfo = metatable.Type
 
-	local classInstance,
-	classMetatable = {}, {}
+	local classInstance, classMetatable = {}, {}
 	---@cast classInstance Utils.Class.Template
 	---@cast classMetatable Utils.Class.Metatable
 

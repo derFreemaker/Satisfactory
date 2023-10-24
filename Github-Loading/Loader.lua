@@ -430,7 +430,7 @@ end
 
 function Loader:Cleanup()
 	---@type FIN.Filesystem.File[]
-	local openFiles = self._LoadedLoaderFiles["/Github-Loading/Loader/Utils/10_File.lua"][2]
+	local openFiles = self._LoadedLoaderFiles["/Github-Loading/Loader/Utils/File"][2]
 
 	for _, file in pairs(openFiles) do
 		file:close()
