@@ -25,7 +25,7 @@ function Main:Configure()
 		Task(self.GetDNSServerAddress, self))
 	self.Logger:LogDebug('setup Get DNS Server IP Address')
 
-	self._Host:AddEndpoint(Usage.Ports.DNS, "Endpoints", DNSEndpoints --[[@as Net.Rest.Api.Server.EndpointBase]])
+	self._Host:AddEndpoint(Usage.Ports.HTTP, "Endpoints", DNSEndpoints --[[@as Net.Rest.Api.Server.EndpointBase]])
 	self.Logger:LogDebug('setup DNS Server endpoints')
 
 	self._NetClient = self._Host:GetNetworkClient()
