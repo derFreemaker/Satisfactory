@@ -11,7 +11,6 @@ local NetworkClient = require('Net.Core.NetworkClient')
 local DNSClient = require('DNS.Client.Client')
 local HttpClient = require('Net.Http.Client')
 local HttpRequest = require('Net.Http.Request')
-local Address = require('DNS.Core.Entities.Address.Address')
 
 ---@class Test.Http.Main : Github_Loading.Entities.Main
 ---@field private _NetClient Net.Core.NetworkClient
@@ -34,7 +33,7 @@ function Main:Run()
 	self._DnsClient.Static_WaitForHeartbeat(self._NetClient)
 	log("got heartbeat")
 
-	local ipAddress = self._DnsClient.Static__GetServerAddress(self._NetClient)
+	local ipAddress = self._DnsClient:GetOrRequestDNSServerIP()
 	log(ipAddress)
 
 
@@ -47,10 +46,10 @@ function Main:Run()
 		log("created address")
 	end
 
-	local dnsServerAddress = self._DnsClient:RequestOrGetDNSServerIP():GetAddress()
+	local dnsServerAddress = self._DnsClient:GetOrRequestDNSServerIP()
 	log("dns server address", dnsServerAddress)
 
-	local request = HttpRequest('GET', 'AddressWithAddress', dnsServerAddress, domain)
+	local request = HttpRequest('GET', 'AddressWithAddress', dnsServerAddress:GetAddress(), domain)
 	local response = self._HttpClient:Send(request)
 	assert(response:IsSuccess(), 'http request was not successfull')
 

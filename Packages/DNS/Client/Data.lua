@@ -79,7 +79,7 @@ function Client.Static__GetServerAddress(networkClient)
 end
 
 ---@return Net.Core.IPAddress id
-function Client:RequestOrGetDNSServerIP()
+function Client:GetOrRequestDNSServerIP()
 	if not self._ApiClient then
 		local serverIPAddress = Client.Static__GetServerAddress(self._NetworkClient)
 		self._ApiClient = ApiClient(serverIPAddress, Usage.Ports.HTTP, Usage.Ports.HTTP, self._NetworkClient,
@@ -95,7 +95,7 @@ end
 ---@param body any
 ---@param headers Dictionary<string, any>?
 function Client:InternalRequest(method, url, body, headers)
-	self:RequestOrGetDNSServerIP()
+	self:GetOrRequestDNSServerIP()
 
 	local request = ApiRequest(method, Uri(url), body, headers)
 	return self._ApiClient:Send(request)

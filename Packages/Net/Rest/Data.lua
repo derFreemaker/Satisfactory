@@ -617,6 +617,7 @@ function HostExtensions:GetOrCreateApiController(port, endpointLogger)
         local netPort = self._NetworkClient:GetOrCreateNetworkPort(port)
         apiController = ApiController(netPort, endpointLogger:subLogger("ApiController"))
         self.ApiControllers[port] = apiController
+        netPort:OpenPort()
     end
 
     return apiController
