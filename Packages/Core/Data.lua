@@ -134,11 +134,16 @@ local function formatMessagePart(obj)
 	end
 
 	if type(obj) == "table" then
-		if Utils.Class.IsClass(obj) then
-			return tostring(obj)
+		local str
+		---@type Out<Utils.Class.Metatable>
+		local metatableOut
+		if Utils.Class.IsClass(obj, metatableOut) then
+			local typeInfo = metatableOut.Return.Type
+			str = typeInfo.Name
+		else
+			str = tostring(obj)
 		end
 
-		local str = ""
 		for _, line in ipairs(tableToLineTree(obj)) do
 			str = str .. "\n" .. line
 		end

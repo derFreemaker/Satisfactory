@@ -30,8 +30,8 @@ end
 ---@param headers Net.Rest.Api.Response.Header
 ---@param body any
 ---@return Net.Rest.Api.Response
-function Response.Static__Deserialize(headers, body)
-    return Response(body, headers)
+function Response:Static__Deserialize(headers, body)
+    return self(body, headers)
 end
 
 return Utils.Class.CreateClass(Response, "Net.Rest.Api.Response",
