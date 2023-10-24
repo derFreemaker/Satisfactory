@@ -17,12 +17,5 @@ function Update:Serialize()
     return self.Id, self.Data
 end
 
----@param id Core.UUID
----@param data Dictionary<number, any>
----@return FactoryControl.Client.Entities.Controller.Feature.Chart.Update
-function Update:Static__Deserialize(id, data)
-    return Update(id, data)
-end
-
 return Utils.Class.CreateClass(Update, "FactoryControl.Client.Entities.Controller.Feature.Chart.Update",
     require("Core.Json.Serializable"))

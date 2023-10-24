@@ -552,8 +552,7 @@ function UUID:__eq(other)
     return true
 end
 
----@private
-function UUID:__tostring()
+function UUID:ToString()
     local str = ""
 
     for _, char in ipairs(self._Head) do
@@ -573,6 +572,15 @@ function UUID:__tostring()
     end
 
     return str
+end
+
+---@private
+function UUID:__tostring()
+    return self:ToString()
+end
+
+function UUID:Serialize()
+    return self:ToString()
 end
 
 return Utils.Class.CreateClass(UUID, 'Core.UUID', require("Core.Json.Serializable"))
@@ -1771,7 +1779,8 @@ local Serializable = {}
 
 ---@return any ...
 function Serializable:Serialize()
-    return tostring(self)
+    local typeInfo = self:Static__GetType()
+    error("Serialize function was not override for type " .. typeInfo.Name)
 end
 
 ---@param ... any

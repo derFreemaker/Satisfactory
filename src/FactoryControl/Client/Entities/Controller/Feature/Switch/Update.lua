@@ -15,12 +15,5 @@ function Update:Serialize()
     return self.Id, self.IsEnabled
 end
 
----@param id Core.UUID
----@param isEnabled boolean
----@return FactoryControl.Client.Entities.Controller.Feature.Switch.Update
-function Update:Static__Deserialize(id, isEnabled)
-    return Update(id, isEnabled)
-end
-
 return Utils.Class.CreateClass(Update, "FactoryControl.Client.Entities.Controller.Feature.Switch.Update",
     require("Core.Json.Serializable"))

@@ -26,8 +26,8 @@ function Uri:AddToQuery(name, value)
     self._Query[name] = value
 end
 
----@private
-function Uri:__tostring()
+---@return string url
+function Uri:GetUrl()
     local str = self._Path
     if Utils.Table.Count(self._Query) > 0 then
         str = str .. "?"
@@ -35,6 +35,16 @@ function Uri:__tostring()
             str = str .. name .. "=" .. value .. "&"
         end
     end
+    return str
+end
+
+---@private
+function Uri:__tostring()
+    return self:GetUrl()
+end
+
+function Uri:Serialize()
+    return self:GetUrl()
 end
 
 return Utils.Class.CreateClass(Uri, "Net.Rest.Uri",

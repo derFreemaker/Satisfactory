@@ -475,12 +475,6 @@ function Pressed:Serialize()
     return self.Id
 end
 
----@param id Core.UUID
----@return FactoryControl.Client.Entities.Controller.Feature.Button.Pressed
-function Pressed:Static__Deserialize(id)
-    return Pressed(id)
-end
-
 return Utils.Class.CreateClass(Pressed, "FactoryControl.Client.Entities.Controller.Feature.Button.Pressed",
     require("Core.Json.Serializable"))
 ]]
@@ -539,13 +533,6 @@ end
 ---@return Core.UUID id, Dictionary<number, any> data
 function Update:Serialize()
     return self.Id, self.Data
-end
-
----@param id Core.UUID
----@param data Dictionary<number, any>
----@return FactoryControl.Client.Entities.Controller.Feature.Chart.Update
-function Update:Static__Deserialize(id, data)
-    return Update(id, data)
 end
 
 return Utils.Class.CreateClass(Update, "FactoryControl.Client.Entities.Controller.Feature.Chart.Update",
@@ -640,15 +627,6 @@ function Update:Serialize()
     return self.Id, self.Min, self.Max, self.Setting
 end
 
----@param id Core.UUID
----@param min number
----@param max number
----@param setting number
----@return FactoryControl.Client.Entities.Controller.Feature.Radial.Update
-function Update:Static__Deserialize(id, min, max, setting)
-    return Update(id, min, max, setting)
-end
-
 return Utils.Class.CreateClass(Update, "FactoryControl.Client.Entities.Controller.Feature.Radial.Update",
     require("Core.Json.Serializable"))
 ]]
@@ -737,13 +715,6 @@ end
 ---@return Core.UUID id, boolean isEnabled
 function Update:Serialize()
     return self.Id, self.IsEnabled
-end
-
----@param id Core.UUID
----@param isEnabled boolean
----@return FactoryControl.Client.Entities.Controller.Feature.Switch.Update
-function Update:Static__Deserialize(id, isEnabled)
-    return Update(id, isEnabled)
 end
 
 return Utils.Class.CreateClass(Update, "FactoryControl.Client.Entities.Controller.Feature.Switch.Update",

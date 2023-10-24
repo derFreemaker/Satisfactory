@@ -23,14 +23,5 @@ function Update:Serialize()
     return self.Id, self.Min, self.Max, self.Setting
 end
 
----@param id Core.UUID
----@param min number
----@param max number
----@param setting number
----@return FactoryControl.Client.Entities.Controller.Feature.Radial.Update
-function Update:Static__Deserialize(id, min, max, setting)
-    return Update(id, min, max, setting)
-end
-
 return Utils.Class.CreateClass(Update, "FactoryControl.Client.Entities.Controller.Feature.Radial.Update",
     require("Core.Json.Serializable"))

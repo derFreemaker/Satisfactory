@@ -21,5 +21,7 @@ function FeatureDto:__init(id, name, type)
     self.Type = type
 end
 
+-- No Seriliaze function because this class should only be used as base not for instances
+
 return Utils.Class.CreateClass(FeatureDto, "FactoryControl.Core.Entities.Controller.FeatureDto",
     require("Core.Json.Serializable"))

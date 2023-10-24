@@ -14,11 +14,5 @@ function Pressed:Serialize()
     return self.Id
 end
 
----@param id Core.UUID
----@return FactoryControl.Client.Entities.Controller.Feature.Button.Pressed
-function Pressed:Static__Deserialize(id)
-    return Pressed(id)
-end
-
 return Utils.Class.CreateClass(Pressed, "FactoryControl.Client.Entities.Controller.Feature.Button.Pressed",
     require("Core.Json.Serializable"))
