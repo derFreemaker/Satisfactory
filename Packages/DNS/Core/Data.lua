@@ -1,6 +1,27 @@
 ---@meta
 local PackageData = {}
 
+PackageData["DNSCore__events"] = {
+    Location = "DNS.Core.__events",
+    Namespace = "DNS.Core.__events",
+    IsRunnable = true,
+    Data = [[
+local JsonSerializer = require("Core.Json.JsonSerializer")
+
+---@class DNS.Core.__events : Github_Loading.Entities.Events
+local Events = {}
+
+function Events:OnLoaded()
+    JsonSerializer.Static__Serializer:AddTypeInfos({
+        require("DNS.Core.Entities.Address.Address"):Static__GetType(),
+        require("DNS.Core.Entities.Address.Create"):Static__GetType(),
+    })
+end
+
+return Events
+]]
+}
+
 PackageData["DNSCoreEntitiesAddressAddress"] = {
     Location = "DNS.Core.Entities.Address.Address",
     Namespace = "DNS.Core.Entities.Address.Address",
