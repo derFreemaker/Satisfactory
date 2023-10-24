@@ -1,7 +1,7 @@
 return {
     Name = "Net.Rest",
     Namespace = "Net.Rest",
-    Version = "0.1.0-4",
+    Version = "0.1.0-5",
     RequiredPackages = {
         "Core",
         "Net.Core"
