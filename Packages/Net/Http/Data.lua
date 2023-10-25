@@ -55,7 +55,7 @@ end
 ---@param request Net.Http.Request
 ---@return Net.Http.Response response
 function HttpClient:Send(request)
-	local address = self:getAddress(request.Url)
+	local address = self:getAddress(request.ServerUrl)
 	if not address then
 		return HttpResponse(ApiResponse(nil, { Code = 404 }), request)
 	end
@@ -63,7 +63,7 @@ function HttpClient:Send(request)
 	local apiClient = ApiClient(address, PortUsage.HTTP, PortUsage.HTTP, self._NetClient,
 		self._Logger:subLogger('ApiClient'))
 
-	local apiRequest = ApiRequest(request.Method, request.Endpoint, request.Body, request.Options.Headers)
+	local apiRequest = ApiRequest(request.Method, request.Uri, request.Body, request.Options.Headers)
 	local apiResponse = apiClient:Send(apiRequest, request.Options.Timeout)
 
 	return HttpResponse(apiResponse, request)
@@ -82,28 +82,28 @@ local Options = require('Net.Http.RequestOptions')
 
 ---@class Net.Http.Request : object
 ---@field Method Net.Core.Method
----@field Endpoint string
----@field Url string
+---@field ServerUrl string
+---@field Uri Net.Rest.Uri
 ---@field Body any
 ---@field Options Net.Http.Request.Options
----@overload fun(method: Net.Core.Method, endpoint: string, url: string, body: any, options: Net.Http.Request.Options?) : Net.Http.Request
+---@overload fun(method: Net.Core.Method, ServerUrl: string, Uri: Net.Rest.Uri, body: any, options: Net.Http.Request.Options?) : Net.Http.Request
 local HttpRequest = {}
 
 ---@private
 ---@param method Net.Core.Method
----@param endpoint string
----@param url string
+---@param serverUrl string
+---@param uri Net.Rest.Uri
 ---@param body any
 ---@param options Net.Http.Request.Options?
-function HttpRequest:__init(method, endpoint, url, body, options)
+function HttpRequest:__init(method, serverUrl, uri, body, options)
 	self.Method = method
-	self.Endpoint = endpoint
-	self.Url = url
+	self.ServerUrl = serverUrl
+	self.Uri = uri
 	self.Body = body
 	self.Options = options or Options()
 end
 
-return Utils.Class.CreateClass(HttpRequest, 'Http.HttpRequest')
+return Utils.Class.CreateClass(HttpRequest, "Net.Http.HttpRequest")
 ]]
 }
 

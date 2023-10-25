@@ -194,6 +194,8 @@ PackageData["FactoryControlClientDataClient"] = {
     Namespace = "FactoryControl.Client.DataClient",
     IsRunnable = true,
     Data = [[
+local Uri = require("Net.Rest.Uri")
+
 local FactoryControlConfig = require("FactoryControl.Core.Config")
 local HttpClient = require('Net.Http.Client')
 local HttpRequest = require('Net.Http.Request')
@@ -218,7 +220,7 @@ end
 ---@param options Net.Http.Request.Options?
 ---@return Net.Http.Response response
 function DataClient:request(method, endpoint, body, options)
-	local request = HttpRequest(method, endpoint, FactoryControlConfig.DOMAIN, body, options)
+	local request = HttpRequest(method, FactoryControlConfig.DOMAIN, Uri.Static__Parse(endpoint), body, options)
 	return self._Client:Send(request)
 end
 

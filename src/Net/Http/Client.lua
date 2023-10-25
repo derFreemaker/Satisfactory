@@ -47,7 +47,7 @@ end
 ---@param request Net.Http.Request
 ---@return Net.Http.Response response
 function HttpClient:Send(request)
-	local address = self:getAddress(request.Url)
+	local address = self:getAddress(request.ServerUrl)
 	if not address then
 		return HttpResponse(ApiResponse(nil, { Code = 404 }), request)
 	end
@@ -55,7 +55,7 @@ function HttpClient:Send(request)
 	local apiClient = ApiClient(address, PortUsage.HTTP, PortUsage.HTTP, self._NetClient,
 		self._Logger:subLogger('ApiClient'))
 
-	local apiRequest = ApiRequest(request.Method, request.Endpoint, request.Body, request.Options.Headers)
+	local apiRequest = ApiRequest(request.Method, request.Uri, request.Body, request.Options.Headers)
 	local apiResponse = apiClient:Send(apiRequest, request.Options.Timeout)
 
 	return HttpResponse(apiResponse, request)

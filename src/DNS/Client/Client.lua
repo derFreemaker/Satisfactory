@@ -73,7 +73,7 @@ end
 function Client:InternalRequest(method, url, body, headers)
 	self:GetOrRequestDNSServerIP()
 
-	local request = ApiRequest(method, Uri(url), body, headers)
+	local request = ApiRequest(method, Uri.Static__Parse(url), body, headers)
 	return self._ApiClient:Send(request)
 end
 
