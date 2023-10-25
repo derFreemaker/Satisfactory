@@ -127,8 +127,9 @@ local function formatMessagePart(obj)
 
 	if type(obj) == "table" then
 		local str
+
 		---@type Out<Utils.Class.Metatable>
-		local metatableOut
+		local metatableOut = {}
 		if Utils.Class.IsClass(obj, metatableOut) then
 			local typeInfo = metatableOut.Value.Type
 			str = typeInfo.Name
