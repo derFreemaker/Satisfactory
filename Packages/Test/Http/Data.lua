@@ -6,6 +6,8 @@ PackageData["TestHttp__main"] = {
     Namespace = "Test.Http.__main",
     IsRunnable = true,
     Data = [[
+local Uri = require('Net.Rest.Uri')
+
 local EventPullAdapter = require('Core.Event.EventPullAdapter')
 local NetworkClient = require('Net.Core.NetworkClient')
 local DNSClient = require('DNS.Client.Client')
@@ -30,7 +32,7 @@ function Main:Run()
 	local domain = 'factoryControl.de'
 
 	log("waiting for heartbeat")
-	self._DnsClient.Static_WaitForHeartbeat(self._NetClient)
+	self._DnsClient.Static__WaitForHeartbeat(self._NetClient)
 	log("got heartbeat")
 
 	local ipAddress = self._DnsClient:GetOrRequestDNSServerIP()
@@ -49,7 +51,7 @@ function Main:Run()
 	local dnsServerAddress = self._DnsClient:GetOrRequestDNSServerIP()
 	log("dns server address", dnsServerAddress)
 
-	local request = HttpRequest('GET', 'AddressWithAddress', dnsServerAddress:GetAddress(), domain)
+	local request = HttpRequest('GET', 'AddressWithAddress', Uri.Static__Parse(dnsServerAddress:GetAddress()), domain)
 	local response = self._HttpClient:Send(request)
 	assert(response:IsSuccess(), 'http request was not successfull')
 

@@ -30,7 +30,7 @@ function Client:GetNetClient()
 end
 
 ---@param networkClient Net.Core.NetworkClient
-function Client.Static_WaitForHeartbeat(networkClient)
+function Client.Static__WaitForHeartbeat(networkClient)
 	networkClient:WaitForEvent(Usage.Events.DNS_Heartbeat, Usage.Ports.Heartbeats)
 end
 

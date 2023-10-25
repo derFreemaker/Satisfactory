@@ -42,7 +42,20 @@ function Controller:onMessageRecieved(context)
         return
     end
     self._Logger:LogTrace('found endpoint:', request.Endpoint)
-    endpoint:Execute(request, context, self._NetPort:GetNetClient())
+    local response = endpoint:Execute(request, context)
+
+    if context.Header.ReturnPort then
+        self._Logger:LogTrace("sending response to '" ..
+            context.SenderIPAddress .. "' on port: " .. context.Header.ReturnPort .. " ...")
+        self._NetPort:GetNetClient():Send(
+            context.Header.ReturnIPAddress,
+            context.Header.ReturnPort,
+            EventNameUsage.RestResponse,
+            response
+        )
+    else
+        self._Logger:LogTrace('sending no response')
+    end
 end
 
 ---@param endpointMethod Net.Core.Method

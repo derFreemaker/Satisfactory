@@ -54,7 +54,7 @@ function Client:GetNetClient()
 end
 
 ---@param networkClient Net.Core.NetworkClient
-function Client.Static_WaitForHeartbeat(networkClient)
+function Client.Static__WaitForHeartbeat(networkClient)
 	networkClient:WaitForEvent(Usage.Events.DNS_Heartbeat, Usage.Ports.Heartbeats)
 end
 
@@ -172,7 +172,7 @@ local DNSClient = require("DNS.Client.Client")
 
 ---@param host Hosting.Host
 local function readyTaskWaitForDNSServer(host)
-    DNSClient.Static_WaitForHeartbeat(host:GetNetworkClient())
+    DNSClient.Static__WaitForHeartbeat(host:GetNetworkClient())
 end
 
 table.insert(Host._Static__ReadyTasks, Task(readyTaskWaitForDNSServer))
