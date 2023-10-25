@@ -41,6 +41,35 @@ return {
 ]]
 }
 
+PackageData["FactoryControlCoreEntitiesControllerConnectDto"] = {
+    Location = "FactoryControl.Core.Entities.Controller.ConnectDto",
+    Namespace = "FactoryControl.Core.Entities.Controller.ConnectDto",
+    IsRunnable = true,
+    Data = [[
+---@class FactoryControl.Core.Entities.Controller.ConnectDto : Core.Json.Serializable
+---@field Name string
+---@field IPAddress Net.Core.IPAddress
+---@overload fun(name: string, ipAddress: Net.Core.IPAddress) : FactoryControl.Core.Entities.Controller.ConnectDto
+local ConnectDto = {}
+
+---@private
+---@param name string
+---@param ipAddress Net.Core.IPAddress
+function ConnectDto:__init(name, ipAddress)
+    self.Name = name
+    self.IPAddress = ipAddress
+end
+
+---@return string name, Net.Core.IPAddress ipAddress
+function ConnectDto:Serialize()
+    return self.Name, self.IPAddress
+end
+
+return Utils.Class.CreateClass(ConnectDto, "FactoryControl.Core.Entities.Controller.ConnectDto",
+    require("Core.Json.Serializable"))
+]]
+}
+
 PackageData["FactoryControlCoreEntitiesControllerControllerDto"] = {
     Location = "FactoryControl.Core.Entities.Controller.ControllerDto",
     Namespace = "FactoryControl.Core.Entities.Controller.ControllerDto",
@@ -116,20 +145,18 @@ PackageData["FactoryControlCoreEntitiesControllerModifyDto"] = {
 ---@class FactoryControl.Core.Entities.Controller.ModifyDto : Core.Json.Serializable
 ---@field Id Core.UUID
 ---@field Features Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>
----@overload fun(id: Core.UUID, features: Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>) : FactoryControl.Core.Entities.Controller.ModifyDto
+---@overload fun(features: Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>) : FactoryControl.Core.Entities.Controller.ModifyDto
 local ModifyDto = {}
 
 ---@private
----@param id Core.UUID
 ---@param features Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>
-function ModifyDto:__init(id, features)
-    self.Id = id
+function ModifyDto:__init(features)
     self.Features = features
 end
 
----@return Core.UUID id, Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>
+---@return Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>
 function ModifyDto:Serialize()
-    return self.Id, self.Features
+    return self.Features
 end
 
 return Utils.Class.CreateClass(ModifyDto, "FactoryControl.Core.Entities.Controller.ModifyDto",

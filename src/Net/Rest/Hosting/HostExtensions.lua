@@ -24,7 +24,7 @@ function HostExtensions:GetOrCreateApiController(port, endpointLogger)
 
     local apiController = self.ApiControllers[port]
     if not apiController then
-        local netPort = self._NetworkClient:GetOrCreateNetworkPort(port)
+        local netPort = self:GetNetworkClient():GetOrCreateNetworkPort(port)
         apiController = ApiController(netPort, endpointLogger:subLogger("ApiController"))
         self.ApiControllers[port] = apiController
         netPort:OpenPort()
@@ -36,7 +36,8 @@ end
 ---@param port integer | "all"
 ---@param endpointName string
 ---@param endpointBase Net.Rest.Api.Server.EndpointBase
-function HostExtensions:AddEndpoint(port, endpointName, endpointBase)
+---@param ... any constructor args that are not logger and apiController
+function HostExtensions:AddEndpoint(port, endpointName, endpointBase, ...)
     if not self.Endpoints then
         self.Endpoints = {}
     end
@@ -44,7 +45,7 @@ function HostExtensions:AddEndpoint(port, endpointName, endpointBase)
     local endpointLogger = self._Logger:subLogger("Endpoint[" .. endpointName .. "]")
     local apiController = self:GetOrCreateApiController(port, endpointLogger)
 
-    table.insert(self.Endpoints, endpointBase(endpointLogger, apiController))
+    table.insert(self.Endpoints, endpointBase(endpointLogger, apiController, ...))
 end
 
 return Utils.Class.ExtendClass(HostExtensions, Host)

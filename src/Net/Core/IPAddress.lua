@@ -24,6 +24,16 @@ function IPAddress:__newindex()
 end
 
 ---@private
+function IPAddress.__eq(left, right)
+    if not Utils.Class.HasBaseClass(left, "Net.Core.IPAddress") then
+        error("expected left Net.Core.IPAddress, got " .. type(left))
+    end
+    if not Utils.Class.HasBaseClass(right, "Net.Core.IPAddress") then
+        error("expected right Net.Core.IPAddress, got " .. type(right))
+    end
+end
+
+---@private
 function IPAddress:__tostring()
     return self:GetAddress()
 end

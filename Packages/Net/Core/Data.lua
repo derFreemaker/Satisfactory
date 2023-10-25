@@ -56,6 +56,16 @@ function IPAddress:__newindex()
 end
 
 ---@private
+function IPAddress.__eq(left, right)
+    if not Utils.Class.HasBaseClass(left, "Net.Core.IPAddress") then
+        error("expected left Net.Core.IPAddress, got " .. type(left))
+    end
+    if not Utils.Class.HasBaseClass(right, "Net.Core.IPAddress") then
+        error("expected right Net.Core.IPAddress, got " .. type(right))
+    end
+end
+
+---@private
 function IPAddress:__tostring()
     return self:GetAddress()
 end
@@ -610,17 +620,8 @@ Host = Host.Return:Load()
 local NetworkClient = require("Net.Core.NetworkClient")
 
 ---@class Hosting.Host
----@field private _NetworkClient Net.Core.NetworkClient
+---@field package _NetworkClient Net.Core.NetworkClient
 local HostExtensions = {}
-
----@private
-function HostExtensions:CheckNetworkClient()
-    if self._NetworkClient then
-        return
-    end
-
-    self._NetworkClient = NetworkClient(self._Logger:subLogger("NetworkClient"), nil, self._JsonSerializer)
-end
 
 ---@param networkClient Net.Core.NetworkClient
 function HostExtensions:SetNetworkClient(networkClient)
@@ -629,7 +630,9 @@ end
 
 ---@return Net.Core.NetworkClient
 function HostExtensions:GetNetworkClient()
-    self:CheckNetworkClient()
+    if not self._NetworkClient then
+        self._NetworkClient = NetworkClient(self._Logger:subLogger("NetworkClient"), nil, self._JsonSerializer)
+    end
 
     return self._NetworkClient
 end
@@ -637,18 +640,14 @@ end
 ---@param port integer | "all"
 ---@return Net.Core.NetworkPort networkPort
 function HostExtensions:CreateNetworkPort(port)
-    self:CheckNetworkClient()
-
-    return self._NetworkClient:GetOrCreateNetworkPort(port)
+    return self:GetNetworkClient():GetOrCreateNetworkPort(port)
 end
 
 ---@param port integer | "all"
 ---@param outNetworkPort Out<Net.Core.NetworkPort>
 ---@return boolean exists
 function HostExtensions:NetworkPortExists(port, outNetworkPort)
-    self:CheckNetworkClient()
-
-    local netPort = self._NetworkClient:GetNetworkPort(port)
+    local netPort = self:GetNetworkClient():GetNetworkPort(port)
     if not netPort then
         return false
     end
