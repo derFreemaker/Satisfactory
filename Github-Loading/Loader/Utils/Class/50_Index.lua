@@ -42,7 +42,7 @@ function Class.ExtendClass(extensions, class)
         error("provided class is not an class: " .. tostring(class))
         return class
     else
-        metatable = metatable.Return
+        metatable = metatable.Value
     end
     local typeInfo = metatable.Type
 
@@ -103,7 +103,7 @@ function Class.HasBaseClass(obj, className)
     if not Class.IsClass(obj, metatable) then
         return false
     end
-    metatable = metatable.Return
+    metatable = metatable.Value
 
     return Class.HasTypeBaseClass(className, metatable.Type)
 end
@@ -131,7 +131,7 @@ function Class.IsClass(obj, metatableOut)
     end
 
     if metatableOut then
-        metatableOut.Return = metatable
+        metatableOut.Value = metatable
     end
 
     return true

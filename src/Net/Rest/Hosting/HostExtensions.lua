@@ -4,14 +4,14 @@ if not PackageLoader:TryGetModule("Hosting.Host", Host) then
     return
 end
 ---@type Hosting.Host
-Host = Host.Return:Load()
+Host = Host.Value:Load()
 -- Run only if module Hosting.Host is loaded
 
 local ApiController = require("Net.Rest.Api.Server.Controller")
 
 ---@class Hosting.Host
----@field ApiControllers Dictionary<integer | "all", Net.Rest.Api.Server.Controller>
----@field Endpoints Net.Rest.Api.Server.EndpointBase[]
+---@field package ApiControllers Dictionary<integer | "all", Net.Rest.Api.Server.Controller>
+---@field package Endpoints Net.Rest.Api.Server.EndpointBase[]
 local HostExtensions = {}
 
 ---@param port integer | "all"

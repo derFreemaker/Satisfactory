@@ -112,7 +112,7 @@ function DbTable:_FormatKeyForUsage(key)
     ---@type Out<any>
     local outObj = {}
     if self._Serializer:TryDeserialize(key, outObj) then
-        return outObj.Return
+        return outObj.Value
     end
 
     return key

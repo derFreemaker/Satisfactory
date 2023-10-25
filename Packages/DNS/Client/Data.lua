@@ -163,7 +163,7 @@ if not PackageLoader:TryGetModule("Hosting.Host", Host) then
     return
 end
 ---@type Hosting.Host
-Host = Host.Return:Load()
+Host = Host.Value:Load()
 -- Run only if module Hosting.Host is loaded
 
 local Task = require("Core.Task")

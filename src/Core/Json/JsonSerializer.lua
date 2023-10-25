@@ -171,7 +171,7 @@ end
 ---@return boolean couldDeserialize
 function JsonSerializer:TryDeserialize(str, outObj)
     local success, _, results = Utils.Function.InvokeProtected(self.Deserialize, self, str)
-    outObj.Return = results[1]
+    outObj.Value = results[1]
 
     return success
 end

@@ -614,7 +614,7 @@ if not PackageLoader:TryGetModule("Hosting.Host", Host) then
     return
 end
 ---@type Hosting.Host
-Host = Host.Return:Load()
+Host = Host.Value:Load()
 -- Run only if module Hosting.Host is loaded
 
 local NetworkClient = require("Net.Core.NetworkClient")
@@ -652,7 +652,7 @@ function HostExtensions:NetworkPortExists(port, outNetworkPort)
         return false
     end
 
-    outNetworkPort.Return = netPort
+    outNetworkPort.Value = netPort
     return true
 end
 
@@ -662,7 +662,7 @@ function HostExtensions:GetNetworkPort(port)
     ---@type Out<Net.Core.NetworkPort>
     local outNetPort = {}
     if self:NetworkPortExists(port, outNetPort) then
-        return outNetPort.Return
+        return outNetPort.Value
     end
 
     return self:CreateNetworkPort(port)

@@ -138,7 +138,7 @@ local function formatMessagePart(obj)
 		---@type Out<Utils.Class.Metatable>
 		local metatableOut
 		if Utils.Class.IsClass(obj, metatableOut) then
-			local typeInfo = metatableOut.Return.Type
+			local typeInfo = metatableOut.Value.Type
 			str = typeInfo.Name
 		else
 			str = tostring(obj)
@@ -1757,7 +1757,7 @@ end
 ---@return boolean couldDeserialize
 function JsonSerializer:TryDeserialize(str, outObj)
     local success, _, results = Utils.Function.InvokeProtected(self.Deserialize, self, str)
-    outObj.Return = results[1]
+    outObj.Value = results[1]
 
     return success
 end

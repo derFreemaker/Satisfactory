@@ -130,7 +130,7 @@ local function formatMessagePart(obj)
 		---@type Out<Utils.Class.Metatable>
 		local metatableOut
 		if Utils.Class.IsClass(obj, metatableOut) then
-			local typeInfo = metatableOut.Return.Type
+			local typeInfo = metatableOut.Value.Type
 			str = typeInfo.Name
 		else
 			str = tostring(obj)

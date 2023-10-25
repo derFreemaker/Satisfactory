@@ -149,7 +149,7 @@ function PackageLoader:TryGetModule(moduleToGet, outModule)
 		local module = package:GetModule(moduleToGet)
 		if module then
 			self.Logger:LogDebug("try geted module: '" .. moduleToGet .. "'")
-			outModule.Return = module
+			outModule.Value = module
 			return true
 		end
 	end

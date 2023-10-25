@@ -46,4 +46,4 @@ return Entities
 
 ---@class Dictionary<K, T>: { [K]: T }
 
----@class Out<T> : { Return: T }
+---@class Out<T> : { Value: T }
