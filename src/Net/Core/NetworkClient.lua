@@ -4,12 +4,17 @@ local EventPullAdapter = require('Core.Event.EventPullAdapter')
 local Task = require('Core.Task')
 local NetworkPort = require('Net.Core.NetworkPort')
 local NetworkContext = require('Net.Core.NetworkContext')
+local NetworkFuture = require("Net.Core.NetworkFuture")
 
 local IPAddress = require("Net.Core.IPAddress")
 
+---@alias Net.Core.Port
+---|integer
+---|"all"
+
 ---@class Net.Core.NetworkClient : object
 ---@field private _IPAddress Net.Core.IPAddress
----@field private _Ports Dictionary<integer | "all", Net.Core.NetworkPort?>
+---@field private _Ports Dictionary<Net.Core.Port, Net.Core.NetworkPort?>
 ---@field private _NetworkCard Adapter.Computer.NetworkCard
 ---@field private _Serializer Core.Json.Serializer
 ---@field private _Logger Core.Logger
@@ -53,13 +58,13 @@ function NetworkClient:GetJsonSerializer()
 	return self._Serializer
 end
 
----@param port integer | "all"
+---@param port Net.Core.Port
 ---@return Net.Core.NetworkPort?
 function NetworkClient:GetNetworkPort(port)
 	return self._Ports[port]
 end
 
----@param port (integer | "all")?
+---@param port (Net.Core.Port)?
 ---@return Net.Core.NetworkPort
 function NetworkClient:GetOrCreateNetworkPort(port)
 	port = port or 'all'
@@ -74,7 +79,7 @@ function NetworkClient:GetOrCreateNetworkPort(port)
 	return networkPort
 end
 
----@param port integer | "all" | Net.Core.NetworkPort?
+---@param port Net.Core.Port | Net.Core.NetworkPort?
 function NetworkClient:RemoveNetworkPort(port)
 	if port == "all" or type(port) == "number" then
 		port = self:GetNetworkPort(port)
@@ -90,31 +95,33 @@ function NetworkClient:RemoveNetworkPort(port)
 end
 
 ---@private
+---@param port Net.Core.Port
+---@param context Net.Core.NetworkContext
+function NetworkClient:executeNetworkPort(port, context)
+	local netPort = self:GetNetworkPort(port)
+	if not netPort then
+		return
+	end
+
+	netPort:Execute(context)
+	if netPort:GetEventsCount() == 0 then
+		self:RemoveNetworkPort(netPort)
+	end
+end
+
+---@private
 ---@param data any[]
 function NetworkClient:networkMessageRecieved(data)
 	local context = NetworkContext(data, self._Serializer)
 	self._Logger:LogDebug("recieved network message with event: '" ..
 		context.EventName .. "' on port: " .. context.Port)
 
-	local port = self:GetNetworkPort(context.Port)
-	if port then
-		port:Execute(context)
-		if port:GetEventsCount() == 0 then
-			self:RemoveNetworkPort(port)
-		end
-	end
-
-	local allPort = self:GetNetworkPort("all")
-	if allPort then
-		allPort:Execute(context)
-		if allPort:GetEventsCount() == 0 then
-			self:RemoveNetworkPort(allPort)
-		end
-	end
+	self:executeNetworkPort(context.Port, context)
+	self:executeNetworkPort("all", context)
 end
 
 ---@param onRecivedEventName (string | "all")?
----@param onRecivedPort (integer | "all")?
+---@param onRecivedPort (Net.Core.Port)?
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
 function NetworkClient:AddListener(onRecivedEventName, onRecivedPort, listener)
@@ -127,7 +134,7 @@ function NetworkClient:AddListener(onRecivedEventName, onRecivedPort, listener)
 end
 
 ---@param onRecivedEventName string | "all"
----@param onRecivedPort integer | "all"
+---@param onRecivedPort Net.Core.Port
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
 function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listener)
@@ -139,25 +146,36 @@ function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listen
 	return networkPort
 end
 
+---@async
 ---@param eventName string | "all"
----@param port integer | "all"
+---@param port Net.Core.Port
 ---@param timeoutSeconds number?
 ---@return Net.Core.NetworkContext?
 function NetworkClient:WaitForEvent(eventName, port, timeoutSeconds)
-	self._Logger:LogDebug("waiting for event: '" .. eventName .. "' on port: " .. port)
 	local result
 	---@param context Net.Core.NetworkContext
 	local function set(context)
 		result = context
 	end
-	self:AddListenerOnce(eventName, port, Task(set)):OpenPort()
 
+	local netPort = self:AddListenerOnce(eventName, port, Task(set))
+	netPort:OpenPort()
+
+	self._Logger:LogDebug("waiting for event: '" .. eventName .. "' on port: " .. port)
 	while result == nil do
 		if not EventPullAdapter:Wait(timeoutSeconds) then
 			break
 		end
 	end
+
 	return result
+end
+
+---@param eventName string
+---@param port Net.Core.Port
+---@param timeoutSeconds number?
+function NetworkClient:CreateEventFuture(eventName, port, timeoutSeconds)
+	return NetworkFuture(self, eventName, port, timeoutSeconds)
 end
 
 ---@param port integer
@@ -181,10 +199,10 @@ end
 ---@param port integer
 ---@param eventName string
 ---@param body any
----@param header Dictionary<string, any>?
-function NetworkClient:Send(ipAddress, port, eventName, body, header)
+---@param headers Dictionary<string, any>?
+function NetworkClient:Send(ipAddress, port, eventName, body, headers)
 	local jsonBody = self._Serializer:Serialize(body)
-	local jsonHeader = self._Serializer:Serialize(header)
+	local jsonHeader = self._Serializer:Serialize(headers)
 
 	self._NetworkCard:Send(ipAddress, port, eventName, jsonBody, jsonHeader)
 end

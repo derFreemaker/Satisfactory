@@ -27,13 +27,13 @@ function HostExtensions:GetNetworkClient()
     return self._NetworkClient
 end
 
----@param port integer | "all"
+---@param port Net.Core.Port
 ---@return Net.Core.NetworkPort networkPort
 function HostExtensions:CreateNetworkPort(port)
     return self:GetNetworkClient():GetOrCreateNetworkPort(port)
 end
 
----@param port integer | "all"
+---@param port Net.Core.Port
 ---@param outNetworkPort Out<Net.Core.NetworkPort>
 ---@return boolean exists
 function HostExtensions:NetworkPortExists(port, outNetworkPort)
@@ -46,7 +46,7 @@ function HostExtensions:NetworkPortExists(port, outNetworkPort)
     return true
 end
 
----@param port integer | "all"
+---@param port Net.Core.Port
 ---@return Net.Core.NetworkPort networkPort
 function HostExtensions:GetNetworkPort(port)
     ---@type Out<Net.Core.NetworkPort>
@@ -59,7 +59,7 @@ function HostExtensions:GetNetworkPort(port)
 end
 
 ---@param eventName string
----@param port integer | "all"
+---@param port Net.Core.Port
 ---@param task Core.Task
 function HostExtensions:AddCallableEvent(eventName, port, task)
     local netPort = self:CreateNetworkPort(port)
@@ -68,7 +68,7 @@ function HostExtensions:AddCallableEvent(eventName, port, task)
 end
 
 ---@param eventName string
----@param port integer | "all"
+---@param port Net.Core.Port
 function HostExtensions:RemoveCallableEvent(eventName, port)
     local netPort = self:GetNetworkPort(port)
     netPort:RemoveListener(eventName)

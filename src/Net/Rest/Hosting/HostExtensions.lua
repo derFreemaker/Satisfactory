@@ -10,11 +10,11 @@ Host = Host.Value:Load()
 local ApiController = require("Net.Rest.Api.Server.Controller")
 
 ---@class Hosting.Host
----@field package ApiControllers Dictionary<integer | "all", Net.Rest.Api.Server.Controller>
+---@field package ApiControllers Dictionary<Net.Core.Port, Net.Rest.Api.Server.Controller>
 ---@field package Endpoints Net.Rest.Api.Server.EndpointBase[]
 local HostExtensions = {}
 
----@param port integer | "all"
+---@param port Net.Core.Port
 ---@param endpointLogger Core.Logger
 ---@return Net.Rest.Api.Server.Controller apiController
 function HostExtensions:GetOrCreateApiController(port, endpointLogger)
@@ -33,7 +33,7 @@ function HostExtensions:GetOrCreateApiController(port, endpointLogger)
     return apiController
 end
 
----@param port integer | "all"
+---@param port Net.Core.Port
 ---@param endpointName string
 ---@param endpointBase Net.Rest.Api.Server.EndpointBase
 ---@param ... any constructor args that are not logger and apiController

@@ -1,15 +1,15 @@
 local Event = require('Core.Event.Event')
 
 ---@class Net.Core.NetworkPort : object
----@field Port integer | "all"
+---@field Port Net.Core.Port
 ---@field private _Events Dictionary<string, Core.Event>
 ---@field private _NetClient Net.Core.NetworkClient
 ---@field private _Logger Core.Logger
----@overload fun(port: integer | "all", logger: Core.Logger, netClient: Net.Core.NetworkClient) : Net.Core.NetworkPort
+---@overload fun(port: Net.Core.Port, logger: Core.Logger, netClient: Net.Core.NetworkClient) : Net.Core.NetworkPort
 local NetworkPort = {}
 
 ---@private
----@param port integer | "all"
+---@param port Net.Core.Port
 ---@param logger Core.Logger
 ---@param netClient Net.Core.NetworkClient
 function NetworkPort:__init(port, logger, netClient)
