@@ -42,7 +42,7 @@ function HostExtensions:AddEndpoint(port, endpointName, endpointBase, ...)
         self.Endpoints = {}
     end
 
-    local endpointLogger = self._Logger:subLogger("Endpoint[" .. endpointName .. "]")
+    local endpointLogger = self.m_logger:subLogger("Endpoint[" .. endpointName .. "]")
     local apiController = self:GetOrCreateApiController(port, endpointLogger)
 
     table.insert(self.Endpoints, endpointBase(endpointLogger, apiController, ...))

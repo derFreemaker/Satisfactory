@@ -31,18 +31,18 @@ PackageData["NetCoreIPAddress"] = {
     IsRunnable = true,
     Data = [[
 ---@class Net.Core.IPAddress : Core.Json.Serializable
----@field private _Address string
+---@field private m_address string
 ---@overload fun(address: string) : Net.Core.IPAddress
 local IPAddress = {}
 
 ---@private
 ---@param address string
 function IPAddress:__init(address)
-    self._Address = address
+    self.m_address = address
 end
 
 function IPAddress:GetAddress()
-    return self._Address
+    return self.m_address
 end
 
 ---@param ipAddress Net.Core.IPAddress
@@ -74,7 +74,7 @@ end
 
 ---@return string address
 function IPAddress:Serialize()
-    return self._Address
+    return self.m_address
 end
 
 --#endregion
@@ -126,11 +126,11 @@ local IPAddress = require("Net.Core.IPAddress")
 ---|"all"
 
 ---@class Net.Core.NetworkClient : object
----@field private _IPAddress Net.Core.IPAddress
----@field private _Ports Dictionary<Net.Core.Port, Net.Core.NetworkPort?>
----@field private _NetworkCard Adapter.Computer.NetworkCard
----@field private _Serializer Core.Json.Serializer
----@field private _Logger Core.Logger
+---@field private m_iPAddress Net.Core.IPAddress
+---@field private m_ports Dictionary<Net.Core.Port, Net.Core.NetworkPort?>
+---@field private m_networkCard Adapter.Computer.NetworkCard
+---@field private m_serializer Core.Json.Serializer
+---@field private m_logger Core.Logger
 ---@overload fun(logger: Core.Logger, networkCard: Adapter.Computer.NetworkCard?, serializer: Core.Json.Serializer?) : Net.Core.NetworkClient
 local NetworkClient = {}
 
@@ -141,40 +141,40 @@ local NetworkClient = {}
 function NetworkClient:__init(logger, networkCard, serializer)
 	networkCard = networkCard or NetworkCardAdapter(1)
 
-	self._Logger = logger
-	self._Ports = {}
-	self._NetworkCard = networkCard
+	self.m_logger = logger
+	self.m_ports = {}
+	self.m_networkCard = networkCard
 
-	self._Serializer = serializer or JsonSerializer.Static__Serializer
+	self.m_serializer = serializer or JsonSerializer.Static__Serializer
 
-	self._NetworkCard:Listen()
+	self.m_networkCard:Listen()
 	EventPullAdapter:AddListener('NetworkMessage', Task(self.networkMessageRecieved, self))
 end
 
 ---@return Net.Core.IPAddress
 function NetworkClient:GetIPAddress()
-	if self._IPAddress then
-		return self._IPAddress
+	if self.m_iPAddress then
+		return self.m_iPAddress
 	end
 
-	self._IPAddress = IPAddress(self._NetworkCard:GetIPAddress())
-	return self._IPAddress
+	self.m_iPAddress = IPAddress(self.m_networkCard:GetIPAddress())
+	return self.m_iPAddress
 end
 
 ---@return string nick
 function NetworkClient:GetNick()
-	return self._NetworkCard:GetNick()
+	return self.m_networkCard:GetNick()
 end
 
 ---@return Core.Json.Serializer serializer
 function NetworkClient:GetJsonSerializer()
-	return self._Serializer
+	return self.m_serializer
 end
 
 ---@param port Net.Core.Port
 ---@return Net.Core.NetworkPort?
 function NetworkClient:GetNetworkPort(port)
-	return self._Ports[port]
+	return self.m_ports[port]
 end
 
 ---@param port (Net.Core.Port)?
@@ -187,8 +187,8 @@ function NetworkClient:GetOrCreateNetworkPort(port)
 		return networkPort
 	end
 
-	networkPort = NetworkPort(port, self._Logger:subLogger('NetworkPort[' .. port .. ']'), self)
-	self._Ports[port] = networkPort
+	networkPort = NetworkPort(port, self.m_logger:subLogger('NetworkPort[' .. port .. ']'), self)
+	self.m_ports[port] = networkPort
 	return networkPort
 end
 
@@ -204,7 +204,7 @@ function NetworkClient:RemoveNetworkPort(port)
 	end
 
 	port:ClosePort()
-	self._Ports[port] = nil
+	self.m_ports[port] = nil
 end
 
 ---@private
@@ -225,8 +225,8 @@ end
 ---@private
 ---@param data any[]
 function NetworkClient:networkMessageRecieved(data)
-	local context = NetworkContext(data, self._Serializer)
-	self._Logger:LogDebug("recieved network message with event: '" ..
+	local context = NetworkContext(data, self.m_serializer)
+	self.m_logger:LogDebug("recieved network message with event: '" ..
 		context.EventName .. "' on port: " .. context.Port)
 
 	self:executeNetworkPort(context.Port, context)
@@ -274,7 +274,7 @@ function NetworkClient:WaitForEvent(eventName, port, timeoutSeconds)
 	local netPort = self:AddListenerOnce(eventName, port, Task(set))
 	netPort:OpenPort()
 
-	self._Logger:LogDebug("waiting for event: '" .. eventName .. "' on port: " .. port)
+	self.m_logger:LogDebug("waiting for event: '" .. eventName .. "' on port: " .. port)
 	while result == nil do
 		if not EventPullAdapter:Wait(timeoutSeconds) then
 			break
@@ -293,19 +293,19 @@ end
 
 ---@param port integer
 function NetworkClient:Open(port)
-	self._NetworkCard:OpenPort(port)
-	self._Logger:LogTrace('opened Port: ' .. port)
+	self.m_networkCard:OpenPort(port)
+	self.m_logger:LogTrace('opened Port: ' .. port)
 end
 
 ---@param port integer
 function NetworkClient:Close(port)
-	self._NetworkCard:ClosePort(port)
-	self._Logger:LogTrace('closed Port: ' .. port)
+	self.m_networkCard:ClosePort(port)
+	self.m_logger:LogTrace('closed Port: ' .. port)
 end
 
 function NetworkClient:CloseAll()
-	self._NetworkCard:CloseAllPorts()
-	self._Logger:LogTrace('closed all Ports')
+	self.m_networkCard:CloseAllPorts()
+	self.m_logger:LogTrace('closed all Ports')
 end
 
 ---@param ipAddress Net.Core.IPAddress
@@ -314,15 +314,15 @@ end
 ---@param body any
 ---@param headers Dictionary<string, any>?
 function NetworkClient:Send(ipAddress, port, eventName, body, headers)
-	local jsonBody = self._Serializer:Serialize(body)
-	local jsonHeader = self._Serializer:Serialize(headers)
+	local jsonBody = self.m_serializer:Serialize(body)
+	local jsonHeader = self.m_serializer:Serialize(headers)
 
-	self._Logger:LogTrace(
+	self.m_logger:LogTrace(
 		"sending to '" .. ipAddress:GetAddress()
 		.. "' on port: " .. port
 		.. " with event: '" .. eventName .. "'")
 
-	self._NetworkCard:Send(ipAddress, port, eventName, jsonBody, jsonHeader)
+	self.m_networkCard:Send(ipAddress, port, eventName, jsonBody, jsonHeader)
 end
 
 ---@param port integer
@@ -330,12 +330,12 @@ end
 ---@param body any
 ---@param header Dictionary<string, any>?
 function NetworkClient:BroadCast(port, eventName, body, header)
-	local jsonBody = self._Serializer:Serialize(body)
-	local jsonHeader = self._Serializer:Serialize(header)
+	local jsonBody = self.m_serializer:Serialize(body)
+	local jsonHeader = self.m_serializer:Serialize(header)
 
-	self._Logger:LogTrace("broadcast on port: " .. port .. " with event: '" .. eventName .. "'")
+	self.m_logger:LogTrace("broadcast on port: " .. port .. " with event: '" .. eventName .. "'")
 
-	self._NetworkCard:BroadCast(port, eventName, jsonBody, jsonHeader)
+	self.m_networkCard:BroadCast(port, eventName, jsonBody, jsonHeader)
 end
 
 return Utils.Class.CreateClass(NetworkClient, 'Core.Net.NetworkClient')
@@ -396,10 +396,10 @@ PackageData["NetCoreNetworkFuture"] = {
     IsRunnable = true,
     Data = [[
 ---@class Net.Core.NetworkFuture : object
----@field private _EventName string
----@field private _Port Net.Core.Port
----@field private _Timeout number?
----@field private _NetworkClient Net.Core.NetworkClient
+---@field private m_eventName string
+---@field private m_port Net.Core.Port
+---@field private m_timeout number?
+---@field private m_networkClient Net.Core.NetworkClient
 ---@overload fun(networkClient: Net.Core.NetworkClient, eventName: string, port: Net.Core.Port, timeout: number?) : Net.Core.NetworkFuture
 local NetworkFuture = {}
 
@@ -409,20 +409,20 @@ local NetworkFuture = {}
 ---@param port Net.Core.Port
 ---@param timeout number?
 function NetworkFuture:__init(networkClient, eventName, port, timeout)
-    self._EventName = eventName
-    self._Port = port
-    self._Timeout = timeout
-    self._NetworkClient = networkClient
+    self.m_eventName = eventName
+    self.m_port = port
+    self.m_timeout = timeout
+    self.m_networkClient = networkClient
 
     if type(port) == "number" then
-        self._NetworkClient:Open(port)
+        self.m_networkClient:Open(port)
     end
 end
 
 ---@async
 ---@return Net.Core.NetworkContext?
 function NetworkFuture:Wait()
-    return self._NetworkClient:WaitForEvent(self._EventName, self._Port, self._Timeout)
+    return self.m_networkClient:WaitForEvent(self.m_eventName, self.m_port, self.m_timeout)
 end
 
 return Utils.Class.CreateClass(NetworkFuture, 'Core.Net.NetworkFuture')
@@ -438,9 +438,9 @@ local Event = require('Core.Event.Event')
 
 ---@class Net.Core.NetworkPort : object
 ---@field Port Net.Core.Port
----@field private _Events Dictionary<string, Core.Event>
----@field private _NetClient Net.Core.NetworkClient
----@field private _Logger Core.Logger
+---@field private m_events Dictionary<string, Core.Event>
+---@field private m_netClient Net.Core.NetworkClient
+---@field private m_logger Core.Logger
 ---@overload fun(port: Net.Core.Port, logger: Core.Logger, netClient: Net.Core.NetworkClient) : Net.Core.NetworkPort
 local NetworkPort = {}
 
@@ -450,32 +450,32 @@ local NetworkPort = {}
 ---@param netClient Net.Core.NetworkClient
 function NetworkPort:__init(port, logger, netClient)
 	self.Port = port
-	self._Events = {}
-	self._Logger = logger
-	self._NetClient = netClient
+	self.m_events = {}
+	self.m_logger = logger
+	self.m_netClient = netClient
 end
 
 ---@return Dictionary<string, Core.Event>
 function NetworkPort:GetEvents()
-	return Utils.Table.Copy(self._Events)
+	return Utils.Table.Copy(self.m_events)
 end
 
 ---@return integer
 function NetworkPort:GetEventsCount()
-	return Utils.Table.Count(self._Events)
+	return Utils.Table.Count(self.m_events)
 end
 
 ---@return Net.Core.NetworkClient
 function NetworkPort:GetNetClient()
-	return self._NetClient
+	return self.m_netClient
 end
 
 ---@param context Net.Core.NetworkContext
 function NetworkPort:Execute(context)
-	self._Logger:LogTrace("got triggered with event: '" .. context.EventName .. "'")
-	for name, event in pairs(self._Events) do
+	self.m_logger:LogTrace("got triggered with event: '" .. context.EventName .. "'")
+	for name, event in pairs(self.m_events) do
 		if name == context.EventName or name == 'all' then
-			event:Trigger(self._Logger, context)
+			event:Trigger(self.m_logger, context)
 		end
 		if event:GetCount() == 0 then
 			self:RemoveListener(name)
@@ -487,7 +487,7 @@ end
 ---@param eventName string | "all"
 ---@return Core.Event?
 function NetworkPort:GetEvent(eventName)
-	for name, event in pairs(self._Events) do
+	for name, event in pairs(self.m_events) do
 		if name == eventName then
 			return event
 		end
@@ -504,7 +504,7 @@ function NetworkPort:CreateOrGetEvent(eventName)
 	end
 
 	event = Event()
-	self._Events[eventName] = event
+	self.m_events[eventName] = event
 	return event
 end
 
@@ -528,27 +528,27 @@ end
 
 ---@param eventName string | "all"
 function NetworkPort:RemoveListener(eventName)
-	self._Events[eventName] = nil
+	self.m_events[eventName] = nil
 end
 
 ---@param eventName string
 ---@param timeoutSeconds number?
 ---@return Net.Core.NetworkContext?
 function NetworkPort:WaitForEvent(eventName, timeoutSeconds)
-	return self._NetClient:WaitForEvent(eventName, self.Port, timeoutSeconds)
+	return self.m_netClient:WaitForEvent(eventName, self.Port, timeoutSeconds)
 end
 
 function NetworkPort:OpenPort()
 	local port = self.Port
 	if type(port) == 'number' then
-		self._NetClient:Open(port)
+		self.m_netClient:Open(port)
 	end
 end
 
 function NetworkPort:ClosePort()
 	local port = self.Port
 	if type(port) == 'number' then
-		self._NetClient:Close(port)
+		self.m_netClient:Close(port)
 	end
 end
 
@@ -562,7 +562,7 @@ function NetworkPort:SendMessage(ipAddress, eventName, body, header)
 		error('Unable to send a message over all ports')
 	end
 	---@cast port integer
-	self._NetClient:Send(ipAddress, port, eventName, body, header)
+	self.m_netClient:Send(ipAddress, port, eventName, body, header)
 end
 
 ---@param eventName string
@@ -574,7 +574,7 @@ function NetworkPort:BroadCastMessage(eventName, body, header)
 		error('Unable to broadcast a message over all ports')
 	end
 	---@cast port integer
-	self._NetClient:BroadCast(port, eventName, body, header)
+	self.m_netClient:BroadCast(port, eventName, body, header)
 end
 
 return Utils.Class.CreateClass(NetworkPort, 'Core.Net.NetworkPort')
@@ -684,21 +684,21 @@ Host = Host.Value:Load()
 local NetworkClient = require("Net.Core.NetworkClient")
 
 ---@class Hosting.Host
----@field package _NetworkClient Net.Core.NetworkClient
+---@field package m_networkClient Net.Core.NetworkClient
 local HostExtensions = {}
 
 ---@param networkClient Net.Core.NetworkClient
 function HostExtensions:SetNetworkClient(networkClient)
-    self._NetworkClient = networkClient
+    self.m_networkClient = networkClient
 end
 
 ---@return Net.Core.NetworkClient
 function HostExtensions:GetNetworkClient()
-    if not self._NetworkClient then
-        self._NetworkClient = NetworkClient(self._Logger:subLogger("NetworkClient"), nil, self._JsonSerializer)
+    if not self.m_networkClient then
+        self.m_networkClient = NetworkClient(self.m_logger:subLogger("NetworkClient"), nil, self.m_jsonSerializer)
     end
 
-    return self._NetworkClient
+    return self.m_networkClient
 end
 
 ---@param port Net.Core.Port

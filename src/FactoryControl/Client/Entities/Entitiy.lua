@@ -1,6 +1,6 @@
 ---@class FactoryControl.Client.Entities.Entity : object
 ---@field Id Core.UUID
----@field protected _Client FactoryControl.Client
+---@field protected m_client FactoryControl.Client
 local Entity = {}
 
 ---@private
@@ -8,7 +8,7 @@ local Entity = {}
 ---@param client FactoryControl.Client
 function Entity:__init(id, client)
     self.Id = id
-    self._Client = client
+    self.m_client = client
 end
 
 return Utils.Class.CreateClass(Entity, "FactoryControl.Client.Entities.Entity")

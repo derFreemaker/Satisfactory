@@ -14,30 +14,30 @@ local DNSClient = require('DNS.Client.Client')
 local Host = require('Hosting.Host')
 
 ---@class FactoryControl.Server.Main : Github_Loading.Entities.Main
----@field private _Host Hosting.Host
----@field private _EventPullAdapter Core.EventPullAdapter
----@field private _ApiController Net.Rest.Api.Server.Controller
----@field private _DnsClient DNS.Client
----@field private _NetClient Net.Core.NetworkClient
+---@field private m_host Hosting.Host
+---@field private m_eventPullAdapter Core.EventPullAdapter
+---@field private m_apiController Net.Rest.Api.Server.Controller
+---@field private m_dnsClient DNS.Client
+---@field private m_netClient Net.Core.NetworkClient
 local Main = {}
 
 function Main:Configure()
-	self._Host = Host(self.Logger:subLogger('Host'))
+	self.m_host = Host(self.Logger:subLogger('Host'))
 
 	local databaseAccessLayer = Database(self.Logger:subLogger("DatabaseAccessLayer"))
 
-	self._Host:AddEndpoint(PortUsage.HTTP,
+	self.m_host:AddEndpoint(PortUsage.HTTP,
 		"Controller",
 		ControllerEndpoints --[[@as FactoryControl.Server.Endpoints.ControllerEndpoints]],
 		databaseAccessLayer)
 	self.Logger:LogDebug('setup endpoints')
 
-	self._Host:RegisterAddress(Config.DOMAIN)
+	self.m_host:RegisterAddress(Config.DOMAIN)
 end
 
 function Main:Run()
 	self.Logger:LogInfo('started server')
-	self._Host:Run()
+	self.m_host:Run()
 end
 
 return Main

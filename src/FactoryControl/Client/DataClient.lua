@@ -5,16 +5,16 @@ local HttpClient = require('Net.Http.Client')
 local HttpRequest = require('Net.Http.Request')
 
 ---@class FactoryControl.Client.DataClient : object
----@field private _Client Net.Http.Client
----@field private _Logger Core.Logger
+---@field private m_client Net.Http.Client
+---@field private m_logger Core.Logger
 ---@overload fun(logger: Core.Logger) : FactoryControl.Client.DataClient
 local DataClient = {}
 
 ---@private
 ---@param logger Core.Logger
 function DataClient:__init(logger)
-	self._Logger = logger
-	self._Client = HttpClient(self._Logger:subLogger('RestApiClient'))
+	self.m_logger = logger
+	self.m_client = HttpClient(self.m_logger:subLogger('RestApiClient'))
 end
 
 ---@private
@@ -25,7 +25,7 @@ end
 ---@return Net.Http.Response response
 function DataClient:request(method, endpoint, body, options)
 	local request = HttpRequest(method, FactoryControlConfig.DOMAIN, Uri.Static__Parse(endpoint), body, options)
-	return self._Client:Send(request)
+	return self.m_client:Send(request)
 end
 
 ---@param name string

@@ -15,7 +15,7 @@ end
 function Button:Press()
     local pressed = Pressed(self.Id)
 
-    self._Client:ButtonPressed(self.Owner.IPAddress, pressed)
+    self.m_client:ButtonPressed(self.Owner.IPAddress, pressed)
 end
 
 return Utils.Class.CreateClass(Button, "FactoryControl.Client.Entities.Controller.Feature.Button",

@@ -6,11 +6,11 @@ local ResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 local UUID              = require("Core.UUID")
 
 ---@class Net.Rest.Api.Server.Endpoint : object
----@field private _EndpointUriPattern string
----@field private _EndpointUriTemplate string
----@field private _ParameterTypes string[]
----@field private _Task Core.Task
----@field private _Logger Core.Logger
+---@field private m_endpointUriPattern string
+---@field private m_endpointUriTemplate string
+---@field private m_parameterTypes string[]
+---@field private m_task Core.Task
+---@field private m_logger Core.Logger
 ---@overload fun(endpointUriPattern: string, task: Core.Task, logger: Core.Logger) : Net.Rest.Api.Server.Endpoint
 local Endpoint          = {}
 
@@ -19,25 +19,25 @@ local Endpoint          = {}
 ---@param task Core.Task
 ---@param logger Core.Logger
 function Endpoint:__init(endpointUriPattern, task, logger)
-    self._EndpointUriPattern = endpointUriPattern
-    self._EndpointUriTemplate = endpointUriPattern:gsub("{[a-zA-Z0-9]*:[a-zA-Z0-9\\.]*}", "(.+)")
+    self.m_endpointUriPattern = endpointUriPattern
+    self.m_endpointUriTemplate = endpointUriPattern:gsub("{[a-zA-Z0-9]*:[a-zA-Z0-9\\.]*}", "(.+)")
 
-    self._ParameterTypes = {}
+    self.m_parameterTypes = {}
     for parameterType in endpointUriPattern:gmatch("{[a-zA-Z0-9]*:([a-zA-Z0-9\\.]*)}") do
-        table.insert(self._ParameterTypes, parameterType)
+        table.insert(self.m_parameterTypes, parameterType)
     end
 
-    self._Task = task
-    self._Logger = logger
+    self.m_task = task
+    self.m_logger = logger
 end
 
 ---@private
 ---@param uri string
 ---@return any[] parameters
 function Endpoint:GetUriParameters(uri)
-    local parameters = { uri:match(self._EndpointUriTemplate) }
+    local parameters = { uri:match(self.m_endpointUriTemplate) }
 
-    local parameterTypes = self._ParameterTypes
+    local parameterTypes = self.m_parameterTypes
     for i = 1, #parameters, 1 do
         local parameterType = parameterTypes[i]
         local parameter = parameters[i]
@@ -78,14 +78,14 @@ end
 function Endpoint:Execute(uriParameters, request, context)
     local response
     if #uriParameters == 0 then
-        response = self._Task:Execute(request.Body, request, context)
+        response = self.m_task:Execute(request.Body, request, context)
     else
-        response = self._Task:Execute(table.unpack(uriParameters), request.Body, request, context)
+        response = self.m_task:Execute(table.unpack(uriParameters), request.Body, request, context)
     end
-    self._Task:Close()
+    self.m_task:Close()
 
-    if not self._Task:IsSuccess() then
-        response = ResponseTemplates.InternalServerError(self._Task:GetTraceback() or "no error")
+    if not self.m_task:IsSuccess() then
+        response = ResponseTemplates.InternalServerError(self.m_task:GetTraceback() or "no error")
     end
 
     return response
@@ -95,8 +95,8 @@ end
 ---@param context Net.Core.NetworkContext
 ---@return Net.Rest.Api.Response response
 function Endpoint:Invoke(request, context)
-    self._Logger:LogTrace('executing...')
-    ___logger:setLogger(self._Logger)
+    self.m_logger:LogTrace('executing...')
+    ___logger:setLogger(self.m_logger)
 
     local response
     local uriParameters, parseError = self:ParseUriParameters(tostring(request.Endpoint))
@@ -108,13 +108,13 @@ function Endpoint:Invoke(request, context)
     response = self:Execute(uriParameters, request, context)
 
     if response.WasSuccessfull then
-        self._Logger:LogDebug('request finished with status code: ' .. response.Headers.Code)
+        self.m_logger:LogDebug('request finished with status code: ' .. response.Headers.Code)
     else
         if response.Headers.Code == StatusCodes.Status500InternalServerError then
-            self._Logger:LogError('request finished with status code: '
+            self.m_logger:LogError('request finished with status code: '
                 .. response.Headers.Code .. " with message: '" .. response.Headers.Message .. "'")
         else
-            self._Logger:LogWarning('request finished with status code: '
+            self.m_logger:LogWarning('request finished with status code: '
                 .. response.Headers.Code .. " with message: '" .. response.Headers.Message .. "'")
         end
     end

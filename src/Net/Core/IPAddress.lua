@@ -1,16 +1,16 @@
 ---@class Net.Core.IPAddress : Core.Json.Serializable
----@field private _Address string
+---@field private m_address string
 ---@overload fun(address: string) : Net.Core.IPAddress
 local IPAddress = {}
 
 ---@private
 ---@param address string
 function IPAddress:__init(address)
-    self._Address = address
+    self.m_address = address
 end
 
 function IPAddress:GetAddress()
-    return self._Address
+    return self.m_address
 end
 
 ---@param ipAddress Net.Core.IPAddress
@@ -42,7 +42,7 @@ end
 
 ---@return string address
 function IPAddress:Serialize()
-    return self._Address
+    return self.m_address
 end
 
 --#endregion

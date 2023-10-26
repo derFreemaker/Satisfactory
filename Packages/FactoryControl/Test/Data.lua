@@ -9,15 +9,15 @@ PackageData["FactoryControlTest__main"] = {
 local FactoryControlClient = require("FactoryControl.Client.Client")
 
 ---@class FactoryControl.Test.Main : Github_Loading.Entities.Main
----@field private _Client FactoryControl.Client
+---@field private m_client FactoryControl.Client
 local Main = {}
 
 function Main:Configure()
-    self._Client = FactoryControlClient(self.Logger:subLogger("ApiClient"))
+    self.m_client = FactoryControlClient(self.Logger:subLogger("ApiClient"))
 end
 
 function Main:Run()
-    local controller = self._Client:Connect("Test")
+    local controller = self.m_client:Connect("Test")
 
     print(controller.IPAddress)
 end

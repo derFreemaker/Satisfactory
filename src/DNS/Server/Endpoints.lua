@@ -1,7 +1,7 @@
 local AddressDatabase = require("DNS.Server.AddressDatabase")
 
 ---@class DNS.Endpoints : Net.Rest.Api.Server.EndpointBase
----@field private _AddressDatabase DNS.Server.AddressDatabase
+---@field private m_addressDatabase DNS.Server.AddressDatabase
 ---@overload fun(logger: Core.Logger, controller: Net.Rest.Api.Server.Controller) : DNS.Endpoints
 local Endpoints = {}
 
@@ -12,7 +12,7 @@ local Endpoints = {}
 function Endpoints:__init(baseFunc, logger, controller)
     baseFunc(logger, controller)
 
-    self._AddressDatabase = AddressDatabase(logger:subLogger("AddressDatabase"))
+    self.m_addressDatabase = AddressDatabase(logger:subLogger("AddressDatabase"))
 
     self:AddEndpoint("CREATE", "/Address/Create", self.CreateAddress)
     self:AddEndpoint("DELETE", "/Address/{id:Core.UUID}/Delete", self.DeletetAddress)
@@ -23,7 +23,7 @@ end
 ---@param createAddress DNS.Core.Entities.Address.Create
 ---@return Net.Rest.Api.Response response
 function Endpoints:CreateAddress(createAddress)
-    local success = self._AddressDatabase:Create(createAddress)
+    local success = self.m_addressDatabase:Create(createAddress)
 
     return self.Templates:Ok(success)
 end
@@ -31,7 +31,7 @@ end
 ---@param id Core.UUID
 ---@return Net.Rest.Api.Response response
 function Endpoints:DeletetAddress(id)
-    local success = self._AddressDatabase:DeleteById(id)
+    local success = self.m_addressDatabase:DeleteById(id)
     if not success then
         return self.Templates:NotFound("Unable to find address with given id")
     end
@@ -42,7 +42,7 @@ end
 ---@param id Core.UUID
 ---@return Net.Rest.Api.Response response
 function Endpoints:GetAddressWithId(id)
-    local address = self._AddressDatabase:GetWithId(id)
+    local address = self.m_addressDatabase:GetWithId(id)
     if not address then
         return self.Templates:NotFound("Unable to find address with given id")
     end
@@ -53,7 +53,7 @@ end
 ---@param addressStr string
 ---@return Net.Rest.Api.Response response
 function Endpoints:GetAddressWithAddress(addressStr)
-    local address = self._AddressDatabase:GetWithUrl(addressStr)
+    local address = self.m_addressDatabase:GetWithUrl(addressStr)
     if not address then
         return self.Templates:NotFound("Unable to find address with given address")
     end

@@ -14,7 +14,7 @@ local Feature = {}
 ---@param controller FactoryControl.Client.Entities.Controller
 ---@param baseFunc fun(id: Core.UUID, client: FactoryControl.Client)
 function Feature:__init(baseFunc, id, name, featureType, controller)
-    baseFunc(id, controller._Client)
+    baseFunc(id, controller.m_client)
 
     self.Name  = name
     self.Type  = featureType

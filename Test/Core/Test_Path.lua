@@ -114,7 +114,7 @@ function TestCopy()
     local testCopy = test:Copy()
 
     ---@diagnostic disable-next-line
-    luaunit.assertNotEquals(tostring(test._Nodes), tostring(testCopy._Nodes))
+    luaunit.assertNotEquals(tostring(test.m_nodes), tostring(testCopy.m_nodes))
     luaunit.assertEquals(test:GetPath(), testCopy:GetPath())
 end
 

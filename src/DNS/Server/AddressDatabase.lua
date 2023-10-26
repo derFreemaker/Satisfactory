@@ -5,15 +5,15 @@ local Address = require("DNS.Core.Entities.Address.Address")
 local UUID = require("Core.UUID")
 
 ---@class DNS.Server.AddressDatabase : object
----@field private _DbTable Database.DbTable | Dictionary<Core.UUID, DNS.Core.Entities.Address>
+---@field private m_dbTable Database.DbTable | Dictionary<Core.UUID, DNS.Core.Entities.Address>
 ---@overload fun(logger: Core.Logger) : DNS.Server.AddressDatabase
 local AddressDatabase = {}
 
 ---@private
 ---@param logger Core.Logger
 function AddressDatabase:__init(logger)
-    self._DbTable = DbTable("Addresses", Path("/Database/Addresses/"), logger:subLogger("DbTable"))
-    self._DbTable:Load()
+    self.m_dbTable = DbTable("Addresses", Path("/Database/Addresses/"), logger:subLogger("DbTable"))
+    self.m_dbTable:Load()
 end
 
 ---@param createAddress DNS.Core.Entities.Address.Create
@@ -24,18 +24,18 @@ function AddressDatabase:Create(createAddress)
     end
 
     local address = Address(UUID.Static__New(), createAddress.Url, createAddress.IPAddress)
-    self._DbTable:Set(address.Id, address)
+    self.m_dbTable:Set(address.Id, address)
 
-    self._DbTable:Save()
+    self.m_dbTable:Save()
     return true
 end
 
 ---@param id Core.UUID
 ---@return boolean
 function AddressDatabase:DeleteById(id)
-    self._DbTable:Delete(id)
+    self.m_dbTable:Delete(id)
 
-    self._DbTable:Save()
+    self.m_dbTable:Save()
     return true
 end
 
@@ -47,16 +47,16 @@ function AddressDatabase:DeleteByUrl(addressAddress)
         return false
     end
 
-    self._DbTable:Delete(address.Id)
+    self.m_dbTable:Delete(address.Id)
 
-    self._DbTable:Save()
+    self.m_dbTable:Save()
     return true
 end
 
 ---@param addressId Core.UUID
 ---@return DNS.Core.Entities.Address? address
 function AddressDatabase:GetWithId(addressId)
-    for id, address in pairs(self._DbTable) do
+    for id, address in pairs(self.m_dbTable) do
         if id == addressId then
             return address
         end
@@ -66,7 +66,7 @@ end
 ---@param addressAddress string
 ---@return DNS.Core.Entities.Address? createAddress
 function AddressDatabase:GetWithUrl(addressAddress)
-    for _, address in pairs(self._DbTable) do
+    for _, address in pairs(self.m_dbTable) do
         if address.Url == addressAddress then
             return address
         end

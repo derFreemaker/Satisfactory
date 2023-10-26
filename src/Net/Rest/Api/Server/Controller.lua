@@ -8,9 +8,9 @@ local Endpoint = require("Net.Rest.Api.Server.Endpoint")
 local ResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 
 ---@class Net.Rest.Api.Server.Controller : object
----@field private _Endpoints Dictionary<Net.Core.Method, Dictionary<string, Net.Rest.Api.Server.Endpoint>>
----@field private _NetPort Net.Core.NetworkPort
----@field private _Logger Core.Logger
+---@field private m_endpoints Dictionary<Net.Core.Method, Dictionary<string, Net.Rest.Api.Server.Endpoint>>
+---@field private m_netPort Net.Core.NetworkPort
+---@field private m_logger Core.Logger
 ---@overload fun(netPort: Net.Core.NetworkPort, logger: Core.Logger) : Net.Rest.Api.Server.Controller
 local Controller = {}
 
@@ -18,9 +18,9 @@ local Controller = {}
 ---@param netPort Net.Core.NetworkPort
 ---@param logger Core.Logger
 function Controller:__init(netPort, logger)
-    self._Endpoints = {}
-    self._NetPort = netPort
-    self._Logger = logger
+    self.m_endpoints = {}
+    self.m_netPort = netPort
+    self.m_logger = logger
     netPort:AddListener(EventNameUsage.RestRequest, Task(self.onMessageRecieved, self))
 end
 
@@ -31,9 +31,9 @@ function Controller:onMessageRecieved(context)
 
     local endpoint = self:GetEndpoint(request.Method, request.Endpoint)
     if not endpoint then
-        self._Logger:LogTrace('found no endpoint:', request.Endpoint)
+        self.m_logger:LogTrace('found no endpoint:', request.Endpoint)
         if context.Header.ReturnPort then
-            self._NetPort:GetNetClient():Send(
+            self.m_netPort:GetNetClient():Send(
                 context.Header.ReturnIPAddress,
                 context.Header.ReturnPort,
                 EventNameUsage.RestResponse,
@@ -41,27 +41,27 @@ function Controller:onMessageRecieved(context)
         end
         return
     end
-    self._Logger:LogTrace('found endpoint:', request.Endpoint)
+    self.m_logger:LogTrace('found endpoint:', request.Endpoint)
     local response = endpoint:Invoke(request, context)
 
     if context.Header.ReturnPort then
-        self._Logger:LogTrace("sending response to '" ..
+        self.m_logger:LogTrace("sending response to '" ..
             context.SenderIPAddress .. "' on port: " .. context.Header.ReturnPort .. " ...")
-        self._NetPort:GetNetClient():Send(
+        self.m_netPort:GetNetClient():Send(
             context.Header.ReturnIPAddress,
             context.Header.ReturnPort,
             EventNameUsage.RestResponse,
             response
         )
     else
-        self._Logger:LogTrace('sending no response')
+        self.m_logger:LogTrace('sending no response')
     end
 end
 
 ---@param endpointMethod Net.Core.Method
 ---@return Dictionary<string, Net.Rest.Api.Server.Endpoint>?
 function Controller:GetMethodEndpoints(endpointMethod)
-    return self._Endpoints[endpointMethod]
+    return self.m_endpoints[endpointMethod]
 end
 
 ---@param endpointMethod Net.Core.Method
@@ -76,7 +76,7 @@ function Controller:GetEndpoint(endpointMethod, endpointUrl)
     for uriStr, endpoint in pairs(methodEndpoints) do
         local uriPattern = "^" .. uriStr:gsub("{.*}", ".*") .. "$"
         if tostring(endpointUrl):match(uriPattern) then
-            self._Logger:LogDebug("found endpoint: " .. tostring(endpointUrl) .. " -> " .. uriStr)
+            self.m_logger:LogDebug("found endpoint: " .. tostring(endpointUrl) .. " -> " .. uriStr)
             return endpoint
         end
     end
@@ -89,16 +89,16 @@ function Controller:AddEndpoint(method, endpointUrl, task)
     local methodEndpoints = self:GetMethodEndpoints(method)
     if not methodEndpoints then
         methodEndpoints = {}
-        self._Endpoints[method] = methodEndpoints
+        self.m_endpoints[method] = methodEndpoints
     end
 
     local endpoint = methodEndpoints[tostring(endpointUrl)]
     if endpoint then
-        self._Logger:LogWarning('Endpoint already exists: ' .. tostring(endpointUrl))
+        self.m_logger:LogWarning('Endpoint already exists: ' .. tostring(endpointUrl))
         return
     end
 
-    endpoint = Endpoint(endpointUrl, task, self._Logger:subLogger("Endpoint[" .. endpointUrl .. "]"))
+    endpoint = Endpoint(endpointUrl, task, self.m_logger:subLogger("Endpoint[" .. endpointUrl .. "]"))
     methodEndpoints[endpointUrl] = endpoint
 end
 

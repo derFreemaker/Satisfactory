@@ -3,8 +3,8 @@ local LoadedLoaderFiles = ({ ... })[1]
 local Utils = LoadedLoaderFiles["/Github-Loading/Loader/Utils"][1]
 
 ---@class Github_Loading.Listener
----@field private _Func function
----@field private _Parent any
+---@field private m_func function
+---@field private m_parent any
 local Listener = {}
 
 ---@param func function
@@ -20,7 +20,7 @@ end
 ---@param Task Core.Task | fun(func: function, parent: table?) : Core.Task
 ---@return Core.Task task
 function Listener:convertToTask(Task)
-    return Task(self._Func, self._Parent)
+    return Task(self.m_func, self.m_parent)
 end
 
 ---@param logger Github_Loading.Logger?
@@ -28,10 +28,10 @@ end
 ---@return boolean success, any ...
 function Listener:Execute(logger, ...)
     local success, results, errorMsg
-    if self._Parent ~= nil then
-        success, errorMsg, results = Utils.Function.InvokeProtected(self._Func, self._Parent, ...)
+    if self.m_parent ~= nil then
+        success, errorMsg, results = Utils.Function.InvokeProtected(self.m_func, self.m_parent, ...)
     else
-        success, errorMsg, results = Utils.Function.InvokeProtected(self._Func, ...)
+        success, errorMsg, results = Utils.Function.InvokeProtected(self.m_func, ...)
     end
 
     if not success and logger then

@@ -10,21 +10,21 @@ Host = Host.Value:Load()
 local NetworkClient = require("Net.Core.NetworkClient")
 
 ---@class Hosting.Host
----@field package _NetworkClient Net.Core.NetworkClient
+---@field package m_networkClient Net.Core.NetworkClient
 local HostExtensions = {}
 
 ---@param networkClient Net.Core.NetworkClient
 function HostExtensions:SetNetworkClient(networkClient)
-    self._NetworkClient = networkClient
+    self.m_networkClient = networkClient
 end
 
 ---@return Net.Core.NetworkClient
 function HostExtensions:GetNetworkClient()
-    if not self._NetworkClient then
-        self._NetworkClient = NetworkClient(self._Logger:subLogger("NetworkClient"), nil, self._JsonSerializer)
+    if not self.m_networkClient then
+        self.m_networkClient = NetworkClient(self.m_logger:subLogger("NetworkClient"), nil, self.m_jsonSerializer)
     end
 
-    return self._NetworkClient
+    return self.m_networkClient
 end
 
 ---@param port Net.Core.Port

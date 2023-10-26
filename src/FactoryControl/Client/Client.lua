@@ -8,9 +8,9 @@ local CreateController = require("FactoryControl.Core.Entities.Controller.Create
 
 ---@class FactoryControl.Client : object
 ---@field CurrentController FactoryControl.Client.Entities.Controller
----@field private _Client FactoryControl.Client.DataClient
----@field private _NetClient Net.Core.NetworkClient
----@field private _Logger Core.Logger
+---@field private m_client FactoryControl.Client.DataClient
+---@field private m_netClient Net.Core.NetworkClient
+---@field private m_logger Core.Logger
 ---@overload fun(logger: Core.Logger, client: FactoryControl.Client.DataClient?, networkClient: Net.Core.NetworkClient?) : FactoryControl.Client
 local Client = {}
 
@@ -19,20 +19,20 @@ local Client = {}
 ---@param client FactoryControl.Client.DataClient?
 ---@param networkClient Net.Core.NetworkClient?
 function Client:__init(logger, client, networkClient)
-    self._Logger = logger
-    self._Client = client or DataClient(logger:subLogger("DataClient"))
-    self._NetClient = networkClient or NetworkClient(logger:subLogger("NetClient"))
+    self.m_logger = logger
+    self.m_client = client or DataClient(logger:subLogger("DataClient"))
+    self.m_netClient = networkClient or NetworkClient(logger:subLogger("NetClient"))
 end
 
 ---@param name string
 ---@param features FactoryControl.Core.Entities.Controller.FeatureDto?
 ---@return FactoryControl.Client.Entities.Controller
 function Client:Connect(name, features)
-    local controllerDto = self._Client:Connect(name, self._NetClient:GetIPAddress())
+    local controllerDto = self.m_client:Connect(name, self.m_netClient:GetIPAddress())
 
     local created = false
     if not controllerDto then
-        controllerDto = self._Client:CreateController(CreateController(name, self._NetClient:GetIPAddress(), features))
+        controllerDto = self.m_client:CreateController(CreateController(name, self.m_netClient:GetIPAddress(), features))
 
         if not controllerDto then
             error("Unable to connect to server")
@@ -54,7 +54,7 @@ end
 ---@param createController FactoryControl.Core.Entities.Controller.CreateDto
 ---@return FactoryControl.Client.Entities.Controller? controller
 function Client:CreateController(createController)
-    local controllerDto = self._Client:CreateController(createController)
+    local controllerDto = self.m_client:CreateController(createController)
     if not controllerDto then
         return
     end
@@ -65,14 +65,14 @@ end
 ---@param id Core.UUID
 ---@return boolean success
 function Client:DeleteControllerById(id)
-    return self._Client:DeleteControllerById(id)
+    return self.m_client:DeleteControllerById(id)
 end
 
 ---@param id Core.UUID
 ---@param modifyController FactoryControl.Core.Entities.Controller.ModifyDto
 ---@return boolean success, FactoryControl.Client.Entities.Controller?
 function Client:ModfiyControllerById(id, modifyController)
-    local controllerDto = self._Client:ModifyControllerById(id, modifyController)
+    local controllerDto = self.m_client:ModifyControllerById(id, modifyController)
 
     if not controllerDto then
         return false
@@ -84,7 +84,7 @@ end
 ---@param id Core.UUID
 ---@return FactoryControl.Client.Entities.Controller? controller
 function Client:GetControllerById(id)
-    local controllerDto = self._Client:GetControllerById(id)
+    local controllerDto = self.m_client:GetControllerById(id)
     if not controllerDto then
         return
     end
@@ -95,7 +95,7 @@ end
 ---@param name string
 ---@return FactoryControl.Client.Entities.Controller?
 function Client:GetControllerByName(name)
-    local controllerDto = self._Client:GetControllerByName(name)
+    local controllerDto = self.m_client:GetControllerByName(name)
     if not controllerDto then
         return
     end
@@ -106,7 +106,7 @@ end
 ---@param ipAddress Net.Core.IPAddress
 ---@param buttonPressed FactoryControl.Client.Entities.Controller.Feature.Button.Pressed
 function Client:ButtonPressed(ipAddress, buttonPressed)
-    self._NetClient:Send(
+    self.m_netClient:Send(
         ipAddress,
         Usage.Ports.FactoryControl,
         Usage.Events.FactoryControl,
@@ -117,7 +117,7 @@ end
 ---@param ipAddress Net.Core.IPAddress
 ---@param switchUpdate FactoryControl.Client.Entities.Controller.Feature.Switch.Update
 function Client:UpdateSwitch(ipAddress, switchUpdate)
-    self._NetClient:Send(
+    self.m_netClient:Send(
         ipAddress,
         Usage.Ports.FactoryControl,
         Usage.Events.FactoryControl,
@@ -128,7 +128,7 @@ end
 ---@param ipAddress Net.Core.IPAddress
 ---@param radialUpdate FactoryControl.Client.Entities.Controller.Feature.Radial.Update
 function Client:UpdateRadial(ipAddress, radialUpdate)
-    self._NetClient:Send(
+    self.m_netClient:Send(
         ipAddress,
         Usage.Ports.FactoryControl,
         Usage.Events.FactoryControl,
@@ -139,7 +139,7 @@ end
 ---@param ipAddress Net.Core.IPAddress
 ---@param chartUpdate FactoryControl.Client.Entities.Controller.Feature.Radial.Update
 function Client:UpdateChart(ipAddress, chartUpdate)
-    self._NetClient:Send(
+    self.m_netClient:Send(
         ipAddress,
         Usage.Ports.FactoryControl,
         Usage.Events.FactoryControl,

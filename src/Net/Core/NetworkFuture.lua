@@ -1,8 +1,8 @@
 ---@class Net.Core.NetworkFuture : object
----@field private _EventName string
----@field private _Port Net.Core.Port
----@field private _Timeout number?
----@field private _NetworkClient Net.Core.NetworkClient
+---@field private m_eventName string
+---@field private m_port Net.Core.Port
+---@field private m_timeout number?
+---@field private m_networkClient Net.Core.NetworkClient
 ---@overload fun(networkClient: Net.Core.NetworkClient, eventName: string, port: Net.Core.Port, timeout: number?) : Net.Core.NetworkFuture
 local NetworkFuture = {}
 
@@ -12,20 +12,20 @@ local NetworkFuture = {}
 ---@param port Net.Core.Port
 ---@param timeout number?
 function NetworkFuture:__init(networkClient, eventName, port, timeout)
-    self._EventName = eventName
-    self._Port = port
-    self._Timeout = timeout
-    self._NetworkClient = networkClient
+    self.m_eventName = eventName
+    self.m_port = port
+    self.m_timeout = timeout
+    self.m_networkClient = networkClient
 
     if type(port) == "number" then
-        self._NetworkClient:Open(port)
+        self.m_networkClient:Open(port)
     end
 end
 
 ---@async
 ---@return Net.Core.NetworkContext?
 function NetworkFuture:Wait()
-    return self._NetworkClient:WaitForEvent(self._EventName, self._Port, self._Timeout)
+    return self.m_networkClient:WaitForEvent(self.m_eventName, self.m_port, self.m_timeout)
 end
 
 return Utils.Class.CreateClass(NetworkFuture, 'Core.Net.NetworkFuture')

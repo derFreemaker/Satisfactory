@@ -10,10 +10,10 @@ local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local JsonSerializer = require("Core.Json.JsonSerializer")
 
 ---@class Hosting.Host : object
----@field private _JsonSerializer Core.Json.Serializer
----@field private _Logger Core.Logger
----@field private _Name string
----@field private _Ready boolean
+---@field private m_jsonSerializer Core.Json.Serializer
+---@field private m_logger Core.Logger
+---@field private m_name string
+---@field private m_ready boolean
 ---@overload fun(logger: Core.Logger, name: string?, jsonSerializer: Core.Json.Serializer?) : Hosting.Host
 local Host = {}
 
@@ -27,31 +27,31 @@ Host._Static__ReadyTasks = {}
 ---@param name string?
 ---@param jsonSerializer Core.Json.Serializer?
 function Host:__init(logger, name, jsonSerializer)
-    self._JsonSerializer = jsonSerializer or JsonSerializer.Static__Serializer
-    self._Logger = logger
-    self._Name = name or "Host"
-    self._Ready = false
+    self.m_jsonSerializer = jsonSerializer or JsonSerializer.Static__Serializer
+    self.m_logger = logger
+    self.m_name = name or "Host"
+    self.m_ready = false
 
     EventPullAdapter:Initialize(logger:subLogger("EventPullAdapter"))
-    self._Logger:LogDebug(self._Name .. " starting...")
+    self.m_logger:LogDebug(self.m_name .. " starting...")
 end
 
 function Host:GetJsonSerializer()
-    return self._JsonSerializer
+    return self.m_jsonSerializer
 end
 
 function Host:Ready()
-    if self._Ready then
+    if self.m_ready then
         return
     end
 
     for _, task in pairs(self._Static__ReadyTasks) do
         task:Execute(self)
-        task:LogError(self._Logger)
+        task:LogError(self.m_logger)
     end
 
-    self._Logger:LogInfo(self._Name .. " started")
-    self._Ready = true
+    self.m_logger:LogInfo(self.m_name .. " started")
+    self.m_ready = true
 end
 
 function Host:Run()
@@ -62,11 +62,11 @@ end
 
 ---@param timeoutSeconds number?
 function Host:RunCycle(timeoutSeconds)
-    if not self._Ready then
+    if not self.m_ready then
         error("cannot run cycle whitout a ready call")
     end
 
-    self._Logger:LogTrace("running cycle")
+    self.m_logger:LogTrace("running cycle")
     EventPullAdapter:WaitForAll(timeoutSeconds)
 end
 
@@ -77,7 +77,7 @@ end
 ---@param name string
 ---@return Core.Logger logger
 function Host:CreateLogger(name)
-    return self._Logger:subLogger(name)
+    return self.m_logger:subLogger(name)
 end
 
 --#endregion

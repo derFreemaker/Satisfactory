@@ -17,9 +17,9 @@ local ApiRequest = require('Net.Rest.Api.Request')
 local ApiResponse = require('Net.Rest.Api.Response')
 
 ---@class Net.Http.Client : object
----@field private _NetClient Net.Core.NetworkClient
----@field private _DnsClient DNS.Client
----@field private _Logger Core.Logger
+---@field private m_netClient Net.Core.NetworkClient
+---@field private m_dnsClient DNS.Client
+---@field private m_logger Core.Logger
 ---@overload fun(logger: Core.Logger, dnsClient: DNS.Client?, networkClient: Net.Core.NetworkClient?) : Net.Http.Client
 local HttpClient = {}
 
@@ -31,9 +31,9 @@ function HttpClient:__init(logger, dnsClient, networkClient)
 		networkClient = dnsClient:GetNetClient()
 	end
 
-	self._NetClient = networkClient or NetworkClient(logger:subLogger('NetworkClient'))
-	self._DnsClient = dnsClient or DNSClient(self._NetClient, logger:subLogger('DNSClient'))
-	self._Logger = logger
+	self.m_netClient = networkClient or NetworkClient(logger:subLogger('NetworkClient'))
+	self.m_dnsClient = dnsClient or DNSClient(self.m_netClient, logger:subLogger('DNSClient'))
+	self.m_logger = logger
 end
 
 ---@private
@@ -44,7 +44,7 @@ function HttpClient:getAddress(address)
 		return IPAddress(address)
 	end
 
-	local getedAddress = self._DnsClient:GetWithUrl(address)
+	local getedAddress = self.m_dnsClient:GetWithUrl(address)
 	if not getedAddress then
 		return nil
 	end
@@ -60,8 +60,8 @@ function HttpClient:Send(request)
 		return HttpResponse(ApiResponse(nil, { Code = 404 }), request)
 	end
 
-	local apiClient = ApiClient(address, PortUsage.HTTP, PortUsage.HTTP, self._NetClient,
-		self._Logger:subLogger('ApiClient'))
+	local apiClient = ApiClient(address, PortUsage.HTTP, PortUsage.HTTP, self.m_netClient,
+		self.m_logger:subLogger('ApiClient'))
 
 	local apiRequest = ApiRequest(request.Method, request.Uri, request.Body, request.Options.Headers)
 	local apiResponse = apiClient:Send(apiRequest, request.Options.Timeout)

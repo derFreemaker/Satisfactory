@@ -3,7 +3,7 @@ local Task = require("Core.Task")
 local ResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 
 ---@class Net.Rest.Api.Server.EndpointBase : object
----@field protected _Logger Core.Logger
+---@field protected Logger Core.Logger
 ---@field protected ApiController Net.Rest.Api.Server.Controller
 ---@field protected Templates Core.RestNew.Api.Server.EndpointBase.ResponseTemplates
 ---@overload fun(endpointLogger: Core.Logger, apiController: Net.Rest.Api.Server.Controller) : Net.Rest.Api.Server.EndpointBase
@@ -13,7 +13,7 @@ local EndpointBase = {}
 ---@param endpointLogger Core.Logger
 ---@param apiController Net.Rest.Api.Server.Controller
 function EndpointBase:__init(endpointLogger, apiController)
-	self._Logger = endpointLogger
+	self.Logger = endpointLogger
 	self.ApiController = apiController
 end
 

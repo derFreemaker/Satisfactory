@@ -6,7 +6,7 @@ local function formatStr(str)
 end
 
 ---@class Core.FileSystem.Path
----@field private _Nodes string[]
+---@field private m_nodes string[]
 ---@overload fun(pathOrNodes: (string | string[])?) : Core.FileSystem.Path
 local Path = {}
 
@@ -24,22 +24,22 @@ end
 ---@param pathOrNodes string | string[]
 function Path:__init(pathOrNodes)
     if not pathOrNodes then
-        self._Nodes = {}
+        self.m_nodes = {}
         return
     end
 
     if type(pathOrNodes) == "string" then
         pathOrNodes = formatStr(pathOrNodes)
-        self._Nodes = Utils.String.Split(pathOrNodes, "/")
+        self.m_nodes = Utils.String.Split(pathOrNodes, "/")
         return
     end
 
-    self._Nodes = pathOrNodes
+    self.m_nodes = pathOrNodes
 end
 
 ---@return string path
 function Path:GetPath()
-    return Utils.String.Join(self._Nodes, "/")
+    return Utils.String.Join(self.m_nodes, "/")
 end
 
 ---@private
@@ -47,22 +47,22 @@ Path.__tostring = Path.GetPath
 
 ---@return boolean
 function Path:IsEmpty()
-    return #self._Nodes == 0 or (#self._Nodes == 2 and self._Nodes[1] == "" and self._Nodes[2] == "")
+    return #self.m_nodes == 0 or (#self.m_nodes == 2 and self.m_nodes[1] == "" and self.m_nodes[2] == "")
 end
 
 ---@return boolean
 function Path:IsFile()
-    return self._Nodes[#self._Nodes] ~= ""
+    return self.m_nodes[#self.m_nodes] ~= ""
 end
 
 ---@return boolean
 function Path:IsDir()
-    return self._Nodes[#self._Nodes] == ""
+    return self.m_nodes[#self.m_nodes] == ""
 end
 
 ---@return string
 function Path:GetParentFolder()
-    local copy = Utils.Table.Copy(self._Nodes)
+    local copy = Utils.Table.Copy(self.m_nodes)
     local lenght = #copy
 
     if lenght > 0 then
@@ -80,14 +80,14 @@ end
 ---@return Core.FileSystem.Path
 function Path:GetParentFolderPath()
     local copy = self:Copy()
-    local lenght = #copy._Nodes
+    local lenght = #copy.m_nodes
 
     if lenght > 0 then
-        if lenght > 1 and copy._Nodes[lenght] == "" then
-            copy._Nodes[lenght] = nil
-            copy._Nodes[lenght - 1] = ""
+        if lenght > 1 and copy.m_nodes[lenght] == "" then
+            copy.m_nodes[lenght] = nil
+            copy.m_nodes[lenght - 1] = ""
         else
-            copy._Nodes[lenght] = nil
+            copy.m_nodes[lenght] = nil
         end
     end
 
@@ -100,7 +100,7 @@ function Path:GetFileName()
         error("path is not a file: " .. self:GetPath())
     end
 
-    return self._Nodes[#self._Nodes]
+    return self.m_nodes[#self.m_nodes]
 end
 
 ---@return string fileExtension
@@ -109,7 +109,7 @@ function Path:GetFileExtension()
         error("path is not a file: " .. self:GetPath())
     end
 
-    local fileName = self._Nodes[#self._Nodes]
+    local fileName = self.m_nodes[#self.m_nodes]
 
     local _, _, extension = fileName:find("^.+(%..+)$")
     return extension
@@ -121,7 +121,7 @@ function Path:GetFileStem()
         error("path is not a file: " .. self:GetPath())
     end
 
-    local fileName = self._Nodes[#self._Nodes]
+    local fileName = self.m_nodes[#self.m_nodes]
 
     local _, _, stem = fileName:find("^(.+)%..+$")
     return stem
@@ -132,10 +132,10 @@ function Path:Normalize()
     ---@type string[]
     local newNodes = {}
 
-    for index, value in ipairs(self._Nodes) do
+    for index, value in ipairs(self.m_nodes) do
         if value == "." then
         elseif value == "" then
-            if index == 1 or index == #self._Nodes then
+            if index == 1 or index == #self.m_nodes then
                 newNodes[index] = ""
             end
         elseif value == ".." then
@@ -151,7 +151,7 @@ function Path:Normalize()
         newNodes[#newNodes + 1] = ""
     end
 
-    self._Nodes = newNodes
+    self.m_nodes = newNodes
     return self
 end
 
@@ -162,7 +162,7 @@ function Path:Append(path)
     local newNodes = Utils.String.Split(path, "/")
 
     for _, value in ipairs(newNodes) do
-        self._Nodes[#self._Nodes + 1] = value
+        self.m_nodes[#self.m_nodes + 1] = value
     end
 
     self:Normalize()
@@ -179,7 +179,7 @@ end
 
 ---@return Core.FileSystem.Path
 function Path:Copy()
-    local copyNodes = Utils.Table.Copy(self._Nodes)
+    local copyNodes = Utils.Table.Copy(self.m_nodes)
     return Path(copyNodes)
 end
 

@@ -3,9 +3,9 @@ local Event = require('Core.Event.Event')
 --- Assists in handling events from `event.pull()`
 ---
 ---@class Core.EventPullAdapter
----@field private _Initialized boolean
----@field private _Events Dictionary<string, Core.Event>
----@field private _Logger Core.Logger
+---@field private m_initialized boolean
+---@field private m_events Dictionary<string, Core.Event>
+---@field private m_logger Core.Logger
 ---@field OnEventPull Core.Event
 local EventPullAdapter = {}
 
@@ -14,30 +14,30 @@ local EventPullAdapter = {}
 function EventPullAdapter:onEventPull(eventPullData)
 	---@type string[]
 	local removeEvent = {}
-	for name, event in pairs(self._Events) do
+	for name, event in pairs(self.m_events) do
 		if name == eventPullData[1] then
-			event:Trigger(self._Logger, eventPullData)
+			event:Trigger(self.m_logger, eventPullData)
 		end
 		if event:GetCount() == 0 then
 			table.insert(removeEvent, name)
 		end
 	end
 	for _, name in ipairs(removeEvent) do
-		self._Events[name] = nil
+		self.m_events[name] = nil
 	end
 end
 
 ---@param logger Core.Logger
 ---@return Core.EventPullAdapter
 function EventPullAdapter:Initialize(logger)
-	if self._Initialized then
+	if self.m_initialized then
 		return self
 	end
 
-	self._Events = {}
-	self._Logger = logger
+	self.m_events = {}
+	self.m_logger = logger
 	self.OnEventPull = Event()
-	self._Initialized = true
+	self.m_initialized = true
 
 	return self
 end
@@ -45,13 +45,13 @@ end
 ---@param signalName string
 ---@return Core.Event
 function EventPullAdapter:GetEvent(signalName)
-	for name, event in pairs(self._Events) do
+	for name, event in pairs(self.m_events) do
 		if name == signalName then
 			return event
 		end
 	end
 	local event = Event()
-	self._Events[signalName] = event
+	self.m_events[signalName] = event
 	return event
 end
 
@@ -78,7 +78,7 @@ end
 ---@param timeoutSeconds number?
 ---@return boolean gotEvent
 function EventPullAdapter:Wait(timeoutSeconds)
-	self._Logger:LogTrace('## waiting for event pull ##')
+	self.m_logger:LogTrace('## waiting for event pull ##')
 	---@type table?
 	local eventPullData = nil
 	if timeoutSeconds == nil then
@@ -90,11 +90,11 @@ function EventPullAdapter:Wait(timeoutSeconds)
 		return false
 	end
 
-	self._Logger:LogDebug("event with signalName: '"
+	self.m_logger:LogDebug("event with signalName: '"
 		.. eventPullData[1] .. "' was recieved from component: "
 		.. tostring(eventPullData[2]))
 
-	self.OnEventPull:Trigger(self._Logger, eventPullData)
+	self.OnEventPull:Trigger(self.m_logger, eventPullData)
 	self:onEventPull(eventPullData)
 	return true
 end
@@ -111,7 +111,7 @@ end
 --- Starts event pull loop
 --- ## will never return
 function EventPullAdapter:Run()
-	self._Logger:LogDebug('## started event pull loop ##')
+	self.m_logger:LogDebug('## started event pull loop ##')
 	while true do
 		self:Wait()
 	end

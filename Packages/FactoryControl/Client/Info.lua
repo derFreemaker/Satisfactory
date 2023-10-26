@@ -1,7 +1,7 @@
 return {
     Name = "FactoryControl.Client",
     Namespace = "FactoryControl.Client",
-    Version = "0.1-7",
+    Version = "0.1-8",
     RequiredPackages = {
         "Core",
         "FactoryControl.Core",

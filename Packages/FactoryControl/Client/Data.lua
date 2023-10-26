@@ -46,9 +46,9 @@ local CreateController = require("FactoryControl.Core.Entities.Controller.Create
 
 ---@class FactoryControl.Client : object
 ---@field CurrentController FactoryControl.Client.Entities.Controller
----@field private _Client FactoryControl.Client.DataClient
----@field private _NetClient Net.Core.NetworkClient
----@field private _Logger Core.Logger
+---@field private m_client FactoryControl.Client.DataClient
+---@field private m_netClient Net.Core.NetworkClient
+---@field private m_logger Core.Logger
 ---@overload fun(logger: Core.Logger, client: FactoryControl.Client.DataClient?, networkClient: Net.Core.NetworkClient?) : FactoryControl.Client
 local Client = {}
 
@@ -57,20 +57,20 @@ local Client = {}
 ---@param client FactoryControl.Client.DataClient?
 ---@param networkClient Net.Core.NetworkClient?
 function Client:__init(logger, client, networkClient)
-    self._Logger = logger
-    self._Client = client or DataClient(logger:subLogger("DataClient"))
-    self._NetClient = networkClient or NetworkClient(logger:subLogger("NetClient"))
+    self.m_logger = logger
+    self.m_client = client or DataClient(logger:subLogger("DataClient"))
+    self.m_netClient = networkClient or NetworkClient(logger:subLogger("NetClient"))
 end
 
 ---@param name string
 ---@param features FactoryControl.Core.Entities.Controller.FeatureDto?
 ---@return FactoryControl.Client.Entities.Controller
 function Client:Connect(name, features)
-    local controllerDto = self._Client:Connect(name, self._NetClient:GetIPAddress())
+    local controllerDto = self.m_client:Connect(name, self.m_netClient:GetIPAddress())
 
     local created = false
     if not controllerDto then
-        controllerDto = self._Client:CreateController(CreateController(name, self._NetClient:GetIPAddress(), features))
+        controllerDto = self.m_client:CreateController(CreateController(name, self.m_netClient:GetIPAddress(), features))
 
         if not controllerDto then
             error("Unable to connect to server")
@@ -92,7 +92,7 @@ end
 ---@param createController FactoryControl.Core.Entities.Controller.CreateDto
 ---@return FactoryControl.Client.Entities.Controller? controller
 function Client:CreateController(createController)
-    local controllerDto = self._Client:CreateController(createController)
+    local controllerDto = self.m_client:CreateController(createController)
     if not controllerDto then
         return
     end
@@ -103,14 +103,14 @@ end
 ---@param id Core.UUID
 ---@return boolean success
 function Client:DeleteControllerById(id)
-    return self._Client:DeleteControllerById(id)
+    return self.m_client:DeleteControllerById(id)
 end
 
 ---@param id Core.UUID
 ---@param modifyController FactoryControl.Core.Entities.Controller.ModifyDto
 ---@return boolean success, FactoryControl.Client.Entities.Controller?
 function Client:ModfiyControllerById(id, modifyController)
-    local controllerDto = self._Client:ModifyControllerById(id, modifyController)
+    local controllerDto = self.m_client:ModifyControllerById(id, modifyController)
 
     if not controllerDto then
         return false
@@ -122,7 +122,7 @@ end
 ---@param id Core.UUID
 ---@return FactoryControl.Client.Entities.Controller? controller
 function Client:GetControllerById(id)
-    local controllerDto = self._Client:GetControllerById(id)
+    local controllerDto = self.m_client:GetControllerById(id)
     if not controllerDto then
         return
     end
@@ -133,7 +133,7 @@ end
 ---@param name string
 ---@return FactoryControl.Client.Entities.Controller?
 function Client:GetControllerByName(name)
-    local controllerDto = self._Client:GetControllerByName(name)
+    local controllerDto = self.m_client:GetControllerByName(name)
     if not controllerDto then
         return
     end
@@ -144,7 +144,7 @@ end
 ---@param ipAddress Net.Core.IPAddress
 ---@param buttonPressed FactoryControl.Client.Entities.Controller.Feature.Button.Pressed
 function Client:ButtonPressed(ipAddress, buttonPressed)
-    self._NetClient:Send(
+    self.m_netClient:Send(
         ipAddress,
         Usage.Ports.FactoryControl,
         Usage.Events.FactoryControl,
@@ -155,7 +155,7 @@ end
 ---@param ipAddress Net.Core.IPAddress
 ---@param switchUpdate FactoryControl.Client.Entities.Controller.Feature.Switch.Update
 function Client:UpdateSwitch(ipAddress, switchUpdate)
-    self._NetClient:Send(
+    self.m_netClient:Send(
         ipAddress,
         Usage.Ports.FactoryControl,
         Usage.Events.FactoryControl,
@@ -166,7 +166,7 @@ end
 ---@param ipAddress Net.Core.IPAddress
 ---@param radialUpdate FactoryControl.Client.Entities.Controller.Feature.Radial.Update
 function Client:UpdateRadial(ipAddress, radialUpdate)
-    self._NetClient:Send(
+    self.m_netClient:Send(
         ipAddress,
         Usage.Ports.FactoryControl,
         Usage.Events.FactoryControl,
@@ -177,7 +177,7 @@ end
 ---@param ipAddress Net.Core.IPAddress
 ---@param chartUpdate FactoryControl.Client.Entities.Controller.Feature.Radial.Update
 function Client:UpdateChart(ipAddress, chartUpdate)
-    self._NetClient:Send(
+    self.m_netClient:Send(
         ipAddress,
         Usage.Ports.FactoryControl,
         Usage.Events.FactoryControl,
@@ -201,16 +201,16 @@ local HttpClient = require('Net.Http.Client')
 local HttpRequest = require('Net.Http.Request')
 
 ---@class FactoryControl.Client.DataClient : object
----@field private _Client Net.Http.Client
----@field private _Logger Core.Logger
+---@field private m_client Net.Http.Client
+---@field private m_logger Core.Logger
 ---@overload fun(logger: Core.Logger) : FactoryControl.Client.DataClient
 local DataClient = {}
 
 ---@private
 ---@param logger Core.Logger
 function DataClient:__init(logger)
-	self._Logger = logger
-	self._Client = HttpClient(self._Logger:subLogger('RestApiClient'))
+	self.m_logger = logger
+	self.m_client = HttpClient(self.m_logger:subLogger('RestApiClient'))
 end
 
 ---@private
@@ -221,7 +221,7 @@ end
 ---@return Net.Http.Response response
 function DataClient:request(method, endpoint, body, options)
 	local request = HttpRequest(method, FactoryControlConfig.DOMAIN, Uri.Static__Parse(endpoint), body, options)
-	return self._Client:Send(request)
+	return self.m_client:Send(request)
 end
 
 ---@param name string
@@ -319,7 +319,7 @@ PackageData["FactoryControlClientEntitiesEntitiy"] = {
     Data = [[
 ---@class FactoryControl.Client.Entities.Entity : object
 ---@field Id Core.UUID
----@field protected _Client FactoryControl.Client
+---@field protected m_client FactoryControl.Client
 local Entity = {}
 
 ---@private
@@ -327,7 +327,7 @@ local Entity = {}
 ---@param client FactoryControl.Client
 function Entity:__init(id, client)
     self.Id = id
-    self._Client = client
+    self.m_client = client
 end
 
 return Utils.Class.CreateClass(Entity, "FactoryControl.Client.Entities.Entity")
@@ -414,7 +414,7 @@ local Feature = {}
 ---@param controller FactoryControl.Client.Entities.Controller
 ---@param baseFunc fun(id: Core.UUID, client: FactoryControl.Client)
 function Feature:__init(baseFunc, id, name, featureType, controller)
-    baseFunc(id, controller._Client)
+    baseFunc(id, controller.m_client)
 
     self.Name  = name
     self.Type  = featureType
@@ -448,7 +448,7 @@ end
 function Button:Press()
     local pressed = Pressed(self.Id)
 
-    self._Client:ButtonPressed(self.Owner.IPAddress, pressed)
+    self.m_client:ButtonPressed(self.Owner.IPAddress, pressed)
 end
 
 return Utils.Class.CreateClass(Button, "FactoryControl.Client.Entities.Controller.Feature.Button",
@@ -488,27 +488,27 @@ PackageData["FactoryControlClientEntitiesControllerFeatureChartChart"] = {
     IsRunnable = true,
     Data = [[
 ---@class FactoryControl.Client.Entities.Controller.Feature.Chart : FactoryControl.Client.Entities.Controller.Feature
----@field private _XAxisName string
----@field private _YAxisName string
----@field private _Data Dictionary<number, any>
+---@field private m_xAxisName string
+---@field private m_yAxisName string
+---@field private m_data Dictionary<number, any>
 ---@overload fun(chartDto: FactoryControl.Core.Entities.Controller.Feature.ChartDto, controller: FactoryControl.Client.Entities.Controller) : FactoryControl.Client.Entities.Controller.Feature.Chart
-local Button = {}
+local Chart = {}
 
 ---@private
 ---@param chartDto FactoryControl.Core.Entities.Controller.Feature.ChartDto
 ---@param controller FactoryControl.Client.Entities.Controller
 ---@param baseFunc fun(id: Core.UUID, name: string, type: FactoryControl.Core.Entities.Controller.Feature.Type, controller: FactoryControl.Client.Entities.Controller)
-function Button:__init(baseFunc, chartDto, controller)
-    baseFunc(chartDto.Id, chartDto.Name, "Button", controller)
+function Chart:__init(baseFunc, chartDto, controller)
+    baseFunc(chartDto.Id, chartDto.Name, "Chart", controller)
 
-    self._XAxisName = chartDto.XAxisName
-    self._YAxisName = chartDto.YAxisName
-    self._Data = chartDto.Data
+    self.m_xAxisName = chartDto.XAxisName
+    self.m_yAxisName = chartDto.YAxisName
+    self.m_data = chartDto.Data
 end
 
 -- //TODO: complete
 
-return Utils.Class.CreateClass(Button, "FactoryControl.Client.Entities.Controller.Feature.Button",
+return Utils.Class.CreateClass(Chart, "FactoryControl.Client.Entities.Controller.Feature.Chart",
     require("FactoryControl.Client.Entities.Controller.Feature.Feature") --{{{@as FactoryControl.Client.Entities.Controller.Feature}}})
 ]]
 }
@@ -553,9 +553,9 @@ local Update = require("FactoryControl.Client.Entities.Controller.Feature.Radial
 ---@field Min number
 ---@field Max number
 ---@field Setting number
----@field private _Old_Min number
----@field private _Old_Max number
----@field private _Old_Setting number
+---@field private m_old_Min number
+---@field private m_old_Max number
+---@field private m_old_Setting number
 ---@overload fun(radialDto: FactoryControl.Core.Entities.Controller.Feature.RadialDto, controller: FactoryControl.Client.Entities.Controller) : FactoryControl.Client.Entities.Controller.Feature.Radial
 local Radial = {}
 
@@ -567,13 +567,13 @@ function Radial:__init(baseFunc, radialDto, controller)
     baseFunc(radialDto.Id, radialDto.Name, "Radial", controller)
 
     self.Min = radialDto.Min
-    self._Old_Min = radialDto.Min
+    self.m_old_Min = radialDto.Min
 
     self.Max = radialDto.Max
-    self._Old_Max = radialDto.Max
+    self.m_old_Max = radialDto.Max
 
     self.Setting = radialDto.Setting
-    self._Old_Setting = radialDto.Setting
+    self.m_old_Setting = radialDto.Setting
 end
 
 function Radial:Update()
@@ -585,13 +585,13 @@ function Radial:Update()
         error("setting is out of bounds of " .. self.Min .. " - " .. self.Max)
     end
 
-    if self._Old_Min == self.Min and self._Old_Max == self.Max and self._Old_Setting == self.Setting then
+    if self.m_old_Min == self.Min and self.m_old_Max == self.Max and self.m_old_Setting == self.Setting then
         return
     end
 
     local update = Update(self.Id, self.Min, self.Max, self.Setting)
 
-    self._Client:UpdateRadial(self.Owner.IPAddress, update)
+    self.m_client:UpdateRadial(self.Owner.IPAddress, update)
 end
 
 return Utils.Class.CreateClass(Radial, "FactoryControl.Client.Entities.Controller.Feature.Radial",
@@ -642,8 +642,8 @@ PackageData["FactoryControlClientEntitiesControllerFeatureSwitchSwitch"] = {
 local Update = require("FactoryControl.Client.Entities.Controller.Feature.Switch.Update")
 
 ---@class FactoryControl.Client.Entities.Controller.Feature.Switch : FactoryControl.Client.Entities.Controller.Feature
----@field private _IsEnabled boolean
----@field private _Old_IsEnabled boolean
+---@field private m_isEnabled boolean
+---@field private m_old_isEnabled boolean
 ---@overload fun(switchDto: FactoryControl.Core.Entities.Controller.Feature.SwitchDto, controller: FactoryControl.Client.Entities.Controller) : FactoryControl.Client.Entities.Controller.Feature.Switch
 local Switch = {}
 
@@ -654,40 +654,40 @@ local Switch = {}
 function Switch:__init(baseFunc, switchDto, controller)
     baseFunc(switchDto.Id, switchDto.Name, "Button", controller)
 
-    self._IsEnabled = switchDto.IsEnabled
-    self._Old_IsEnabled = switchDto.IsEnabled
+    self.m_isEnabled = switchDto.IsEnabled
+    self.m_old_isEnabled = switchDto.IsEnabled
 end
 
 ---@private
 function Switch:Update()
-    if self._IsEnabled == self._Old_IsEnabled then
+    if self.m_isEnabled == self.m_old_isEnabled then
         return
     end
 
-    local update = Update(self.Id, self._IsEnabled)
+    local update = Update(self.Id, self.m_isEnabled)
 
-    self._Client:UpdateSwitch(self.Owner.IPAddress, update)
+    self.m_client:UpdateSwitch(self.Owner.IPAddress, update)
 end
 
 ---@return boolean isEnabled
 function Switch:IsEnabled()
-    return self._IsEnabled
+    return self.m_isEnabled
 end
 
 function Switch:Enable()
-    self._IsEnabled = true
+    self.m_isEnabled = true
 
     self:Update()
 end
 
 function Switch:Disable()
-    self._IsEnabled = false
+    self.m_isEnabled = false
 
     self:Update()
 end
 
 function Switch:Toggle()
-    self._IsEnabled = not self._IsEnabled
+    self.m_isEnabled = not self.m_isEnabled
 
     self:Update()
 end

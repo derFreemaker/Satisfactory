@@ -3,12 +3,12 @@ local FileSystem = require('Tools.FileSystem')
 local CurrentPath = ''
 
 ---@class Test.Simulator
----@field private _LoadedLoaderFiles Dictionary<string, any[]>
+---@field private m_loadedLoaderFiles Dictionary<string, any[]>
 local Simulator = {}
 
 ---@private
 function Simulator:LoadLoaderFiles()
-	self._LoadedLoaderFiles = require("Test.Simulator.LoadFiles")(CurrentPath)
+	self.m_loadedLoaderFiles = require("Test.Simulator.LoadFiles")(CurrentPath)
 end
 
 local requireFunc = require
@@ -45,7 +45,7 @@ function Simulator:Prepare()
 	self:LoadLoaderFiles()
 	self:OverrideRequire()
 
-	Utils = self._LoadedLoaderFiles['/Github-Loading/Loader/Utils'][1] --[[@as Utils]]
+	Utils = self.m_loadedLoaderFiles['/Github-Loading/Loader/Utils'][1] --[[@as Utils]]
 end
 
 ---@return Test.Simulator

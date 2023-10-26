@@ -13,11 +13,11 @@ local IPAddress = require("Net.Core.IPAddress")
 ---|"all"
 
 ---@class Net.Core.NetworkClient : object
----@field private _IPAddress Net.Core.IPAddress
----@field private _Ports Dictionary<Net.Core.Port, Net.Core.NetworkPort?>
----@field private _NetworkCard Adapter.Computer.NetworkCard
----@field private _Serializer Core.Json.Serializer
----@field private _Logger Core.Logger
+---@field private m_iPAddress Net.Core.IPAddress
+---@field private m_ports Dictionary<Net.Core.Port, Net.Core.NetworkPort?>
+---@field private m_networkCard Adapter.Computer.NetworkCard
+---@field private m_serializer Core.Json.Serializer
+---@field private m_logger Core.Logger
 ---@overload fun(logger: Core.Logger, networkCard: Adapter.Computer.NetworkCard?, serializer: Core.Json.Serializer?) : Net.Core.NetworkClient
 local NetworkClient = {}
 
@@ -28,40 +28,40 @@ local NetworkClient = {}
 function NetworkClient:__init(logger, networkCard, serializer)
 	networkCard = networkCard or NetworkCardAdapter(1)
 
-	self._Logger = logger
-	self._Ports = {}
-	self._NetworkCard = networkCard
+	self.m_logger = logger
+	self.m_ports = {}
+	self.m_networkCard = networkCard
 
-	self._Serializer = serializer or JsonSerializer.Static__Serializer
+	self.m_serializer = serializer or JsonSerializer.Static__Serializer
 
-	self._NetworkCard:Listen()
+	self.m_networkCard:Listen()
 	EventPullAdapter:AddListener('NetworkMessage', Task(self.networkMessageRecieved, self))
 end
 
 ---@return Net.Core.IPAddress
 function NetworkClient:GetIPAddress()
-	if self._IPAddress then
-		return self._IPAddress
+	if self.m_iPAddress then
+		return self.m_iPAddress
 	end
 
-	self._IPAddress = IPAddress(self._NetworkCard:GetIPAddress())
-	return self._IPAddress
+	self.m_iPAddress = IPAddress(self.m_networkCard:GetIPAddress())
+	return self.m_iPAddress
 end
 
 ---@return string nick
 function NetworkClient:GetNick()
-	return self._NetworkCard:GetNick()
+	return self.m_networkCard:GetNick()
 end
 
 ---@return Core.Json.Serializer serializer
 function NetworkClient:GetJsonSerializer()
-	return self._Serializer
+	return self.m_serializer
 end
 
 ---@param port Net.Core.Port
 ---@return Net.Core.NetworkPort?
 function NetworkClient:GetNetworkPort(port)
-	return self._Ports[port]
+	return self.m_ports[port]
 end
 
 ---@param port (Net.Core.Port)?
@@ -74,8 +74,8 @@ function NetworkClient:GetOrCreateNetworkPort(port)
 		return networkPort
 	end
 
-	networkPort = NetworkPort(port, self._Logger:subLogger('NetworkPort[' .. port .. ']'), self)
-	self._Ports[port] = networkPort
+	networkPort = NetworkPort(port, self.m_logger:subLogger('NetworkPort[' .. port .. ']'), self)
+	self.m_ports[port] = networkPort
 	return networkPort
 end
 
@@ -91,7 +91,7 @@ function NetworkClient:RemoveNetworkPort(port)
 	end
 
 	port:ClosePort()
-	self._Ports[port] = nil
+	self.m_ports[port] = nil
 end
 
 ---@private
@@ -112,8 +112,8 @@ end
 ---@private
 ---@param data any[]
 function NetworkClient:networkMessageRecieved(data)
-	local context = NetworkContext(data, self._Serializer)
-	self._Logger:LogDebug("recieved network message with event: '" ..
+	local context = NetworkContext(data, self.m_serializer)
+	self.m_logger:LogDebug("recieved network message with event: '" ..
 		context.EventName .. "' on port: " .. context.Port)
 
 	self:executeNetworkPort(context.Port, context)
@@ -161,7 +161,7 @@ function NetworkClient:WaitForEvent(eventName, port, timeoutSeconds)
 	local netPort = self:AddListenerOnce(eventName, port, Task(set))
 	netPort:OpenPort()
 
-	self._Logger:LogDebug("waiting for event: '" .. eventName .. "' on port: " .. port)
+	self.m_logger:LogDebug("waiting for event: '" .. eventName .. "' on port: " .. port)
 	while result == nil do
 		if not EventPullAdapter:Wait(timeoutSeconds) then
 			break
@@ -180,19 +180,19 @@ end
 
 ---@param port integer
 function NetworkClient:Open(port)
-	self._NetworkCard:OpenPort(port)
-	self._Logger:LogTrace('opened Port: ' .. port)
+	self.m_networkCard:OpenPort(port)
+	self.m_logger:LogTrace('opened Port: ' .. port)
 end
 
 ---@param port integer
 function NetworkClient:Close(port)
-	self._NetworkCard:ClosePort(port)
-	self._Logger:LogTrace('closed Port: ' .. port)
+	self.m_networkCard:ClosePort(port)
+	self.m_logger:LogTrace('closed Port: ' .. port)
 end
 
 function NetworkClient:CloseAll()
-	self._NetworkCard:CloseAllPorts()
-	self._Logger:LogTrace('closed all Ports')
+	self.m_networkCard:CloseAllPorts()
+	self.m_logger:LogTrace('closed all Ports')
 end
 
 ---@param ipAddress Net.Core.IPAddress
@@ -201,15 +201,15 @@ end
 ---@param body any
 ---@param headers Dictionary<string, any>?
 function NetworkClient:Send(ipAddress, port, eventName, body, headers)
-	local jsonBody = self._Serializer:Serialize(body)
-	local jsonHeader = self._Serializer:Serialize(headers)
+	local jsonBody = self.m_serializer:Serialize(body)
+	local jsonHeader = self.m_serializer:Serialize(headers)
 
-	self._Logger:LogTrace(
+	self.m_logger:LogTrace(
 		"sending to '" .. ipAddress:GetAddress()
 		.. "' on port: " .. port
 		.. " with event: '" .. eventName .. "'")
 
-	self._NetworkCard:Send(ipAddress, port, eventName, jsonBody, jsonHeader)
+	self.m_networkCard:Send(ipAddress, port, eventName, jsonBody, jsonHeader)
 end
 
 ---@param port integer
@@ -217,12 +217,12 @@ end
 ---@param body any
 ---@param header Dictionary<string, any>?
 function NetworkClient:BroadCast(port, eventName, body, header)
-	local jsonBody = self._Serializer:Serialize(body)
-	local jsonHeader = self._Serializer:Serialize(header)
+	local jsonBody = self.m_serializer:Serialize(body)
+	local jsonHeader = self.m_serializer:Serialize(header)
 
-	self._Logger:LogTrace("broadcast on port: " .. port .. " with event: '" .. eventName .. "'")
+	self.m_logger:LogTrace("broadcast on port: " .. port .. " with event: '" .. eventName .. "'")
 
-	self._NetworkCard:BroadCast(port, eventName, jsonBody, jsonHeader)
+	self.m_networkCard:BroadCast(port, eventName, jsonBody, jsonHeader)
 end
 
 return Utils.Class.CreateClass(NetworkClient, 'Core.Net.NetworkClient')

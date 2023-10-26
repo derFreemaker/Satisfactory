@@ -1,6 +1,6 @@
 local JsonSerializer = require("Core.Json.JsonSerializer")
 
----@class DNS.Core.__events : Github_Loading.Entities.Events
+---@class DNS.Core.Events : Github_Loading.Entities.Events
 local Events = {}
 
 function Events:OnLoaded()

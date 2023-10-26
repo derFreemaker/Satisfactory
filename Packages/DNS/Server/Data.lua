@@ -15,35 +15,35 @@ local Host = require("Hosting.Host")
 local DNSEndpoints = require('DNS.Server.Endpoints')
 
 ---@class DNS.Main : Github_Loading.Entities.Main
----@field private _NetClient Net.Core.NetworkClient
----@field private _Host Hosting.Host
+---@field private m_netClient Net.Core.NetworkClient
+---@field private m_host Hosting.Host
 local Main = {}
 
 ---@param context Net.Core.NetworkContext
 function Main:GetDNSServerAddress(context)
-	local id = self._NetClient:GetIPAddress():GetAddress()
+	local id = self.m_netClient:GetIPAddress():GetAddress()
 	self.Logger:LogDebug(context.SenderIPAddress, 'requested DNS Server IP Address')
-	self._NetClient:Send(context.SenderIPAddress, Usage.Ports.DNS, Usage.Events.DNS_ReturnServerAddress, id)
+	self.m_netClient:Send(context.SenderIPAddress, Usage.Ports.DNS, Usage.Events.DNS_ReturnServerAddress, id)
 end
 
 function Main:Configure()
-	self._Host = Host(self.Logger:subLogger("Host"), "DNS")
+	self.m_host = Host(self.Logger:subLogger("Host"), "DNS")
 
-	self._Host:AddCallableEvent(Usage.Events.DNS_GetServerAddress, Usage.Ports.DNS,
+	self.m_host:AddCallableEvent(Usage.Events.DNS_GetServerAddress, Usage.Ports.DNS,
 		Task(self.GetDNSServerAddress, self))
 	self.Logger:LogDebug('setup Get DNS Server IP Address')
 
-	self._Host:AddEndpoint(Usage.Ports.HTTP, "Endpoints", DNSEndpoints --{{{@as Net.Rest.Api.Server.EndpointBase}}})
+	self.m_host:AddEndpoint(Usage.Ports.HTTP, "Endpoints", DNSEndpoints --{{{@as Net.Rest.Api.Server.EndpointBase}}})
 	self.Logger:LogDebug('setup DNS Server endpoints')
 
-	self._NetClient = self._Host:GetNetworkClient()
+	self.m_netClient = self.m_host:GetNetworkClient()
 end
 
 function Main:Run()
-	self._Host:Ready()
+	self.m_host:Ready()
 	while true do
-		self._NetClient:BroadCast(Usage.Ports.Heartbeats, 'DNS')
-		self._Host:RunCycle(20)
+		self.m_netClient:BroadCast(Usage.Ports.Heartbeats, 'DNS')
+		self.m_host:RunCycle(20)
 	end
 end
 
@@ -63,15 +63,15 @@ local Address = require("DNS.Core.Entities.Address.Address")
 local UUID = require("Core.UUID")
 
 ---@class DNS.Server.AddressDatabase : object
----@field private _DbTable Database.DbTable | Dictionary<Core.UUID, DNS.Core.Entities.Address>
+---@field private m_dbTable Database.DbTable | Dictionary<Core.UUID, DNS.Core.Entities.Address>
 ---@overload fun(logger: Core.Logger) : DNS.Server.AddressDatabase
 local AddressDatabase = {}
 
 ---@private
 ---@param logger Core.Logger
 function AddressDatabase:__init(logger)
-    self._DbTable = DbTable("Addresses", Path("/Database/Addresses/"), logger:subLogger("DbTable"))
-    self._DbTable:Load()
+    self.m_dbTable = DbTable("Addresses", Path("/Database/Addresses/"), logger:subLogger("DbTable"))
+    self.m_dbTable:Load()
 end
 
 ---@param createAddress DNS.Core.Entities.Address.Create
@@ -82,18 +82,18 @@ function AddressDatabase:Create(createAddress)
     end
 
     local address = Address(UUID.Static__New(), createAddress.Url, createAddress.IPAddress)
-    self._DbTable:Set(address.Id, address)
+    self.m_dbTable:Set(address.Id, address)
 
-    self._DbTable:Save()
+    self.m_dbTable:Save()
     return true
 end
 
 ---@param id Core.UUID
 ---@return boolean
 function AddressDatabase:DeleteById(id)
-    self._DbTable:Delete(id)
+    self.m_dbTable:Delete(id)
 
-    self._DbTable:Save()
+    self.m_dbTable:Save()
     return true
 end
 
@@ -105,16 +105,16 @@ function AddressDatabase:DeleteByUrl(addressAddress)
         return false
     end
 
-    self._DbTable:Delete(address.Id)
+    self.m_dbTable:Delete(address.Id)
 
-    self._DbTable:Save()
+    self.m_dbTable:Save()
     return true
 end
 
 ---@param addressId Core.UUID
 ---@return DNS.Core.Entities.Address? address
 function AddressDatabase:GetWithId(addressId)
-    for id, address in pairs(self._DbTable) do
+    for id, address in pairs(self.m_dbTable) do
         if id == addressId then
             return address
         end
@@ -124,7 +124,7 @@ end
 ---@param addressAddress string
 ---@return DNS.Core.Entities.Address? createAddress
 function AddressDatabase:GetWithUrl(addressAddress)
-    for _, address in pairs(self._DbTable) do
+    for _, address in pairs(self.m_dbTable) do
         if address.Url == addressAddress then
             return address
         end
@@ -143,7 +143,7 @@ PackageData["DNSServerEndpoints"] = {
 local AddressDatabase = require("DNS.Server.AddressDatabase")
 
 ---@class DNS.Endpoints : Net.Rest.Api.Server.EndpointBase
----@field private _AddressDatabase DNS.Server.AddressDatabase
+---@field private m_addressDatabase DNS.Server.AddressDatabase
 ---@overload fun(logger: Core.Logger, controller: Net.Rest.Api.Server.Controller) : DNS.Endpoints
 local Endpoints = {}
 
@@ -154,7 +154,7 @@ local Endpoints = {}
 function Endpoints:__init(baseFunc, logger, controller)
     baseFunc(logger, controller)
 
-    self._AddressDatabase = AddressDatabase(logger:subLogger("AddressDatabase"))
+    self.m_addressDatabase = AddressDatabase(logger:subLogger("AddressDatabase"))
 
     self:AddEndpoint("CREATE", "/Address/Create", self.CreateAddress)
     self:AddEndpoint("DELETE", "/Address/{id:Core.UUID}/Delete", self.DeletetAddress)
@@ -165,7 +165,7 @@ end
 ---@param createAddress DNS.Core.Entities.Address.Create
 ---@return Net.Rest.Api.Response response
 function Endpoints:CreateAddress(createAddress)
-    local success = self._AddressDatabase:Create(createAddress)
+    local success = self.m_addressDatabase:Create(createAddress)
 
     return self.Templates:Ok(success)
 end
@@ -173,7 +173,7 @@ end
 ---@param id Core.UUID
 ---@return Net.Rest.Api.Response response
 function Endpoints:DeletetAddress(id)
-    local success = self._AddressDatabase:DeleteById(id)
+    local success = self.m_addressDatabase:DeleteById(id)
     if not success then
         return self.Templates:NotFound("Unable to find address with given id")
     end
@@ -184,7 +184,7 @@ end
 ---@param id Core.UUID
 ---@return Net.Rest.Api.Response response
 function Endpoints:GetAddressWithId(id)
-    local address = self._AddressDatabase:GetWithId(id)
+    local address = self.m_addressDatabase:GetWithId(id)
     if not address then
         return self.Templates:NotFound("Unable to find address with given id")
     end
@@ -195,7 +195,7 @@ end
 ---@param addressStr string
 ---@return Net.Rest.Api.Response response
 function Endpoints:GetAddressWithAddress(addressStr)
-    local address = self._AddressDatabase:GetWithUrl(addressStr)
+    local address = self.m_addressDatabase:GetWithUrl(addressStr)
     if not address then
         return self.Templates:NotFound("Unable to find address with given address")
     end

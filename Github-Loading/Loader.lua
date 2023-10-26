@@ -217,11 +217,11 @@ local function loadFiles(loaderBasePath)
 end
 
 ---@class Github_Loading.Loader
----@field private _LoaderBaseUrl string
----@field private _LoaderBasePath string
----@field private _ForceDownload boolean
----@field private _InternetCard FIN.Components.FINComputerMod.InternetCard_C
----@field private _LoadedLoaderFiles Dictionary<string, table>
+---@field private m_loaderBaseUrl string
+---@field private m_loaderBasePath string
+---@field private m_forceDownload boolean
+---@field private m_internetCard FIN.Components.FINComputerMod.InternetCard_C
+---@field private m_loadedLoaderFiles Dictionary<string, table>
 ---@field Logger Github_Loading.Logger
 local Loader = {}
 
@@ -242,13 +242,13 @@ function Loader.new(loaderBaseUrl, loaderBasePath, forceDownload, internetCard)
 end
 
 function Loader:LoadFiles()
-	self._LoadedLoaderFiles = loadFiles(self._LoaderBasePath)
+	self.m_loadedLoaderFiles = loadFiles(self.m_loaderBasePath)
 end
 
 ---@param moduleToGet string
 ---@return any ...
 function Loader:Get(moduleToGet)
-	local module = self._LoadedLoaderFiles[moduleToGet]
+	local module = self.m_loadedLoaderFiles[moduleToGet]
 	if not module then
 		return
 	end
@@ -284,7 +284,7 @@ end
 
 ---@param logLevel Github_Loading.Logger.LogLevel
 function Loader:Load(logLevel)
-	assert(downloadFiles(self._LoaderBaseUrl, self._LoaderBasePath, self._ForceDownload, self._InternetCard),
+	assert(downloadFiles(self.m_loaderBaseUrl, self.m_loaderBasePath, self.m_forceDownload, self.m_internetCard),
 		'Unable to download loader Files')
 	self:LoadFiles()
 
@@ -299,7 +299,7 @@ end
 ---@return boolean diffrentVersionFound
 function Loader:CheckVersion()
 	self.Logger:LogTrace('checking Version...')
-	local versionFilePath = self._LoaderBasePath .. '/Github-Loading/Version.current.txt'
+	local versionFilePath = self.m_loaderBasePath .. '/Github-Loading/Version.current.txt'
 	local OldVersionString = Utils.File.ReadAll(versionFilePath)
 	local NewVersionString = self:Get('/Github-Loading/Version.latest')
 	Utils.File.Write(versionFilePath, 'w', NewVersionString, true)
@@ -360,8 +360,8 @@ end
 function Loader:LoadProgram(option, baseUrl, forceDownload)
 	---@type Github_Loading.PackageLoader
 	local PackageLoader = self:Get('/Github-Loading/Loader/PackageLoader')
-	PackageLoader = PackageLoader.new(baseUrl .. '/Packages', self._LoaderBasePath .. '/Packages',
-		self.Logger:subLogger('PackageLoader'), self._InternetCard)
+	PackageLoader = PackageLoader.new(baseUrl .. '/Packages', self.m_loaderBasePath .. '/Packages',
+		self.Logger:subLogger('PackageLoader'), self.m_internetCard)
 	PackageLoader:setGlobal()
 	self.Logger:LogDebug('setup PackageLoader')
 
@@ -430,7 +430,7 @@ end
 
 function Loader:Cleanup()
 	---@type FIN.Filesystem.File[]
-	local openFiles = self._LoadedLoaderFiles["/Github-Loading/Loader/Utils/File"][2]
+	local openFiles = self.m_loadedLoaderFiles["/Github-Loading/Loader/Utils/File"][2]
 
 	for _, file in pairs(openFiles) do
 		file:close()

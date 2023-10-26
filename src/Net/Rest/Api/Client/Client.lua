@@ -9,8 +9,8 @@ local DEFAULT_TIMEOUT = 5
 ---@field ServerIPAddress Net.Core.IPAddress
 ---@field ServerPort integer
 ---@field ReturnPort integer
----@field private _NetClient Net.Core.NetworkClient
----@field private _Logger Core.Logger
+---@field private m_netClient Net.Core.NetworkClient
+---@field private m_logger Core.Logger
 ---@overload fun(serverIPAddress: Net.Core.IPAddress, serverPort: integer, returnPort: integer, netClient: Net.Core.NetworkClient, logger: Core.Logger) : Net.Rest.Api.Client
 local Client = {}
 
@@ -24,20 +24,20 @@ function Client:__init(serverIPAddress, serverPort, returnPort, netClient, logge
     self.ServerIPAddress = serverIPAddress
     self.ServerPort = serverPort
     self.ReturnPort = returnPort
-    self._NetClient = netClient
-    self._Logger = logger
+    self.m_netClient = netClient
+    self.m_logger = logger
 end
 
 ---@param request Net.Rest.Api.Request
 ---@param timeout integer?
 ---@return Net.Rest.Api.Response response
 function Client:Send(request, timeout)
-    local networkFuture = self._NetClient:CreateEventFuture(
+    local networkFuture = self.m_netClient:CreateEventFuture(
         EventNameUsage.RestResponse,
         self.ReturnPort,
         timeout or DEFAULT_TIMEOUT)
 
-    self._NetClient:Send(self.ServerIPAddress, self.ServerPort, EventNameUsage.RestRequest, request,
+    self.m_netClient:Send(self.ServerIPAddress, self.ServerPort, EventNameUsage.RestRequest, request,
         { ReturnPort = self.ReturnPort })
 
     local context = networkFuture:Wait()

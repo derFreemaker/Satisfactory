@@ -22,30 +22,30 @@ local DNSClient = require('DNS.Client.Client')
 local Host = require('Hosting.Host')
 
 ---@class FactoryControl.Server.Main : Github_Loading.Entities.Main
----@field private _Host Hosting.Host
----@field private _EventPullAdapter Core.EventPullAdapter
----@field private _ApiController Net.Rest.Api.Server.Controller
----@field private _DnsClient DNS.Client
----@field private _NetClient Net.Core.NetworkClient
+---@field private m_host Hosting.Host
+---@field private m_eventPullAdapter Core.EventPullAdapter
+---@field private m_apiController Net.Rest.Api.Server.Controller
+---@field private m_dnsClient DNS.Client
+---@field private m_netClient Net.Core.NetworkClient
 local Main = {}
 
 function Main:Configure()
-	self._Host = Host(self.Logger:subLogger('Host'))
+	self.m_host = Host(self.Logger:subLogger('Host'))
 
 	local databaseAccessLayer = Database(self.Logger:subLogger("DatabaseAccessLayer"))
 
-	self._Host:AddEndpoint(PortUsage.HTTP,
+	self.m_host:AddEndpoint(PortUsage.HTTP,
 		"Controller",
 		ControllerEndpoints --{{{@as FactoryControl.Server.Endpoints.ControllerEndpoints}}},
 		databaseAccessLayer)
 	self.Logger:LogDebug('setup endpoints')
 
-	self._Host:RegisterAddress(Config.DOMAIN)
+	self.m_host:RegisterAddress(Config.DOMAIN)
 end
 
 function Main:Run()
 	self.Logger:LogInfo('started server')
-	self._Host:Run()
+	self.m_host:Run()
 end
 
 return Main
@@ -64,18 +64,18 @@ local UUID = require("Core.UUID")
 local ControllerDto = require("FactoryControl.Core.Entities.Controller.ControllerDto")
 
 ---@class FactoryControl.Server.Database.Controllers : object
----@field private _DbTable Database.DbTable
----@field private _Logger Core.Logger
+---@field private m_dbTable Database.DbTable
+---@field private m_logger Core.Logger
 ---@overload fun(logger: Core.Logger) : FactoryControl.Server.Database.Controllers
 local Controllers = {}
 
 ---@private
 ---@param logger Core.Logger
 function Controllers:__init(logger)
-    self._DbTable = DbTable("Controllers", Path("/Database/Controllers/"), logger:subLogger("DbTable"))
-    self._Logger = logger
+    self.m_dbTable = DbTable("Controllers", Path("/Database/Controllers/"), logger:subLogger("DbTable"))
+    self.m_logger = logger
 
-    self._DbTable:Load()
+    self.m_dbTable:Load()
 end
 
 ---@param createController FactoryControl.Core.Entities.Controller.CreateDto
@@ -88,27 +88,27 @@ function Controllers:CreateController(createController)
         return nil
     end
 
-    self._DbTable:Set(controller.Id, controller)
-    self._DbTable:Save()
+    self.m_dbTable:Set(controller.Id, controller)
+    self.m_dbTable:Save()
 
     return controller
 end
 
 ---@param id Core.UUID
 function Controllers:DeleteController(id)
-    self._DbTable:Delete(id)
+    self.m_dbTable:Delete(id)
 end
 
 ---@param id Core.UUID
 ---@return FactoryControl.Core.Entities.ControllerDto? controller
 function Controllers:GetControllerById(id)
-    return self._DbTable:Get(id)
+    return self.m_dbTable:Get(id)
 end
 
 ---@param name string
 ---@return FactoryControl.Core.Entities.ControllerDto? controller
 function Controllers:GetControllerByName(name)
-    for key, controller in pairs(self._DbTable) do
+    for key, controller in pairs(self.m_dbTable) do
         ---@cast key Core.UUID
         ---@cast controller FactoryControl.Core.Entities.ControllerDto
 
@@ -128,8 +128,8 @@ PackageData["FactoryControlServerEndpointsController"] = {
     IsRunnable = true,
     Data = [[
 ---@class FactoryControl.Server.Endpoints.ControllerEndpoints : Net.Rest.Api.Server.EndpointBase
----@field private _Controllers FactoryControl.Server.Database.Controllers
----@field private _Logger Core.Logger
+---@field private m_controllers FactoryControl.Server.Database.Controllers
+---@field private m_logger Core.Logger
 ---@overload fun(logger: Core.Logger, apiController: Net.Rest.Api.Server.Controller, databaseAccessLayer: FactoryControl.Server.Database.Controllers) : FactoryControl.Server.Endpoints.ControllerEndpoints
 local ControllerEndpoints = {}
 
@@ -141,7 +141,7 @@ local ControllerEndpoints = {}
 function ControllerEndpoints:__init(baseFunc, logger, apiController, databaseAccessLayer)
 	baseFunc(logger, apiController)
 
-	self._Controllers = databaseAccessLayer
+	self.m_controllers = databaseAccessLayer
 
 	self:AddEndpoint("CONNECT", "/Controller/Connect", self.Connect)
 
@@ -155,7 +155,7 @@ end
 ---@param connect FactoryControl.Core.Entities.Controller.ConnectDto
 ---@return Net.Rest.Api.Response response
 function ControllerEndpoints:Connect(connect)
-	local controller = self._Controllers:GetControllerByName(connect.Name)
+	local controller = self.m_controllers:GetControllerByName(connect.Name)
 	if not controller then
 		return self.Templates:NotFound("Controller with Name: " .. connect.Name .. " was not found.")
 	end
@@ -170,7 +170,7 @@ end
 ---@param createController FactoryControl.Core.Entities.Controller.CreateDto
 ---@return Net.Rest.Api.Response response
 function ControllerEndpoints:Create(createController)
-	local controller = self._Controllers:CreateController(createController)
+	local controller = self.m_controllers:CreateController(createController)
 
 	if not controller then
 		return self.Templates:BadRequest("Controller with Name: " .. createController.Name .. " already exists.")
@@ -182,7 +182,7 @@ end
 ---@param id Core.UUID
 ---@return Net.Rest.Api.Response response
 function ControllerEndpoints:DeleteWithId(id)
-	self._Controllers:DeleteController(id)
+	self.m_controllers:DeleteController(id)
 
 	return self.Templates:Ok(true)
 end
@@ -191,7 +191,7 @@ end
 ---@param modifyController FactoryControl.Core.Entities.Controller.ModifyDto
 ---@return Net.Rest.Api.Response response
 function ControllerEndpoints:ModifyWithId(id, modifyController)
-	local controller = self._Controllers:GetControllerById(id)
+	local controller = self.m_controllers:GetControllerById(id)
 
 	if not controller then
 		return self.Templates:NotFound("Controller with id: " .. tostring(id) .. " was not found.")
@@ -205,7 +205,7 @@ end
 ---@param id Core.UUID
 ---@return Net.Rest.Api.Response response
 function ControllerEndpoints:GetWithId(id)
-	local controller = self._Controllers:GetControllerById(id)
+	local controller = self.m_controllers:GetControllerById(id)
 
 	if not controller then
 		return self.Templates:NotFound("Controller with id: " .. tostring(id) .. " was not found.")
@@ -217,7 +217,7 @@ end
 ---@param name string
 ---@return Net.Rest.Api.Response response
 function ControllerEndpoints:GetWithName(name)
-	local controller = self._Controllers:GetControllerByName(name)
+	local controller = self.m_controllers:GetControllerByName(name)
 
 	if not controller then
 		return self.Templates:NotFound("Controller with name: " .. name .. " was not found.")

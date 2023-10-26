@@ -1,7 +1,7 @@
 local Json = require("Core.Json.Json")
 
 ---@class Core.Json.Serializer
----@field private _TypeInfos Dictionary<string, Utils.Class.Type>
+---@field private m_typeInfos Dictionary<string, Utils.Class.Type>
 ---@overload fun(typeInfos: Utils.Class.Type[]?) : Core.Json.Serializer
 local JsonSerializer = {}
 
@@ -11,17 +11,17 @@ JsonSerializer.Static__Serializer = Utils.Class.Placeholder
 ---@private
 ---@param typeInfos Utils.Class.Type[]?
 function JsonSerializer:__init(typeInfos)
-    self._TypeInfos = {}
+    self.m_typeInfos = {}
 
     for _, typeInfo in ipairs(typeInfos or {}) do
-        self._TypeInfos[typeInfo.Name] = typeInfo
+        self.m_typeInfos[typeInfo.Name] = typeInfo
     end
 end
 
 function JsonSerializer:AddTypesFromStatic()
-    for name, typeInfo in pairs(self.Static__Serializer._TypeInfos) do
-        if not Utils.Table.ContainsKey(self._TypeInfos, name) then
-            self._TypeInfos[name] = typeInfo
+    for name, typeInfo in pairs(self.Static__Serializer.m_typeInfos) do
+        if not Utils.Table.ContainsKey(self.m_typeInfos, name) then
+            self.m_typeInfos[name] = typeInfo
         end
     end
 end
@@ -32,8 +32,8 @@ function JsonSerializer:AddTypeInfo(typeInfo)
     if not Utils.Class.HasTypeBaseClass("Core.Json.Serializable", typeInfo) then
         error("class type has not Core.Json.Serializable as base class", 2)
     end
-    if not Utils.Table.ContainsKey(self._TypeInfos, typeInfo.Name) then
-        self._TypeInfos[typeInfo.Name] = typeInfo
+    if not Utils.Table.ContainsKey(self.m_typeInfos, typeInfo.Name) then
+        self.m_typeInfos[typeInfo.Name] = typeInfo
     end
     return self
 end
@@ -118,7 +118,7 @@ end
 function JsonSerializer:deserializeClass(t)
     local data = t.__Data
 
-    local typeInfo = self._TypeInfos[t.__Type]
+    local typeInfo = self.m_typeInfos[t.__Type]
     if not typeInfo then
         error("unable to find typeInfo for class: " .. t.__Type)
     end

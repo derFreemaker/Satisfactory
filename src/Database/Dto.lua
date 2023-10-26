@@ -1,7 +1,7 @@
 ---@class Database.Dto : object
----@field private _Key any
----@field private _Data table
----@field private _DbTable Database.DbTable
+---@field private m_key any
+---@field private m_data table
+---@field private m_dbTable Database.DbTable
 ---@overload fun(key: any, data: table, dbTable: Database.DbTable) : Database.Dto
 local Dto = {}
 
@@ -10,18 +10,18 @@ local Dto = {}
 ---@param data table
 ---@param dbTable Database.DbTable
 function Dto:__init(key, data, dbTable)
-    self._Key = key
-    self._Data = data
-    self._DbTable = dbTable
+    self.m_key = key
+    self.m_data = data
+    self.m_dbTable = dbTable
 end
 
 ---@private
 ---@param key any
 function Dto:__index(key)
-    local value = self._Data[key]
+    local value = self.m_data[key]
 
     if type(value) == "table" then
-        return Dto(self._Key, value, self._DbTable)
+        return Dto(self.m_key, value, self.m_dbTable)
     end
 
     return value
@@ -41,8 +41,8 @@ function Dto:__newindex(key, value)
         error("unsupported value type: " .. valueType)
     end
 
-    self._Data[key] = value
-    self._DbTable:ObjectChanged(self._Key)
+    self.m_data[key] = value
+    self.m_dbTable:ObjectChanged(self.m_key)
 end
 
 return Utils.Class.CreateClass(Dto, "Database.Dto")

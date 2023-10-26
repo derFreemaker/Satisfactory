@@ -10,9 +10,9 @@ local CreateAddress = require('DNS.Core.Entities.Address.Create')
 local Uri = require("Net.Rest.Uri")
 
 ---@class DNS.Client : object
----@field private _NetworkClient Net.Core.NetworkClient
----@field private _ApiClient Net.Rest.Api.Client
----@field private _Logger Core.Logger
+---@field private m_networkClient Net.Core.NetworkClient
+---@field private m_apiClient Net.Rest.Api.Client
+---@field private m_logger Core.Logger
 ---@overload fun(networkClient: Net.Core.NetworkClient, logger: Core.Logger) : DNS.Client
 local Client = {}
 
@@ -20,13 +20,13 @@ local Client = {}
 ---@param networkClient Net.Core.NetworkClient?
 ---@param logger Core.Logger
 function Client:__init(networkClient, logger)
-	self._NetworkClient = networkClient or NetworkClient(logger:subLogger('NetworkClient'))
-	self._Logger = logger
+	self.m_networkClient = networkClient or NetworkClient(logger:subLogger('NetworkClient'))
+	self.m_logger = logger
 end
 
 ---@return Net.Core.NetworkClient
 function Client:GetNetClient()
-	return self._NetworkClient
+	return self.m_networkClient
 end
 
 ---@param networkClient Net.Core.NetworkClient
@@ -56,13 +56,13 @@ end
 
 ---@return Net.Core.IPAddress id
 function Client:GetOrRequestDNSServerIP()
-	if not self._ApiClient then
-		local serverIPAddress = Client.Static__GetServerAddress(self._NetworkClient)
-		self._ApiClient = ApiClient(serverIPAddress, Usage.Ports.HTTP, Usage.Ports.HTTP, self._NetworkClient,
-			self._Logger:subLogger('ApiClient'))
+	if not self.m_apiClient then
+		local serverIPAddress = Client.Static__GetServerAddress(self.m_networkClient)
+		self.m_apiClient = ApiClient(serverIPAddress, Usage.Ports.HTTP, Usage.Ports.HTTP, self.m_networkClient,
+			self.m_logger:subLogger('ApiClient'))
 	end
 
-	return self._ApiClient.ServerIPAddress
+	return self.m_apiClient.ServerIPAddress
 end
 
 ---@private
@@ -74,7 +74,7 @@ function Client:InternalRequest(method, url, body, headers)
 	self:GetOrRequestDNSServerIP()
 
 	local request = ApiRequest(method, Uri.Static__Parse(url), body, headers)
-	return self._ApiClient:Send(request)
+	return self.m_apiClient:Send(request)
 end
 
 ---@param url string

@@ -16,8 +16,8 @@ end
 local OpenFileFunc = filesystem.open
 
 ---@class Uitls.File.WrappedFile : FIN.Filesystem.File
----@field _File FIN.Filesystem.File
----@field _OpenFilesKey string
+---@field private m_file FIN.Filesystem.File
+---@field private m_openFilesKey string
 local WrappedFile = {}
 
 ---@package
@@ -37,20 +37,20 @@ function WrappedFile.new(path, mode)
 end
 
 function WrappedFile:read(length)
-    return self._File:read(length)
+    return self.m_file:read(length)
 end
 
 function WrappedFile:seek(offset)
-    self._File:seek(offset)
+    self.m_file:seek(offset)
 end
 
 function WrappedFile:write(data)
-    self._File:write(data)
+    self.m_file:write(data)
 end
 
 function WrappedFile:close()
-    self._File:close()
-    OpenFiles[self._OpenFilesKey] = nil
+    self.m_file:close()
+    OpenFiles[self.m_openFilesKey] = nil
 end
 
 filesystem.open = WrappedFile.new

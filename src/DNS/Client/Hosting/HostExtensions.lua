@@ -19,15 +19,15 @@ end
 table.insert(Host._Static__ReadyTasks, Task(readyTaskWaitForDNSServer))
 
 ---@class Hosting.Host
----@field package _DNSClient DNS.Client
+---@field package m_dnsClient DNS.Client
 local HostExtensions = {}
 
 function HostExtensions:GetDNSClient()
-    if not self._DNSClient then
-        self._DNSClient = DNSClient(self:GetNetworkClient(), self._Logger:subLogger("DNSClient"))
+    if not self.m_dnsClient then
+        self.m_dnsClient = DNSClient(self:GetNetworkClient(), self.m_logger:subLogger("DNSClient"))
     end
 
-    return self._DNSClient
+    return self.m_dnsClient
 end
 
 ---@param url string
@@ -40,9 +40,9 @@ function HostExtensions:RegisterAddress(url, ipAddress)
     end
 
     if dnsClient:CreateAddress(url, ipAddress) then
-        self._Logger:LogInfo("Registered address " .. url .. " on DNS server.")
+        self.m_logger:LogInfo("Registered address " .. url .. " on DNS server.")
     else
-        self._Logger:LogError("Failed to register address " .. url .. " on DNS server or already exists.")
+        self.m_logger:LogError("Failed to register address " .. url .. " on DNS server or already exists.")
     end
 end
 

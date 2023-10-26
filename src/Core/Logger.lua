@@ -24,7 +24,7 @@ local LogLevelToName = {
 ---@field OnLog Core.Event
 ---@field OnClear Core.Event
 ---@field Name string
----@field private _LogLevel Core.Logger.LogLevel
+---@field private m_logLevel Core.Logger.LogLevel
 ---@overload fun(name: string, logLevel: Core.Logger.LogLevel, onLog: Core.Event?, onClear: Core.Event?) : Core.Logger
 local Logger = {}
 
@@ -96,7 +96,7 @@ end
 ---@param onLog Core.Event?
 ---@param onClear Core.Event?
 function Logger:__init(name, logLevel, onLog, onClear)
-	self._LogLevel = logLevel
+	self.m_logLevel = logLevel
 	self.Name = (string.gsub(name, ' ', '_') or '')
 	self.OnLog = onLog or Event()
 	self.OnClear = onClear or Event()
@@ -106,7 +106,7 @@ end
 ---@return Core.Logger
 function Logger:subLogger(name)
 	name = self.Name .. '.' .. name
-	local logger = Logger(name, self._LogLevel)
+	local logger = Logger(name, self.m_logLevel)
 	return self:CopyListenersTo(logger)
 end
 
@@ -167,7 +167,7 @@ end
 ---@param logLevel Core.Logger.LogLevel
 ---@param ... any
 function Logger:Log(logLevel, ...)
-	if logLevel < self._LogLevel then
+	if logLevel < self.m_logLevel then
 		return
 	end
 
@@ -188,7 +188,7 @@ end
 ---@param maxLevel integer?
 ---@param properties string[]?
 function Logger:LogTable(t, logLevel, maxLevel, properties)
-	if logLevel < self._LogLevel then
+	if logLevel < self.m_logLevel then
 		return
 	end
 
@@ -209,7 +209,7 @@ end
 
 ---@param logLevel Core.Logger.LogLevel
 function Logger:FreeLine(logLevel)
-	if logLevel < self._LogLevel then
+	if logLevel < self.m_logLevel then
 		return
 	end
 

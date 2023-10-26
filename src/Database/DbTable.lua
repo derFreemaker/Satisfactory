@@ -4,12 +4,12 @@ local File = require("Core.FileSystem.File")
 local Dto = require("Database.Dto")
 
 ---@class Database.DbTable : object
----@field private _Name string
----@field private _Path Core.FileSystem.Path
----@field private _Data Dictionary<string | number, table>
----@field private _DataChanged (string | number)[]
----@field private _Logger Core.Logger
----@field private _Serializer Core.Json.Serializer
+---@field private m_name string
+---@field private m_path Core.FileSystem.Path
+---@field private m_data Dictionary<string | number, table>
+---@field private m_dataChanged (string | number)[]
+---@field private m_logger Core.Logger
+---@field private m_serializer Core.Json.Serializer
 ---@overload fun(name: string, path: Core.FileSystem.Path, logger: Core.Logger, serializer: Core.Json.Serializer?) : Database.DbTable
 local DbTable = {}
 
@@ -27,61 +27,61 @@ function DbTable:__init(name, path, logger, serializer)
         filesystem.createDir(path:GetPath(), true)
     end
 
-    self._Name = name
-    self._Path = path
-    self._Logger = logger
-    self._Data = {}
+    self.m_name = name
+    self.m_path = path
+    self.m_logger = logger
+    self.m_data = {}
 
-    self._Serializer = serializer or JsonSerializer.Static__Serializer
+    self.m_serializer = serializer or JsonSerializer.Static__Serializer
 end
 
 function DbTable:Load()
-    self._Logger:LogTrace("loading Database Table: '" .. self._Name .. "'...")
-    local parentFolder = self._Path:GetParentFolderPath()
+    self.m_logger:LogTrace("loading Database Table: '" .. self.m_name .. "'...")
+    local parentFolder = self.m_path:GetParentFolderPath()
     if not filesystem.exists(parentFolder:GetPath()) then
         filesystem.createDir(parentFolder:GetPath(), true)
     end
 
-    for _, fileName in ipairs(filesystem.childs(self._Path:GetPath())) do
-        local path = self._Path:Extend(fileName)
+    for _, fileName in ipairs(filesystem.childs(self.m_path:GetPath())) do
+        local path = self.m_path:Extend(fileName)
 
         if path:IsFile() then
             local data = File.Static__ReadAll(path)
 
             local key = fileName:match("^(.+)%.dto%.json$")
-            self._Data[key] = self._Serializer:Deserialize(data)
+            self.m_data[key] = self.m_serializer:Deserialize(data)
         end
     end
 
-    self._Logger:LogTrace("loaded Database Table")
+    self.m_logger:LogTrace("loaded Database Table")
 end
 
 function DbTable:Save()
-    self._Logger:LogTrace("saving Database Table: '" .. self._Name .. "'...")
+    self.m_logger:LogTrace("saving Database Table: '" .. self.m_name .. "'...")
 
-    for _, key in pairs(self._DataChanged) do
-        local path = self._Path:Extend(tostring(key) .. ".dto.json")
-        local data = self._Data[key]
+    for _, key in pairs(self.m_dataChanged) do
+        local path = self.m_path:Extend(tostring(key) .. ".dto.json")
+        local data = self.m_data[key]
 
         if not data then
             filesystem.remove(path:GetPath())
         else
-            File.Static__WriteAll(path, self._Serializer:Serialize(data))
+            File.Static__WriteAll(path, self.m_serializer:Serialize(data))
         end
     end
 
-    self._Logger:LogTrace("saved Database Table")
+    self.m_logger:LogTrace("saved Database Table")
 end
 
 ---@param key string | number | Core.Json.Serializable
 function DbTable:ObjectChanged(key)
-    for _, value in pairs(self._DataChanged) do
+    for _, value in pairs(self.m_dataChanged) do
         if value == key then
             return
         end
     end
 
-    table.insert(self._DataChanged, key)
+    table.insert(self.m_dataChanged, key)
 end
 
 ---@private
@@ -94,7 +94,7 @@ function DbTable:_FormatKeyForStorage(key)
             error("key is not a string, number or Serializable")
         end
 
-        key = self._Serializer:Serialize(key)
+        key = self.m_serializer:Serialize(key)
         ---@cast key string
     end
 
@@ -111,7 +111,7 @@ function DbTable:_FormatKeyForUsage(key)
 
     ---@type Out<any>
     local outObj = {}
-    if self._Serializer:TryDeserialize(key, outObj) then
+    if self.m_serializer:TryDeserialize(key, outObj) then
         return outObj.Value
     end
 
@@ -122,14 +122,14 @@ end
 ---@param value table
 function DbTable:Set(key, value)
     key = self:_FormatKeyForStorage(key)
-    self._Data[key] = value
+    self.m_data[key] = value
     self:ObjectChanged(key)
 end
 
 ---@param key string | number | Core.Json.Serializable
 function DbTable:Delete(key)
     key = self:_FormatKeyForStorage(key)
-    self._Data[key] = nil
+    self.m_data[key] = nil
     self:ObjectChanged(key)
 end
 
@@ -137,7 +137,7 @@ end
 ---@return table value
 function DbTable:Get(key)
     key = self:_FormatKeyForStorage(key)
-    local data = self._Data[key]
+    local data = self.m_data[key]
     return Dto(key, data, self)
 end
 
@@ -147,7 +147,7 @@ function DbTable:__pairs()
     ---@type Database.Dto[]
     local dtoObjs = {}
 
-    for key, value in pairs(self._Data) do
+    for key, value in pairs(self.m_data) do
         dtoObjs[key] = Dto(self:_FormatKeyForUsage(key), value, self)
     end
 

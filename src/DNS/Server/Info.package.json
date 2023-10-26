@@ -1,7 +1,7 @@
 {
   "Name": "DNS.Server",
   "Namespace": "DNS.Server",
-  "Version": "0.1.4-70",
+  "Version": "0.1.4-71",
   "RequiredPackages": [
     "Core",
     "Database",
