@@ -42,7 +42,7 @@ function Controller:onMessageRecieved(context)
         return
     end
     self._Logger:LogTrace('found endpoint:', request.Endpoint)
-    local response = endpoint:Execute(request, context)
+    local response = endpoint:Invoke(request, context)
 
     if context.Header.ReturnPort then
         self._Logger:LogTrace("sending response to '" ..

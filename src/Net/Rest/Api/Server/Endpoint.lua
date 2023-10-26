@@ -62,34 +62,20 @@ function Endpoint:GetUriParameters(uri)
     return parameters
 end
 
+---@private
 ---@param uri string
----@param outResponse Out<Net.Rest.Api.Response>
----@return any[]? parameters
-function Endpoint:ParseUriParameters(uri, outResponse)
+---@return any[] parameters, string? parseError
+function Endpoint:ParseUriParameters(uri)
     local success, errorMsg, returns = Utils.Function.InvokeProtected(self.GetUriParameters, self, uri)
-
-    if not success then
-        outResponse.Value = ResponseTemplates.InternalServerError(errorMsg or "uri parameters could not be parsed")
-        return nil
-    end
-
-    return returns[1]
+    return returns[1] or {}, errorMsg
 end
 
+---@private
+---@param uriParameters any[]
 ---@param request Net.Rest.Api.Request
 ---@param context Net.Core.NetworkContext
----@return Net.Rest.Api.Response
-function Endpoint:Execute(request, context)
-    self._Logger:LogTrace('executing...')
-    ___logger:setLogger(self._Logger)
-
-    ---@type Out<Net.Rest.Api.Response>
-    local outReponse = {}
-    local uriParameters = self:ParseUriParameters(tostring(request.Endpoint), outReponse)
-    if not uriParameters then
-        return outReponse.Value
-    end
-
+---@return Net.Rest.Api.Response response
+function Endpoint:Execute(uriParameters, request, context)
     local response
     if #uriParameters == 0 then
         response = self._Task:Execute(request.Body, request, context)
@@ -101,6 +87,25 @@ function Endpoint:Execute(request, context)
     if not self._Task:IsSuccess() then
         response = ResponseTemplates.InternalServerError(self._Task:GetTraceback() or "no error")
     end
+
+    return response
+end
+
+---@param request Net.Rest.Api.Request
+---@param context Net.Core.NetworkContext
+---@return Net.Rest.Api.Response response
+function Endpoint:Invoke(request, context)
+    self._Logger:LogTrace('executing...')
+    ___logger:setLogger(self._Logger)
+
+    local response
+    local uriParameters, parseError = self:ParseUriParameters(tostring(request.Endpoint))
+    if parseError then
+        response = ResponseTemplates.InternalServerError(parseError or "uri parameters could not be parsed")
+        return response
+    end
+
+    response = self:Execute(uriParameters, request, context)
 
     if response.WasSuccessfull then
         self._Logger:LogDebug('request finished with status code: ' .. response.Headers.Code)
