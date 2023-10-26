@@ -77,11 +77,11 @@ end
 ---@param createAddress DNS.Core.Entities.Address.Create
 ---@return boolean
 function AddressDatabase:Create(createAddress)
-    if self:GetWithUrl(createAddress.Url) then
+    if self:GetWithDomain(createAddress.Domain) then
         return false
     end
 
-    local address = Address(UUID.Static__New(), createAddress.Url, createAddress.IPAddress)
+    local address = Address(UUID.Static__New(), createAddress.Domain, createAddress.IPAddress)
     self.m_dbTable:Set(address.Id, address)
 
     self.m_dbTable:Save()
@@ -100,7 +100,7 @@ end
 ---@param addressAddress string
 ---@return boolean
 function AddressDatabase:DeleteByUrl(addressAddress)
-    local address = self:GetWithUrl(addressAddress)
+    local address = self:GetWithDomain(addressAddress)
     if not address then
         return false
     end
@@ -123,9 +123,9 @@ end
 
 ---@param addressAddress string
 ---@return DNS.Core.Entities.Address? createAddress
-function AddressDatabase:GetWithUrl(addressAddress)
+function AddressDatabase:GetWithDomain(addressAddress)
     for _, address in pairs(self.m_dbTable) do
-        if address.Url == addressAddress then
+        if address.Domain == addressAddress then
             return address
         end
     end
@@ -159,7 +159,7 @@ function Endpoints:__init(baseFunc, logger, controller)
     self:AddEndpoint("CREATE", "/Address/Create", self.CreateAddress)
     self:AddEndpoint("DELETE", "/Address/{id:Core.UUID}/Delete", self.DeletetAddress)
     self:AddEndpoint("GET", "/Address/Id/{id:Core.UUID}/", self.GetAddressWithId)
-    self:AddEndpoint("GET", "Address/Url/{url:string}", self.GetAddressWithAddress)
+    self:AddEndpoint("GET", "Address/Domain/{domian:string}", self.GetAddressWithDomain)
 end
 
 ---@param createAddress DNS.Core.Entities.Address.Create
@@ -194,8 +194,8 @@ end
 
 ---@param addressStr string
 ---@return Net.Rest.Api.Response response
-function Endpoints:GetAddressWithAddress(addressStr)
-    local address = self.m_addressDatabase:GetWithUrl(addressStr)
+function Endpoints:GetAddressWithDomain(addressStr)
+    local address = self.m_addressDatabase:GetWithDomain(addressStr)
     if not address then
         return self.Templates:NotFound("Unable to find address with given address")
     end

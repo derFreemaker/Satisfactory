@@ -19,11 +19,11 @@ end
 ---@param createAddress DNS.Core.Entities.Address.Create
 ---@return boolean
 function AddressDatabase:Create(createAddress)
-    if self:GetWithUrl(createAddress.Url) then
+    if self:GetWithDomain(createAddress.Domain) then
         return false
     end
 
-    local address = Address(UUID.Static__New(), createAddress.Url, createAddress.IPAddress)
+    local address = Address(UUID.Static__New(), createAddress.Domain, createAddress.IPAddress)
     self.m_dbTable:Set(address.Id, address)
 
     self.m_dbTable:Save()
@@ -42,7 +42,7 @@ end
 ---@param addressAddress string
 ---@return boolean
 function AddressDatabase:DeleteByUrl(addressAddress)
-    local address = self:GetWithUrl(addressAddress)
+    local address = self:GetWithDomain(addressAddress)
     if not address then
         return false
     end
@@ -65,9 +65,9 @@ end
 
 ---@param addressAddress string
 ---@return DNS.Core.Entities.Address? createAddress
-function AddressDatabase:GetWithUrl(addressAddress)
+function AddressDatabase:GetWithDomain(addressAddress)
     for _, address in pairs(self.m_dbTable) do
-        if address.Url == addressAddress then
+        if address.Domain == addressAddress then
             return address
         end
     end

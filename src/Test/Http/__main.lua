@@ -21,7 +21,7 @@ function Main:Configure()
 end
 
 function Main:Run()
-	local domain = 'factoryControl.de'
+	local domain = 'factoryControl'
 
 	log("waiting for heartbeat")
 	self.m_dnsClient.Static__WaitForHeartbeat(self.m_netClient)
@@ -41,14 +41,14 @@ function Main:Run()
 	local dnsServerAddress = self.m_dnsClient:GetOrRequestDNSServerIP()
 	log("dns server address", dnsServerAddress)
 
-	local address = self.m_dnsClient:GetWithIPAddress(domain)
+	local address = self.m_dnsClient:GetWithDomain(domain)
 
 	assert(address ~= nil, 'http request was not successfull')
 
 	assert(address.IPAddress:Equals(self.m_netClient:GetIPAddress()),
 		"got wrong address id back from dns server '" .. tostring(address.Id) .. "'")
 
-	log(address.Id, address.Url, address.IPAddress)
+	log(address.Id, address.Domain, address.IPAddress)
 end
 
 return Main

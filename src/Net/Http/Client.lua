@@ -36,7 +36,7 @@ function HttpClient:getAddress(address)
 		return IPAddress(address)
 	end
 
-	local getedAddress = self.m_dnsClient:GetWithUrl(address)
+	local getedAddress = self.m_dnsClient:GetWithId(address)
 	if not getedAddress then
 		return nil
 	end

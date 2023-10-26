@@ -128,7 +128,7 @@ end
 
 ---@param id Core.UUID
 ---@return DNS.Core.Entities.Address? address
-function Client:GetWithUrl(id)
+function Client:GetWithId(id)
 	local response = self:InternalRequest('GET', "/Address/Id/" .. tostring(id))
 
 	if not response.WasSuccessfull then
@@ -137,10 +137,10 @@ function Client:GetWithUrl(id)
 	return response.Body
 end
 
----@param url string
+---@param domain string
 ---@return DNS.Core.Entities.Address? address
-function Client:GetWithIPAddress(url)
-	local response = self:InternalRequest('GET', "/Address/Url/" .. url)
+function Client:GetWithDomain(domain)
+	local response = self:InternalRequest('GET', "/Address/Domain/" .. domain)
 
 	if not response.WasSuccessfull then
 		return nil
