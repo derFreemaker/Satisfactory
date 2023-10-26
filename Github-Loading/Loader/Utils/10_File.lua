@@ -1,7 +1,7 @@
 ---@class Utils.File
 local File = {}
 
----@type Dictionary<string, FIN.Filesystem.File>
+---@type table<string, FIN.Filesystem.File>
 local OpenFiles = {}
 
 ---@return string key

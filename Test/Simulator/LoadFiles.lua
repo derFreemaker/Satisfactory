@@ -85,13 +85,13 @@ function FileTreeTools:doFolder(parentPath, folder, fileFunc, folderFunc)
 end
 
 ---@param loaderBasePath string
----@return Dictionary<string, any[]> loadedLoaderFiles
+---@return table<string, any[]> loadedLoaderFiles
 local function loadFiles(loaderBasePath)
 	---@type string[][]
 	local loadEntries = {}
 	---@type integer[]
 	local loadOrder = {}
-	---@type Dictionary<string, any[]>
+	---@type table<string, any[]>
 	local loadedLoaderFiles = {}
 
 	---@param path string

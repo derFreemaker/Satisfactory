@@ -6,7 +6,7 @@ local Table = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Table'][1]
 
 
 
----@type Dictionary<string, boolean>
+---@type table<string, boolean>
 local metaMethods = {
 	__init = true,
 	__gc = true,

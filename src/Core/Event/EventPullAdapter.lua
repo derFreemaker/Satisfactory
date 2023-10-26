@@ -4,7 +4,7 @@ local Event = require('Core.Event.Event')
 ---
 ---@class Core.EventPullAdapter
 ---@field private m_initialized boolean
----@field private m_events Dictionary<string, Core.Event>
+---@field private m_events table<string, Core.Event>
 ---@field private m_logger Core.Logger
 ---@field OnEventPull Core.Event
 local EventPullAdapter = {}

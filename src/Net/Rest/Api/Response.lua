@@ -1,4 +1,4 @@
----@class Net.Rest.Api.Response.Header : Dictionary<string, any>
+---@class Net.Rest.Api.Response.Header : table<string, any>
 ---@field Code Net.Core.StatusCodes
 ---@field Message string?
 

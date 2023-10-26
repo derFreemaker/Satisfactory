@@ -36,8 +36,8 @@ PackageData["NetRestUri"] = {
     Data = [[
 ---@class Net.Rest.Uri : Core.Json.Serializable
 ---@field private m_path string
----@field private m_query Dictionary<string, string>
----@overload fun(paht: string, query: Dictionary<string, string>) : Net.Rest.Uri
+---@field private m_query table<string, string>
+---@overload fun(paht: string, query: table<string, string>) : Net.Rest.Uri
 local Uri = {}
 
 ---@param uri string
@@ -60,10 +60,10 @@ end
 
 ---@private
 ---@param path string
----@param query Dictionary<string, string>
+---@param query table<string, string>
 function Uri:__init(path, query)
     self.m_path = path
-    self.m_query = query
+    self.m_query = query or {}
 end
 
 ---@param name string
@@ -75,7 +75,7 @@ end
 ---@return string url
 function Uri:GetUrl()
     local str = self.m_path
-    if Utils.Table.Count(self.m_query) > 0 then
+    if #self.m_query > 0 then
         str = str .. "?"
         for name, value in pairs(self.m_query) do
             str = str .. name .. "=" .. value .. "&"
@@ -89,6 +89,7 @@ function Uri:__tostring()
     return self:GetUrl()
 end
 
+---@return string path, table<string, string> query
 function Uri:Serialize()
     return self.m_path, self.m_query
 end
@@ -132,16 +133,16 @@ PackageData["NetRestApiRequest"] = {
 ---@class Net.Rest.Api.Request : Core.Json.Serializable
 ---@field Method Net.Core.Method
 ---@field Endpoint Net.Rest.Uri
----@field Headers Dictionary<string, any>
+---@field Headers table<string, any>
 ---@field Body any
----@overload fun(method: Net.Core.Method, endpoint: Net.Rest.Uri, body: any, headers: Dictionary<string, any>?) : Net.Rest.Api.Request
+---@overload fun(method: Net.Core.Method, endpoint: Net.Rest.Uri, body: any, headers: table<string, any>?) : Net.Rest.Api.Request
 local Request = {}
 
 ---@private
 ---@param method Net.Core.Method
 ---@param endpoint Net.Rest.Uri
 ---@param body any
----@param headers Dictionary<string, any>?
+---@param headers table<string, any>?
 function Request:__init(method, endpoint, body, headers)
     self.Method = method
     self.Endpoint = endpoint
@@ -149,7 +150,7 @@ function Request:__init(method, endpoint, body, headers)
     self.Headers = headers or {}
 end
 
----@return Net.Core.Method method, Net.Rest.Uri endpoint, any body, Dictionary<string, any> headers
+---@return Net.Core.Method method, Net.Rest.Uri endpoint, any body, table<string, any> headers
 function Request:Serialize()
     return self.Method, self.Endpoint, self.Body, self.Headers
 end
@@ -164,7 +165,7 @@ PackageData["NetRestApiResponse"] = {
     Namespace = "Net.Rest.Api.Response",
     IsRunnable = true,
     Data = [[
----@class Net.Rest.Api.Response.Header : Dictionary<string, any>
+---@class Net.Rest.Api.Response.Header : table<string, any>
 ---@field Code Net.Core.StatusCodes
 ---@field Message string?
 
@@ -279,7 +280,7 @@ local Endpoint = require("Net.Rest.Api.Server.Endpoint")
 local ResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 
 ---@class Net.Rest.Api.Server.Controller : object
----@field private m_endpoints Dictionary<Net.Core.Method, Dictionary<string, Net.Rest.Api.Server.Endpoint>>
+---@field private m_endpoints table<Net.Core.Method, table<string, Net.Rest.Api.Server.Endpoint>>
 ---@field private m_netPort Net.Core.NetworkPort
 ---@field private m_logger Core.Logger
 ---@overload fun(netPort: Net.Core.NetworkPort, logger: Core.Logger) : Net.Rest.Api.Server.Controller
@@ -330,7 +331,7 @@ function Controller:onMessageRecieved(context)
 end
 
 ---@param endpointMethod Net.Core.Method
----@return Dictionary<string, Net.Rest.Api.Server.Endpoint>?
+---@return table<string, Net.Rest.Api.Server.Endpoint>?
 function Controller:GetMethodEndpoints(endpointMethod)
     return self.m_endpoints[endpointMethod]
 end
@@ -634,7 +635,7 @@ Host = Host.Value:Load()
 local ApiController = require("Net.Rest.Api.Server.Controller")
 
 ---@class Hosting.Host
----@field package ApiControllers Dictionary<Net.Core.Port, Net.Rest.Api.Server.Controller>
+---@field package ApiControllers table<Net.Core.Port, Net.Rest.Api.Server.Controller>
 ---@field package Endpoints Net.Rest.Api.Server.EndpointBase[]
 local HostExtensions = {}
 

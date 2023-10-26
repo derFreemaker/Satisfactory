@@ -1,7 +1,7 @@
 local JsonSerializer = require('Core.Json.JsonSerializer')
 local IPaddress = require("Net.Core.IPAddress")
 
----@class Net.Core.NetworkContext.Header : Dictionary<string, any>
+---@class Net.Core.NetworkContext.Header : table<string, any>
 ---@field ReturnIPAddress Net.Core.IPAddress
 ---@field ReturnPort integer
 

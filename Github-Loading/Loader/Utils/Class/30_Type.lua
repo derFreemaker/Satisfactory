@@ -9,7 +9,7 @@ local ObjectTypeInfo = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/Obj
 ---@field Static table
 ---
 ---@field MetaMethods Utils.Class.MetaMethods
----@field Members Dictionary<string, any>
+---@field Members table<string, any>
 ---
 ---
 ---@field HasConstructor boolean

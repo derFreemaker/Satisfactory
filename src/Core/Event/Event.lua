@@ -44,7 +44,7 @@ end
 ---|"Permanent"
 ---|"Once"
 
----@return Dictionary<Core.Event.Mode, Core.Task[]>
+---@return table<Core.Event.Mode, Core.Task[]>
 function Event:Listeners()
     ---@type Core.Task[]
     local permanentTask = {}

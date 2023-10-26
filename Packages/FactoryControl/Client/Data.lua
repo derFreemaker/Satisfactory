@@ -347,7 +347,7 @@ local ChartFeature = require("FactoryControl.Client.Entities.Controller.Feature.
 ---@class FactoryControl.Client.Entities.Controller : FactoryControl.Client.Entities.Entity
 ---@field Name string
 ---@field IPAddress Net.Core.IPAddress
----@field protected Features Dictionary<string, FactoryControl.Client.Entities.Controller.Feature>
+---@field protected Features table<string, FactoryControl.Client.Entities.Controller.Feature>
 ---@overload fun(controllerDto: FactoryControl.Core.Entities.ControllerDto, client: FactoryControl.Client) : FactoryControl.Client.Entities.Controller
 local Controller = {}
 
@@ -361,7 +361,7 @@ function Controller:__init(baseFunc, controllerDto, client)
     self.Name = controllerDto.Name
     self.IPAddress = controllerDto.IPAddress
 
-    ---@type Dictionary<string, FactoryControl.Client.Entities.Controller.Feature>
+    ---@type table<string, FactoryControl.Client.Entities.Controller.Feature>
     local features = {}
 
     for id, feature in pairs(controllerDto.Features) do
@@ -383,7 +383,7 @@ function Controller:__init(baseFunc, controllerDto, client)
     self.Features = features
 end
 
----@return Dictionary<string, FactoryControl.Client.Entities.Controller.Feature>
+---@return table<string, FactoryControl.Client.Entities.Controller.Feature>
 function Controller:GetFeatures()
     return self.Features
 end
@@ -490,7 +490,7 @@ PackageData["FactoryControlClientEntitiesControllerFeatureChartChart"] = {
 ---@class FactoryControl.Client.Entities.Controller.Feature.Chart : FactoryControl.Client.Entities.Controller.Feature
 ---@field private m_xAxisName string
 ---@field private m_yAxisName string
----@field private m_data Dictionary<number, any>
+---@field private m_data table<number, any>
 ---@overload fun(chartDto: FactoryControl.Core.Entities.Controller.Feature.ChartDto, controller: FactoryControl.Client.Entities.Controller) : FactoryControl.Client.Entities.Controller.Feature.Chart
 local Chart = {}
 
@@ -520,19 +520,19 @@ PackageData["FactoryControlClientEntitiesControllerFeatureChartUpdate"] = {
     Data = [[
 ---@class FactoryControl.Client.Entities.Controller.Feature.Chart.Update : Core.Json.Serializable
 ---@field Id Core.UUID
----@field Data Dictionary<number, any>
----@overload fun(id: Core.UUID, data: Dictionary<number, any>) : FactoryControl.Client.Entities.Controller.Feature.Chart.Update
+---@field Data table<number, any>
+---@overload fun(id: Core.UUID, data: table<number, any>) : FactoryControl.Client.Entities.Controller.Feature.Chart.Update
 local Update = {}
 
 ---@private
 ---@param id Core.UUID
----@param data Dictionary<number, any>
+---@param data table<number, any>
 function Update:__init(id, data)
     self.Id = id
     self.Data = data
 end
 
----@return Core.UUID id, Dictionary<number, any> data
+---@return Core.UUID id, table<number, any> data
 function Update:Serialize()
     return self.Id, self.Data
 end

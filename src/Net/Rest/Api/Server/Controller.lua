@@ -8,7 +8,7 @@ local Endpoint = require("Net.Rest.Api.Server.Endpoint")
 local ResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 
 ---@class Net.Rest.Api.Server.Controller : object
----@field private m_endpoints Dictionary<Net.Core.Method, Dictionary<string, Net.Rest.Api.Server.Endpoint>>
+---@field private m_endpoints table<Net.Core.Method, table<string, Net.Rest.Api.Server.Endpoint>>
 ---@field private m_netPort Net.Core.NetworkPort
 ---@field private m_logger Core.Logger
 ---@overload fun(netPort: Net.Core.NetworkPort, logger: Core.Logger) : Net.Rest.Api.Server.Controller
@@ -59,7 +59,7 @@ function Controller:onMessageRecieved(context)
 end
 
 ---@param endpointMethod Net.Core.Method
----@return Dictionary<string, Net.Rest.Api.Server.Endpoint>?
+---@return table<string, Net.Rest.Api.Server.Endpoint>?
 function Controller:GetMethodEndpoints(endpointMethod)
     return self.m_endpoints[endpointMethod]
 end

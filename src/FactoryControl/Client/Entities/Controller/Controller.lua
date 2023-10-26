@@ -6,7 +6,7 @@ local ChartFeature = require("FactoryControl.Client.Entities.Controller.Feature.
 ---@class FactoryControl.Client.Entities.Controller : FactoryControl.Client.Entities.Entity
 ---@field Name string
 ---@field IPAddress Net.Core.IPAddress
----@field protected Features Dictionary<string, FactoryControl.Client.Entities.Controller.Feature>
+---@field protected Features table<string, FactoryControl.Client.Entities.Controller.Feature>
 ---@overload fun(controllerDto: FactoryControl.Core.Entities.ControllerDto, client: FactoryControl.Client) : FactoryControl.Client.Entities.Controller
 local Controller = {}
 
@@ -20,7 +20,7 @@ function Controller:__init(baseFunc, controllerDto, client)
     self.Name = controllerDto.Name
     self.IPAddress = controllerDto.IPAddress
 
-    ---@type Dictionary<string, FactoryControl.Client.Entities.Controller.Feature>
+    ---@type table<string, FactoryControl.Client.Entities.Controller.Feature>
     local features = {}
 
     for id, feature in pairs(controllerDto.Features) do
@@ -42,7 +42,7 @@ function Controller:__init(baseFunc, controllerDto, client)
     self.Features = features
 end
 
----@return Dictionary<string, FactoryControl.Client.Entities.Controller.Feature>
+---@return table<string, FactoryControl.Client.Entities.Controller.Feature>
 function Controller:GetFeatures()
     return self.Features
 end

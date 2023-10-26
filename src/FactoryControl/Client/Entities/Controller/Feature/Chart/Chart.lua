@@ -1,7 +1,7 @@
 ---@class FactoryControl.Client.Entities.Controller.Feature.Chart : FactoryControl.Client.Entities.Controller.Feature
 ---@field private m_xAxisName string
 ---@field private m_yAxisName string
----@field private m_data Dictionary<number, any>
+---@field private m_data table<number, any>
 ---@overload fun(chartDto: FactoryControl.Core.Entities.Controller.Feature.ChartDto, controller: FactoryControl.Client.Entities.Controller) : FactoryControl.Client.Entities.Controller.Feature.Chart
 local Chart = {}
 

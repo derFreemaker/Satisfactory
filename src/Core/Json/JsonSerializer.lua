@@ -1,7 +1,7 @@
 local Json = require("Core.Json.Json")
 
 ---@class Core.Json.Serializer
----@field private m_typeInfos Dictionary<string, Utils.Class.Type>
+---@field private m_typeInfos table<string, Utils.Class.Type>
 ---@overload fun(typeInfos: Utils.Class.Type[]?) : Core.Json.Serializer
 local JsonSerializer = {}
 

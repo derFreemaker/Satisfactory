@@ -3,7 +3,7 @@ local FileSystem = require('Tools.FileSystem')
 local CurrentPath = ''
 
 ---@class Test.Simulator
----@field private m_loadedLoaderFiles Dictionary<string, any[]>
+---@field private m_loadedLoaderFiles table<string, any[]>
 local Simulator = {}
 
 ---@private

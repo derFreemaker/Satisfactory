@@ -14,7 +14,7 @@ local Dto = require("Database.Dto")
 ---@class Database.DbTable : object
 ---@field private m_name string
 ---@field private m_path Core.FileSystem.Path
----@field private m_data Dictionary<string | number, table>
+---@field private m_data table<string | number, table>
 ---@field private m_dataChanged (string | number)[]
 ---@field private m_logger Core.Logger
 ---@field private m_serializer Core.Json.Serializer

@@ -644,7 +644,7 @@ end
 ---|"Permanent"
 ---|"Once"
 
----@return Dictionary<Core.Event.Mode, Core.Task[]>
+---@return table<Core.Event.Mode, Core.Task[]>
 function Event:Listeners()
     ---@type Core.Task[]
     local permanentTask = {}
@@ -695,7 +695,7 @@ local Event = require('Core.Event.Event')
 ---
 ---@class Core.EventPullAdapter
 ---@field private m_initialized boolean
----@field private m_events Dictionary<string, Core.Event>
+---@field private m_events table<string, Core.Event>
 ---@field private m_logger Core.Logger
 ---@field OnEventPull Core.Event
 local EventPullAdapter = {}
@@ -1590,7 +1590,7 @@ PackageData["CoreJsonJsonSerializer"] = {
 local Json = require("Core.Json.Json")
 
 ---@class Core.Json.Serializer
----@field private m_typeInfos Dictionary<string, Utils.Class.Type>
+---@field private m_typeInfos table<string, Utils.Class.Type>
 ---@overload fun(typeInfos: Utils.Class.Type[]?) : Core.Json.Serializer
 local JsonSerializer = {}
 

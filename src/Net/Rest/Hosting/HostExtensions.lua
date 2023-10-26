@@ -10,7 +10,7 @@ Host = Host.Value:Load()
 local ApiController = require("Net.Rest.Api.Server.Controller")
 
 ---@class Hosting.Host
----@field package ApiControllers Dictionary<Net.Core.Port, Net.Rest.Api.Server.Controller>
+---@field package ApiControllers table<Net.Core.Port, Net.Rest.Api.Server.Controller>
 ---@field package Endpoints Net.Rest.Api.Server.EndpointBase[]
 local HostExtensions = {}
 

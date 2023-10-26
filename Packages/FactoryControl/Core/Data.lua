@@ -79,15 +79,15 @@ PackageData["FactoryControlCoreEntitiesControllerControllerDto"] = {
 ---@field Id Core.UUID
 ---@field Name string
 ---@field IPAddress Net.Core.IPAddress
----@field Features Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>
----@overload fun(id: Core.UUID, name: string, ipAddress: Net.Core.IPAddress, features: Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>?) : FactoryControl.Core.Entities.ControllerDto
+---@field Features table<string, FactoryControl.Core.Entities.Controller.FeatureDto>
+---@overload fun(id: Core.UUID, name: string, ipAddress: Net.Core.IPAddress, features: table<string, FactoryControl.Core.Entities.Controller.FeatureDto>?) : FactoryControl.Core.Entities.ControllerDto
 local ControllerDto = {}
 
 ---@private
 ---@param id Core.UUID
 ---@param name string
 ---@param ipAddress Net.Core.IPAddress
----@param features Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>?
+---@param features table<string, FactoryControl.Core.Entities.Controller.FeatureDto>?
 function ControllerDto:__init(id, name, ipAddress, features)
     self.Id = id
     self.Name = name
@@ -95,7 +95,7 @@ function ControllerDto:__init(id, name, ipAddress, features)
     self.Features = features or {}
 end
 
----@return string name, Core.UUID id, Net.Core.IPAddress ipAddress, Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto> features
+---@return string name, Core.UUID id, Net.Core.IPAddress ipAddress, table<string, FactoryControl.Core.Entities.Controller.FeatureDto> features
 function ControllerDto:Serialize()
     return self.Name, self.Id, self.IPAddress, self.Features
 end
@@ -113,21 +113,21 @@ PackageData["FactoryControlCoreEntitiesControllerCreateDto"] = {
 ---@class FactoryControl.Core.Entities.Controller.CreateDto : Core.Json.Serializable
 ---@field Name string
 ---@field IPAddress Net.Core.IPAddress
----@field Features Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>
----@overload fun(name: string, ipAddress: Net.Core.IPAddress, features: Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>?) : FactoryControl.Core.Entities.Controller.CreateDto
+---@field Features table<string, FactoryControl.Core.Entities.Controller.FeatureDto>
+---@overload fun(name: string, ipAddress: Net.Core.IPAddress, features: table<string, FactoryControl.Core.Entities.Controller.FeatureDto>?) : FactoryControl.Core.Entities.Controller.CreateDto
 local ControllerDto = {}
 
 ---@private
 ---@param name string
 ---@param ipAddress Net.Core.IPAddress
----@param features Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>?
+---@param features table<string, FactoryControl.Core.Entities.Controller.FeatureDto>?
 function ControllerDto:__init(name, ipAddress, features)
     self.Name = name
     self.IPAddress = ipAddress
     self.Features = features or {}
 end
 
----@return string name, Net.Core.IPAddress ipAddress, Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto> features
+---@return string name, Net.Core.IPAddress ipAddress, table<string, FactoryControl.Core.Entities.Controller.FeatureDto> features
 function ControllerDto:Serialize()
     return self.Name, self.IPAddress, self.Features
 end
@@ -144,17 +144,17 @@ PackageData["FactoryControlCoreEntitiesControllerModifyDto"] = {
     Data = [[
 ---@class FactoryControl.Core.Entities.Controller.ModifyDto : Core.Json.Serializable
 ---@field Id Core.UUID
----@field Features Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>
----@overload fun(features: Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>) : FactoryControl.Core.Entities.Controller.ModifyDto
+---@field Features table<string, FactoryControl.Core.Entities.Controller.FeatureDto>
+---@overload fun(features: table<string, FactoryControl.Core.Entities.Controller.FeatureDto>) : FactoryControl.Core.Entities.Controller.ModifyDto
 local ModifyDto = {}
 
 ---@private
----@param features Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>
+---@param features table<string, FactoryControl.Core.Entities.Controller.FeatureDto>
 function ModifyDto:__init(features)
     self.Features = features
 end
 
----@return Dictionary<string, FactoryControl.Core.Entities.Controller.FeatureDto>
+---@return table<string, FactoryControl.Core.Entities.Controller.FeatureDto>
 function ModifyDto:Serialize()
     return self.Features
 end
@@ -199,8 +199,8 @@ PackageData["FactoryControlCoreEntitiesControllerFeatureChartDto"] = {
 ---@class FactoryControl.Core.Entities.Controller.Feature.ChartDto : FactoryControl.Core.Entities.Controller.FeatureDto
 ---@field XAxisName string
 ---@field YAxisName string
----@field Data Dictionary<number, any>
----@overload fun(id: Core.UUID, name: string, xAxisName: string, yAxisName: string, data: Dictionary<number, any>?) : FactoryControl.Core.Entities.Controller.Feature.ChartDto
+---@field Data table<number, any>
+---@overload fun(id: Core.UUID, name: string, xAxisName: string, yAxisName: string, data: table<number, any>?) : FactoryControl.Core.Entities.Controller.Feature.ChartDto
 local ChartFeatureDto = {}
 
 ---@private
@@ -208,7 +208,7 @@ local ChartFeatureDto = {}
 ---@param name string
 ---@param xAxisName string
 ---@param yAxisName string
----@param data Dictionary<number, any>?
+---@param data table<number, any>?
 ---@param baseFunc fun(id: Core.UUID, name: string, type: FactoryControl.Core.Entities.Controller.Feature.Type)
 function ChartFeatureDto:__init(baseFunc, id, name, xAxisName, yAxisName, data)
     baseFunc(id, name, "Chart")
@@ -218,7 +218,7 @@ function ChartFeatureDto:__init(baseFunc, id, name, xAxisName, yAxisName, data)
     self.Data = data or {}
 end
 
----@return Core.UUID id, string name, string xAxisName, string yAxisName, Dictionary<number, any> data
+---@return Core.UUID id, string name, string xAxisName, string yAxisName, table<number, any> data
 function ChartFeatureDto:Serialize()
     return self.Id, self.Name, self.XAxisName, self.YAxisName, self.Data
 end

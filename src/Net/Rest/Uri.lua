@@ -1,7 +1,7 @@
 ---@class Net.Rest.Uri : Core.Json.Serializable
 ---@field private m_path string
----@field private m_query Dictionary<string, string>
----@overload fun(paht: string, query: Dictionary<string, string>) : Net.Rest.Uri
+---@field private m_query table<string, string>
+---@overload fun(paht: string, query: table<string, string>) : Net.Rest.Uri
 local Uri = {}
 
 ---@param uri string
@@ -24,10 +24,10 @@ end
 
 ---@private
 ---@param path string
----@param query Dictionary<string, string>
+---@param query table<string, string>
 function Uri:__init(path, query)
     self.m_path = path
-    self.m_query = query
+    self.m_query = query or {}
 end
 
 ---@param name string
@@ -39,7 +39,7 @@ end
 ---@return string url
 function Uri:GetUrl()
     local str = self.m_path
-    if Utils.Table.Count(self.m_query) > 0 then
+    if #self.m_query > 0 then
         str = str .. "?"
         for name, value in pairs(self.m_query) do
             str = str .. name .. "=" .. value .. "&"
@@ -53,6 +53,7 @@ function Uri:__tostring()
     return self:GetUrl()
 end
 
+---@return string path, table<string, string> query
 function Uri:Serialize()
     return self.m_path, self.m_query
 end

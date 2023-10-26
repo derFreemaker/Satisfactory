@@ -113,7 +113,7 @@ PackageData["NetHttpRequestOptions"] = {
     IsRunnable = true,
     Data = [[
 ---@class Net.Http.Request.Options : object
----@field Headers Dictionary<string, any>
+---@field Headers table<string, any>
 ---@field Timeout integer in seconds
 ---@overload fun() : Net.Http.Request.Options
 local HttpRequestOptions = {}

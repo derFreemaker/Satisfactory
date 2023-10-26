@@ -127,7 +127,7 @@ local IPAddress = require("Net.Core.IPAddress")
 
 ---@class Net.Core.NetworkClient : object
 ---@field private m_iPAddress Net.Core.IPAddress
----@field private m_ports Dictionary<Net.Core.Port, Net.Core.NetworkPort?>
+---@field private m_ports table<Net.Core.Port, Net.Core.NetworkPort?>
 ---@field private m_networkCard Adapter.Computer.NetworkCard
 ---@field private m_serializer Core.Json.Serializer
 ---@field private m_logger Core.Logger
@@ -312,7 +312,7 @@ end
 ---@param port integer
 ---@param eventName string
 ---@param body any
----@param headers Dictionary<string, any>?
+---@param headers table<string, any>?
 function NetworkClient:Send(ipAddress, port, eventName, body, headers)
 	local jsonBody = self.m_serializer:Serialize(body)
 	local jsonHeader = self.m_serializer:Serialize(headers)
@@ -328,7 +328,7 @@ end
 ---@param port integer
 ---@param eventName string
 ---@param body any
----@param header Dictionary<string, any>?
+---@param header table<string, any>?
 function NetworkClient:BroadCast(port, eventName, body, header)
 	local jsonBody = self.m_serializer:Serialize(body)
 	local jsonHeader = self.m_serializer:Serialize(header)
@@ -350,7 +350,7 @@ PackageData["NetCoreNetworkContext"] = {
 local JsonSerializer = require('Core.Json.JsonSerializer')
 local IPaddress = require("Net.Core.IPAddress")
 
----@class Net.Core.NetworkContext.Header : Dictionary<string, any>
+---@class Net.Core.NetworkContext.Header : table<string, any>
 ---@field ReturnIPAddress Net.Core.IPAddress
 ---@field ReturnPort integer
 
@@ -438,7 +438,7 @@ local Event = require('Core.Event.Event')
 
 ---@class Net.Core.NetworkPort : object
 ---@field Port Net.Core.Port
----@field private m_events Dictionary<string, Core.Event>
+---@field private m_events table<string, Core.Event>
 ---@field private m_netClient Net.Core.NetworkClient
 ---@field private m_logger Core.Logger
 ---@overload fun(port: Net.Core.Port, logger: Core.Logger, netClient: Net.Core.NetworkClient) : Net.Core.NetworkPort
@@ -455,7 +455,7 @@ function NetworkPort:__init(port, logger, netClient)
 	self.m_netClient = netClient
 end
 
----@return Dictionary<string, Core.Event>
+---@return table<string, Core.Event>
 function NetworkPort:GetEvents()
 	return Utils.Table.Copy(self.m_events)
 end
@@ -555,7 +555,7 @@ end
 ---@param ipAddress Net.Core.IPAddress
 ---@param eventName string
 ---@param body any
----@param header Dictionary<string, any>?
+---@param header table<string, any>?
 function NetworkPort:SendMessage(ipAddress, eventName, body, header)
 	local port = self.Port
 	if port == 'all' then
@@ -567,7 +567,7 @@ end
 
 ---@param eventName string
 ---@param body any
----@param header Dictionary<string, any>?
+---@param header table<string, any>?
 function NetworkPort:BroadCastMessage(eventName, body, header)
 	local port = self.Port
 	if port == 'all' then

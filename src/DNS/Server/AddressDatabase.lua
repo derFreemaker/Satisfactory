@@ -5,7 +5,7 @@ local Address = require("DNS.Core.Entities.Address.Address")
 local UUID = require("Core.UUID")
 
 ---@class DNS.Server.AddressDatabase : object
----@field private m_dbTable Database.DbTable | Dictionary<Core.UUID, DNS.Core.Entities.Address>
+---@field private m_dbTable Database.DbTable | table<Core.UUID, DNS.Core.Entities.Address>
 ---@overload fun(logger: Core.Logger) : DNS.Server.AddressDatabase
 local AddressDatabase = {}
 

@@ -2,7 +2,7 @@ local Event = require('Core.Event.Event')
 
 ---@class Net.Core.NetworkPort : object
 ---@field Port Net.Core.Port
----@field private m_events Dictionary<string, Core.Event>
+---@field private m_events table<string, Core.Event>
 ---@field private m_netClient Net.Core.NetworkClient
 ---@field private m_logger Core.Logger
 ---@overload fun(port: Net.Core.Port, logger: Core.Logger, netClient: Net.Core.NetworkClient) : Net.Core.NetworkPort
@@ -19,7 +19,7 @@ function NetworkPort:__init(port, logger, netClient)
 	self.m_netClient = netClient
 end
 
----@return Dictionary<string, Core.Event>
+---@return table<string, Core.Event>
 function NetworkPort:GetEvents()
 	return Utils.Table.Copy(self.m_events)
 end
@@ -119,7 +119,7 @@ end
 ---@param ipAddress Net.Core.IPAddress
 ---@param eventName string
 ---@param body any
----@param header Dictionary<string, any>?
+---@param header table<string, any>?
 function NetworkPort:SendMessage(ipAddress, eventName, body, header)
 	local port = self.Port
 	if port == 'all' then
@@ -131,7 +131,7 @@ end
 
 ---@param eventName string
 ---@param body any
----@param header Dictionary<string, any>?
+---@param header table<string, any>?
 function NetworkPort:BroadCastMessage(eventName, body, header)
 	local port = self.Port
 	if port == 'all' then

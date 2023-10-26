@@ -36,7 +36,7 @@ local Table = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Table'][1]
 ---@class Utils.Class.Metatable : Utils.Class.MetaMethods
 ---@field Type Utils.Class.Type
 
----@type Dictionary<string, boolean>
+---@type table<string, boolean>
 local metaMethods = {
     __gc = true,
     __call = true,
@@ -62,7 +62,7 @@ local metaMethods = {
     __le = true,
 }
 
----@type Dictionary<string, boolean>
+---@type table<string, boolean>
 local overrideMetaMethods = {
     __pairs = true,
     __ipairs = true,

@@ -93,7 +93,7 @@ end
 ---@param method Net.Core.Method
 ---@param url string
 ---@param body any
----@param headers Dictionary<string, any>?
+---@param headers table<string, any>?
 function Client:InternalRequest(method, url, body, headers)
 	self:GetOrRequestDNSServerIP()
 

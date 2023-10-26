@@ -33,7 +33,7 @@ local Table = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Table'][1]
 ---@field protected __index (fun(class, key) : any)? xxx = self.xxx | self[xxx]
 ---@field protected __newindex fun(class, key, value)? self.xxx | self[xxx] = xxx
 
----@type Dictionary<string, boolean>
+---@type table<string, boolean>
 local metaMethods = {
 	__init = true,
 	__gc = true,
