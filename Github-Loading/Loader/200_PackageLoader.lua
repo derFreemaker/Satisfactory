@@ -88,7 +88,7 @@ function PackageLoader:DownloadPackage(packageName, forceDownload)
 	self.Logger:LogTrace("downloading package: '" .. packageName .. "'...")
 	forceDownload = forceDownload or false
 	packageName = packageName:gsub('%.', '/')
-	local packagePath = self["m_üackagesPath"] .. '/' .. packageName
+	local packagePath = self.m_packagesPath .. '/' .. packageName
 	assert(not (not filesystem.exists(packagePath) and not filesystem.createDir(packagePath, true)),
 		"Unable to create folder for package: '" .. packageName .. "'")
 	local packageUrl = self.m_packagesUrl .. '/' .. packageName
