@@ -26,8 +26,8 @@ function Package.new(info, forceDownload, packageLoader)
         Namespace = info.Namespace,
         Version = info.Version or 0.01,
         RequiredPackages = info.RequiredPackages,
-        _ForceDownload = forceDownload,
-        _PackageLoader = packageLoader
+        m_forceDownload = forceDownload,
+        m_packageLoader = packageLoader
     }, { __index = Package })
 end
 

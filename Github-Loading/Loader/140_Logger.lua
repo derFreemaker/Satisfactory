@@ -28,7 +28,7 @@ local LogLevelToName = {
 ---@field OnLog Github_Loading.Event
 ---@field OnClear Github_Loading.Event
 ---@field Name string
----@field m_logLevel number
+---@field LogLevel number
 local Logger = {}
 
 ---@param node table
@@ -98,7 +98,7 @@ end
 ---@return Github_Loading.Logger
 function Logger.new(name, logLevel)
     return setmetatable({
-        _LogLevel = logLevel,
+        LogLevel = logLevel,
         Name = (string.gsub(name, " ", "_") or ""),
         OnLog = Event.new(),
         OnClear = Event.new()
@@ -110,7 +110,7 @@ end
 function Logger:subLogger(name)
     name = self.Name .. "." .. name
     return setmetatable({
-        _LogLevel = self.m_logLevel,
+        LogLevel = self.LogLevel,
         Name = name:gsub(" ", "_"),
         OnLog = Utils.Table.Copy(self.OnLog),
         OnClear = Utils.Table.Copy(self.OnClear)
@@ -183,7 +183,7 @@ end
 ---@param logLevel Core.Logger.LogLevel
 ---@param ... any
 function Logger:Log(logLevel, ...)
-    if logLevel < self.m_logLevel then
+    if logLevel < self.LogLevel then
         return
     end
 
@@ -204,7 +204,7 @@ end
 ---@param maxLevel integer?
 ---@param properties string[]?
 function Logger:LogTable(t, logLevel, maxLevel, properties)
-    if logLevel < self.m_logLevel then
+    if logLevel < self.LogLevel then
         return
     end
 
@@ -225,7 +225,7 @@ end
 
 ---@param logLevel Core.Logger.LogLevel
 function Logger:FreeLine(logLevel)
-    if logLevel < self.m_logLevel then
+    if logLevel < self.LogLevel then
         return
     end
 

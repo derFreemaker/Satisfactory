@@ -28,8 +28,8 @@ function WrappedFile.new(path, mode)
     local key = getUniqeKey(path)
 
     local instance = setmetatable({
-        _File = OpenFileFunc(path, mode),
-        _OpenFilesKey = key,
+        m_file = OpenFileFunc(path, mode),
+        m_openFilesKey = key,
     }, { __index = WrappedFile })
 
     OpenFiles[key] = instance

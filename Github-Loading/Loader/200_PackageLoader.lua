@@ -59,9 +59,9 @@ function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard)
 		{
 			Packages = {},
 			Logger = logger,
-			_PackagesUrl = packagesUrl,
-			_PackagesPath = packagesPath,
-			_InternetCard = internetCard
+			m_packagesUrl = packagesUrl,
+			m_packagesPath = packagesPath,
+			m_internetCard = internetCard
 		},
 		{ __index = PackageLoader }
 	)

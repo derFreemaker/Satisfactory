@@ -12,8 +12,8 @@ local Listener = {}
 ---@return Github_Loading.Listener
 function Listener.new(func, parent)
     return setmetatable({
-        _Func = func,
-        _Parent = parent
+        m_func = func,
+        m_parent = parent
     }, { __index = Listener })
 end
 
