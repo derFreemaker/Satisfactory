@@ -233,11 +233,11 @@ local Loader = {}
 function Loader.new(loaderBaseUrl, loaderBasePath, forceDownload, internetCard)
 	return setmetatable(
 		{
-			_LoaderBaseUrl = loaderBaseUrl,
-			_LoaderBasePath = loaderBasePath,
-			_ForceDownload = forceDownload,
-			_InternetCard = internetCard,
-			_LoadedLoaderFiles = {}
+			m_loaderBaseUrl = loaderBaseUrl,
+			m_loaderBasePath = loaderBasePath,
+			m_forceDownload = forceDownload,
+			m_internetCard = internetCard,
+			m_loadedLoaderFiles = {}
 		}, { __index = Loader })
 end
 
