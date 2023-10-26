@@ -16,3 +16,6 @@
 *.lo
 *.def
 *.exp
+
+# Log Files
+*.log

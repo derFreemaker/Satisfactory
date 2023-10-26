@@ -111,3 +111,7 @@ Apache server interrupted...
 [Thu Oct 26 21:45:55.256693 2023] [core:notice] [pid 15744:tid 360] AH00094: Command line: 'C:\\Coding\\Lua\\Games\\Satisfactory\\Code-Server\\bin\\httpd.exe -d C:/Coding/Lua/Games/Satisfactory/Code-Server -d C:\\Coding\\Lua\\Games\\Satisfactory\\Code-Server -f C:\\Coding\\Lua\\Games\\Satisfactory\\Code-Server\\conf\\temp-httpd.conf'
 [Thu Oct 26 21:45:55.260194 2023] [mpm_winnt:notice] [pid 15744:tid 360] AH00418: Parent: Created child process 52596
 [Thu Oct 26 21:45:55.483153 2023] [mpm_winnt:notice] [pid 52596:tid 212] AH00354: Child: Starting 64 worker threads.
+[Thu Oct 26 21:49:44.060338 2023] [mpm_winnt:crit] [pid 52596:tid 212] AH02538: Child: Parent process exited abruptly. Child process is ending
+[Thu Oct 26 21:49:44.060838 2023] [mpm_winnt:warn] [pid 52596:tid 1228] (OS 995)Der E/A-Vorgang wurde wegen eines Threadendes oder einer Anwendungsanforderung abgebrochen.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
+[Thu Oct 26 21:49:44.060838 2023] [mpm_winnt:warn] [pid 52596:tid 1316] (OS 995)Der E/A-Vorgang wurde wegen eines Threadendes oder einer Anwendungsanforderung abgebrochen.  : AH00341: winnt_accept: Asynchronous AcceptEx failed.
+[Thu Oct 26 21:49:46.079493 2023] [mpm_winnt:notice] [pid 52596:tid 212] AH00364: Child: All worker threads have exited.
