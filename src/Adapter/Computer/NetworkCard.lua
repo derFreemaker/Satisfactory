@@ -1,5 +1,6 @@
 ---@class Adapter.Computer.NetworkCard : object
 ---@field private m_networkCard FIN.Components.FINComputerMod.NetworkCard_C
+---@field private m_openPorts table<integer, true>
 ---@overload fun(idOrIndexOrNetworkCard: FIN.UUID | integer | FIN.Components.FINComputerMod.NetworkCard_C) : Adapter.Computer.NetworkCard
 local NetworkCard = {}
 
@@ -44,15 +45,27 @@ end
 
 ---@param port integer
 function NetworkCard:OpenPort(port)
+	if self.m_openPorts[port] then
+		return
+	end
+
 	self.m_networkCard:open(port)
 end
 
 ---@param port integer
 function NetworkCard:ClosePort(port)
+	if not self.m_openPorts[port] then
+		return
+	end
+
+	self.m_openPorts[port] = nil
+
 	self.m_networkCard:close(port)
 end
 
 function NetworkCard:CloseAllPorts()
+	self.m_openPorts = {}
+
 	self.m_networkCard:closeAll()
 end
 
