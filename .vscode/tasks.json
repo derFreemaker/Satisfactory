@@ -4,7 +4,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-			"label": "Start Apache Server",
+			"label": "Start Code Server",
 			"type": "shell",
 			"command": "${workspaceFolder}\\start_Code_Server.bat",
 			"args": [
@@ -21,8 +21,7 @@
 			"runOptions": {
 				"instanceLimit": 1
 			},
-			"problemMatcher": [],
-			"isBackground": false
+			"problemMatcher": []
 		},
 		{
 			"label": "check all",

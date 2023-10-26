@@ -38,6 +38,8 @@ end
 
 ---@param ... any
 function ___logger:log(...)
+    -- show who called log and where
+
     local currentLogger = self.m_currentLogger
     if currentLogger then
         pcall(currentLogger.LogWrite, currentLogger, ...)

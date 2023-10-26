@@ -22,7 +22,7 @@ local Main = {}
 ---@param context Net.Core.NetworkContext
 function Main:GetDNSServerAddress(context)
 	local id = self.m_netClient:GetIPAddress():GetAddress()
-	self.Logger:LogDebug(context.SenderIPAddress, 'requested DNS Server IP Address')
+	self.Logger:LogDebug(context.SenderIPAddress:GetAddress(), 'requested DNS Server IP Address')
 	self.m_netClient:Send(context.SenderIPAddress, Usage.Ports.DNS, Usage.Events.DNS_ReturnServerAddress, id)
 end
 
@@ -156,10 +156,10 @@ function Endpoints:__init(baseFunc, logger, controller)
 
     self.m_addressDatabase = AddressDatabase(logger:subLogger("AddressDatabase"))
 
-    self:AddEndpoint("CREATE", "/Address/Create", self.CreateAddress)
-    self:AddEndpoint("DELETE", "/Address/{id:Core.UUID}/Delete", self.DeletetAddress)
+    self:AddEndpoint("CREATE", "/Address/Create/", self.CreateAddress)
+    self:AddEndpoint("DELETE", "/Address/{id:Core.UUID}/Delete/", self.DeletetAddress)
     self:AddEndpoint("GET", "/Address/Id/{id:Core.UUID}/", self.GetAddressWithId)
-    self:AddEndpoint("GET", "Address/Domain/{domian:string}", self.GetAddressWithDomain)
+    self:AddEndpoint("GET", "/Address/Domain/{domian:string}/", self.GetAddressWithDomain)
 end
 
 ---@param createAddress DNS.Core.Entities.Address.Create

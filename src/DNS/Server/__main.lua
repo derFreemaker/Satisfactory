@@ -14,7 +14,7 @@ local Main = {}
 ---@param context Net.Core.NetworkContext
 function Main:GetDNSServerAddress(context)
 	local id = self.m_netClient:GetIPAddress():GetAddress()
-	self.Logger:LogDebug(context.SenderIPAddress, 'requested DNS Server IP Address')
+	self.Logger:LogDebug(context.SenderIPAddress:GetAddress(), 'requested DNS Server IP Address')
 	self.m_netClient:Send(context.SenderIPAddress, Usage.Ports.DNS, Usage.Events.DNS_ReturnServerAddress, id)
 end
 

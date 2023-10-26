@@ -2,7 +2,6 @@ local EventNameUsage = require("Core.Usage.Usage_EventName")
 
 local Task = require('Core.Task')
 
-local Method = require('Net.Core.Method')
 local Endpoint = require("Net.Rest.Api.Server.Endpoint")
 
 local ResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
@@ -31,7 +30,7 @@ function Controller:onMessageRecieved(context)
 
     local endpoint = self:GetEndpoint(request.Method, request.Endpoint)
     if not endpoint then
-        self.m_logger:LogTrace('found no endpoint:', request.Endpoint)
+        self.m_logger:LogTrace('found no endpoint:', request.Endpoint:GetUrl())
         if context.Header.ReturnPort then
             self.m_netPort:GetNetClient():Send(
                 context.Header.ReturnIPAddress,
@@ -41,7 +40,8 @@ function Controller:onMessageRecieved(context)
         end
         return
     end
-    self.m_logger:LogTrace('found endpoint:', request.Endpoint)
+
+    self.m_logger:LogTrace('found endpoint:', request.Endpoint:GetUrl())
     local response = endpoint:Invoke(request, context)
 
     if context.Header.ReturnPort then

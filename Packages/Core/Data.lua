@@ -1643,6 +1643,19 @@ function JsonSerializer:serializeClass(class)
     local typeInfo = class:Static__GetType()
     local data = { __Type = typeInfo.Name, __Data = { class:Serialize() } }
 
+    local max = 0
+    for key, value in next, data.__Data, nil do
+        if key > max then
+            max = key
+        end
+    end
+
+    for i = 1, max, 1 do
+        if data.__Data[i] == nil then
+            data.__Data[i] = "%nil%"
+        end
+    end
+
     if type(data.__Data) == "table" then
         for key, value in next, data.__Data, nil do
             data.__Data[key] = self:serializeInternal(value)
@@ -1717,6 +1730,10 @@ function JsonSerializer:deserializeClass(t)
 
     if type(data) == "table" then
         for key, value in next, data, nil do
+            if value == "%nil%" then
+                data[key] = nil
+            end
+
             if type(value) == "table" then
                 data[key] = self:deserializeInternal(value)
             end

@@ -24,14 +24,7 @@ end
 
 ---@return Net.Rest.Api.Response.Header headers, any body
 function Response:Serialize()
-    return self.Headers, self.Body
-end
-
----@param headers Net.Rest.Api.Response.Header
----@param body any
----@return Net.Rest.Api.Response
-function Response:Static__Deserialize(headers, body)
-    return self(body, headers)
+    return self.Body, self.Headers
 end
 
 return Utils.Class.CreateClass(Response, "Net.Rest.Api.Response",

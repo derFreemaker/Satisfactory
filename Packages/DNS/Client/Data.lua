@@ -107,7 +107,7 @@ end
 function Client:CreateAddress(url, ipAddress)
 	local createAddress = CreateAddress(url, ipAddress)
 
-	local response = self:InternalRequest('CREATE', '/Address/Create', createAddress)
+	local response = self:InternalRequest('CREATE', '/Address/Create/', createAddress)
 
 	if not response.WasSuccessfull then
 		return false
@@ -118,7 +118,7 @@ end
 ---@param id Core.UUID
 ---@return boolean success
 function Client:DeleteAddress(id)
-	local response = self:InternalRequest('DELETE', "/Address/" .. tostring(id) .. "/Delete")
+	local response = self:InternalRequest('DELETE', "/Address/" .. tostring(id) .. "/Delete/")
 
 	if not response.WasSuccessfull then
 		return false
@@ -129,7 +129,7 @@ end
 ---@param id Core.UUID
 ---@return DNS.Core.Entities.Address? address
 function Client:GetWithId(id)
-	local response = self:InternalRequest('GET', "/Address/Id/" .. tostring(id))
+	local response = self:InternalRequest('GET', "/Address/Id/" .. tostring(id) .. "/")
 
 	if not response.WasSuccessfull then
 		return nil
@@ -140,7 +140,7 @@ end
 ---@param domain string
 ---@return DNS.Core.Entities.Address? address
 function Client:GetWithDomain(domain)
-	local response = self:InternalRequest('GET', "/Address/Domain/" .. domain)
+	local response = self:InternalRequest('GET', "/Address/Domain/" .. domain .. "/")
 
 	if not response.WasSuccessfull then
 		return nil
