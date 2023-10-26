@@ -92,6 +92,8 @@ local NetworkCard = {}
 ---@private
 ---@param idOrIndexOrNetworkCard FIN.UUID | integer | FIN.Components.FINComputerMod.NetworkCard_C
 function NetworkCard:__init(idOrIndexOrNetworkCard)
+	self.m_openPorts = {}
+
 	if not idOrIndexOrNetworkCard then
 		idOrIndexOrNetworkCard = 1
 	end
@@ -99,6 +101,9 @@ function NetworkCard:__init(idOrIndexOrNetworkCard)
 	if type(idOrIndexOrNetworkCard) == 'string' then
 		---@cast idOrIndexOrNetworkCard FIN.UUID
 		self.m_networkCard = component.proxy(idOrIndexOrNetworkCard) --{{{@as FIN.Components.FINComputerMod.NetworkCard_C}}}
+		if self.m_networkCard == nil then
+			error('no networkCard was found')
+		end
 		return
 	end
 
@@ -139,10 +144,6 @@ end
 
 ---@param port integer
 function NetworkCard:ClosePort(port)
-	if not self.m_openPorts[port] then
-		return
-	end
-
 	self.m_openPorts[port] = nil
 
 	self.m_networkCard:close(port)
