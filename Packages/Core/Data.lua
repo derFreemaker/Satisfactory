@@ -765,6 +765,7 @@ end
 --- Waits for an event to be handled or timeout to run out
 --- Returns true if event was handled and false if timeout ran out
 ---
+---@async
 ---@param timeoutSeconds number?
 ---@return boolean gotEvent
 function EventPullAdapter:Wait(timeoutSeconds)
@@ -791,6 +792,7 @@ end
 
 --- Waits for all events in the event queue to be handled or timeout to run out
 ---
+---@async
 ---@param timeoutSeconds number?
 function EventPullAdapter:WaitForAll(timeoutSeconds)
 	while self:Wait(timeoutSeconds) do

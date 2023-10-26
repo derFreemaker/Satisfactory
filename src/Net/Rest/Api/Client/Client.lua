@@ -1,6 +1,6 @@
 local EventNameUsage = require("Core.Usage.Usage_EventName")
+local StatusCodes = require("Net.Core.StatusCodes")
 
-local NetworkFuture = require("Net.Core.NetworkFuture")
 local Response = require('Net.Rest.Api.Response')
 
 local DEFAULT_TIMEOUT = 5
@@ -32,15 +32,17 @@ end
 ---@param timeout integer?
 ---@return Net.Rest.Api.Response response
 function Client:Send(request, timeout)
-    local networkFuture = NetworkFuture(self._NetClient,
-        EventNameUsage.RestResponse, self.ReturnPort, timeout or DEFAULT_TIMEOUT)
+    local networkFuture = self._NetClient:CreateEventFuture(
+        EventNameUsage.RestResponse,
+        self.ReturnPort,
+        timeout or DEFAULT_TIMEOUT)
 
     self._NetClient:Send(self.ServerIPAddress, self.ServerPort, EventNameUsage.RestRequest, request,
         { ReturnPort = self.ReturnPort })
 
     local context = networkFuture:Wait()
     if not context then
-        return Response(nil, { Code = 408 })
+        return Response(nil, { Code = StatusCodes.Status408RequestTimeout })
     end
 
     return context:GetApiResponse()

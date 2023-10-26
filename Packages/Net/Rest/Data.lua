@@ -211,8 +211,11 @@ PackageData["NetRestApiClientClient"] = {
     IsRunnable = true,
     Data = [[
 local EventNameUsage = require("Core.Usage.Usage_EventName")
+local StatusCodes = require("Net.Core.StatusCodes")
 
 local Response = require('Net.Rest.Api.Response')
+
+local DEFAULT_TIMEOUT = 5
 
 ---@class Net.Rest.Api.Client : object
 ---@field ServerIPAddress Net.Core.IPAddress
@@ -241,15 +244,20 @@ end
 ---@param timeout integer?
 ---@return Net.Rest.Api.Response response
 function Client:Send(request, timeout)
+    local networkFuture = self._NetClient:CreateEventFuture(
+        EventNameUsage.RestResponse,
+        self.ReturnPort,
+        timeout or DEFAULT_TIMEOUT)
+
     self._NetClient:Send(self.ServerIPAddress, self.ServerPort, EventNameUsage.RestRequest, request,
         { ReturnPort = self.ReturnPort })
-    local context = self._NetClient:WaitForEvent(EventNameUsage.RestResponse, self.ReturnPort, timeout or 5)
+
+    local context = networkFuture:Wait()
     if not context then
-        return Response(nil, { Code = 408 })
+        return Response(nil, { Code = StatusCodes.Status408RequestTimeout })
     end
 
-    local response = context:GetApiResponse()
-    return response
+    return context:GetApiResponse()
 end
 
 return Utils.Class.CreateClass(Client, 'Net.Rest.Api.Client')
@@ -305,7 +313,7 @@ function Controller:onMessageRecieved(context)
         return
     end
     self._Logger:LogTrace('found endpoint:', request.Endpoint)
-    local response = endpoint:Execute(request, context)
+    local response = endpoint:Invoke(request, context)
 
     if context.Header.ReturnPort then
         self._Logger:LogTrace("sending response to '" ..
@@ -438,34 +446,20 @@ function Endpoint:GetUriParameters(uri)
     return parameters
 end
 
+---@private
 ---@param uri string
----@param outResponse Out<Net.Rest.Api.Response>
----@return any[]? parameters
-function Endpoint:ParseUriParameters(uri, outResponse)
+---@return any[] parameters, string? parseError
+function Endpoint:ParseUriParameters(uri)
     local success, errorMsg, returns = Utils.Function.InvokeProtected(self.GetUriParameters, self, uri)
-
-    if not success then
-        outResponse.Value = ResponseTemplates.InternalServerError(errorMsg or "uri parameters could not be parsed")
-        return nil
-    end
-
-    return returns[1]
+    return returns[1] or {}, errorMsg
 end
 
+---@private
+---@param uriParameters any[]
 ---@param request Net.Rest.Api.Request
 ---@param context Net.Core.NetworkContext
----@return Net.Rest.Api.Response
-function Endpoint:Execute(request, context)
-    self._Logger:LogTrace('executing...')
-    ___logger:setLogger(self._Logger)
-
-    ---@type Out<Net.Rest.Api.Response>
-    local outReponse = {}
-    local uriParameters = self:ParseUriParameters(tostring(request.Endpoint), outReponse)
-    if not uriParameters then
-        return outReponse.Value
-    end
-
+---@return Net.Rest.Api.Response response
+function Endpoint:Execute(uriParameters, request, context)
     local response
     if #uriParameters == 0 then
         response = self._Task:Execute(request.Body, request, context)
@@ -477,6 +471,25 @@ function Endpoint:Execute(request, context)
     if not self._Task:IsSuccess() then
         response = ResponseTemplates.InternalServerError(self._Task:GetTraceback() or "no error")
     end
+
+    return response
+end
+
+---@param request Net.Rest.Api.Request
+---@param context Net.Core.NetworkContext
+---@return Net.Rest.Api.Response response
+function Endpoint:Invoke(request, context)
+    self._Logger:LogTrace('executing...')
+    ___logger:setLogger(self._Logger)
+
+    local response
+    local uriParameters, parseError = self:ParseUriParameters(tostring(request.Endpoint))
+    if parseError then
+        response = ResponseTemplates.InternalServerError(parseError or "uri parameters could not be parsed")
+        return response
+    end
+
+    response = self:Execute(uriParameters, request, context)
 
     if response.WasSuccessfull then
         self._Logger:LogDebug('request finished with status code: ' .. response.Headers.Code)
@@ -621,11 +634,11 @@ Host = Host.Value:Load()
 local ApiController = require("Net.Rest.Api.Server.Controller")
 
 ---@class Hosting.Host
----@field package ApiControllers Dictionary<integer | "all", Net.Rest.Api.Server.Controller>
+---@field package ApiControllers Dictionary<Net.Core.Port, Net.Rest.Api.Server.Controller>
 ---@field package Endpoints Net.Rest.Api.Server.EndpointBase[]
 local HostExtensions = {}
 
----@param port integer | "all"
+---@param port Net.Core.Port
 ---@param endpointLogger Core.Logger
 ---@return Net.Rest.Api.Server.Controller apiController
 function HostExtensions:GetOrCreateApiController(port, endpointLogger)
@@ -644,7 +657,7 @@ function HostExtensions:GetOrCreateApiController(port, endpointLogger)
     return apiController
 end
 
----@param port integer | "all"
+---@param port Net.Core.Port
 ---@param endpointName string
 ---@param endpointBase Net.Rest.Api.Server.EndpointBase
 ---@param ... any constructor args that are not logger and apiController
