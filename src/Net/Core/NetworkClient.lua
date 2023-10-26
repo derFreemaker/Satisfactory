@@ -204,6 +204,11 @@ function NetworkClient:Send(ipAddress, port, eventName, body, headers)
 	local jsonBody = self._Serializer:Serialize(body)
 	local jsonHeader = self._Serializer:Serialize(headers)
 
+	self._Logger:LogTrace(
+		"sending to '" .. ipAddress:GetAddress()
+		.. "' on port: " .. port
+		.. " with event: '" .. eventName .. "'")
+
 	self._NetworkCard:Send(ipAddress, port, eventName, jsonBody, jsonHeader)
 end
 
@@ -214,6 +219,8 @@ end
 function NetworkClient:BroadCast(port, eventName, body, header)
 	local jsonBody = self._Serializer:Serialize(body)
 	local jsonHeader = self._Serializer:Serialize(header)
+
+	self._Logger:LogTrace("broadcast on port: " .. port .. " with event: '" .. eventName .. "'")
 
 	self._NetworkCard:BroadCast(port, eventName, jsonBody, jsonHeader)
 end
