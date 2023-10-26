@@ -30,8 +30,6 @@ function Main:Run()
 	local ipAddress = self.m_dnsClient:GetOrRequestDNSServerIP()
 	log(ipAddress)
 
-
-
 	log("creating address")
 	local success = self.m_dnsClient:CreateAddress(domain, self.m_netClient:GetIPAddress())
 	if not success then
@@ -43,12 +41,10 @@ function Main:Run()
 	local dnsServerAddress = self.m_dnsClient:GetOrRequestDNSServerIP()
 	log("dns server address", dnsServerAddress)
 
-	local request = HttpRequest('GET', 'AddressWithAddress', Uri.Static__Parse(dnsServerAddress:GetAddress()), domain)
-	local response = self.m_httpClient:Send(request)
-	assert(response:IsSuccess(), 'http request was not successfull')
+	local address = self.m_dnsClient:GetWithIPAddress(domain)
 
-	---@type DNS.Core.Entities.Address
-	local address = response:GetBody()
+	assert(address ~= nil, 'http request was not successfull')
+
 	assert(address.IPAddress:Equals(self.m_netClient:GetIPAddress()),
 		"got wrong address id back from dns server '" .. tostring(address.Id) .. "'")
 
