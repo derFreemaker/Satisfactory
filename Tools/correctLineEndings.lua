@@ -8,7 +8,9 @@ local excludedFolders = {
     ".git",
     ".stfolder",
     ".vscode",
+    "API Documentations",
     "Code Server",
+    "Packages",
     "Obsidian Vault",
     "Tools",
 }
