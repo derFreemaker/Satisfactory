@@ -38,11 +38,13 @@ end
 
 ---@param ... any
 function ___logger:log(...)
-    -- show who called log and where
+    local debugInfo = debug.getinfo(3)
+    local callerMsg = ({ computer.magicTime() })[2] .. " [Log] -> "
+        .. debugInfo.short_src .. ":" .. debugInfo.currentline .. ":"
 
     local currentLogger = self.m_currentLogger
     if currentLogger then
-        pcall(currentLogger.LogWrite, currentLogger, ...)
+        pcall(currentLogger.LogWrite, currentLogger, callerMsg, ...)
     end
 end
 
@@ -51,7 +53,7 @@ local panicFunc = computer.panic
 function ___logger:panic(errorMsg) ---@diagnostic disable-line
     local currentLogger = self.m_currentLogger
     if currentLogger then
-        local debugInfo = debug.getinfo(2)
+        local debugInfo = debug.getinfo(3)
         local errorMessage = "[PANIC-LOG] " .. debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. errorMsg
         errorMessage = debug.traceback(errorMessage, 3)
         pcall(currentLogger.LogFatal, currentLogger, errorMessage)

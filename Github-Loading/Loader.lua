@@ -274,11 +274,13 @@ function Loader:setupLogger(logLevel)
 	local Logger = self:Get('/Github-Loading/Loader/Logger')
 	self.Logger = Logger.new('Github Loader', logLevel)
 	self.Logger.OnLog:AddListener(Listener.new(logFile))
+
 	self.Logger.OnClear:AddListener(Listener.new(clear))
 	___logger:setLogger(self.Logger)
-	self.Logger:Clear()
+
 	self.Logger:LogWrite('###### LOG START: ' .. tostring(({ computer.magicTime() })[2]) .. ' ######')
 	self.Logger:LogWrite("###### Loader Version: " .. tostring(self:Get('/Github-Loading/Version.latest')) .. " ######")
+
 	self.Logger.OnLog:AddListener(Listener.new(logConsole))
 end
 

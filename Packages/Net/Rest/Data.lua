@@ -463,6 +463,7 @@ function Endpoint:Execute(uriParameters, request, context)
     self.m_task:Close()
 
     if not self.m_task:IsSuccess() then
+        self.m_logger:LogError("endpoint failed with error:", self.m_task:GetTraceback())
         response = ResponseTemplates.InternalServerError(self.m_task:GetTraceback() or "no error")
     end
 
@@ -484,18 +485,7 @@ function Endpoint:Invoke(request, context)
     end
 
     response = self:Execute(uriParameters, request, context)
-
-    if response.WasSuccessfull then
-        self.m_logger:LogDebug('request finished with status code: ' .. response.Headers.Code)
-    else
-        if response.Headers.Code == StatusCodes.Status500InternalServerError then
-            self.m_logger:LogError('request finished with status code: '
-                .. response.Headers.Code .. " with message: '" .. response.Headers.Message .. "'")
-        else
-            self.m_logger:LogWarning('request finished with status code: '
-                .. response.Headers.Code .. " with message: '" .. response.Headers.Message .. "'")
-        end
-    end
+    self.m_logger:LogDebug('request finished with status code: ' .. response.Headers.Code)
 
     return response
 end

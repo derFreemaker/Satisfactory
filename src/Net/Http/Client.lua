@@ -36,12 +36,12 @@ function HttpClient:getAddress(address)
 		return IPAddress(address)
 	end
 
-	local getedAddress = self.m_dnsClient:GetWithId(address)
+	local getedAddress = self.m_dnsClient:GetWithDomain(address)
 	if not getedAddress then
 		return nil
 	end
 
-	return IPAddress(getedAddress.Id)
+	return getedAddress.IPAddress
 end
 
 ---@param request Net.Http.Request
