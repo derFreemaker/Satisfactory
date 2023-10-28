@@ -27,7 +27,7 @@ local function checkFolder(path)
         checkFolder(path .. "/" .. value)
     end
 
-    local command = args[2] .. " \"" .. path .. "/*.*\""
+    local command = args[2] .. " \"" .. path .. "/*.lua\""
     os.execute(command)
 end
 
