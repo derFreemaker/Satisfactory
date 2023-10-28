@@ -8,7 +8,7 @@ local Simulator = {}
 
 ---@private
 function Simulator:LoadLoaderFiles()
-	self.m_loadedLoaderFiles = require("Test.Simulator.LoadFiles")(CurrentPath)
+	self.m_loadedLoaderFiles = require("Tests.Simulator.LoadFiles")(CurrentPath)
 end
 
 local requireFunc = require
@@ -44,10 +44,11 @@ end
 function Simulator:setupLogger(logLevel)
 	---@type Github_Loading.Logger
 	local Logger = self.m_loadedLoaderFiles['/Github-Loading/Loader/Logger'][1]
+	---@type Github_Loading.Listener
 	local Listener = self.m_loadedLoaderFiles['/Github-Loading/Loader/Listener'][1]
 
 	local logger = Logger.new("Simulator", logLevel)
-	logger.OnLog:AddListener(Listener(print))
+	logger.OnLog:AddListener(Listener.new(print))
 
 	___logger:initialize()
 	___logger:setLogger(logger)
@@ -74,7 +75,7 @@ end
 ---@return Test.Simulator
 function Simulator:Initialize(logLevel)
 	local simulatorPath = FileSystem.GetCurrentDirectory()
-	CurrentPath = simulatorPath:gsub("/Test/Simulator", "")
+	CurrentPath = simulatorPath:gsub("/Tests/Simulator", "")
 
 	self:Prepare(logLevel or 3)
 

@@ -1,5 +1,5 @@
-local luaunit = require('Test.Luaunit')
-require('Test.Simulator.Simulator')
+local luaunit = require('Tests.Luaunit')
+require('Tests.Simulator.Simulator'):Initialize(1)
 
 local UUID = require('Core.UUID')
 
