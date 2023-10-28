@@ -4,6 +4,50 @@
     "version": "2.0.0",
     "tasks": [
 		{
+			"label": "Start Code Server",
+			"type": "shell",
+			"command": "${workspaceFolder}/Tools/start_Code_Server.bat",
+			"args": [
+				"\"${workspaceFolder}\"" // Pass the workspaceFolder as an argument
+			],
+			"presentation": {
+				"echo": true,
+				"reveal": "never",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true
+			},
+			"runOptions": {
+				"instanceLimit": 1
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "correct line endings",
+			"type": "shell",
+			"command": "lua",
+			"args": [
+				"${workspaceFolder}/Tools/correctLineEndings.lua",
+				"${workspaceFolder}",
+				"${workspaceFolder}/Tools/dos2unix.exe"
+			],
+			"presentation": {
+				"echo": true,
+				"reveal": "never",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true,
+				"close": true
+			},
+			"runOptions": {
+				"instanceLimit": 1,
+				"runOn": "folderOpen"
+			},
+			"problemMatcher": []
+		},
+		{
 			"label": "check all",
 			"command": "${workspaceFolder}\\Lua-Bundler\\Lua-Bundler.exe",
 			"args": ["--SourcePath", "${workspaceFolder}\\src", "--OutputPath", "${workspaceFolder}\\Packages", "--Package", "."],
@@ -60,7 +104,8 @@
 				"showReuseMessage": true,
 				"clear": true,
 				"close": true
-			}
+			},
+			"dependsOn": "correct line endings"
 		},
 		{
 			"label": "bundle All optimized",
@@ -87,7 +132,8 @@
 				"showReuseMessage": true,
 				"clear": true,
 				"close": true
-			}
+			},
+			"dependsOn": "correct line endings"
 		},
 		{
 			"label": "open FicsIt files",
@@ -101,50 +147,6 @@
 				"showReuseMessage": true,
 				"clear": true,
 				"close": true
-			},
-			"problemMatcher": []
-		},
-		{
-			"label": "Start Code Server",
-			"type": "shell",
-			"command": "${workspaceFolder}/Tools/start_Code_Server.bat",
-			"args": [
-				"\"${workspaceFolder}\"" // Pass the workspaceFolder as an argument
-			],
-			"presentation": {
-				"echo": true,
-				"reveal": "never",
-				"focus": false,
-				"panel": "shared",
-				"showReuseMessage": true,
-				"clear": true
-			},
-			"runOptions": {
-				"instanceLimit": 1
-			},
-			"problemMatcher": []
-		},
-		{
-			"label": "correct line endings",
-			"type": "shell",
-			"command": "lua",
-			"args": [
-				"${workspaceFolder}/Tools/correctLineEndings.lua",
-				"${workspaceFolder}",
-				"${workspaceFolder}/Tools/dos2unix.exe"
-			],
-			"presentation": {
-				"echo": true,
-				"reveal": "never",
-				"focus": false,
-				"panel": "shared",
-				"showReuseMessage": true,
-				"clear": true,
-				"close": true
-			},
-			"runOptions": {
-				"instanceLimit": 1,
-				"runOn": "folderOpen"
 			},
 			"problemMatcher": []
 		}
