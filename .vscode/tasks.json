@@ -8,7 +8,8 @@
 			"type": "shell",
 			"command": "${workspaceFolder}/Tools/start_Code_Server.bat",
 			"args": [
-				"\"${workspaceFolder}\"" // Pass the workspaceFolder as an argument
+				"\"${workspaceFolder}\"",
+				"\"${workspaceFolder}/Code-Server\""
 			],
 			"presentation": {
 				"echo": true,
