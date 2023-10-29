@@ -8,12 +8,14 @@ local LoaderFiles = {
 			'Utils',
 			{
 				"Class",
+				{ "00_Config.lua" },
+				{ "20_Instance.lua" },
 				{ "20_Members.lua" },
-				{ "20_Metatable.lua" },
 				{ "20_Object.lua" },
-				{ "30_Construction.lua" },
 				{ "30_Type.lua" },
-				{ "50_Index.lua" }
+				{ "40_Metatable.lua" },
+				{ "50_Construction.lua" },
+				{ "80_Index.lua" }
 			},
 			{ '10_File.lua' },
 			{ '10_Function.lua' },

@@ -1,6 +1,5 @@
 local math = math
 local string = string
-local random = math.random
 
 ---@class Core.UUID : Core.Json.Serializable
 ---@field private m_head number[]
@@ -10,7 +9,7 @@ local random = math.random
 local UUID = {}
 
 ---@type integer
-UUID.Static__GeneratedCount = 0
+UUID.Static__GeneratedCount = 1
 
 --- Replaces 'x' in template with random character.
 ---@param amount integer
@@ -19,14 +18,14 @@ local function generateRandomChars(amount)
     ---@type number[]
     local chars = {}
     for i = 1, amount, 1 do
-        local j = random(1, 3)
+        local j = math.random(1, 3)
 
         if j == 1 then
-            chars[i] = random(48, 57)
+            chars[i] = math.random(48, 57)
         elseif j == 2 then
-            chars[i] = random(65, 90)
+            chars[i] = math.random(65, 90)
         elseif j == 3 then
-            chars[i] = random(97, 122)
+            chars[i] = math.random(97, 122)
         end
     end
     return chars
@@ -34,7 +33,7 @@ end
 
 ---@return Core.UUID
 function UUID.Static__New()
-    math.randomseed(computer.millis() + computer.time() + UUID.Static__GeneratedCount)
+    math.randomseed(math.floor(computer.time()) + UUID.Static__GeneratedCount)
     local head = generateRandomChars(6)
     local body = generateRandomChars(4)
     local tail = generateRandomChars(6)
@@ -101,9 +100,11 @@ function UUID:__init(headOrSring, body, tail)
         headOrSring, body, tail = parse(headOrSring)
     end
 
+    self:__modifyBehavior({ DisableCustomIndexing = true })
     self.m_head = headOrSring
     self.m_body = body
     self.m_tail = tail
+    self:__modifyBehavior({ DisableCustomIndexing = false })
 end
 
 ---@private

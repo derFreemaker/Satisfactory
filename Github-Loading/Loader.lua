@@ -7,12 +7,14 @@ local LoaderFiles = {
 			'Utils',
 			{
 				"Class",
+				{ "00_Config.lua" },
+				{ "20_Instance.lua" },
 				{ "20_Members.lua" },
-				{ "20_Metatable.lua" },
 				{ "20_Object.lua" },
-				{ "30_Construction.lua" },
 				{ "30_Type.lua" },
-				{ "50_Index.lua" }
+				{ "40_Metatable.lua" },
+				{ "50_Construction.lua" },
+				{ "80_Index.lua" }
 			},
 			{ '10_File.lua' },
 			{ '10_Function.lua' },
@@ -273,11 +275,12 @@ function Loader:setupLogger(logLevel)
 	---@type Github_Loading.Logger
 	local Logger = self:Get('/Github-Loading/Loader/Logger')
 	self.Logger = Logger.new('Github Loader', logLevel)
-	self.Logger.OnLog:AddListener(Listener.new(logFile))
 
+	self.Logger.OnLog:AddListener(Listener.new(logFile))
 	self.Logger.OnClear:AddListener(Listener.new(clear))
 	___logger:setLogger(self.Logger)
 
+	self.Logger:Clear()
 	self.Logger:LogWrite('###### LOG START: ' .. tostring(({ computer.magicTime() })[2]) .. ' ######')
 	self.Logger:LogWrite("###### Loader Version: " .. tostring(self:Get('/Github-Loading/Version.latest')) .. " ######")
 

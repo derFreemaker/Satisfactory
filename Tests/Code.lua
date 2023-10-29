@@ -1,15 +1,5 @@
--- require('Test.Simulator.Simulator'):Initialize(1)
+require('Tests.Simulator.Simulator'):Initialize(1)
 
-local function foo()
-    for i = 1, 10, 1 do
-        if i == 5 then
-            goto continue
-        end
+local UUID = require('Core.UUID')
 
-        print(i)
-
-        ::continue::
-    end
-end
-
-foo()
+log(UUID.Static__New())

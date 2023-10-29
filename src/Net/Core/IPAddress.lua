@@ -6,7 +6,9 @@ local IPAddress = {}
 ---@private
 ---@param address string
 function IPAddress:__init(address)
+    self:__modifyBehavior({ DisableCustomIndexing = true })
     self.m_address = address
+    self:__modifyBehavior({ DisableCustomIndexing = false })
 end
 
 function IPAddress:GetAddress()

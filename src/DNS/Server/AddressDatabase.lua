@@ -5,7 +5,7 @@ local Address = require("DNS.Core.Entities.Address.Address")
 local UUID = require("Core.UUID")
 
 ---@class DNS.Server.AddressDatabase : object
----@field private m_dbTable Database.DbTable | table<Core.UUID, DNS.Core.Entities.Address>
+---@field private m_dbTable Database.DbTable | table<string, DNS.Core.Entities.Address>
 ---@overload fun(logger: Core.Logger) : DNS.Server.AddressDatabase
 local AddressDatabase = {}
 
@@ -24,7 +24,7 @@ function AddressDatabase:Create(createAddress)
     end
 
     local address = Address(UUID.Static__New(), createAddress.Domain, createAddress.IPAddress)
-    self.m_dbTable:Set(address.Id, address)
+    self.m_dbTable:Set(address.Id:ToString(), address)
 
     self.m_dbTable:Save()
     return true
@@ -33,7 +33,7 @@ end
 ---@param id Core.UUID
 ---@return boolean
 function AddressDatabase:DeleteById(id)
-    self.m_dbTable:Delete(id)
+    self.m_dbTable:Delete(id:ToString())
 
     self.m_dbTable:Save()
     return true
@@ -47,7 +47,7 @@ function AddressDatabase:DeleteByUrl(addressAddress)
         return false
     end
 
-    self.m_dbTable:Delete(address.Id)
+    self.m_dbTable:Delete(address.Id:ToString())
 
     self.m_dbTable:Save()
     return true
@@ -57,7 +57,7 @@ end
 ---@return DNS.Core.Entities.Address? address
 function AddressDatabase:GetWithId(addressId)
     for id, address in pairs(self.m_dbTable) do
-        if id == addressId then
+        if id == addressId:ToString() then
             return address
         end
     end

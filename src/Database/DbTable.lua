@@ -1,12 +1,10 @@
 local JsonSerializer = require("Core.Json.JsonSerializer")
 local File = require("Core.FileSystem.File")
 
-local Dto = require("Database.Dto")
-
 ---@class Database.DbTable : object
 ---@field private m_name string
 ---@field private m_path Core.FileSystem.Path
----@field private m_data table<string | number, table>
+---@field private m_data table<string | number, any>
 ---@field private m_dataChanged (string | number)[]
 ---@field private m_logger Core.Logger
 ---@field private m_serializer Core.Json.Serializer
@@ -29,8 +27,9 @@ function DbTable:__init(name, path, logger, serializer)
 
     self.m_name = name
     self.m_path = path
-    self.m_logger = logger
     self.m_data = {}
+    self.m_dataChanged = {}
+    self.m_logger = logger
 
     self.m_serializer = serializer or JsonSerializer.Static__Serializer
 end
@@ -73,7 +72,7 @@ function DbTable:Save()
     self.m_logger:LogTrace("saved Database Table")
 end
 
----@param key string | number | Core.Json.Serializable
+---@param key string | integer
 function DbTable:ObjectChanged(key)
     for _, value in pairs(self.m_dataChanged) do
         if value == key then
@@ -84,74 +83,31 @@ function DbTable:ObjectChanged(key)
     table.insert(self.m_dataChanged, key)
 end
 
----@private
----@param key string | number | Core.Json.Serializable
----@return string | number
-function DbTable:_FormatKeyForStorage(key)
-    local typeName = type(key)
-    if typeName ~= "string" and typeName ~= "number" then
-        if not Utils.Class.HasBaseClass(key, "Core.Json.Serializable") then
-            error("key is not a string, number or Serializable")
-        end
-
-        key = self.m_serializer:Serialize(key)
-        ---@cast key string
-    end
-
-    return key
-end
-
----@private
----@param key string | number
----@return string | number | Core.Json.Serializable
-function DbTable:_FormatKeyForUsage(key)
-    if type(key) == "number" then
-        return key
-    end
-
-    ---@type Out<any>
-    local outObj = {}
-    if self.m_serializer:TryDeserialize(key, outObj) then
-        return outObj.Value
-    end
-
-    return key
-end
-
----@param key string | number | Core.Json.Serializable
----@param value table
+---@param key string | integer
+---@param value any
 function DbTable:Set(key, value)
-    key = self:_FormatKeyForStorage(key)
     self.m_data[key] = value
     self:ObjectChanged(key)
 end
 
----@param key string | number | Core.Json.Serializable
+---@param key string | integer
 function DbTable:Delete(key)
-    key = self:_FormatKeyForStorage(key)
     self.m_data[key] = nil
     self:ObjectChanged(key)
 end
 
----@param key string | number | Core.Json.Serializable
----@return table value
+---@param key string | integer
+---@return any value
 function DbTable:Get(key)
-    key = self:_FormatKeyForStorage(key)
-    local data = self.m_data[key]
-    return Dto(key, data, self)
+    local value = self.m_data[key]
+    self:ObjectChanged(key)
+    return value
 end
 
 ---@private
 ---@return (fun(t: table, key: any) : key: any, value: any), table t, any startKey
 function DbTable:__pairs()
-    ---@type Database.Dto[]
-    local dtoObjs = {}
-
-    for key, value in pairs(self.m_data) do
-        dtoObjs[key] = Dto(self:_FormatKeyForUsage(key), value, self)
-    end
-
-    return next, dtoObjs, nil
+    return next, self.m_data, nil
 end
 
 return Utils.Class.CreateClass(DbTable, "Database.DbTable")

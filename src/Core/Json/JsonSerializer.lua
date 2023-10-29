@@ -97,7 +97,7 @@ function JsonSerializer:serializeInternal(obj)
 
     for key, value in next, obj, nil do
         if type(value) == "table" then
-            obj[key] = self:serializeInternal(value)
+            rawset(obj, key, self:serializeInternal(value))
         end
     end
 

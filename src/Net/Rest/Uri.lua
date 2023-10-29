@@ -14,9 +14,12 @@ function Uri.Static__Parse(uri)
     local splittedQuery = Utils.String.Split(splittedUri[2], "&")
     for _, queryPart in ipairs(splittedQuery) do
         if not splittedQuery == "" then
-            local splittedQueryPart = Utils.String.Split(queryPart, "=")
-            query[splittedQueryPart[1]] = splittedQueryPart[2]
+            goto continue
         end
+
+        local splittedQueryPart = Utils.String.Split(queryPart, "=")
+        query[splittedQueryPart[1]] = splittedQueryPart[2]
+        ::continue::
     end
 
     return Uri(path, query)

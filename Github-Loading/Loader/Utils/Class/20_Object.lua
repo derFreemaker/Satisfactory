@@ -86,6 +86,23 @@ function Object.__concat(left, right)
 	return tostring(left) .. tostring(right)
 end
 
+---@class object.Modify
+---@field DisableCustomIndexing boolean?
+
+---@protected
+---@param modify object.Modify
+function Object:__modifyBehavior(modify)
+	local metatable = getmetatable(self)
+
+	if modify.DisableCustomIndexing ~= nil then
+		metatable.Type.IndexingDisabled = modify.DisableCustomIndexing
+	end
+end
+
+----------------------------------------
+-- Type Info
+----------------------------------------
+
 local typeInfo = {}
 ---@cast typeInfo Utils.Class.Type
 

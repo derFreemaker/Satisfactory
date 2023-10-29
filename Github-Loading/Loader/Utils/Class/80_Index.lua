@@ -1,4 +1,6 @@
 local LoadedLoaderFiles = ({ ... })[1]
+---@type Utils.Class.Configs
+local Configs = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/Config'][1]
 ---@type Utils.Table
 local Table = LoadedLoaderFiles["/Github-Loading/Loader/Utils/Table"][1]
 ---@type Utils.Class.MembersHandler
@@ -14,8 +16,8 @@ local Class = {}
 ---@type any
 Class.Placeholder = {}
 
-Class.SearchInBase = ConstructionHandler.SearchInBase
-Class.SetNormal = ConstructionHandler.SetNormal
+Class.SearchInBase = Configs.SearchInBase
+Class.SetNormal = Configs.SetNormal
 
 ---@generic TClass
 ---@param data TClass

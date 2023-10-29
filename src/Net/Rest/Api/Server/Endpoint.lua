@@ -35,11 +35,14 @@ end
 ---@param uri string
 ---@return any[] parameters
 function Endpoint:GetUriParameters(uri)
+    if #self.m_parameterTypes == 0 then
+        return {}
+    end
+
     local parameters = { uri:match(self.m_endpointUriTemplate) }
 
-    local parameterTypes = self.m_parameterTypes
     for i = 1, #parameters, 1 do
-        local parameterType = parameterTypes[i]
+        local parameterType = self.m_parameterTypes[i]
         local parameter = parameters[i]
 
         if parameterType == "boolean" then
@@ -103,6 +106,8 @@ function Endpoint:Invoke(request, context)
     local uriParameters, parseError = self:ParseUriParameters(tostring(request.Endpoint))
     if parseError then
         response = ResponseTemplates.InternalServerError(parseError or "uri parameters could not be parsed")
+        self.m_logger:LogError("endpoint failed with error:", parseError)
+        self.m_logger:LogDebug('request finished with status code: ' .. response.Headers.Code)
         return response
     end
 
