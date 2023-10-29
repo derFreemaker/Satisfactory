@@ -60,24 +60,7 @@ function Class.Deconstruct(class)
     local metatable = getmetatable(class)
     local typeInfo = metatable.Type
 
-    if metatable.__gc then
-        metatable.__gc(class)
-    end
-
-    Table.Clear(class)
-    Table.Clear(metatable)
-
-    local function blockedNewIndex()
-        error("cannot assign values to deconstruct class: " .. typeInfo.Name, 2)
-    end
-    metatable.__newindex = blockedNewIndex
-
-    local function blockedIndex()
-        error("cannot get values from deconstruct class: " .. typeInfo.Name, 2)
-    end
-    metatable.__index = blockedIndex
-
-    setmetatable(class, metatable)
+    ConstructionHandler.Deconstruct(typeInfo, class, metatable)
 end
 
 ---@param baseClassName string

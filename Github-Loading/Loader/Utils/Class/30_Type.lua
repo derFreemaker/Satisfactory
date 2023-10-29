@@ -20,7 +20,7 @@ local ObjectTypeInfo = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/Obj
 ---@field HasNewIndex boolean
 ---
 ---@field Template table
----@field Instances table
+---@field Instances table<Utils.Class.Instance, boolean>
 
 ---@class Utils.Class.TypeHandler
 local TypeHandler = {}

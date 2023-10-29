@@ -96,4 +96,36 @@ function ConstructionHandler.ConstructClass(typeInfo, class, classMetatable, ...
     end
 end
 
+---@param typeInfo Utils.Class.Type
+---@param class table
+local function invokeDeconstructor(typeInfo, class)
+    if typeInfo.HasConstructor then
+        typeInfo.MetaMethods.__gc(class)
+        invokeDeconstructor(typeInfo.Base, class)
+    end
+end
+
+---@param typeInfo Utils.Class.Type
+---@param class table
+---@param metatable Utils.Class.Metatable
+function ConstructionHandler.Deconstruct(typeInfo, class, metatable)
+    InstanceHandler.Remove(typeInfo, class)
+    invokeDeconstructor(typeInfo, class)
+
+    Table.Clear(class)
+    Table.Clear(metatable)
+
+    local function blockedNewIndex()
+        error("cannot assign values to deconstruct class: " .. typeInfo.Name, 2)
+    end
+    metatable.__newindex = blockedNewIndex
+
+    local function blockedIndex()
+        error("cannot get values from deconstruct class: " .. typeInfo.Name, 2)
+    end
+    metatable.__index = blockedIndex
+
+    setmetatable(class, metatable)
+end
+
 return ConstructionHandler

@@ -5,6 +5,8 @@ local Configs = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/Config'][1
 local String = LoadedLoaderFiles['/Github-Loading/Loader/Utils/String'][1]
 ---@type Utils.Table
 local Table = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Table'][1]
+---@type Utils.Class.InstanceHandler
+local InstanceHandler = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/Instance'][1]
 
 ---@class Utils.Class.MembersHandler
 local MembersHandler = {}
@@ -96,15 +98,7 @@ local function UpdateMethods(typeInfo, name, func)
         error("trying to extend already existing meta method: " .. name)
     end
 
-    typeInfo.MetaMethods[name] = func
-
-    for _, instance in ipairs(typeInfo.Instances) do
-        local instanceMetatable = getmetatable(instance)
-
-        if not Table.ContainsKey(instanceMetatable, name) then
-            rawset(instanceMetatable, name, func)
-        end
-    end
+    InstanceHandler.UpdateMetaMethod(typeInfo, name, func)
 end
 
 ---@param typeInfo Utils.Class.Type
@@ -115,13 +109,7 @@ local function UpdateMember(typeInfo, key, value)
         error("trying to extend already existing member: " .. tostring(key))
     end
 
-    typeInfo.Members[key] = value
-
-    for _, instance in ipairs(typeInfo.Instances) do
-        if not Table.ContainsKey(instance, key) then
-            rawset(instance, key, value)
-        end
-    end
+    InstanceHandler.UpdateMember(typeInfo, key, value)
 end
 
 ---@param typeInfo Utils.Class.Type
