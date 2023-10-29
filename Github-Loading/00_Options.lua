@@ -4,5 +4,6 @@ return {
 
 	-- Testing --
 	FactoryControl_Test = "FactoryControl.Test",
-	Test_Http = "Test.Http"
+	Test_DNS = "Test.DNS",
+	Test_Http = "Test.Http",
 }

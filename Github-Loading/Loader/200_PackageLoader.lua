@@ -157,6 +157,12 @@ function PackageLoader:TryGetModule(moduleToGet, outModule)
 	return false
 end
 
+function PackageLoader:OnLoaded()
+	for _, package in pairs(self.Packages) do
+		package:OnLoaded()
+	end
+end
+
 ---@param moduleToGet string
 ---@param ... any
 ---@return any ...

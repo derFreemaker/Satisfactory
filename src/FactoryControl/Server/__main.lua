@@ -1,15 +1,9 @@
 local Config = require('FactoryControl.Core.Config')
 local PortUsage = require('Core.Usage.Usage_Port')
 
-local EventPullAdapter = require('Core.Event.EventPullAdapter')
-local NetworkClient = require('Net.Core.NetworkClient')
-local RestApiController = require('Net.Rest.Api.Server.Controller')
-
 local Database = require("FactoryControl.Server.Database.Controllers")
 
 local ControllerEndpoints = require('FactoryControl.Server.Endpoints.Controller')
-
-local DNSClient = require('DNS.Client.Client')
 
 local Host = require('Hosting.Host')
 
@@ -22,7 +16,7 @@ local Host = require('Hosting.Host')
 local Main = {}
 
 function Main:Configure()
-	self.m_host = Host(self.Logger:subLogger('Host'))
+	self.m_host = Host(self.Logger:subLogger('Host'), "FactoryControl Server")
 
 	local databaseAccessLayer = Database(self.Logger:subLogger("DatabaseAccessLayer"))
 
@@ -36,7 +30,6 @@ function Main:Configure()
 end
 
 function Main:Run()
-	self.Logger:LogInfo('started server')
 	self.m_host:Run()
 end
 

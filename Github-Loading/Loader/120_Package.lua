@@ -72,12 +72,13 @@ function Package:Load()
         end
         self.m_packageLoader.Logger:LogDebug("loaded required packages")
     end
+end
 
+function Package:OnLoaded()
     local eventsModule = self:GetModule(self.Namespace .. ".__events")
     if eventsModule == nil then
         return
     end
-
     ---@type Github_Loading.Entities.Events
     local eventsModuleLoaded = eventsModule:Load()
 

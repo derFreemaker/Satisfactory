@@ -634,7 +634,7 @@ function Event:Trigger(logger, ...)
         task:Execute(...)
         task:LogError(logger)
     end
-    self.OnceFuncs = {}
+    self.m_onceFuncs = {}
 end
 
 ---@alias Core.Event.Mode

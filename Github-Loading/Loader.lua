@@ -376,6 +376,7 @@ function Loader:LoadProgram(option, baseUrl, forceDownload)
 
 	self.Logger:LogTrace('loading option package...')
 	local package = PackageLoader:LoadPackage(option.Url, forceDownload)
+	PackageLoader:OnLoaded()
 	self.Logger:LogTrace('loaded package from chosen Option: ' .. option.Name)
 
 	local mainModule = package:GetModule(package.Namespace .. '.__main')

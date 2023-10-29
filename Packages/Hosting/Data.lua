@@ -33,6 +33,12 @@ function Host:__init(logger, name, jsonSerializer)
     self.m_ready = false
 
     EventPullAdapter:Initialize(logger:subLogger("EventPullAdapter"))
+
+    for _, task in pairs(self._Static__ReadyTasks) do
+        task:Execute(self)
+        task:LogError(self.m_logger)
+    end
+
     self.m_logger:LogDebug(self.m_name .. " starting...")
 end
 
@@ -43,11 +49,6 @@ end
 function Host:Ready()
     if self.m_ready then
         return
-    end
-
-    for _, task in pairs(self._Static__ReadyTasks) do
-        task:Execute(self)
-        task:LogError(self.m_logger)
     end
 
     self.m_logger:LogInfo(self.m_name .. " started")

@@ -27,7 +27,7 @@ function Main:GetDNSServerAddress(context)
 end
 
 function Main:Configure()
-	self.m_host = Host(self.Logger:subLogger("Host"), "DNS")
+	self.m_host = Host(self.Logger:subLogger("Host"), "DNS Server")
 
 	self.m_host:AddCallableEvent(Usage.Events.DNS_GetServerAddress, Usage.Ports.DNS,
 		Task(self.GetDNSServerAddress, self))
@@ -43,7 +43,7 @@ function Main:Run()
 	self.m_host:Ready()
 	while true do
 		self.m_netClient:BroadCast(Usage.Ports.Heartbeats, 'DNS')
-		self.m_host:RunCycle(20)
+		self.m_host:RunCycle(3)
 	end
 end
 

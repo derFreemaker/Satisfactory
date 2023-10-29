@@ -201,7 +201,7 @@ function HostExtensions:RegisterAddress(url, ipAddress)
     if dnsClient:CreateAddress(url, ipAddress) then
         self.m_logger:LogInfo("Registered address " .. url .. " on DNS server.")
     else
-        self.m_logger:LogError("Failed to register address " .. url .. " on DNS server or already exists.")
+        self.m_logger:LogWarning("Failed to register address " .. url .. " on DNS server or already exists.")
     end
 end
 

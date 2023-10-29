@@ -20,7 +20,7 @@ function ControllerEndpoints:__init(baseFunc, logger, apiController, databaseAcc
 	self:AddEndpoint("DELETE", "/Controller/{id:Core.UUID}/Delete", self.DeleteWithId)
 	self:AddEndpoint("POST", "/Controller/{id:Core.UUID}/Modify", self.ModifyWithId)
 	self:AddEndpoint("GET", "/Controller/{id:Core.UUID}", self.GetWithId)
-	self:AddEndpoint("GET", "/Controller/GetWithName", self.GetWithName)
+	self:AddEndpoint("GET", "/Controller/GetWithName/{name:string}", self.GetWithName)
 end
 
 ---@param connect FactoryControl.Core.Entities.Controller.ConnectDto

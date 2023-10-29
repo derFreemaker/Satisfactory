@@ -1,6 +1,20 @@
 ---@meta
 local PackageData = {}
 
+PackageData["FactoryControlServer__events"] = {
+    Location = "FactoryControl.Server.__events",
+    Namespace = "FactoryControl.Server.__events",
+    IsRunnable = true,
+    Data = [[
+local DNSClient = require('DNS.Client.Client')
+
+---@class FactoryControl.Server.Events : Github_Loading.Entities.Events
+local Events = {}
+
+return Events
+]]
+}
+
 PackageData["FactoryControlServer__main"] = {
     Location = "FactoryControl.Server.__main",
     Namespace = "FactoryControl.Server.__main",
@@ -9,15 +23,9 @@ PackageData["FactoryControlServer__main"] = {
 local Config = require('FactoryControl.Core.Config')
 local PortUsage = require('Core.Usage.Usage_Port')
 
-local EventPullAdapter = require('Core.Event.EventPullAdapter')
-local NetworkClient = require('Net.Core.NetworkClient')
-local RestApiController = require('Net.Rest.Api.Server.Controller')
-
 local Database = require("FactoryControl.Server.Database.Controllers")
 
 local ControllerEndpoints = require('FactoryControl.Server.Endpoints.Controller')
-
-local DNSClient = require('DNS.Client.Client')
 
 local Host = require('Hosting.Host')
 
@@ -30,7 +38,7 @@ local Host = require('Hosting.Host')
 local Main = {}
 
 function Main:Configure()
-	self.m_host = Host(self.Logger:subLogger('Host'))
+	self.m_host = Host(self.Logger:subLogger('Host'), "FactoryControl Server")
 
 	local databaseAccessLayer = Database(self.Logger:subLogger("DatabaseAccessLayer"))
 
@@ -44,7 +52,6 @@ function Main:Configure()
 end
 
 function Main:Run()
-	self.Logger:LogInfo('started server')
 	self.m_host:Run()
 end
 
@@ -149,7 +156,7 @@ function ControllerEndpoints:__init(baseFunc, logger, apiController, databaseAcc
 	self:AddEndpoint("DELETE", "/Controller/{id:Core.UUID}/Delete", self.DeleteWithId)
 	self:AddEndpoint("POST", "/Controller/{id:Core.UUID}/Modify", self.ModifyWithId)
 	self:AddEndpoint("GET", "/Controller/{id:Core.UUID}", self.GetWithId)
-	self:AddEndpoint("GET", "/Controller/GetWithName", self.GetWithName)
+	self:AddEndpoint("GET", "/Controller/GetWithName/{name:string}", self.GetWithName)
 end
 
 ---@param connect FactoryControl.Core.Entities.Controller.ConnectDto
