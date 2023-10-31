@@ -4,6 +4,12 @@
 ---@overload fun(idOrIndexOrNetworkCard: FIN.UUID | integer | FIN.Components.FINComputerMod.NetworkCard_C) : Adapter.Computer.NetworkCard
 local NetworkCard = {}
 
+---@param index integer
+function NetworkCard.Static__GetNetworkCardByIndex(index)
+	return computer.getPCIDevices(findClass('NetworkCard_C'))[index]
+end
+
+local firstNetworkCard = true
 ---@private
 ---@param idOrIndexOrNetworkCard FIN.UUID | integer | FIN.Components.FINComputerMod.NetworkCard_C
 function NetworkCard:__init(idOrIndexOrNetworkCard)
@@ -32,6 +38,11 @@ function NetworkCard:__init(idOrIndexOrNetworkCard)
 
 	---@cast idOrIndexOrNetworkCard FIN.Components.FINComputerMod.NetworkCard_C
 	self.m_networkCard = idOrIndexOrNetworkCard
+
+	if firstNetworkCard then
+		self:CloseAllPorts()
+		firstNetworkCard = false
+	end
 end
 
 ---@return FIN.UUID
@@ -49,12 +60,15 @@ function NetworkCard:Listen()
 end
 
 ---@param port integer
+---@return boolean openedPort
 function NetworkCard:OpenPort(port)
 	if self.m_openPorts[port] then
-		return
+		return false
 	end
 
 	self.m_networkCard:open(port)
+	self.m_openPorts[port] = true
+	return true
 end
 
 ---@param port integer

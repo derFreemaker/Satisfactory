@@ -40,7 +40,7 @@ function HostExtensions:RegisterAddress(url, ipAddress)
     end
 
     if dnsClient:CreateAddress(url, ipAddress) then
-        self.m_logger:LogInfo("Registered address " .. url .. " on DNS server.")
+        self.m_logger:LogDebug("Registered address " .. url .. " on DNS server.")
     else
         self.m_logger:LogWarning("Failed to register address " .. url .. " on DNS server or already exists.")
     end

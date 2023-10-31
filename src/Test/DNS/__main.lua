@@ -43,6 +43,8 @@ function Main:Run()
 		"got wrong address id back from dns server '" .. tostring(address.Id) .. "'")
 
 	log("got address", address.Id, address.Domain, address.IPAddress)
+
+	log("test passed")
 end
 
 return Main

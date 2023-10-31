@@ -180,8 +180,9 @@ end
 
 ---@param port integer
 function NetworkClient:Open(port)
-	self.m_networkCard:OpenPort(port)
-	self.m_logger:LogTrace('opened Port: ' .. port)
+	if self.m_networkCard:OpenPort(port) then
+		self.m_logger:LogTrace('opened Port: ' .. port)
+	end
 end
 
 ---@param port integer

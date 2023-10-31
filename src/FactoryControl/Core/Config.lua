@@ -1,3 +1,3 @@
 return {
-	DOMAIN = 'FactoryControl'
+	DOMAIN = 'FactoryControl.com'
 }

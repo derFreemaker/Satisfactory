@@ -18,4 +18,13 @@ function Function.InvokeProtected(func, ...)
 	return success, error, results
 end
 
+---@param message string
+function Function.LogTraceback(message)
+	if not log then
+		return
+	end
+
+	log(debug.traceback(message or "traceback", 2))
+end
+
 return Function

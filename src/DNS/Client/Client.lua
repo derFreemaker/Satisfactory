@@ -31,7 +31,7 @@ end
 
 ---@param networkClient Net.Core.NetworkClient
 function Client.Static__WaitForHeartbeat(networkClient)
-	networkClient:WaitForEvent(Usage.Events.DNS_Heartbeat, Usage.Ports.Heartbeats)
+	networkClient:WaitForEvent(Usage.Events.DNS_Heartbeat, Usage.Ports.DNS_Heartbeat)
 end
 
 ---@param networkClient Net.Core.NetworkClient

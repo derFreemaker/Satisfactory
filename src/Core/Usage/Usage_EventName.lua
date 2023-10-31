@@ -10,7 +10,8 @@ local EventNameUsage = {
     RestResponse = "Rest-Response",
 
     -- FactoryControl
-    FactoryControl = "FactoryControl"
+    FactoryControl_Heartbeat = "FactoryControl",
+    FactoryControl_Feature_Invoked = "FactoryControl-Feature-Invoked"
 }
 
 return EventNameUsage

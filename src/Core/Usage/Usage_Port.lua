@@ -1,11 +1,16 @@
--- 0 .. 2^1023
+-- 0 .. 10000
 
 ---@enum Core.PortUsage
 local PortUsage = {
-	Heartbeats = 10,
+	-- DNS
+	DNS_Heartbeat = 10,
 	DNS = 53,
+
 	HTTP = 80,
-	FactoryControl = 12500,
+
+	-- FactoryControl
+	FactoryControl_Heartbeat = 1250,
+	FactoryControl = 1251,
 }
 
 return PortUsage

@@ -28,6 +28,10 @@ function HttpClient:__init(logger, dnsClient, networkClient)
 	self.m_logger = logger
 end
 
+function HttpClient:GetNetworkClient()
+	return self.m_netClient
+end
+
 ---@private
 ---@param address string
 ---@return Net.Core.IPAddress? address

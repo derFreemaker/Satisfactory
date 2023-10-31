@@ -1,3 +1,11 @@
+---@meta
+local PackageData = {}
+
+PackageData["TestFactoryControl__main"] = {
+    Location = "Test.FactoryControl.__main",
+    Namespace = "Test.FactoryControl.__main",
+    IsRunnable = true,
+    Data = [[
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
 local FactoryControlClient = require("FactoryControl.Client.Client")
@@ -13,9 +21,17 @@ function Main:Configure()
 end
 
 function Main:Run()
+    log("test running")
+
     local controller = self.m_client:Connect("Test")
 
-    print(controller.IPAddress)
+    assert(controller.IPAddress:Equals(self.m_client.NetClient:GetIPAddress()), "IP Address mismatch")
+
+    log("test passed")
 end
 
 return Main
+]]
+}
+
+return PackageData

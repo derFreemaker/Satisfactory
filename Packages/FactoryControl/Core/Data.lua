@@ -15,6 +15,7 @@ function Events:OnLoaded()
     JsonSerializer.Static__Serializer:AddTypeInfos({
         -- ControllerDto's
         require("FactoryControl.Core.Entities.Controller.ControllerDto"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.ConnectDto"):Static__GetType(),
         require("FactoryControl.Core.Entities.Controller.CreateDto"):Static__GetType(),
         require("FactoryControl.Core.Entities.Controller.ModifyDto"):Static__GetType(),
 
@@ -36,8 +37,63 @@ PackageData["FactoryControlCoreConfig"] = {
     IsRunnable = true,
     Data = [[
 return {
-	DOMAIN = 'FactoryControl'
+	DOMAIN = 'FactoryControl.com'
 }
+]]
+}
+
+PackageData["FactoryControlCoreEndpointUrls"] = {
+    Location = "FactoryControl.Core.EndpointUrls",
+    Namespace = "FactoryControl.Core.EndpointUrls",
+    IsRunnable = true,
+    Data = [[
+---@class FactoryControl.Core.EndpointUrlTemplates
+local EndpointUrlTemplates = {
+    Connect = "/Controller/Connect",
+
+    Create = "/Controller/Create",
+    Delete = "/Controller/{id:Core.UUID}/Delete",
+    Modify = "/Controller/{id:Core.UUID}/Modify",
+    GetById = "/Controller/{id:Core.UUID}",
+    GetByName = "/Controller/GetWithName/{name:string}",
+}
+
+------------------------------------------------------------------------------------------------------------------------
+-- Constructors
+------------------------------------------------------------------------------------------------------------------------
+
+---@class FactoryControl.Core.EndpointUrlConstructors
+local EndpointUrlConstructors = {}
+
+function EndpointUrlConstructors.Connect()
+    return "/Controller/Connect"
+end
+
+function EndpointUrlConstructors.Create()
+    return "/Controller/Create"
+end
+
+---@param id Core.UUID
+function EndpointUrlConstructors.Delete(id)
+    return "/Controller/" .. id:ToString() .. "/Delete"
+end
+
+---@param id Core.UUID
+function EndpointUrlConstructors.Modify(id)
+    return "/Controller/" .. id:ToString() .. "/Modify"
+end
+
+---@param id Core.UUID
+function EndpointUrlConstructors.GetById(id)
+    return "/Controller/" .. id:ToString()
+end
+
+---@param name string
+function EndpointUrlConstructors.GetByName(name)
+    return "/Controller/GetWithName/" .. name
+end
+
+return { EndpointUrlTemplates, EndpointUrlConstructors }
 ]]
 }
 
@@ -95,9 +151,9 @@ function ControllerDto:__init(id, name, ipAddress, features)
     self.Features = features or {}
 end
 
----@return string name, Core.UUID id, Net.Core.IPAddress ipAddress, table<string, FactoryControl.Core.Entities.Controller.FeatureDto> features
+---@return Core.UUID id, string name, Net.Core.IPAddress ipAddress, table<string, FactoryControl.Core.Entities.Controller.FeatureDto> features
 function ControllerDto:Serialize()
-    return self.Name, self.Id, self.IPAddress, self.Features
+    return self.Id, self.Name, self.IPAddress, self.Features
 end
 
 return Utils.Class.CreateClass(ControllerDto, "FactoryControl.Core.Entities.ControllerDto",

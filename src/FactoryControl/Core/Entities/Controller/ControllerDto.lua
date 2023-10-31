@@ -18,9 +18,9 @@ function ControllerDto:__init(id, name, ipAddress, features)
     self.Features = features or {}
 end
 
----@return string name, Core.UUID id, Net.Core.IPAddress ipAddress, table<string, FactoryControl.Core.Entities.Controller.FeatureDto> features
+---@return Core.UUID id, string name, Net.Core.IPAddress ipAddress, table<string, FactoryControl.Core.Entities.Controller.FeatureDto> features
 function ControllerDto:Serialize()
-    return self.Name, self.Id, self.IPAddress, self.Features
+    return self.Id, self.Name, self.IPAddress, self.Features
 end
 
 return Utils.Class.CreateClass(ControllerDto, "FactoryControl.Core.Entities.ControllerDto",

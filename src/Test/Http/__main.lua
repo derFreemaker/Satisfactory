@@ -23,6 +23,8 @@ function Main:Run()
     local response = self.m_httpClient:Send(request)
 
     assert(response:GetStatusCode() == 404, "Expected 404, got " .. response:GetStatusCode())
+
+    log("test passed")
 end
 
 return Main

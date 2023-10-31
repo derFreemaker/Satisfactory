@@ -58,16 +58,6 @@ function IPAddress:__newindex()
 end
 
 ---@private
-function IPAddress.__eq(left, right)
-    if not Utils.Class.HasBaseClass(left, "Net.Core.IPAddress") then
-        error("expected left Net.Core.IPAddress, got " .. type(left))
-    end
-    if not Utils.Class.HasBaseClass(right, "Net.Core.IPAddress") then
-        error("expected right Net.Core.IPAddress, got " .. type(right))
-    end
-end
-
----@private
 function IPAddress:__tostring()
     return self:GetAddress()
 end
@@ -295,8 +285,9 @@ end
 
 ---@param port integer
 function NetworkClient:Open(port)
-	self.m_networkCard:OpenPort(port)
-	self.m_logger:LogTrace('opened Port: ' .. port)
+	if self.m_networkCard:OpenPort(port) then
+		self.m_logger:LogTrace('opened Port: ' .. port)
+	end
 end
 
 ---@param port integer

@@ -1,3 +1,5 @@
+local EndpointUrlTemplates = require("FactoryControl.Core.EndpointUrls")[1]
+
 ---@class FactoryControl.Server.Endpoints.ControllerEndpoints : Net.Rest.Api.Server.EndpointBase
 ---@field private m_controllers FactoryControl.Server.Database.Controllers
 ---@field private m_logger Core.Logger
@@ -14,13 +16,13 @@ function ControllerEndpoints:__init(baseFunc, logger, apiController, databaseAcc
 
 	self.m_controllers = databaseAccessLayer
 
-	self:AddEndpoint("CONNECT", "/Controller/Connect", self.Connect)
+	self:AddEndpoint("CONNECT", EndpointUrlTemplates.Connect, self.Connect)
 
-	self:AddEndpoint("CREATE", "/Controller/Create", self.Create)
-	self:AddEndpoint("DELETE", "/Controller/{id:Core.UUID}/Delete", self.DeleteWithId)
-	self:AddEndpoint("POST", "/Controller/{id:Core.UUID}/Modify", self.ModifyWithId)
-	self:AddEndpoint("GET", "/Controller/{id:Core.UUID}", self.GetWithId)
-	self:AddEndpoint("GET", "/Controller/GetWithName/{name:string}", self.GetWithName)
+	self:AddEndpoint("CREATE", EndpointUrlTemplates.Create, self.Create)
+	self:AddEndpoint("DELETE", EndpointUrlTemplates.Delete, self.Delete)
+	self:AddEndpoint("POST", EndpointUrlTemplates.Modify, self.Modify)
+	self:AddEndpoint("GET", EndpointUrlTemplates.GetById, self.GetById)
+	self:AddEndpoint("GET", EndpointUrlTemplates.GetByName, self.GetByName)
 end
 
 ---@param connect FactoryControl.Core.Entities.Controller.ConnectDto
@@ -52,7 +54,7 @@ end
 
 ---@param id Core.UUID
 ---@return Net.Rest.Api.Response response
-function ControllerEndpoints:DeleteWithId(id)
+function ControllerEndpoints:Delete(id)
 	self.m_controllers:DeleteController(id)
 
 	return self.Templates:Ok(true)
@@ -61,7 +63,7 @@ end
 ---@param id Core.UUID
 ---@param modifyController FactoryControl.Core.Entities.Controller.ModifyDto
 ---@return Net.Rest.Api.Response response
-function ControllerEndpoints:ModifyWithId(id, modifyController)
+function ControllerEndpoints:Modify(id, modifyController)
 	local controller = self.m_controllers:GetControllerById(id)
 
 	if not controller then
@@ -75,7 +77,7 @@ end
 
 ---@param id Core.UUID
 ---@return Net.Rest.Api.Response response
-function ControllerEndpoints:GetWithId(id)
+function ControllerEndpoints:GetById(id)
 	local controller = self.m_controllers:GetControllerById(id)
 
 	if not controller then
@@ -87,7 +89,7 @@ end
 
 ---@param name string
 ---@return Net.Rest.Api.Response response
-function ControllerEndpoints:GetWithName(name)
+function ControllerEndpoints:GetByName(name)
 	local controller = self.m_controllers:GetControllerByName(name)
 
 	if not controller then

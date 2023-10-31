@@ -43,11 +43,12 @@ local NetworkClient = require("Net.Core.NetworkClient")
 
 local Controller = require("FactoryControl.Client.Entities.Controller.Controller")
 local CreateController = require("FactoryControl.Core.Entities.Controller.CreateDto")
+local ConnectController = require("FactoryControl.Core.Entities.Controller.ConnectDto")
 
 ---@class FactoryControl.Client : object
 ---@field CurrentController FactoryControl.Client.Entities.Controller
+---@field NetClient Net.Core.NetworkClient
 ---@field private m_client FactoryControl.Client.DataClient
----@field private m_netClient Net.Core.NetworkClient
 ---@field private m_logger Core.Logger
 ---@overload fun(logger: Core.Logger, client: FactoryControl.Client.DataClient?, networkClient: Net.Core.NetworkClient?) : FactoryControl.Client
 local Client = {}
@@ -59,18 +60,18 @@ local Client = {}
 function Client:__init(logger, client, networkClient)
     self.m_logger = logger
     self.m_client = client or DataClient(logger:subLogger("DataClient"))
-    self.m_netClient = networkClient or NetworkClient(logger:subLogger("NetClient"))
+    self.NetClient = networkClient or NetworkClient(logger:subLogger("NetClient"))
 end
 
 ---@param name string
 ---@param features FactoryControl.Core.Entities.Controller.FeatureDto?
 ---@return FactoryControl.Client.Entities.Controller
 function Client:Connect(name, features)
-    local controllerDto = self.m_client:Connect(name, self.m_netClient:GetIPAddress())
+    local controllerDto = self.m_client:Connect(ConnectController(name, self.NetClient:GetIPAddress()))
 
     local created = false
     if not controllerDto then
-        controllerDto = self.m_client:CreateController(CreateController(name, self.m_netClient:GetIPAddress(), features))
+        controllerDto = self.m_client:CreateController(CreateController(name, self.NetClient:GetIPAddress(), features))
 
         if not controllerDto then
             error("Unable to connect to server")
@@ -144,7 +145,7 @@ end
 ---@param ipAddress Net.Core.IPAddress
 ---@param buttonPressed FactoryControl.Client.Entities.Controller.Feature.Button.Pressed
 function Client:ButtonPressed(ipAddress, buttonPressed)
-    self.m_netClient:Send(
+    self.NetClient:Send(
         ipAddress,
         Usage.Ports.FactoryControl,
         Usage.Events.FactoryControl,
@@ -155,7 +156,7 @@ end
 ---@param ipAddress Net.Core.IPAddress
 ---@param switchUpdate FactoryControl.Client.Entities.Controller.Feature.Switch.Update
 function Client:UpdateSwitch(ipAddress, switchUpdate)
-    self.m_netClient:Send(
+    self.NetClient:Send(
         ipAddress,
         Usage.Ports.FactoryControl,
         Usage.Events.FactoryControl,
@@ -166,7 +167,7 @@ end
 ---@param ipAddress Net.Core.IPAddress
 ---@param radialUpdate FactoryControl.Client.Entities.Controller.Feature.Radial.Update
 function Client:UpdateRadial(ipAddress, radialUpdate)
-    self.m_netClient:Send(
+    self.NetClient:Send(
         ipAddress,
         Usage.Ports.FactoryControl,
         Usage.Events.FactoryControl,
@@ -177,7 +178,7 @@ end
 ---@param ipAddress Net.Core.IPAddress
 ---@param chartUpdate FactoryControl.Client.Entities.Controller.Feature.Radial.Update
 function Client:UpdateChart(ipAddress, chartUpdate)
-    self.m_netClient:Send(
+    self.NetClient:Send(
         ipAddress,
         Usage.Ports.FactoryControl,
         Usage.Events.FactoryControl,
@@ -194,6 +195,9 @@ PackageData["FactoryControlClientDataClient"] = {
     Namespace = "FactoryControl.Client.DataClient",
     IsRunnable = true,
     Data = [[
+local Usage = require("Core.Usage.Usage")
+local EndpointUrlConstructors = require("FactoryControl.Core.EndpointUrls")[2]
+
 local Uri = require("Net.Rest.Uri")
 
 local FactoryControlConfig = require("FactoryControl.Core.Config")
@@ -206,11 +210,19 @@ local HttpRequest = require('Net.Http.Request')
 ---@overload fun(logger: Core.Logger) : FactoryControl.Client.DataClient
 local DataClient = {}
 
+---@param networkClient Net.Core.NetworkClient
+function DataClient.Static__WaitForHeartbeat(networkClient)
+	networkClient:WaitForEvent(Usage.Events.FactoryControl_Heartbeat, Usage.Ports.FactoryControl_Heartbeat)
+end
+
 ---@private
 ---@param logger Core.Logger
 function DataClient:__init(logger)
 	self.m_logger = logger
 	self.m_client = HttpClient(self.m_logger:subLogger('RestApiClient'))
+
+	self.m_logger:LogDebug("waiting for server heartbeat...")
+	self.Static__WaitForHeartbeat(self.m_client:GetNetworkClient())
 end
 
 ---@private
@@ -224,11 +236,10 @@ function DataClient:request(method, endpoint, body, options)
 	return self.m_client:Send(request)
 end
 
----@param name string
----@param ipAddress Net.Core.IPAddress
+---@param connect FactoryControl.Core.Entities.Controller.ConnectDto
 ---@return FactoryControl.Core.Entities.ControllerDto?
-function DataClient:Connect(name, ipAddress)
-	local response = self:request("CONNECT", "Controller", { name, ipAddress })
+function DataClient:Connect(connect)
+	local response = self:request("CONNECT", EndpointUrlConstructors.Connect(), connect)
 
 	if response:IsFaulted() then
 		return
@@ -240,7 +251,7 @@ end
 ---@param createController FactoryControl.Core.Entities.Controller.CreateDto
 ---@return FactoryControl.Core.Entities.ControllerDto?
 function DataClient:CreateController(createController)
-	local response = self:request('CREATE', 'Controller', createController)
+	local response = self:request('CREATE', EndpointUrlConstructors.Create(), createController)
 
 	if response:IsFaulted() then
 		return
@@ -252,7 +263,7 @@ end
 ---@param id Core.UUID
 ---@return boolean success
 function DataClient:DeleteControllerById(id)
-	local response = self:request("DELETE", "ControllerById", id)
+	local response = self:request("DELETE", EndpointUrlConstructors.Delete(id))
 
 	return response:IsSuccess() and response:GetBody()
 end
@@ -261,7 +272,7 @@ end
 ---@param modifyController FactoryControl.Core.Entities.Controller.ModifyDto
 ---@return FactoryControl.Core.Entities.ControllerDto?
 function DataClient:ModifyControllerById(id, modifyController)
-	local response = self:request("POST", "ModifyControllerById", { id, modifyController })
+	local response = self:request("POST", EndpointUrlConstructors.Modify(id), modifyController)
 
 	if response:IsFaulted() then
 		return
@@ -273,7 +284,7 @@ end
 ---@param id Core.UUID
 ---@return FactoryControl.Core.Entities.ControllerDto?
 function DataClient:GetControllerById(id)
-	local response = self:request("GET", "ControllerById", id)
+	local response = self:request("GET", EndpointUrlConstructors.GetById(id))
 
 	if response:IsFaulted() then
 		return
@@ -285,7 +296,7 @@ end
 ---@param name string
 ---@return FactoryControl.Core.Entities.ControllerDto?
 function DataClient:GetControllerByName(name)
-	local response = self:request("GET", "ControllerByName", name)
+	local response = self:request("GET", EndpointUrlConstructors.GetByName(name))
 
 	if response:IsFaulted() then
 		return

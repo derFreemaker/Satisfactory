@@ -1,7 +1,7 @@
 return {
     Name = "Test-DNS",
     Namespace = "Test.DNS",
-    Version = "0.1.0-70",
+    Version = "0.1.0-71",
     RequiredPackages = {
         "Core",
         "DNS.Client",

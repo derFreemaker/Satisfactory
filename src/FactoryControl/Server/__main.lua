@@ -1,5 +1,5 @@
 local Config = require('FactoryControl.Core.Config')
-local PortUsage = require('Core.Usage.Usage_Port')
+local Usage = require('Core.Usage.Usage')
 
 local Database = require("FactoryControl.Server.Database.Controllers")
 
@@ -9,10 +9,6 @@ local Host = require('Hosting.Host')
 
 ---@class FactoryControl.Server.Main : Github_Loading.Entities.Main
 ---@field private m_host Hosting.Host
----@field private m_eventPullAdapter Core.EventPullAdapter
----@field private m_apiController Net.Rest.Api.Server.Controller
----@field private m_dnsClient DNS.Client
----@field private m_netClient Net.Core.NetworkClient
 local Main = {}
 
 function Main:Configure()
@@ -20,7 +16,7 @@ function Main:Configure()
 
 	local databaseAccessLayer = Database(self.Logger:subLogger("DatabaseAccessLayer"))
 
-	self.m_host:AddEndpoint(PortUsage.HTTP,
+	self.m_host:AddEndpoint(Usage.Ports.HTTP,
 		"Controller",
 		ControllerEndpoints --[[@as FactoryControl.Server.Endpoints.ControllerEndpoints]],
 		databaseAccessLayer)
@@ -30,7 +26,14 @@ function Main:Configure()
 end
 
 function Main:Run()
-	self.m_host:Run()
+	self.m_host:Ready()
+	while true do
+		self.m_host:GetNetworkClient():BroadCast(
+			Usage.Ports.FactoryControl_Heartbeat,
+			Usage.Events.FactoryControl_Heartbeat)
+
+		self.m_host:RunCycle(3)
+	end
 end
 
 return Main

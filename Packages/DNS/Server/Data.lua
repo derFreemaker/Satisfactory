@@ -42,7 +42,7 @@ end
 function Main:Run()
 	self.m_host:Ready()
 	while true do
-		self.m_netClient:BroadCast(Usage.Ports.Heartbeats, 'DNS')
+		self.m_netClient:BroadCast(Usage.Ports.DNS_Heartbeat, 'DNS')
 		self.m_host:RunCycle(3)
 	end
 end

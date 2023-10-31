@@ -7,6 +7,7 @@ function Events:OnLoaded()
     JsonSerializer.Static__Serializer:AddTypeInfos({
         -- ControllerDto's
         require("FactoryControl.Core.Entities.Controller.ControllerDto"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.ConnectDto"):Static__GetType(),
         require("FactoryControl.Core.Entities.Controller.CreateDto"):Static__GetType(),
         require("FactoryControl.Core.Entities.Controller.ModifyDto"):Static__GetType(),
 
