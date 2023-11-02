@@ -1,7 +1,7 @@
 Can be adjusted in the range from min to max Properties.
 
 ---
-- Base: [[FeatureDto]]
+- **Base**: [[FeatureDto]]
 - Min: [[number]]
 - Max: [[number]]
 - Setting: [[number]]

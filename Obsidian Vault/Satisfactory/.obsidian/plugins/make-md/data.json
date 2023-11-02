@@ -60,7 +60,11 @@
       "Projects/Factory Control/Client",
       "Projects/Factory Control/Client",
       "Projects/Objects",
-      "Projects/Class System"
+      "Projects/Class System",
+      "Code Projects/DNS",
+      "Code Projects/DNS",
+      "Code Projects",
+      "Code Projects/Github Loading"
     ],
     "Lua": [
       "Types"
@@ -102,7 +106,7 @@
   "spacesSyncTimeoutSeconds": 10,
   "spacesAutoBackup": true,
   "spacesAutoBackupInterval": 10,
-  "spacesAutoBackupLast": 1698745943726,
+  "spacesAutoBackupLast": 1698832944060,
   "spacesUseAlias": false,
   "precreateVaultSpace": true,
   "fmKeyAlias": "aliases",

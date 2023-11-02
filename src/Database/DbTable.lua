@@ -107,7 +107,13 @@ end
 ---@private
 ---@return (fun(t: table, key: any) : key: any, value: any), table t, any startKey
 function DbTable:__pairs()
-    return next, self.m_data, nil
+    local function iterator(tbl, key)
+        local nextKey, nextValue = next(tbl, key)
+        self:ObjectChanged(key)
+        return nextKey, nextValue
+    end
+
+    return iterator, self.m_data, nil
 end
 
 return Utils.Class.CreateClass(DbTable, "Database.DbTable")

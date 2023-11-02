@@ -1,21 +1,27 @@
-local Pressed = require("FactoryControl.Client.Entities.Controller.Feature.Button.Pressed")
+local ButtonDto = require("FactoryControl.Core.Entities.Controller.Feature.ButtonDto")
+
+local Pressed = require("FactoryControl.Client.Entities.Controller.Feature.Button.Update")
 
 ---@class FactoryControl.Client.Entities.Controller.Feature.Button : FactoryControl.Client.Entities.Controller.Feature
----@overload fun(buttonDto: FactoryControl.Core.Entities.Controller.Feature.ButtonDto, controller: FactoryControl.Client.Entities.Controller) : FactoryControl.Client.Entities.Controller.Feature.Button
+---@overload fun(buttonDto: FactoryControl.Core.Entities.Controller.Feature.ButtonDto, client: FactoryControl.Client) : FactoryControl.Client.Entities.Controller.Feature.Button
 local Button = {}
 
 ---@private
 ---@param buttonDto FactoryControl.Core.Entities.Controller.Feature.ButtonDto
----@param controller FactoryControl.Client.Entities.Controller
----@param baseFunc fun(id: Core.UUID, name: string, type: FactoryControl.Core.Entities.Controller.Feature.Type, controller: FactoryControl.Client.Entities.Controller)
-function Button:__init(baseFunc, buttonDto, controller)
-    baseFunc(buttonDto.Id, buttonDto.Name, "Button", controller)
+---@param client FactoryControl.Client
+---@param baseFunc FactoryControl.Client.Entities.Controller.Feature.Constructor
+function Button:__init(baseFunc, buttonDto, client)
+    baseFunc(buttonDto, client)
+end
+
+---@return FactoryControl.Core.Entities.Controller.Feature.ButtonDto
+function Button:ToDto()
+    return ButtonDto(self.Id, self.Name, self.ControllerId)
 end
 
 function Button:Press()
     local pressed = Pressed(self.Id)
-
-    self.m_client:ButtonPressed(self.Owner.IPAddress, pressed)
+    self.m_client:UpdateFeature(pressed)
 end
 
 return Utils.Class.CreateClass(Button, "FactoryControl.Client.Entities.Controller.Feature.Button",

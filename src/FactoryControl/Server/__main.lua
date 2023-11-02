@@ -1,9 +1,10 @@
 local Config = require('FactoryControl.Core.Config')
 local Usage = require('Core.Usage.Usage')
 
-local Database = require("FactoryControl.Server.Database.Controllers")
+local DatabaseAccessLayer = require("FactoryControl.Server.DatabaseAccessLayer")
 
 local ControllerEndpoints = require('FactoryControl.Server.Endpoints.Controller')
+local FeatureEndpoints = require("FactoryControl.Server.Endpoints.Feature")
 
 local Host = require('Hosting.Host')
 
@@ -14,12 +15,18 @@ local Main = {}
 function Main:Configure()
 	self.m_host = Host(self.Logger:subLogger('Host'), "FactoryControl Server")
 
-	local databaseAccessLayer = Database(self.Logger:subLogger("DatabaseAccessLayer"))
+	local databaseAccessLayer = DatabaseAccessLayer(self.Logger:subLogger("DatabaseAccessLayer"))
 
 	self.m_host:AddEndpoint(Usage.Ports.HTTP,
 		"Controller",
-		ControllerEndpoints --[[@as FactoryControl.Server.Endpoints.ControllerEndpoints]],
+		ControllerEndpoints --[[@as FactoryControl.Server.Endpoints.Controller]],
 		databaseAccessLayer)
+
+	self.m_host:AddEndpoint(Usage.Ports.HTTP,
+		"Feature",
+		FeatureEndpoints,
+		databaseAccessLayer)
+
 	self.Logger:LogDebug('setup endpoints')
 
 	self.m_host:RegisterAddress(Config.DOMAIN)

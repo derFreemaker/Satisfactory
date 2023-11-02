@@ -6,7 +6,7 @@ local Events = {}
 function Events:OnLoaded()
     JsonSerializer.Static__Serializer:AddTypeInfos({
         -- Button
-        require("FactoryControl.Client.Entities.Controller.Feature.Button.Pressed"):Static__GetType(),
+        require("FactoryControl.Client.Entities.Controller.Feature.Button.Update"):Static__GetType(),
 
         -- Switch
         require("FactoryControl.Client.Entities.Controller.Feature.Switch.Update"):Static__GetType(),
@@ -17,6 +17,8 @@ function Events:OnLoaded()
         -- Chart
         require("FactoryControl.Client.Entities.Controller.Feature.Chart.Update"):Static__GetType(),
     })
+
+    require("FactoryControl.Client.Extensions.NetworkContextExtensions")
 end
 
 return Events

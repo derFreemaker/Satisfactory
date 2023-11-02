@@ -1,5 +1,4 @@
----@class FactoryControl.Client.Entities.Controller.Feature.Radial.Update : Core.Json.Serializable
----@field Id Core.UUID
+---@class FactoryControl.Client.Entities.Controller.Feature.Radial.Update : FactoryControl.Client.Entities.Controller.Feature.Update
 ---@field Min number
 ---@field Max number
 ---@field Setting number
@@ -11,8 +10,10 @@ local Update = {}
 ---@param min number
 ---@param max number
 ---@param setting number
-function Update:__init(id, min, max, setting)
-    self.Id = id
+---@param baseFunc FactoryControl.Client.Entities.Controller.Feature.Update.Constructor
+function Update:__init(baseFunc, id, min, max, setting)
+    baseFunc(id)
+
     self.Min = min
     self.Max = max
     self.Setting = setting
@@ -20,8 +21,10 @@ end
 
 ---@return Core.UUID id, number min, number max, number setting
 function Update:Serialize()
-    return self.Id, self.Min, self.Max, self.Setting
+    return self.FeatureId, self.Min, self.Max, self.Setting
 end
 
 return Utils.Class.CreateClass(Update, "FactoryControl.Client.Entities.Controller.Feature.Radial.Update",
-    require("Core.Json.Serializable"))
+    require("FactoryControl.Client.Entities.Controller.Feature.Update"))
+
+-- //TODO: use feature update base class

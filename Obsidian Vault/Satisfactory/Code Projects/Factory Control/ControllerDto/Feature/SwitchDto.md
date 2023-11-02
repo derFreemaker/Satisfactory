@@ -1,5 +1,5 @@
 Can be switched.
 
 ---
-- Base: [[FeatureDto]]
+- **Base**: [[FeatureDto]]
 - IsEnabled: [[boolean]]

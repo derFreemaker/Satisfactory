@@ -1,4 +1,4 @@
 Can be invoke.
 
 ---
-- Base: [[FeatureDto]]
+- **Base**: [[FeatureDto]]

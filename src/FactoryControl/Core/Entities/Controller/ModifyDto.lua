@@ -1,18 +1,23 @@
 ---@class FactoryControl.Core.Entities.Controller.ModifyDto : Core.Json.Serializable
----@field Id Core.UUID
----@field Features table<string, FactoryControl.Core.Entities.Controller.FeatureDto>
----@overload fun(features: table<string, FactoryControl.Core.Entities.Controller.FeatureDto>) : FactoryControl.Core.Entities.Controller.ModifyDto
+---@field Name string
+---@field IPAddress Net.Core.IPAddress
+---@field Features Core.UUID[]
+---@overload fun(name: string, ipAddress: Net.Core.IPAddress, features: Core.UUID[]) : FactoryControl.Core.Entities.Controller.ModifyDto
 local ModifyDto = {}
 
 ---@private
----@param features table<string, FactoryControl.Core.Entities.Controller.FeatureDto>
-function ModifyDto:__init(features)
+---@param name string
+---@param ipAddress Net.Core.IPAddress
+---@param features Core.UUID[]
+function ModifyDto:__init(name, ipAddress, features)
+    self.Name = name
+    self.IPAddress = ipAddress
     self.Features = features
 end
 
----@return table<string, FactoryControl.Core.Entities.Controller.FeatureDto>
+---@return string name, Net.Core.IPAddress ipAddress, table<Core.UUID, FactoryControl.Core.Entities.Controller.FeatureDto> features
 function ModifyDto:Serialize()
-    return self.Features
+    return self.Name, self.IPAddress, self.Features
 end
 
 return Utils.Class.CreateClass(ModifyDto, "FactoryControl.Core.Entities.Controller.ModifyDto",

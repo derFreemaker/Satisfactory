@@ -1,34 +1,34 @@
-local EndpointUrlTemplates = require("FactoryControl.Core.EndpointUrls")[1]
+local ControllerUrlTemplates = require("FactoryControl.Core.EndpointUrls")[1].Controller
 
----@class FactoryControl.Server.Endpoints.ControllerEndpoints : Net.Rest.Api.Server.EndpointBase
----@field private m_controllers FactoryControl.Server.Database.Controllers
+---@class FactoryControl.Server.Endpoints.Controller : Net.Rest.Api.Server.EndpointBase
+---@field private m_databaseAccessLayer FactoryControl.Server.Database
 ---@field private m_logger Core.Logger
----@overload fun(logger: Core.Logger, apiController: Net.Rest.Api.Server.Controller, databaseAccessLayer: FactoryControl.Server.Database.Controllers) : FactoryControl.Server.Endpoints.ControllerEndpoints
+---@overload fun(logger: Core.Logger, apiController: Net.Rest.Api.Server.Controller, databaseAccessLayer: FactoryControl.Server.Database) : FactoryControl.Server.Endpoints.Controller
 local ControllerEndpoints = {}
 
 ---@private
 ---@param logger Core.Logger
 ---@param apiController Net.Rest.Api.Server.Controller
----@param databaseAccessLayer FactoryControl.Server.Database.Controllers
+---@param databaseAccessLayer FactoryControl.Server.Database
 ---@param baseFunc fun(endpointLogger: Core.Logger, apiController: Net.Rest.Api.Server.Controller)
 function ControllerEndpoints:__init(baseFunc, logger, apiController, databaseAccessLayer)
 	baseFunc(logger, apiController)
 
-	self.m_controllers = databaseAccessLayer
+	self.m_databaseAccessLayer = databaseAccessLayer
 
-	self:AddEndpoint("CONNECT", EndpointUrlTemplates.Connect, self.Connect)
+	self:AddEndpoint("CONNECT", ControllerUrlTemplates.Connect, self.Connect)
 
-	self:AddEndpoint("CREATE", EndpointUrlTemplates.Create, self.Create)
-	self:AddEndpoint("DELETE", EndpointUrlTemplates.Delete, self.Delete)
-	self:AddEndpoint("POST", EndpointUrlTemplates.Modify, self.Modify)
-	self:AddEndpoint("GET", EndpointUrlTemplates.GetById, self.GetById)
-	self:AddEndpoint("GET", EndpointUrlTemplates.GetByName, self.GetByName)
+	self:AddEndpoint("CREATE", ControllerUrlTemplates.Create, self.Create)
+	self:AddEndpoint("DELETE", ControllerUrlTemplates.Delete, self.Delete)
+	self:AddEndpoint("POST", ControllerUrlTemplates.Modify, self.Modify)
+	self:AddEndpoint("GET", ControllerUrlTemplates.GetById, self.GetById)
+	self:AddEndpoint("GET", ControllerUrlTemplates.GetByName, self.GetByName)
 end
 
 ---@param connect FactoryControl.Core.Entities.Controller.ConnectDto
 ---@return Net.Rest.Api.Response response
 function ControllerEndpoints:Connect(connect)
-	local controller = self.m_controllers:GetControllerByName(connect.Name)
+	local controller = self.m_databaseAccessLayer:GetControllerByName(connect.Name)
 	if not controller then
 		return self.Templates:NotFound("Controller with Name: " .. connect.Name .. " was not found.")
 	end
@@ -43,7 +43,7 @@ end
 ---@param createController FactoryControl.Core.Entities.Controller.CreateDto
 ---@return Net.Rest.Api.Response response
 function ControllerEndpoints:Create(createController)
-	local controller = self.m_controllers:CreateController(createController)
+	local controller = self.m_databaseAccessLayer:CreateController(createController)
 
 	if not controller then
 		return self.Templates:BadRequest("Controller with Name: " .. createController.Name .. " already exists.")
@@ -55,7 +55,7 @@ end
 ---@param id Core.UUID
 ---@return Net.Rest.Api.Response response
 function ControllerEndpoints:Delete(id)
-	self.m_controllers:DeleteController(id)
+	self.m_databaseAccessLayer:DeleteController(id)
 
 	return self.Templates:Ok(true)
 end
@@ -64,7 +64,7 @@ end
 ---@param modifyController FactoryControl.Core.Entities.Controller.ModifyDto
 ---@return Net.Rest.Api.Response response
 function ControllerEndpoints:Modify(id, modifyController)
-	local controller = self.m_controllers:GetControllerById(id)
+	local controller = self.m_databaseAccessLayer:GetControllerById(id)
 
 	if not controller then
 		return self.Templates:NotFound("Controller with id: " .. tostring(id) .. " was not found.")
@@ -78,7 +78,7 @@ end
 ---@param id Core.UUID
 ---@return Net.Rest.Api.Response response
 function ControllerEndpoints:GetById(id)
-	local controller = self.m_controllers:GetControllerById(id)
+	local controller = self.m_databaseAccessLayer:GetControllerById(id)
 
 	if not controller then
 		return self.Templates:NotFound("Controller with id: " .. tostring(id) .. " was not found.")
@@ -90,7 +90,7 @@ end
 ---@param name string
 ---@return Net.Rest.Api.Response response
 function ControllerEndpoints:GetByName(name)
-	local controller = self.m_controllers:GetControllerByName(name)
+	local controller = self.m_databaseAccessLayer:GetControllerByName(name)
 
 	if not controller then
 		return self.Templates:NotFound("Controller with name: " .. name .. " was not found.")
@@ -99,5 +99,5 @@ function ControllerEndpoints:GetByName(name)
 	return self.Templates:Ok(controller)
 end
 
-return Utils.Class.CreateClass(ControllerEndpoints, 'FactoryControl.Server.ControllerEndpoints',
+return Utils.Class.CreateClass(ControllerEndpoints, 'FactoryControl.Server.Endpoints.Controller',
 	require('Net.Rest.Api.Server.EndpointBase') --[[@as Net.Rest.Api.Server.EndpointBase]])

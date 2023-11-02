@@ -1,5 +1,5 @@
 ---@class Computer.Logger
----@field private m_loggerHistory { [integer]: (Github_Loading.Logger | Core.Logger) }
+---@field package m_loggerHistory { [integer]: (Github_Loading.Logger | Core.Logger) }
 ---@field package m_currentLogger (Github_Loading.Logger | Core.Logger)?
 ___logger = { m_loggerHistory = {} }
 

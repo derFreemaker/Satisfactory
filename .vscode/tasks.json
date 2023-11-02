@@ -43,8 +43,7 @@
 				"close": true
 			},
 			"runOptions": {
-				"instanceLimit": 1,
-				"runOn": "folderOpen"
+				"instanceLimit": 1
 			},
 			"problemMatcher": []
 		},

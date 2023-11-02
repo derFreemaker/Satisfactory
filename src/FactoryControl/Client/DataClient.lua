@@ -1,5 +1,7 @@
 local Usage = require("Core.Usage.Usage")
 local EndpointUrlConstructors = require("FactoryControl.Core.EndpointUrls")[2]
+local ControllerUrlConstructors = EndpointUrlConstructors.Controller
+local FeatureUrlConstructors = EndpointUrlConstructors.Feature
 
 local Uri = require("Net.Rest.Uri")
 
@@ -39,10 +41,14 @@ function DataClient:request(method, endpoint, body, options)
 	return self.m_client:Send(request)
 end
 
+-------------------------------------------------------------------------
+-- Controller
+-------------------------------------------------------------------------
+
 ---@param connect FactoryControl.Core.Entities.Controller.ConnectDto
 ---@return FactoryControl.Core.Entities.ControllerDto?
 function DataClient:Connect(connect)
-	local response = self:request("CONNECT", EndpointUrlConstructors.Connect(), connect)
+	local response = self:request("CONNECT", ControllerUrlConstructors.Connect(), connect)
 
 	if response:IsFaulted() then
 		return
@@ -54,7 +60,7 @@ end
 ---@param createController FactoryControl.Core.Entities.Controller.CreateDto
 ---@return FactoryControl.Core.Entities.ControllerDto?
 function DataClient:CreateController(createController)
-	local response = self:request('CREATE', EndpointUrlConstructors.Create(), createController)
+	local response = self:request('CREATE', ControllerUrlConstructors.Create(), createController)
 
 	if response:IsFaulted() then
 		return
@@ -66,7 +72,7 @@ end
 ---@param id Core.UUID
 ---@return boolean success
 function DataClient:DeleteControllerById(id)
-	local response = self:request("DELETE", EndpointUrlConstructors.Delete(id))
+	local response = self:request("DELETE", ControllerUrlConstructors.Delete(id))
 
 	return response:IsSuccess() and response:GetBody()
 end
@@ -75,7 +81,7 @@ end
 ---@param modifyController FactoryControl.Core.Entities.Controller.ModifyDto
 ---@return FactoryControl.Core.Entities.ControllerDto?
 function DataClient:ModifyControllerById(id, modifyController)
-	local response = self:request("POST", EndpointUrlConstructors.Modify(id), modifyController)
+	local response = self:request("POST", ControllerUrlConstructors.Modify(id), modifyController)
 
 	if response:IsFaulted() then
 		return
@@ -87,7 +93,7 @@ end
 ---@param id Core.UUID
 ---@return FactoryControl.Core.Entities.ControllerDto?
 function DataClient:GetControllerById(id)
-	local response = self:request("GET", EndpointUrlConstructors.GetById(id))
+	local response = self:request("GET", ControllerUrlConstructors.GetById(id))
 
 	if response:IsFaulted() then
 		return
@@ -99,10 +105,50 @@ end
 ---@param name string
 ---@return FactoryControl.Core.Entities.ControllerDto?
 function DataClient:GetControllerByName(name)
-	local response = self:request("GET", EndpointUrlConstructors.GetByName(name))
+	local response = self:request("GET", ControllerUrlConstructors.GetByName(name))
 
 	if response:IsFaulted() then
 		return
+	end
+
+	return response:GetBody()
+end
+
+-------------------------------------------------------------------------
+-- Feature
+-------------------------------------------------------------------------
+
+---@param feature FactoryControl.Core.Entities.Controller.FeatureDto
+---@return FactoryControl.Core.Entities.Controller.FeatureDto?
+function DataClient:CreateFeature(feature)
+	local response = self:request("CREATE", FeatureUrlConstructors.Create(), feature)
+
+	if response:IsFaulted() then
+		return
+	end
+
+	return response:GetBody()
+end
+
+---@param featureId Core.UUID
+---@return boolean
+function DataClient:DeleteFeatureById(featureId)
+	local response = self:request("DELETE", FeatureUrlConstructors.Delete(featureId))
+
+	if response:IsFaulted() then
+		return false
+	end
+
+	return response:GetBody()
+end
+
+---@param featureIds Core.UUID[]
+---@return FactoryControl.Core.Entities.Controller.FeatureDto[]
+function DataClient:GetFeatureByIds(featureIds)
+	local response = self:request("GET", FeatureUrlConstructors.GetByIds(), featureIds)
+
+	if response:IsFaulted() then
+		return {}
 	end
 
 	return response:GetBody()

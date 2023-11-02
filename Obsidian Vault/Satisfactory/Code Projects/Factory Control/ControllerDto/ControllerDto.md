@@ -7,4 +7,4 @@ Represents a Controller.
 - Id: [[Core.UUID]]
 - Name: [[string]]
 - IPAddress: [[Net.Core.IPAddress]]
-- Features: [[Dictionary]]<[[Core.UUID]], [[FeatureDto]]>
+- Features: [[Dictionary]]<[[string]], [[FeatureDto]]>

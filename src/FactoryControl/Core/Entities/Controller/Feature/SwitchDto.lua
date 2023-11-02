@@ -1,15 +1,16 @@
 ---@class FactoryControl.Core.Entities.Controller.Feature.SwitchDto : FactoryControl.Core.Entities.Controller.FeatureDto
 ---@field IsEnabled boolean
----@overload fun(id: Core.UUID, name: string, isEnabled: boolean) : FactoryControl.Core.Entities.Controller.Feature.SwitchDto
+---@overload fun(id: Core.UUID, name: string, controllerId: Core.UUID, isEnabled: boolean) : FactoryControl.Core.Entities.Controller.Feature.SwitchDto
 local SwitchFeatureDto = {}
 
 ---@private
 ---@param id Core.UUID
 ---@param name string
+---@param controllerId Core.UUID
 ---@param isEnabled boolean?
----@param baseFunc fun(id: Core.UUID, name: string, type: FactoryControl.Core.Entities.Controller.Feature.Type)
-function SwitchFeatureDto:__init(baseFunc, id, name, isEnabled)
-    baseFunc(id, name, "Switch")
+---@param baseFunc FactoryControl.Core.Entities.Controller.FeatureDto.Constructor
+function SwitchFeatureDto:__init(baseFunc, id, name, controllerId, isEnabled)
+    baseFunc(id, name, "Switch", controllerId)
 
     if isEnabled == nil then
         self.IsEnabled = false

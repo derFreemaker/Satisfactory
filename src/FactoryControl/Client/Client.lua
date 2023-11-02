@@ -1,16 +1,21 @@
 local Usage = require("Core.Usage.Usage")
 
-local DataClient = require("FactoryControl.Client.DataClient")
+local Task = require("Core.Task")
 local NetworkClient = require("Net.Core.NetworkClient")
+
+local DataClient = require("FactoryControl.Client.DataClient")
 
 local Controller = require("FactoryControl.Client.Entities.Controller.Controller")
 local CreateController = require("FactoryControl.Core.Entities.Controller.CreateDto")
 local ConnectController = require("FactoryControl.Core.Entities.Controller.ConnectDto")
 
+local FeatureFactory = require("FactoryControl.Client.Entities.Controller.Feature.Factory")
+
 ---@class FactoryControl.Client : object
 ---@field CurrentController FactoryControl.Client.Entities.Controller
 ---@field NetClient Net.Core.NetworkClient
 ---@field private m_client FactoryControl.Client.DataClient
+---@field private m_features table<string, FactoryControl.Client.Entities.Controller.Feature>
 ---@field private m_logger Core.Logger
 ---@overload fun(logger: Core.Logger, client: FactoryControl.Client.DataClient?, networkClient: Net.Core.NetworkClient?) : FactoryControl.Client
 local Client = {}
@@ -20,13 +25,25 @@ local Client = {}
 ---@param client FactoryControl.Client.DataClient?
 ---@param networkClient Net.Core.NetworkClient?
 function Client:__init(logger, client, networkClient)
-    self.m_logger = logger
-    self.m_client = client or DataClient(logger:subLogger("DataClient"))
     self.NetClient = networkClient or NetworkClient(logger:subLogger("NetClient"))
+
+    self.m_client = client or DataClient(logger:subLogger("DataClient"))
+    self.m_features = setmetatable({}, { __mode = "v" })
+    self.m_logger = logger
+
+    self.NetClient:AddListener(
+        Usage.Events.FactoryControl_Feature_Invoked,
+        Usage.Ports.FactoryControl,
+        Task(self.OnFeatureUpdate, self)
+    )
 end
 
+------------------------------------------------------------------------------
+-- Controller
+------------------------------------------------------------------------------
+
 ---@param name string
----@param features FactoryControl.Core.Entities.Controller.FeatureDto?
+---@param features FactoryControl.Client.Entities.Controller.Feature[]?
 ---@return FactoryControl.Client.Entities.Controller
 function Client:Connect(name, features)
     local controllerDto = self.m_client:Connect(ConnectController(name, self.NetClient:GetIPAddress()))
@@ -46,7 +63,15 @@ function Client:Connect(name, features)
     self.CurrentController = controller
 
     if not created then
-        self:ModfiyControllerById(controller.Id, controller:GetFeatures())
+        controller:Modify(function(modify)
+            if not features then
+                return
+            end
+
+            for _, feature in pairs(features) do
+                modify.Features[feature.Name] = feature
+            end
+        end)
     end
 
     return controller
@@ -104,48 +129,64 @@ function Client:GetControllerByName(name)
     return Controller(controllerDto, self)
 end
 
----@param ipAddress Net.Core.IPAddress
----@param buttonPressed FactoryControl.Client.Entities.Controller.Feature.Button.Pressed
-function Client:ButtonPressed(ipAddress, buttonPressed)
-    self.NetClient:Send(
-        ipAddress,
-        Usage.Ports.FactoryControl,
-        Usage.Events.FactoryControl,
-        buttonPressed
-    )
+------------------------------------------------------------------------------
+-- Feature
+------------------------------------------------------------------------------
+
+---@param feature FactoryControl.Client.Entities.Controller.Feature
+function Client:WatchFeature(feature)
+    self.m_features[feature.Id:ToString()] = feature
 end
 
----@param ipAddress Net.Core.IPAddress
----@param switchUpdate FactoryControl.Client.Entities.Controller.Feature.Switch.Update
-function Client:UpdateSwitch(ipAddress, switchUpdate)
-    self.NetClient:Send(
-        ipAddress,
-        Usage.Ports.FactoryControl,
-        Usage.Events.FactoryControl,
-        switchUpdate
-    )
+---@private
+---@param context Net.Core.NetworkContext
+function Client:OnFeatureUpdate(context)
+    local featureUpdate = context:GetFeatureUpdate()
+    local feature = self.m_features[featureUpdate.FeatureId:ToString()]
+    if not feature then
+        return
+    end
+
+    local logger = self.m_logger:subLogger("Feature[" .. feature.Id:ToString() .. "]")
+    feature.OnChanged:Trigger(logger, featureUpdate)
 end
 
----@param ipAddress Net.Core.IPAddress
----@param radialUpdate FactoryControl.Client.Entities.Controller.Feature.Radial.Update
-function Client:UpdateRadial(ipAddress, radialUpdate)
-    self.NetClient:Send(
-        ipAddress,
-        Usage.Ports.FactoryControl,
-        Usage.Events.FactoryControl,
-        radialUpdate
-    )
+---@param feature FactoryControl.Client.Entities.Controller.Feature
+---@return FactoryControl.Client.Entities.Controller.Feature?
+function Client:CreateFeature(feature)
+    local featureDto = self.m_client:CreateFeature(feature:ToDto())
+    if not featureDto then
+        return
+    end
+
+    return FeatureFactory.Create(featureDto, self)
 end
 
----@param ipAddress Net.Core.IPAddress
----@param chartUpdate FactoryControl.Client.Entities.Controller.Feature.Radial.Update
-function Client:UpdateChart(ipAddress, chartUpdate)
-    self.NetClient:Send(
-        ipAddress,
-        Usage.Ports.FactoryControl,
-        Usage.Events.FactoryControl,
-        chartUpdate
-    )
+---@param featureId Core.UUID
+---@return boolean
+function Client:DeleteFeatureById(featureId)
+    return self.m_client:DeleteFeatureById(featureId)
+end
+
+---@param featureIds Core.UUID[]
+---@return FactoryControl.Client.Entities.Controller.Feature?
+function Client:GetFeatureByIds(featureIds)
+    local featureDtos = self.m_client:GetFeatureByIds(featureIds)
+
+    ---@type FactoryControl.Client.Entities.Controller.Feature[]
+    local features = {}
+
+    for _, featureDto in pairs(featureDtos) do
+        local feature = FeatureFactory.Create(featureDto, self)
+        table.insert(features, feature)
+    end
+
+    return features
+end
+
+---@param featureUpdate FactoryControl.Client.Entities.Controller.Feature.Update
+function Client:UpdateFeature(featureUpdate)
+    -- //TODO: update feature on server
 end
 
 return Utils.Class.CreateClass(Client, "FactoryControl.Client.Client")
