@@ -11,10 +11,17 @@
     "log"
   ],
   "Lua.completion.autoRequire": true,
-  "Lua.workspace.ignoreDir": [".stfolder", ".vscode", "Lua-Bundler", "Obsidian Vault", "Packages", "PackageTemplate"],
+  "Lua.workspace.ignoreDir": [".stfolder", ".vscode", "Code-Server", "Lua-Bundler", "Obsidian Vault", "Packages", "PackageTemplate"],
   "triggerTaskOnSave.tasks": {
     "check all": [
       "*"
     ],
   },
+  "files.exclude": {
+    ".stfolder/**": true,
+    "Code-Server/**": true,
+    "Lua-Bundler/**": true,
+    "Obsidian Vault/**": true,
+    "Packages/**": true,
+  }
 }
