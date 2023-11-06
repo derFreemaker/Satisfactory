@@ -12,13 +12,18 @@ local ChartDto = {}
 ---@param xAxisName string
 ---@param yAxisName string
 ---@param data table<number, any>?
----@param baseFunc FactoryControl.Core.Entities.Controller.FeatureDto.Constructor
-function ChartDto:__init(baseFunc, id, name, controllerId, xAxisName, yAxisName, data)
-    baseFunc(id, name, "Chart", controllerId)
+---@param super FactoryControl.Core.Entities.Controller.FeatureDto.Constructor
+function ChartDto:__init(super, id, name, controllerId, xAxisName, yAxisName, data)
+    super(id, name, "Chart", controllerId)
 
     self.XAxisName = xAxisName
     self.YAxisName = yAxisName
     self.Data = data or {}
+end
+
+---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Chart.Update
+function ChartDto:OnUpdate(featureUpdate)
+    self.Data = featureUpdate.Data
 end
 
 ---@return Core.UUID id, string name, string xAxisName, string yAxisName, table<number, any> data
@@ -27,4 +32,4 @@ function ChartDto:Serialize()
 end
 
 return Utils.Class.CreateClass(ChartDto, "FactoryControl.Core.Entities.Controller.Feature.ChartDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --[[@as FactoryControl.Core.Entities.Controller.FeatureDto]])
+    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))

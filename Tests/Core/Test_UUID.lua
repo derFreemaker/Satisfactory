@@ -1,7 +1,7 @@
 local luaunit = require('Tests.Luaunit')
 require('Tests.Simulator.Simulator'):Initialize(1)
 
-local UUID = require('Core.UUID')
+local UUID = require('Core.Common.UUID')
 
 function TestNewUUID()
 	local test = UUID.Static__New()

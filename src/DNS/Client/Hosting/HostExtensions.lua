@@ -5,9 +5,8 @@ if not PackageLoader:TryGetModule("Hosting.Host", Host) then
 end
 ---@type Hosting.Host
 Host = Host.Value:Load()
--- Run only if module Hosting.Host is loaded
 
-local Task = require("Core.Task")
+local Task = require("Core.Common.Task")
 
 local DNSClient = require("DNS.Client.Client")
 
@@ -24,7 +23,7 @@ local HostExtensions = {}
 
 function HostExtensions:GetDNSClient()
     if not self.m_dnsClient then
-        self.m_dnsClient = DNSClient(self:GetNetworkClient(), self.m_logger:subLogger("DNSClient"))
+        self.m_dnsClient = DNSClient(self:GetNetworkClient(), self:CreateLogger("DNSClient"))
     end
 
     return self.m_dnsClient
@@ -40,9 +39,9 @@ function HostExtensions:RegisterAddress(url, ipAddress)
     end
 
     if dnsClient:CreateAddress(url, ipAddress) then
-        self.m_logger:LogDebug("Registered address " .. url .. " on DNS server.")
+        self:GetHostLogger():LogDebug("Registered address " .. url .. " on DNS server.")
     else
-        self.m_logger:LogWarning("Failed to register address " .. url .. " on DNS server or already exists.")
+        self:GetHostLogger():LogWarning("Failed to register address " .. url .. " on DNS server or already exists.")
     end
 end
 

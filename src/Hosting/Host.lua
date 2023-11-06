@@ -1,18 +1,19 @@
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local JsonSerializer = require("Core.Json.JsonSerializer")
 
+local ServiceCollection = require("Hosting.ServiceCollection")
+
 ---@class Hosting.Host : object
----@field private m_jsonSerializer Core.Json.Serializer
----@field private m_logger Core.Logger
----@field private m_name string
----@field private m_ready boolean
+---@field Services Hosting.ServiceCollection
+---@field package m_name string
+---@field package m_ready boolean
+---@field package m_jsonSerializer Core.Json.Serializer
+---@field package m_logger Core.Logger
 ---@overload fun(logger: Core.Logger, name: string?, jsonSerializer: Core.Json.Serializer?) : Hosting.Host
 local Host = {}
 
 ---@type Core.Task[]
 Host._Static__ReadyTasks = {}
-
---#region - Core -
 
 ---@private
 ---@param logger Core.Logger
@@ -24,6 +25,8 @@ function Host:__init(logger, name, jsonSerializer)
     self.m_name = name or "Host"
     self.m_ready = false
 
+    self.Services = ServiceCollection()
+
     EventPullAdapter:Initialize(logger:subLogger("EventPullAdapter"))
 
     for _, task in pairs(self._Static__ReadyTasks) do
@@ -34,8 +37,22 @@ function Host:__init(logger, name, jsonSerializer)
     self.m_logger:LogDebug(self.m_name .. " starting...")
 end
 
+function Host:GetName()
+    return self.m_name
+end
+
 function Host:GetJsonSerializer()
     return self.m_jsonSerializer
+end
+
+function Host:GetHostLogger()
+    return self.m_logger
+end
+
+---@param name string
+---@return Core.Logger logger
+function Host:CreateLogger(name)
+    return self.m_logger:subLogger(name)
 end
 
 function Host:Ready()
@@ -62,17 +79,5 @@ function Host:RunCycle(timeoutSeconds)
     self.m_logger:LogTrace("running cycle")
     EventPullAdapter:WaitForAll(timeoutSeconds)
 end
-
---#endregion
-
---#region - Logger -
-
----@param name string
----@return Core.Logger logger
-function Host:CreateLogger(name)
-    return self.m_logger:subLogger(name)
-end
-
---#endregion
 
 return Utils.Class.CreateClass(Host, "Hosting.Host")

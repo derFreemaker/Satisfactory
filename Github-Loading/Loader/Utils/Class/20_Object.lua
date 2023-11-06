@@ -64,7 +64,7 @@ local metaMethods = {
 	__le = true
 }
 
----@class object : Utils.Class.ObjectMetaMethods
+---@class object : Utils.Class.ObjectMetaMethods, function
 local Object = {}
 
 ---@return Utils.Class.Type

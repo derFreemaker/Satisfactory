@@ -1,7 +1,7 @@
 local NetworkCardAdapter = require('Adapter.Computer.NetworkCard')
 local JsonSerializer = require('Core.Json.JsonSerializer')
 local EventPullAdapter = require('Core.Event.EventPullAdapter')
-local Task = require('Core.Task')
+local Task = require('Core.Common.Task')
 local NetworkPort = require('Net.Core.NetworkPort')
 local NetworkContext = require('Net.Core.NetworkContext')
 local NetworkFuture = require("Net.Core.NetworkFuture")
@@ -124,12 +124,12 @@ end
 ---@param onRecivedPort (Net.Core.Port)?
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
-function NetworkClient:AddListener(onRecivedEventName, onRecivedPort, listener)
+function NetworkClient:AddTask(onRecivedEventName, onRecivedPort, listener)
 	onRecivedEventName = onRecivedEventName or 'all'
 	onRecivedPort = onRecivedPort or 'all'
 
 	local networkPort = self:GetOrCreateNetworkPort(onRecivedPort)
-	networkPort:AddListener(onRecivedEventName, listener)
+	networkPort:AddTask(onRecivedEventName, listener)
 	return networkPort
 end
 
@@ -137,13 +137,31 @@ end
 ---@param onRecivedPort Net.Core.Port
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
-function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listener)
+function NetworkClient:AddTaskOnce(onRecivedEventName, onRecivedPort, listener)
 	onRecivedEventName = onRecivedEventName or 'all'
 	onRecivedPort = onRecivedPort or 'all'
 
 	local networkPort = self:GetOrCreateNetworkPort(onRecivedPort)
-	networkPort:AddListenerOnce(onRecivedEventName, listener)
+	networkPort:AddTaskOnce(onRecivedEventName, listener)
 	return networkPort
+end
+
+---@param onRecivedEventName (string | "all")?
+---@param onRecivedPort (Net.Core.Port)?
+---@param listener fun(context: Net.Core.NetworkClient)
+---@param ... any
+---@return Net.Core.NetworkPort
+function NetworkClient:AddListener(onRecivedEventName, onRecivedPort, listener, ...)
+	return self:AddTask(onRecivedEventName, onRecivedPort, Task(listener, ...))
+end
+
+---@param onRecivedEventName string | "all"
+---@param onRecivedPort Net.Core.Port
+---@param listener fun(context: Net.Core.NetworkContext)
+---@param ... any
+---@return Net.Core.NetworkPort
+function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listener, ...)
+	return self:AddTaskOnce(onRecivedEventName, onRecivedPort, Task(listener, ...))
 end
 
 ---@async
@@ -158,7 +176,7 @@ function NetworkClient:WaitForEvent(eventName, port, timeoutSeconds)
 		result = context
 	end
 
-	local netPort = self:AddListenerOnce(eventName, port, Task(set))
+	local netPort = self:AddListenerOnce(eventName, port, set)
 	netPort:OpenPort()
 
 	self.m_logger:LogDebug("waiting for event: '" .. eventName .. "' on port: " .. port)

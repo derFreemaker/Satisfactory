@@ -1,8 +1,6 @@
-local Task = require("Core.Task")
+local RadialDto = require("FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto")
 
-local RadialDto = require("FactoryControl.Core.Entities.Controller.Feature.RadialDto")
-
-local Update = require("FactoryControl.Client.Entities.Controller.Feature.Radial.Update")
+local Update = require("FactoryControl.Core.Entities.Controller.Feature.Radial.Update")
 
 ---@class FactoryControl.Client.Entities.Controller.Feature.Radial : FactoryControl.Client.Entities.Controller.Feature
 ---@field Min number
@@ -17,9 +15,9 @@ local Radial = {}
 ---@private
 ---@param radialDto FactoryControl.Core.Entities.Controller.Feature.RadialDto
 ---@param client FactoryControl.Client
----@param baseFunc FactoryControl.Client.Entities.Controller.Feature.Constructor
-function Radial:__init(baseFunc, radialDto, client)
-    baseFunc(radialDto, client)
+---@param super FactoryControl.Client.Entities.Controller.Feature.Constructor
+function Radial:__init(super, radialDto, client)
+    super(radialDto, client)
 
     self.Min = radialDto.Min
     self.m_old_Min = radialDto.Min
@@ -29,12 +27,10 @@ function Radial:__init(baseFunc, radialDto, client)
 
     self.Setting = radialDto.Setting
     self.m_old_Setting = radialDto.Setting
-
-    self.OnChanged:AddListener(Task(self.OnUpdate, self))
 end
 
 ---@private
----@param update FactoryControl.Client.Entities.Controller.Feature.Radial.Update
+---@param update FactoryControl.Core.Entities.Controller.Feature.Radial.Update
 function Radial:OnUpdate(update)
     self.Min = update.Min
     self.m_old_Min = update.Min
@@ -69,4 +65,4 @@ function Radial:Update()
 end
 
 return Utils.Class.CreateClass(Radial, "FactoryControl.Client.Entities.Controller.Feature.Radial",
-    require("FactoryControl.Client.Entities.Controller.Feature.Feature") --[[@as FactoryControl.Client.Entities.Controller.Feature]])
+    require("FactoryControl.Client.Entities.Controller.Feature.Feature"))

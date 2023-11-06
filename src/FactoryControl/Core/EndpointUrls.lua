@@ -61,6 +61,18 @@ local FeatureTemplates = {}
 ---@class FactoryControl.Core.EndpointUrlConstructors.Feature
 local FeatureConstructors = {}
 
+FeatureTemplates.Watch = "/Feature/{id:Core.UUID}/Watch"
+---@param featureId Core.UUID
+function FeatureConstructors.Watch(featureId)
+    return "/Feature/" .. featureId:ToString() .. "/Watch"
+end
+
+FeatureTemplates.Unwatch = "/Feature/{id:Core.UUID}/Unwatch"
+---@param featureId Core.UUID
+function FeatureConstructors.Unwatch(featureId)
+    return "/Feature/" .. featureId:ToString() .. "/Unwatch"
+end
+
 FeatureTemplates.Create = "/Feature/Create"
 function FeatureConstructors.Create()
     return "/Feature/Create"

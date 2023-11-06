@@ -8,6 +8,7 @@
   "mobileMakeBar": true,
   "inlineStyler": true,
   "makerMode": true,
+  "spacesMDBInHidden": true,
   "inlineStylerColors": false,
   "editorFlow": true,
   "internalLinkClickFlow": true,
@@ -15,14 +16,12 @@
   "saveAllContextToFrontmatter": true,
   "editorFlowStyle": "seamless",
   "autoOpenFileContext": false,
-  "activeView": "root",
+  "activeView": "/",
   "hideFrontmatter": true,
   "activeSpace": "",
-  "spacesCompactMode": false,
   "defaultDateFormat": "MMM dd yyyy",
   "spacesEnabled": true,
   "spacesPerformance": false,
-  "collapsedTags": [],
   "enableFolderNote": true,
   "folderIndentationLines": true,
   "revealActiveFile": false,
@@ -30,10 +29,68 @@
   "spaceRowHeight": 29,
   "spacesDisablePatch": false,
   "folderNoteInsideFolder": true,
-  "folderNoteDefaultView": true,
   "sidebarTabs": true,
   "showRibbon": true,
   "deleteFileOption": "trash",
+  "expandedSpaces": [
+    "/",
+    null,
+    "Satisfactory",
+    "Lua",
+    null
+  ],
+  "expandFolderOnClick": true,
+  "menuTriggerChar": "/",
+  "inlineStickerMenu": true,
+  "emojiTriggerChar": ":",
+  "folderContextFile": "context",
+  "folderFrameFile": "frames",
+  "spacesFolder": "Spaces",
+  "hiddenFiles": [
+    "Context"
+  ],
+  "lineNumbers": false,
+  "hiddenExtensions": [
+    ".mdb"
+  ],
+  "inlineBacklinks": false,
+  "inlineContext": true,
+  "inlineBacklinksExpanded": false,
+  "inlineContextExpanded": true,
+  "inlineContextSectionsExpanded": true,
+  "dataviewInlineContext": false,
+  "inlineContextNameLayout": "vertical",
+  "waypoints": [
+    "Spaces/Home",
+    "/",
+    "spaces://$tags"
+  ],
+  "rootSpaces": [
+    "Spaces/Home"
+  ],
+  "spacesUseAlias": false,
+  "fmKeyAlias": "aliases",
+  "fmKeyBanner": "banner",
+  "fmKeyColor": "color",
+  "fmKeySticker": "sticker",
+  "fmKeyContexts": "_contexts",
+  "fmKeySort": "_sort",
+  "fmKeyFilter": "_filters",
+  "fmKeyLinks": "_links",
+  "openSpacesOnLaunch": true,
+  "indexSVG": false,
+  "quickFrames": [],
+  "readableLineWidth": true,
+  "autoAddContextsToSubtags": true,
+  "autoMigration08": true,
+  "releaseNotesPrompt": 0.804,
+  "enableDefaultSpaces": true,
+  "enableTagSpaces": true,
+  "enableHomeSpace": true,
+  "showSpacePinIcon": true,
+  "spacesCompactMode": false,
+  "collapsedTags": [],
+  "folderNoteDefaultView": true,
   "expandedFolders": {
     "Satisfactory": [
       "Cont",
@@ -70,50 +127,16 @@
       "Types"
     ]
   },
-  "expandedSpaces": [
-    "/",
-    null,
-    "Satisfactory",
-    "Lua",
-    null
-  ],
-  "expandFolderOnClick": true,
   "openFolders": [],
   "fileIcons": [],
   "cachedSpaces": [
     "Satisfactory"
   ],
-  "menuTriggerChar": "/",
-  "inlineStickerMenu": true,
-  "emojiTriggerChar": ":",
-  "folderContextFile": "context",
   "tagContextFolder": "Context",
-  "hiddenFiles": [
-    "Context"
-  ],
-  "lineNumbers": false,
-  "hiddenExtensions": [
-    ".mdb"
-  ],
-  "inlineBacklinks": false,
-  "inlineContext": true,
-  "inlineBacklinksExpanded": false,
-  "inlineContextExpanded": true,
-  "inlineContextSectionsExpanded": true,
-  "dataviewInlineContext": false,
-  "inlineContextNameLayout": "vertical",
   "spacesSyncLastUpdated": "Context/spacesLastSync.log",
   "spacesSyncTimeoutSeconds": 10,
   "spacesAutoBackup": true,
   "spacesAutoBackupInterval": 10,
   "spacesAutoBackupLast": 1698832944060,
-  "spacesUseAlias": false,
-  "precreateVaultSpace": true,
-  "fmKeyAlias": "aliases",
-  "fmKeyBanner": "banner",
-  "fmKeyColor": "color",
-  "fmKeySticker": "sticker",
-  "openSpacesOnLaunch": true,
-  "indexSVG": false,
-  "readableLineWidth": true
+  "precreateVaultSpace": true
 }

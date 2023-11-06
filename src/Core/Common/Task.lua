@@ -1,21 +1,21 @@
 ---@class Core.Task : object
 ---@field private m_func function
----@field private m_passthrough any
+---@field private m_passthrough any[]
 ---@field private m_thread thread
 ---@field private m_closed boolean
 ---@field private m_success boolean
 ---@field private m_results any[]
 ---@field private m_error string?
 ---@field private m_traceback string?
----@overload fun(func: function, passthrough: any) : Core.Task
+---@overload fun(func: function, ...: any) : Core.Task
 local Task = {}
 
 ---@private
 ---@param func function
----@param passthrough any
-function Task:__init(func, passthrough)
+---@param ... any
+function Task:__init(func, ...)
     self.m_func = func
-    self.m_passthrough = passthrough
+    self.m_passthrough = { ... }
     self.m_closed = false
     self.m_success = true
     self.m_results = {}
@@ -52,8 +52,8 @@ end
 function Task:Execute(...)
     ---@param ... any parameters
     local function invokeFunc(...)
-        if self.m_passthrough ~= nil then
-            self.m_results = { self.m_func(self.m_passthrough, ...) }
+        if #self.m_passthrough then
+            self.m_results = { self.m_func(table.unpack(self.m_passthrough), ...) }
         else
             self.m_results = { self.m_func(...) }
         end

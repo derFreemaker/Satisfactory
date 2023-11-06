@@ -8,7 +8,7 @@ PackageData["DNSServer__main"] = {
     Data = [[
 local Usage = require("Core.Usage.Usage")
 
-local Task = require('Core.Task')
+local Task = require('Core.Common.Task')
 
 local Host = require("Hosting.Host")
 
@@ -60,7 +60,7 @@ local DbTable = require("Database.DbTable")
 local Path = require("Core.FileSystem.Path")
 local Address = require("DNS.Core.Entities.Address.Address")
 
-local UUID = require("Core.UUID")
+local UUID = require("Core.Common.UUID")
 
 ---@class DNS.Server.AddressDatabase : object
 ---@field private m_dbTable Database.DbTable | table<string, DNS.Core.Entities.Address>
@@ -150,9 +150,9 @@ local Endpoints = {}
 ---@private
 ---@param logger Core.Logger
 ---@param controller Net.Rest.Api.Server.Controller
----@param baseFunc fun(endpointLogger: Core.Logger, apiController: Net.Rest.Api.Server.Controller)
-function Endpoints:__init(baseFunc, logger, controller)
-    baseFunc(logger, controller)
+---@param super fun(endpointLogger: Core.Logger, apiController: Net.Rest.Api.Server.Controller)
+function Endpoints:__init(super, logger, controller)
+    super(logger, controller)
 
     self.m_addressDatabase = AddressDatabase(logger:subLogger("AddressDatabase"))
 

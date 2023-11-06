@@ -5,7 +5,6 @@ if not PackageLoader:TryGetModule("Hosting.Host", Host) then
 end
 ---@type Hosting.Host
 Host = Host.Value:Load()
--- Run only if module Hosting.Host is loaded
 
 local ApiController = require("Net.Rest.Api.Server.Controller")
 
@@ -42,7 +41,7 @@ function HostExtensions:AddEndpoint(port, endpointName, endpointBase, ...)
         self.Endpoints = {}
     end
 
-    local endpointLogger = self.m_logger:subLogger("Endpoint[" .. endpointName .. "]")
+    local endpointLogger = self:CreateLogger("Endpoint[" .. endpointName .. "]")
     local apiController = self:GetOrCreateApiController(port, endpointLogger)
 
     table.insert(self.Endpoints, endpointBase(endpointLogger, apiController, ...))

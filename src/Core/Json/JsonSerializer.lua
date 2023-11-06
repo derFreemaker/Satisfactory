@@ -198,7 +198,7 @@ Utils.Class.CreateClass(JsonSerializer, "Core.Json.JsonSerializer")
 JsonSerializer.Static__Serializer = JsonSerializer()
 JsonSerializer.Static__Serializer:AddTypeInfos({
     -- UUID
-    require("Core.UUID"):Static__GetType()
+    require("Core.Common.UUID"):Static__GetType()
 })
 
 return JsonSerializer

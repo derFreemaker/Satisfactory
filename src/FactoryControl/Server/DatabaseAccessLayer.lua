@@ -1,14 +1,14 @@
 local DbTable = require("Database.DbTable")
 local Path = require("Core.FileSystem.Path")
-local UUID = require("Core.UUID")
+local UUID = require("Core.Common.UUID")
 
 local ControllerDto = require("FactoryControl.Core.Entities.Controller.ControllerDto")
 
----@class FactoryControl.Server.Database : object
+---@class FactoryControl.Server.DatabaseAccessLayer : object
 ---@field private m_controllers Database.DbTable
 ---@field private m_features Database.DbTable
 ---@field private m_logger Core.Logger
----@overload fun(logger: Core.Logger) : FactoryControl.Server.Database
+---@overload fun(logger: Core.Logger) : FactoryControl.Server.DatabaseAccessLayer
 local DatabaseAccessLayer = {}
 
 ---@private
@@ -89,16 +89,20 @@ function DatabaseAccessLayer:DeleteFeature(featureId)
     self.m_features:Save()
 end
 
+---@param featureId Core.UUID
+---@return FactoryControl.Core.Entities.Controller.FeatureDto feature
+function DatabaseAccessLayer:GetFeatureById(featureId)
+    return self.m_features:Get(featureId:ToString())
+end
+
 ---@param featureIds Core.UUID[]
 ---@return FactoryControl.Core.Entities.Controller.FeatureDto[] features
 function DatabaseAccessLayer:GetFeatureByIds(featureIds)
     ---@type FactoryControl.Core.Entities.Controller.FeatureDto[]
     local features = {}
 
-    for id, feature in pairs(self.m_features) do
-        if Utils.Table.Contains(featureIds, id) then
-            table.insert(features, feature)
-        end
+    for _, id in pairs(featureIds) do
+        table.insert(features, self:GetFeatureById(id))
     end
 
     return features

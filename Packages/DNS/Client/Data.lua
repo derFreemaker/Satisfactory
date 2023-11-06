@@ -166,7 +166,7 @@ end
 Host = Host.Value:Load()
 -- Run only if module Hosting.Host is loaded
 
-local Task = require("Core.Task")
+local Task = require("Core.Common.Task")
 
 local DNSClient = require("DNS.Client.Client")
 

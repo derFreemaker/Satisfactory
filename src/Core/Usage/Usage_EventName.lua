@@ -11,7 +11,11 @@ local EventNameUsage = {
 
     -- FactoryControl
     FactoryControl_Heartbeat = "FactoryControl",
-    FactoryControl_Feature_Invoked = "FactoryControl-Feature-Invoked"
+    FactoryControl_Feature_Invoked = "FactoryControl-Feature-Invoked",
+
+    -- CallbackService
+    CallbackService = "CallbackService",
+    CallbackService_Response = "CallbackService-Response"
 }
 
 return EventNameUsage

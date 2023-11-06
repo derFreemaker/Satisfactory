@@ -2,7 +2,7 @@ local DbTable = require("Database.DbTable")
 local Path = require("Core.FileSystem.Path")
 local Address = require("DNS.Core.Entities.Address.Address")
 
-local UUID = require("Core.UUID")
+local UUID = require("Core.Common.UUID")
 
 ---@class DNS.Server.AddressDatabase : object
 ---@field private m_dbTable Database.DbTable | table<string, DNS.Core.Entities.Address>

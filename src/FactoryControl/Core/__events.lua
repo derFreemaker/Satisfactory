@@ -12,11 +12,19 @@ function Events:OnLoaded()
         require("FactoryControl.Core.Entities.Controller.ModifyDto"):Static__GetType(),
 
         -- FeatureDto's
-        require("FactoryControl.Core.Entities.Controller.Feature.SwitchDto"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.Feature.ButtonDto"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.Feature.RadialDto"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.Feature.ChartDto"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto"):Static__GetType(),
+
+        -- Feature Updates
+        require("FactoryControl.Core.Entities.Controller.Feature.Button.Update"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.Feature.Switch.Update"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.Feature.Radial.Update"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.Feature.Chart.Update"):Static__GetType(),
     })
+
+    require("FactoryControl.Core.Extensions.NetworkContextExtensions")
 end
 
 return Events

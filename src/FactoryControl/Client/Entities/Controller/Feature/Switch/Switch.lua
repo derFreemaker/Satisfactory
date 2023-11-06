@@ -1,8 +1,6 @@
-local Task = require("Core.Task")
+local SwitchDto = require("FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto")
 
-local SwitchDto = require("FactoryControl.Core.Entities.Controller.Feature.SwitchDto")
-
-local Update = require("FactoryControl.Client.Entities.Controller.Feature.Switch.Update")
+local Update = require("FactoryControl.Core.Entities.Controller.Feature.Switch.Update")
 
 ---@class FactoryControl.Client.Entities.Controller.Feature.Switch : FactoryControl.Client.Entities.Controller.Feature
 ---@field private m_isEnabled boolean
@@ -13,18 +11,16 @@ local Switch = {}
 ---@private
 ---@param switchDto FactoryControl.Core.Entities.Controller.Feature.SwitchDto
 ---@param client FactoryControl.Client
----@param baseFunc FactoryControl.Client.Entities.Controller.Feature.Constructor
-function Switch:__init(baseFunc, switchDto, client)
-    baseFunc(switchDto, client)
+---@param super FactoryControl.Client.Entities.Controller.Feature.Constructor
+function Switch:__init(super, switchDto, client)
+    super(switchDto, client)
 
     self.m_isEnabled = switchDto.IsEnabled
     self.m_old_isEnabled = switchDto.IsEnabled
-
-    self.OnChanged:AddListener(Task(self.OnUpdate, self))
 end
 
 ---@private
----@param update FactoryControl.Client.Entities.Controller.Feature.Switch.Update
+---@param update FactoryControl.Core.Entities.Controller.Feature.Switch.Update
 function Switch:OnUpdate(update)
     self.m_isEnabled = update.IsEnabled
     self.m_old_isEnabled = update.IsEnabled
@@ -69,4 +65,4 @@ function Switch:Toggle()
 end
 
 return Utils.Class.CreateClass(Switch, "FactoryControl.Client.Entities.Controller.Feature.Switch",
-    require("FactoryControl.Client.Entities.Controller.Feature.Feature") --[[@as FactoryControl.Client.Entities.Controller.Feature]])
+    require("FactoryControl.Client.Entities.Controller.Feature.Feature"))

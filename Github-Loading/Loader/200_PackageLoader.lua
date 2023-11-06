@@ -137,6 +137,16 @@ function PackageLoader:GetModule(moduleToGet)
 		end
 	end
 
+	moduleToGet = moduleToGet .. ".init"
+
+	for _, package in ipairs(self.Packages) do
+		local module = package:GetModule(moduleToGet)
+		if module then
+			self.Logger:LogDebug("geted module: '" .. moduleToGet .. "'")
+			return module
+		end
+	end
+
 	error("module could not be found: '" .. moduleToGet .. "'")
 end
 

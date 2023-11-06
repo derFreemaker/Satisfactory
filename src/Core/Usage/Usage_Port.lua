@@ -11,6 +11,10 @@ local PortUsage = {
 	-- FactoryControl
 	FactoryControl_Heartbeat = 1250,
 	FactoryControl = 1251,
+
+	-- Callback
+	CallbackService = 2400,
+	CallbackService_Response = 2401,
 }
 
 return PortUsage

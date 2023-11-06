@@ -107,26 +107,9 @@ function UUID:__init(headOrSring, body, tail)
     self:__modifyBehavior({ DisableCustomIndexing = false })
 end
 
----@private
-function UUID:__newindex()
-    error("Core.UUID is completely read only", 3)
-end
-
----@private
 ---@param other Core.UUID
 ---@return boolean isSame
-function UUID:__eq(other)
-    local other_Static__GetType = other.Static__GetType
-    if type(other) ~= "table" or not other_Static__GetType or other_Static__GetType(other) ~= "Core.UUID" then
-        local typeName = type(other)
-        if type(other) == "table" and other_Static__GetType then
-            typeName = other_Static__GetType(other).Name
-        end
-
-        error("wrong argument #2: (Core.UUID expected; got " .. typeName .. ")")
-        return false
-    end
-
+function UUID:Equals(other)
     for i, char in ipairs(self.m_head) do
         if char ~= other.m_head[i] then
             return false
@@ -170,12 +153,17 @@ function UUID:ToString()
     return str
 end
 
----@private
-function UUID:__tostring()
+function UUID:Serialize()
     return self:ToString()
 end
 
-function UUID:Serialize()
+---@private
+function UUID:__newindex()
+    error("Core.UUID is completely read only", 3)
+end
+
+---@private
+function UUID:__tostring()
     return self:ToString()
 end
 

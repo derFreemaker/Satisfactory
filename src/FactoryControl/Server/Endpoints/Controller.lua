@@ -1,18 +1,18 @@
 local ControllerUrlTemplates = require("FactoryControl.Core.EndpointUrls")[1].Controller
 
 ---@class FactoryControl.Server.Endpoints.Controller : Net.Rest.Api.Server.EndpointBase
----@field private m_databaseAccessLayer FactoryControl.Server.Database
+---@field private m_databaseAccessLayer FactoryControl.Server.DatabaseAccessLayer
 ---@field private m_logger Core.Logger
----@overload fun(logger: Core.Logger, apiController: Net.Rest.Api.Server.Controller, databaseAccessLayer: FactoryControl.Server.Database) : FactoryControl.Server.Endpoints.Controller
+---@overload fun(logger: Core.Logger, apiController: Net.Rest.Api.Server.Controller, databaseAccessLayer: FactoryControl.Server.DatabaseAccessLayer) : FactoryControl.Server.Endpoints.Controller
 local ControllerEndpoints = {}
 
 ---@private
 ---@param logger Core.Logger
 ---@param apiController Net.Rest.Api.Server.Controller
----@param databaseAccessLayer FactoryControl.Server.Database
----@param baseFunc fun(endpointLogger: Core.Logger, apiController: Net.Rest.Api.Server.Controller)
-function ControllerEndpoints:__init(baseFunc, logger, apiController, databaseAccessLayer)
-	baseFunc(logger, apiController)
+---@param databaseAccessLayer FactoryControl.Server.DatabaseAccessLayer
+---@param super fun(endpointLogger: Core.Logger, apiController: Net.Rest.Api.Server.Controller)
+function ControllerEndpoints:__init(super, logger, apiController, databaseAccessLayer)
+	super(logger, apiController)
 
 	self.m_databaseAccessLayer = databaseAccessLayer
 
@@ -100,4 +100,4 @@ function ControllerEndpoints:GetByName(name)
 end
 
 return Utils.Class.CreateClass(ControllerEndpoints, 'FactoryControl.Server.Endpoints.Controller',
-	require('Net.Rest.Api.Server.EndpointBase') --[[@as Net.Rest.Api.Server.EndpointBase]])
+	require('Net.Rest.Api.Server.EndpointBase'))

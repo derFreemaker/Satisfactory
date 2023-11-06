@@ -1,6 +1,3 @@
-local Usage = require("Core.Usage.Usage")
-local Task = require("Core.Task")
-
 local Modify = require("FactoryControl.Client.Entities.Controller.Modify")
 
 ---@class FactoryControl.Client.Entities.Controller : FactoryControl.Client.Entities.Entity
@@ -14,9 +11,9 @@ local Controller = {}
 ---@private
 ---@param controllerDto FactoryControl.Core.Entities.ControllerDto
 ---@param client FactoryControl.Client
----@param baseFunc FactoryControl.Client.Entities.Entity.Constructor
-function Controller:__init(baseFunc, controllerDto, client)
-    baseFunc(controllerDto.Id, client)
+---@param super FactoryControl.Client.Entities.Entity.Constructor
+function Controller:__init(super, controllerDto, client)
+    super(controllerDto.Id, client)
 
     self.Name = controllerDto.Name
     self.IPAddress = controllerDto.IPAddress
@@ -30,6 +27,11 @@ function Controller:Modify(func)
     func(modify)
 
     self.m_client:ModfiyControllerById(self.Id, modify:ToDto())
+end
+
+---@return Core.UUID[]
+function Controller:GetFeatureIds()
+    return self.m_featuresIds
 end
 
 ---@return FactoryControl.Client.Entities.Controller.Feature[]
@@ -48,6 +50,6 @@ function Controller:GetFeatures()
 end
 
 return Utils.Class.CreateClass(Controller, "FactoryControl.Client.Entities.Controller",
-    require("FactoryControl.Client.Entities.Entity") --[[@as FactoryControl.Client.Entities.Entity]])
+    require("FactoryControl.Client.Entities.Entity"))
 
 -- //TODO: implement some kind of status like online and offline

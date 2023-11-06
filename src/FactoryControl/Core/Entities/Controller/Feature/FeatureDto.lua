@@ -26,6 +26,11 @@ function FeatureDto:__init(id, name, type, controllerId)
     self.ControllerId = controllerId
 end
 
+---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Update
+function FeatureDto:OnUpdate(featureUpdate)
+    error("OnUpdate not implemented")
+end
+
 -- No Seriliaze function because this class should only be used as base not for instances
 
 return Utils.Class.CreateClass(FeatureDto, "FactoryControl.Core.Entities.Controller.FeatureDto",

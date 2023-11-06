@@ -1,4 +1,4 @@
-local Usage = require("Core.Usage.Usage")
+local Usage = require("Core.Usage")
 local EndpointUrlConstructors = require("FactoryControl.Core.EndpointUrls")[2]
 local ControllerUrlConstructors = EndpointUrlConstructors.Controller
 local FeatureUrlConstructors = EndpointUrlConstructors.Feature
@@ -118,6 +118,38 @@ end
 -- Feature
 -------------------------------------------------------------------------
 
+---@param featureId Core.UUID
+---@return boolean
+function DataClient:WatchFeature(featureId)
+	local response = self:request(
+		"POST",
+		FeatureUrlConstructors.Watch(featureId),
+		self.m_client:GetNetworkClient():GetIPAddress()
+	)
+
+	if response:IsFaulted() then
+		return false
+	end
+
+	return response:GetBody()
+end
+
+---@param featureId Core.UUID
+---@return boolean
+function DataClient:UnwatchFeature(featureId)
+	local response = self:request(
+		"POST",
+		FeatureUrlConstructors.Unwatch(featureId),
+		self.m_client:GetNetworkClient():GetIPAddress()
+	)
+
+	if response:IsFaulted() then
+		return false
+	end
+
+	return response:GetBody()
+end
+
 ---@param feature FactoryControl.Core.Entities.Controller.FeatureDto
 ---@return FactoryControl.Core.Entities.Controller.FeatureDto?
 function DataClient:CreateFeature(feature)
@@ -152,6 +184,21 @@ function DataClient:GetFeatureByIds(featureIds)
 	end
 
 	return response:GetBody()
+end
+
+---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Update
+function DataClient:UpdateFeature(featureUpdate)
+	local ipAddress = self.m_client:GetAddress(FactoryControlConfig.DOMAIN)
+	if not ipAddress then
+		return
+	end
+
+	self.m_client:GetNetworkClient():Send(
+		ipAddress,
+		Usage.Ports.FactoryControl_FeatureUpdate,
+		Usage.Events.FactoryControl_Feature_Invoked,
+		featureUpdate
+	)
 end
 
 return Utils.Class.CreateClass(DataClient, "FactoryControl.Client.DataClient")

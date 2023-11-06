@@ -21,8 +21,19 @@
                 }
               }
             }
+          },
+          {
+            "id": "acb8b26c20dbc9a7",
+            "type": "leaf",
+            "state": {
+              "type": "make-file-view",
+              "state": {
+                "path": "https://www.make.md/static/latest.md"
+              }
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -69,7 +80,7 @@
             }
           },
           {
-            "id": "63036358451a413c",
+            "id": "f6863fd6f3fdecb8",
             "type": "leaf",
             "state": {
               "type": "mk-file-view",
@@ -97,7 +108,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Code Projects/Github Loading/Map.canvas",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,7 +124,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Code Projects/Github Loading/Map.canvas",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -136,9 +145,7 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "Code Projects/Github Loading/Map.canvas"
-              }
+              "state": {}
             }
           },
           {
@@ -156,9 +163,7 @@
             "type": "leaf",
             "state": {
               "type": "file-properties",
-              "state": {
-                "file": "Code Projects/Github Loading/Map.canvas"
-              }
+              "state": {}
             }
           }
         ],
@@ -181,10 +186,13 @@
       "markdown-importer:Markdown Importprogramm öffnen": false
     }
   },
-  "active": "63036358451a413c",
+  "active": "acb8b26c20dbc9a7",
   "lastOpenFiles": [
-    "Code Projects/Factory Control/Map.canvas",
+    "Spaces/Home/Home.md",
+    "Spaces/Home",
+    "Spaces",
     "Code Projects/Github Loading/Map.canvas",
+    "Code Projects/Factory Control/Map.canvas",
     "Code Projects/DNS/DNS.md",
     "Code Projects/DNS/Map.canvas",
     "Objects/Dictionary.md",
@@ -221,8 +229,6 @@
     "Code Projects/Factory Control/ControllerDto",
     "Projects/Github Loading/Github Loading.canvas",
     "Projects/Github Loading/Map - Kopie.canvas",
-    "Code Projects/Github Loading/Package",
-    "Code Projects/Github Loading",
-    "Code Projects/Factory Control/Server"
+    "Code Projects/Github Loading/Package"
   ]
 }

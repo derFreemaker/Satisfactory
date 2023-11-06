@@ -8,9 +8,9 @@ local Endpoints = {}
 ---@private
 ---@param logger Core.Logger
 ---@param controller Net.Rest.Api.Server.Controller
----@param baseFunc fun(endpointLogger: Core.Logger, apiController: Net.Rest.Api.Server.Controller)
-function Endpoints:__init(baseFunc, logger, controller)
-    baseFunc(logger, controller)
+---@param super fun(endpointLogger: Core.Logger, apiController: Net.Rest.Api.Server.Controller)
+function Endpoints:__init(super, logger, controller)
+    super(logger, controller)
 
     self.m_addressDatabase = AddressDatabase(logger:subLogger("AddressDatabase"))
 
@@ -62,4 +62,4 @@ function Endpoints:GetAddressWithDomain(addressStr)
 end
 
 return Utils.Class.CreateClass(Endpoints, "DNS.Server.Endpoints",
-    require("Net.Rest.Api.Server.EndpointBase") --[[@as Net.Rest.Api.Server.EndpointBase]])
+    require("Net.Rest.Api.Server.EndpointBase"))

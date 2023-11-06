@@ -1,3 +1,4 @@
+local Task = require("Core.Common.Task")
 local Event = require('Core.Event.Event')
 
 ---@class Net.Core.NetworkPort : object
@@ -41,7 +42,7 @@ function NetworkPort:Execute(context)
 		if name == context.EventName or name == 'all' then
 			event:Trigger(self.m_logger, context)
 		end
-		if event:GetCount() == 0 then
+		if event:Count() == 0 then
 			self:RemoveListener(name)
 		end
 	end
@@ -75,19 +76,35 @@ end
 ---@param onRecivedEventName string | "all"
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
-function NetworkPort:AddListener(onRecivedEventName, listener)
+function NetworkPort:AddTask(onRecivedEventName, listener)
 	local event = self:CreateOrGetEvent(onRecivedEventName)
-	event:AddListener(listener)
+	event:AddTask(listener)
 	return self
 end
 
 ---@param onRecivedEventName string | "all"
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
-function NetworkPort:AddListenerOnce(onRecivedEventName, listener)
+function NetworkPort:AddTaskOnce(onRecivedEventName, listener)
 	local event = self:CreateOrGetEvent(onRecivedEventName)
-	event:AddListenerOnce(listener)
+	event:AddTaskOnce(listener)
 	return self
+end
+
+---@param onRecivedEventName string | "all"
+---@param listener fun(context: Net.Core.NetworkContext)
+---@param ... any
+---@return Net.Core.NetworkPort
+function NetworkPort:AddListener(onRecivedEventName, listener, ...)
+	return self:AddTask(onRecivedEventName, Task(listener, ...))
+end
+
+---@param onRecivedEventName string | "all"
+---@param listener fun(context: Net.Core.NetworkContext)
+---@param ... any
+---@return Net.Core.NetworkPort
+function NetworkPort:AddListenerOnce(onRecivedEventName, listener, ...)
+	return self:AddTaskOnce(onRecivedEventName, Task(listener, ...))
 end
 
 ---@param eventName string | "all"

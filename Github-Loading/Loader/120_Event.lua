@@ -77,10 +77,10 @@ end
 ---@return Core.Event
 function Event:CopyToCoreEvent(Task, event)
     for _, listener in ipairs(self.m_funcs) do
-        event:AddListener(listener:convertToTask(Task))
+        event:AddTask(listener:convertToTask(Task))
     end
     for _, listener in ipairs(self.m_onceFuncs) do
-        event:AddListenerOnce(listener:convertToTask(Task))
+        event:AddTaskOnce(listener:convertToTask(Task))
     end
     return event
 end

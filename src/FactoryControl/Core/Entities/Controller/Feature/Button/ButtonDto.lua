@@ -6,9 +6,13 @@ local ButtonDto = {}
 ---@param id Core.UUID
 ---@param name string
 ---@param controllerId Core.UUID
----@param baseFunc FactoryControl.Core.Entities.Controller.FeatureDto.Constructor
-function ButtonDto:__init(baseFunc, id, name, controllerId)
-    baseFunc(id, name, "Button", controllerId)
+---@param super FactoryControl.Core.Entities.Controller.FeatureDto.Constructor
+function ButtonDto:__init(super, id, name, controllerId)
+    super(id, name, "Button", controllerId)
+end
+
+---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Button.Update
+function ButtonDto:OnUpdate(featureUpdate)
 end
 
 ---@return Core.UUID id, string name
@@ -17,4 +21,4 @@ function ButtonDto:Serialize()
 end
 
 return Utils.Class.CreateClass(ButtonDto, "FactoryControl.Core.Entities.Controller.Feature.ButtonDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --[[@as FactoryControl.Core.Entities.Controller.FeatureDto]])
+    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))

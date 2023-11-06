@@ -18,7 +18,7 @@ function EventPullAdapter:onEventPull(eventPullData)
 		if name == eventPullData[1] then
 			event:Trigger(self.m_logger, eventPullData)
 		end
-		if event:GetCount() == 0 then
+		if event:Count() == 0 then
 			table.insert(removeEvent, name)
 		end
 	end
@@ -59,7 +59,7 @@ end
 ---@param task Core.Task
 function EventPullAdapter:AddListener(signalName, task)
 	local event = self:GetEvent(signalName)
-	event:AddListener(task)
+	event:AddTask(task)
 	return self
 end
 
@@ -67,7 +67,7 @@ end
 ---@param task Core.Task
 function EventPullAdapter:AddListenerOnce(signalName, task)
 	local event = self:GetEvent(signalName)
-	event:AddListenerOnce(task)
+	event:AddTaskOnce(task)
 	return self
 end
 

@@ -3,7 +3,7 @@
 ---@field Max number
 ---@field Setting number
 ---@overload fun(id: Core.UUID, name: string, controllerId: Core.UUID, min: number?, max: number?, setting: number?) : FactoryControl.Core.Entities.Controller.Feature.RadialDto
-local RadialFeatureDto = {}
+local RadialDto = {}
 
 ---@private
 ---@param id Core.UUID
@@ -12,9 +12,9 @@ local RadialFeatureDto = {}
 ---@param min number
 ---@param max number
 ---@param setting number
----@param baseFunc FactoryControl.Core.Entities.Controller.FeatureDto.Constructor
-function RadialFeatureDto:__init(baseFunc, id, name, controllerId, min, max, setting)
-    baseFunc(id, name, "Radial", controllerId)
+---@param super FactoryControl.Core.Entities.Controller.FeatureDto.Constructor
+function RadialDto:__init(super, id, name, controllerId, min, max, setting)
+    super(id, name, "Radial", controllerId)
 
     self.Min = min or 0
     self.Max = max or 1
@@ -37,10 +37,17 @@ function RadialFeatureDto:__init(baseFunc, id, name, controllerId, min, max, set
     self.Setting = setting
 end
 
+---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Radial.Update
+function RadialDto:OnUpdate(featureUpdate)
+    self.Min = featureUpdate.Min
+    self.Max = featureUpdate.Max
+    self.Setting = featureUpdate.Setting
+end
+
 ---@return Core.UUID id, string name, number min, number max, number setting
-function RadialFeatureDto:Serialize()
+function RadialDto:Serialize()
     return self.Id, self.Name, self.Min, self.Max, self.Setting
 end
 
-return Utils.Class.CreateClass(RadialFeatureDto, "FactoryControl.Core.Entities.Controller.Feature.RadialDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --[[@as FactoryControl.Core.Entities.Controller.FeatureDto]])
+return Utils.Class.CreateClass(RadialDto, "FactoryControl.Core.Entities.Controller.Feature.RadialDto",
+    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))

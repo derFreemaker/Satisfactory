@@ -1,6 +1,4 @@
-local Task = require("Core.Task")
-
-local ChartDto = require("FactoryControl.Core.Entities.Controller.Feature.ChartDto")
+local ChartDto = require("FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto")
 
 ---@class FactoryControl.Client.Entities.Controller.Feature.Chart : FactoryControl.Client.Entities.Controller.Feature
 ---@field private m_xAxisName string
@@ -12,18 +10,17 @@ local Chart = {}
 ---@private
 ---@param chartDto FactoryControl.Core.Entities.Controller.Feature.ChartDto
 ---@param client FactoryControl.Client
----@param baseFunc FactoryControl.Client.Entities.Controller.Feature.Constructor
-function Chart:__init(baseFunc, chartDto, client)
-    baseFunc(chartDto, client)
+---@param super FactoryControl.Client.Entities.Controller.Feature.Constructor
+function Chart:__init(super, chartDto, client)
+    super(chartDto, client)
 
     self.m_xAxisName = chartDto.XAxisName
     self.m_yAxisName = chartDto.YAxisName
     self.m_data = chartDto.Data
-
-    self.OnChanged:AddListener(Task(self.OnUpdate, self))
 end
 
----@param update FactoryControl.Client.Entities.Controller.Feature.Chart.Update
+---@private
+---@param update FactoryControl.Core.Entities.Controller.Feature.Chart.Update
 function Chart:OnUpdate(update)
     for key, value in pairs(update.Data) do
         self.m_data[key] = value
@@ -38,4 +35,4 @@ end
 -- //TODO: complete
 
 return Utils.Class.CreateClass(Chart, "FactoryControl.Client.Entities.Controller.Feature.Chart",
-    require("FactoryControl.Client.Entities.Controller.Feature.Feature") --[[@as FactoryControl.Client.Entities.Controller.Feature]])
+    require("FactoryControl.Client.Entities.Controller.Feature.Feature"))

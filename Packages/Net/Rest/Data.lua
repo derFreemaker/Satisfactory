@@ -268,7 +268,7 @@ PackageData["NetRestApiServerController"] = {
     Data = [[
 local EventNameUsage = require("Core.Usage.Usage_EventName")
 
-local Task = require('Core.Task')
+local Task = require('Core.Common.Task')
 
 local Endpoint = require("Net.Rest.Api.Server.Endpoint")
 
@@ -384,7 +384,7 @@ local StatusCodes       = require("Net.Core.StatusCodes")
 
 local ResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 
-local UUID              = require("Core.UUID")
+local UUID              = require("Core.Common.UUID")
 
 ---@class Net.Rest.Api.Server.Endpoint : object
 ---@field private m_endpointUriPattern string
@@ -507,7 +507,7 @@ PackageData["NetRestApiServerEndpointBase"] = {
     Namespace = "Net.Rest.Api.Server.EndpointBase",
     IsRunnable = true,
     Data = [[
-local Task = require("Core.Task")
+local Task = require("Core.Common.Task")
 
 local ResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 

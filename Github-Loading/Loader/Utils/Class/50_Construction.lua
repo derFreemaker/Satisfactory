@@ -51,7 +51,7 @@ end
 ---@param ... any
 function ConstructionHandler.ConstructClass(typeInfo, class, classMetatable, ...)
     ---@type function
-    local baseFunc = nil
+    local super = nil
 
     local function constructMembers()
         for key, value in pairs(typeInfo.MetaMethods) do
@@ -75,9 +75,10 @@ function ConstructionHandler.ConstructClass(typeInfo, class, classMetatable, ...
 
     if typeInfo.Base then
         if typeInfo.Base.HasConstructor then
-            function baseFunc(...)
+            function super(...)
                 ConstructionHandler.ConstructClass(typeInfo.Base, class, classMetatable, ...)
                 constructMembers()
+                return class
             end
         else
             ConstructionHandler.ConstructClass(typeInfo.Base, class, classMetatable)
@@ -88,8 +89,8 @@ function ConstructionHandler.ConstructClass(typeInfo, class, classMetatable, ...
     end
 
     if typeInfo.HasConstructor then
-        if baseFunc then
-            typeInfo.MetaMethods.__init(class, baseFunc, ...)
+        if super then
+            typeInfo.MetaMethods.__init(class, super, ...)
         else
             typeInfo.MetaMethods.__init(class, ...)
         end

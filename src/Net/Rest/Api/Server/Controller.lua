@@ -1,6 +1,6 @@
 local EventNameUsage = require("Core.Usage.Usage_EventName")
 
-local Task = require('Core.Task')
+local Task = require('Core.Common.Task')
 
 local Endpoint = require("Net.Rest.Api.Server.Endpoint")
 
@@ -20,7 +20,8 @@ function Controller:__init(netPort, logger)
     self.m_endpoints = {}
     self.m_netPort = netPort
     self.m_logger = logger
-    netPort:AddListener(EventNameUsage.RestRequest, Task(self.onMessageRecieved, self))
+
+    netPort:AddListener(EventNameUsage.RestRequest, self.onMessageRecieved, self)
 end
 
 ---@private

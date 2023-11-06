@@ -5,8 +5,8 @@ if not PackageLoader:TryGetModule("Hosting.Host", Host) then
 end
 ---@type Hosting.Host
 Host = Host.Value:Load()
--- Run only if module Hosting.Host is loaded
 
+local Task = require("Core.Common.Task")
 local NetworkClient = require("Net.Core.NetworkClient")
 
 ---@class Hosting.Host
@@ -21,7 +21,7 @@ end
 ---@return Net.Core.NetworkClient
 function HostExtensions:GetNetworkClient()
     if not self.m_networkClient then
-        self.m_networkClient = NetworkClient(self.m_logger:subLogger("NetworkClient"), nil, self.m_jsonSerializer)
+        self.m_networkClient = NetworkClient(self:CreateLogger("NetworkClient"), nil, self:GetJsonSerializer())
     end
 
     return self.m_networkClient
@@ -58,13 +58,24 @@ function HostExtensions:GetNetworkPort(port)
     return self:CreateNetworkPort(port)
 end
 
----@param eventName string
+---@param eventName string | "all"
 ---@param port Net.Core.Port
 ---@param task Core.Task
-function HostExtensions:AddCallableEvent(eventName, port, task)
+---@return Hosting.Host host
+function HostExtensions:AddCallableEventTask(eventName, port, task)
     local netPort = self:CreateNetworkPort(port)
-    netPort:AddListener(eventName, task)
+    netPort:AddTask(eventName, task)
     netPort:OpenPort()
+    return self
+end
+
+---@param eventName string | "all"
+---@param port Net.Core.Port
+---@param listener fun(context: Net.Core.IPAddress)
+---@param ... any
+---@return Hosting.Host host
+function HostExtensions:AddCallableEventListener(eventName, port, listener, ...)
+    return self:AddCallableEventTask(eventName, port, Task(listener, ...))
 end
 
 ---@param eventName string

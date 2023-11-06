@@ -8,7 +8,10 @@ local HttpResponse = require('Net.Http.Response')
 local ApiRequest = require('Net.Rest.Api.Request')
 local ApiResponse = require('Net.Rest.Api.Response')
 
+---@alias Net.Http.Client.CachedAddress { ExpireTime: integer, IPAddress: Net.Core.IPAddress }
+
 ---@class Net.Http.Client : object
+---@field private m_cache table<string, Net.Http.Client.CachedAddress>
 ---@field private m_netClient Net.Core.NetworkClient
 ---@field private m_dnsClient DNS.Client
 ---@field private m_logger Core.Logger
@@ -32,26 +35,39 @@ function HttpClient:GetNetworkClient()
 	return self.m_netClient
 end
 
----@private
 ---@param address string
 ---@return Net.Core.IPAddress? address
-function HttpClient:getAddress(address)
+function HttpClient:GetAddress(address)
 	if not address:match('^.*%..*$') then
 		return IPAddress(address)
 	end
 
+	local cachedAddress = self.m_cache[address]
+	if cachedAddress then
+		if cachedAddress.ExpireTime > computer.time() then
+			return cachedAddress.IPAddress
+		end
+	end
+
 	local getedAddress = self.m_dnsClient:GetWithDomain(address)
 	if not getedAddress then
+		self.m_cache[address] = nil
 		return nil
 	end
 
-	return getedAddress.IPAddress
+	local ipAddress = getedAddress.IPAddress
+	self.m_cache[address] = {
+		ExpireTime = computer.time() + 7200,
+		IPAddress = ipAddress
+	}
+
+	return ipAddress
 end
 
 ---@param request Net.Http.Request
 ---@return Net.Http.Response response
 function HttpClient:Send(request)
-	local address = self:getAddress(request.ServerUrl)
+	local address = self:GetAddress(request.ServerUrl)
 	if not address then
 		return HttpResponse(ApiResponse(nil, { Code = 404 }), request)
 	end

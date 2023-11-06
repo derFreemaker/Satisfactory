@@ -1,9 +1,105 @@
 ---@meta
 local PackageData = {}
 
-PackageData["CoreLogger"] = {
-    Location = "Core.Logger",
-    Namespace = "Core.Logger",
+PackageData["CoreCommonLazyEventHandler"] = {
+    Location = "Core.Common.LazyEventHandler",
+    Namespace = "Core.Common.LazyEventHandler",
+    IsRunnable = true,
+    Data = [[
+local Event = require("Core.Event.Event")
+
+---@alias Core.LazyEventHandler.OnSetup fun(lazyEventHandler: Core.LazyEventHandler)
+---@alias Core.LazyEventHandler.OnClose fun(lazyEventHandler: Core.LazyEventHandler)
+
+---@class Core.LazyEventHandler : object
+---@field private m_Event Core.Event
+---@field private m_IsSetup boolean
+---@field private m_OnSetup Core.LazyEventHandler.OnSetup?
+---@field private m_OnClose Core.LazyEventHandler.OnClose?
+---@overload fun(onSetup: Core.LazyEventHandler.OnSetup?, onClose: Core.LazyEventHandler.OnClose?) : Core.LazyEventHandler
+local LazyEventHandler = {}
+
+---@alias Core.LazyEventHandler.Constructor fun(onSetup: Core.LazyEventHandler.OnSetup?, onClose: Core.LazyEventHandler.OnClose?)
+
+---@private
+---@param onSetup Core.LazyEventHandler.OnSetup?
+---@param onClose Core.LazyEventHandler.OnClose?
+function LazyEventHandler:__init(onSetup, onClose)
+    self.m_Event = Event()
+
+    self.m_IsSetup = false
+    self.m_OnSetup = onSetup
+    self.m_OnClose = onClose
+end
+
+---@return integer count
+function LazyEventHandler:Count()
+    return self.m_Event:Count()
+end
+
+---@private
+function LazyEventHandler:Check()
+    local count = self.m_Event:Count()
+
+    if count > 0 and not self.m_IsSetup and self.m_OnSetup then
+        self.m_OnSetup(self)
+        return
+    end
+
+    if count == 0 and self.m_IsSetup and self.m_OnClose then
+        self.m_OnClose(self)
+        return
+    end
+end
+
+---@param task Core.Task
+---@return Core.LazyEventHandler
+function LazyEventHandler:AddTask(task)
+    self.m_Event:AddTask(task)
+    self:Check()
+    return self
+end
+
+---@param task Core.Task
+---@return Core.LazyEventHandler
+function LazyEventHandler:AddTaskOnce(task)
+    self.m_Event:AddTaskOnce(task)
+    self:Check()
+    return self
+end
+
+---@param func function
+---@param ... any
+---@return Core.LazyEventHandler
+function LazyEventHandler:AddListener(func, ...)
+    self.m_Event:AddListener(func, ...)
+    self:Check()
+    return self
+end
+
+---@param func function
+---@param ... any
+---@return Core.LazyEventHandler
+function LazyEventHandler:AddListenerOnce(func, ...)
+    self.m_Event:AddListenerOnce(func, ...)
+    self:Check()
+    return self
+end
+
+---@param logger Core.Logger?
+---@param ... any
+function LazyEventHandler:Trigger(logger, ...)
+    self.m_Event:Trigger(logger, ...)
+    self:Check()
+end
+
+return Utils.Class.CreateClass(LazyEventHandler, "Core.LazyEventHandler")
+]]
+}
+
+PackageData["CoreCommonLogger"] = {
+    Location = "Core.Common.Logger",
+    Namespace = "Core.Common.Logger",
     IsRunnable = true,
     Data = [[
 local Event = require('Core.Event.Event')
@@ -257,29 +353,29 @@ return Utils.Class.CreateClass(Logger, 'Core.Logger')
 ]]
 }
 
-PackageData["CoreTask"] = {
-    Location = "Core.Task",
-    Namespace = "Core.Task",
+PackageData["CoreCommonTask"] = {
+    Location = "Core.Common.Task",
+    Namespace = "Core.Common.Task",
     IsRunnable = true,
     Data = [[
 ---@class Core.Task : object
 ---@field private m_func function
----@field private m_passthrough any
+---@field private m_passthrough any[]
 ---@field private m_thread thread
 ---@field private m_closed boolean
 ---@field private m_success boolean
 ---@field private m_results any[]
 ---@field private m_error string?
 ---@field private m_traceback string?
----@overload fun(func: function, passthrough: any) : Core.Task
+---@overload fun(func: function, ...: any) : Core.Task
 local Task = {}
 
 ---@private
 ---@param func function
----@param passthrough any
-function Task:__init(func, passthrough)
+---@param ... any
+function Task:__init(func, ...)
     self.m_func = func
-    self.m_passthrough = passthrough
+    self.m_passthrough = { ... }
     self.m_closed = false
     self.m_success = true
     self.m_results = {}
@@ -316,8 +412,8 @@ end
 function Task:Execute(...)
     ---@param ... any parameters
     local function invokeFunc(...)
-        if self.m_passthrough ~= nil then
-            self.m_results = { self.m_func(self.m_passthrough, ...) }
+        if #self.m_passthrough then
+            self.m_results = { self.m_func(table.unpack(self.m_passthrough), ...) }
         else
             self.m_results = { self.m_func(...) }
         end
@@ -400,9 +496,9 @@ return Utils.Class.CreateClass(Task, "Core.Task")
 ]]
 }
 
-PackageData["CoreUUID"] = {
-    Location = "Core.UUID",
-    Namespace = "Core.UUID",
+PackageData["CoreCommonUUID"] = {
+    Location = "Core.Common.UUID",
+    Namespace = "Core.Common.UUID",
     IsRunnable = true,
     Data = [[
 local math = math
@@ -595,12 +691,15 @@ PackageData["CoreEventEvent"] = {
     Namespace = "Core.Event.Event",
     IsRunnable = true,
     Data = [[
+local Task = require("Core.Common.Task")
+
 ---@class Core.Event : object
 ---@field private m_funcs Core.Task[]
 ---@field private m_onceFuncs Core.Task[]
----@operator len() : integer
 ---@overload fun() : Core.Event
 local Event = {}
+
+---@alias Core.Event.Constructor fun()
 
 ---@private
 function Event:__init()
@@ -608,18 +707,37 @@ function Event:__init()
     self.m_onceFuncs = {}
 end
 
+---@return integer count
+function Event:Count()
+    return #self.m_funcs + #self.m_onceFuncs
+end
+
 ---@param task Core.Task
 ---@return Core.Event
-function Event:AddListener(task)
+function Event:AddTask(task)
     table.insert(self.m_funcs, task)
     return self
 end
 
 ---@param task Core.Task
 ---@return Core.Event
-function Event:AddListenerOnce(task)
+function Event:AddTaskOnce(task)
     table.insert(self.m_onceFuncs, task)
     return self
+end
+
+---@param func function
+---@param ... any
+---@return Core.Event
+function Event:AddListener(func, ...)
+    return self:AddTask(Task(func, ...))
+end
+
+---@param func function
+---@param ... any
+---@return Core.Event
+function Event:AddListenerOnce(func, ...)
+    return self:AddTaskOnce(Task(func, ...))
 end
 
 ---@param logger Core.Logger?
@@ -660,19 +778,14 @@ function Event:Listeners()
     }
 end
 
----@return integer count
-function Event:GetCount()
-    return #self.m_funcs + #self.m_onceFuncs
-end
-
 ---@param event Core.Event
 ---@return Core.Event event
 function Event:CopyTo(event)
     for _, listener in ipairs(self.m_funcs) do
-        event:AddListener(listener)
+        event:AddTask(listener)
     end
     for _, listener in ipairs(self.m_onceFuncs) do
-        event:AddListenerOnce(listener)
+        event:AddTaskOnce(listener)
     end
     return event
 end
@@ -706,7 +819,7 @@ function EventPullAdapter:onEventPull(eventPullData)
 		if name == eventPullData[1] then
 			event:Trigger(self.m_logger, eventPullData)
 		end
-		if event:GetCount() == 0 then
+		if event:Count() == 0 then
 			table.insert(removeEvent, name)
 		end
 	end
@@ -747,7 +860,7 @@ end
 ---@param task Core.Task
 function EventPullAdapter:AddListener(signalName, task)
 	local event = self:GetEvent(signalName)
-	event:AddListener(task)
+	event:AddTask(task)
 	return self
 end
 
@@ -755,7 +868,7 @@ end
 ---@param task Core.Task
 function EventPullAdapter:AddListenerOnce(signalName, task)
 	local event = self:GetEvent(signalName)
-	event:AddListenerOnce(task)
+	event:AddTaskOnce(task)
 	return self
 end
 
@@ -1784,7 +1897,7 @@ Utils.Class.CreateClass(JsonSerializer, "Core.Json.JsonSerializer")
 JsonSerializer.Static__Serializer = JsonSerializer()
 JsonSerializer.Static__Serializer:AddTypeInfos({
     -- UUID
-    require("Core.UUID"):Static__GetType()
+    require("Core.Common.UUID"):Static__GetType()
 })
 
 return JsonSerializer

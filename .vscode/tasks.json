@@ -61,7 +61,7 @@
 					"file": 3,
 					"line": 4,
 					"column": 5,
-					"endColumn": 6
+					"endColumn": 6,
 				}
 			},
 			"presentation": {
@@ -76,7 +76,7 @@
 			"runOptions": {
 				"runOn": "folderOpen",
 				"instanceLimit": 1,
-				"reevaluateOnRerun": true
+				"reevaluateOnRerun": true,
 			}
 		},
 		{
@@ -105,7 +105,7 @@
 				"clear": true,
 				"close": true
 			},
-			"dependsOn": "correct line endings"
+			"dependsOn": [ "correct line endings" ]
 		},
 		{
 			"label": "bundle All optimized",
@@ -133,7 +133,7 @@
 				"clear": true,
 				"close": true
 			},
-			"dependsOn": "correct line endings"
+			"dependsOn": [ "correct line endings" ]
 		},
 		{
 			"label": "open FicsIt files",

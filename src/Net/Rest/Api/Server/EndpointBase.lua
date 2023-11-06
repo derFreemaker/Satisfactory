@@ -1,4 +1,4 @@
-local Task = require("Core.Task")
+local Task = require("Core.Common.Task")
 
 local ResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 

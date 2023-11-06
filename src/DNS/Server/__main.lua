@@ -1,6 +1,6 @@
-local Usage = require("Core.Usage.Usage")
+local Usage = require("Core.Usage")
 
-local Task = require('Core.Task')
+local Task = require('Core.Common.Task')
 
 local Host = require("Hosting.Host")
 
@@ -21,11 +21,11 @@ end
 function Main:Configure()
 	self.m_host = Host(self.Logger:subLogger("Host"), "DNS Server")
 
-	self.m_host:AddCallableEvent(Usage.Events.DNS_GetServerAddress, Usage.Ports.DNS,
-		Task(self.GetDNSServerAddress, self))
+	self.m_host:AddCallableEventListener(Usage.Events.DNS_GetServerAddress, Usage.Ports.DNS,
+		self.GetDNSServerAddress, self)
 	self.Logger:LogDebug('setup Get DNS Server IP Address')
 
-	self.m_host:AddEndpoint(Usage.Ports.HTTP, "Endpoints", DNSEndpoints --[[@as Net.Rest.Api.Server.EndpointBase]])
+	self.m_host:AddEndpoint(Usage.Ports.HTTP, "Endpoints", DNSEndpoints)
 	self.Logger:LogDebug('setup DNS Server endpoints')
 
 	self.m_netClient = self.m_host:GetNetworkClient()

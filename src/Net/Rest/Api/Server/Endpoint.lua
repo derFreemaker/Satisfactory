@@ -3,7 +3,7 @@ local StatusCodes       = require("Net.Core.StatusCodes")
 
 local ResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 
-local UUID              = require("Core.UUID")
+local UUID              = require("Core.Common.UUID")
 
 ---@class Net.Rest.Api.Server.Endpoint : object
 ---@field private m_endpointUriPattern string

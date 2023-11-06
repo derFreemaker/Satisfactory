@@ -1,3 +1,10 @@
+---@alias Core.Json.Serializable.Types
+---| string
+---| number
+---| boolean
+---| table
+---| Core.Json.Serializable
+
 ---@class Core.Json.Serializable : object
 local Serializable = {}
 

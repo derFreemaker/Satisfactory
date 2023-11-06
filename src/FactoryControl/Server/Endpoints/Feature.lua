@@ -1,24 +1,40 @@
-local UUID = require("Core.UUID")
-
 local FeatureUrlTemplates = require("FactoryControl.Core.EndpointUrls")[1].Feature
 
 ---@class FactoryControl.Server.Endpoints.Feature : Net.Rest.Api.Server.EndpointBase
----@field m_databaseAccessLayer FactoryControl.Server.Database
+---@field m_databaseAccessLayer FactoryControl.Server.DatabaseAccessLayer
+---@field m_featureService FactoryControl.Server.Services.FeatureService
 local FeatureEndpoints = {}
 
 ---@private
 ---@param logger Core.Logger
 ---@param apiController Net.Rest.Api.Server.Controller
----@param databaseAccessLayer FactoryControl.Server.Database
----@param baseFunc fun(endpointLogger: Core.Logger, apiController: Net.Rest.Api.Server.Controller)
-function FeatureEndpoints:__init(baseFunc, logger, apiController, databaseAccessLayer)
-    baseFunc(logger, apiController)
+---@param databaseAccessLayer FactoryControl.Server.DatabaseAccessLayer
+---@param featureService FactoryControl.Server.Services.FeatureService
+---@param super fun(endpointLogger: Core.Logger, apiController: Net.Rest.Api.Server.Controller)
+function FeatureEndpoints:__init(super, logger, apiController, databaseAccessLayer, featureService)
+    super(logger, apiController)
 
     self.m_databaseAccessLayer = databaseAccessLayer
+    self.m_featureService = featureService
+
+    self:AddEndpoint("POST", FeatureUrlTemplates.Watch, self.Watch)
+    self:AddEndpoint("POST", FeatureUrlTemplates.Unwatch, self.Unwatch)
 
     self:AddEndpoint("CREATE", FeatureUrlTemplates.Create, self.Create)
     self:AddEndpoint("DELETE", FeatureUrlTemplates.Delete, self.Delete)
     self:AddEndpoint("GET", FeatureUrlTemplates.GetById, self.GetByIds)
+end
+
+---@param featureId Core.UUID
+---@param ipAddress Net.Core.IPAddress
+function FeatureEndpoints:Watch(featureId, ipAddress)
+    self.m_featureService:Watch(featureId, ipAddress)
+end
+
+---@param featureId Core.UUID
+---@param ipAddress Net.Core.IPAddress
+function FeatureEndpoints:Unwatch(featureId, ipAddress)
+    self.m_featureService:Unwatch(featureId, ipAddress)
 end
 
 ---@param feature FactoryControl.Core.Entities.Controller.FeatureDto
@@ -44,4 +60,4 @@ function FeatureEndpoints:GetByIds(featureIds)
 end
 
 return Utils.Class.CreateClass(FeatureEndpoints, "FactoryControl.Server.Endpoints.Feature",
-    require("Net.Rest.Api.Server.EndpointBase") --[[@as Net.Rest.Api.Server.EndpointBase]])
+    require("Net.Rest.Api.Server.EndpointBase"))

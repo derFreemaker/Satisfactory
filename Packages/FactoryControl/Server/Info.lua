@@ -1,7 +1,7 @@
 return {
     Name = "FactoryControlServer",
     Namespace = "FactoryControl.Server",
-    Version = "0.1-66",
+    Version = "0.1-67",
     RequiredPackages = {
         "Core",
         "Database",
