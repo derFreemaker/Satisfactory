@@ -6,7 +6,7 @@ PackageData["FactoryControlClientClient"] = {
     Namespace = "FactoryControl.Client.Client",
     IsRunnable = true,
     Data = [[
-local Usage = require("Core.Usage.Usage")
+local Usage = require("Core.Usage")
 
 local Task = require("Core.Common.Task")
 local NetworkClient = require("Net.Core.NetworkClient")
@@ -19,11 +19,15 @@ local ConnectController = require("FactoryControl.Core.Entities.Controller.Conne
 
 local FeatureFactory = require("FactoryControl.Client.Entities.Controller.Feature.Factory")
 
+local Callback = require("Services.Callback.Client.Callback")
+local CallbackService = require("Services.Callback.Client.CallbackService")
+
 ---@class FactoryControl.Client : object
 ---@field CurrentController FactoryControl.Client.Entities.Controller
 ---@field NetClient Net.Core.NetworkClient
----@field private m_client FactoryControl.Client.DataClient
+---@field private m_callbackService Services.Callback.Client.CallbackService
 ---@field private m_features table<string, FactoryControl.Client.Entities.Controller.Feature>
+---@field private m_client FactoryControl.Client.DataClient
 ---@field private m_logger Core.Logger
 ---@overload fun(logger: Core.Logger, client: FactoryControl.Client.DataClient?, networkClient: Net.Core.NetworkClient?) : FactoryControl.Client
 local Client = {}
@@ -35,15 +39,10 @@ local Client = {}
 function Client:__init(logger, client, networkClient)
     self.NetClient = networkClient or NetworkClient(logger:subLogger("NetClient"))
 
+    self.m_callbackService = CallbackService(logger:subLogger("CallbackService"), self.NetClient)
+    self.m_features = {}
     self.m_client = client or DataClient(logger:subLogger("DataClient"))
-    self.m_features = setmetatable({}, { __mode = "v" })
     self.m_logger = logger
-
-    self.NetClient:AddListener(
-        Usage.Events.FactoryControl_Feature_Invoked,
-        Usage.Ports.FactoryControl,
-        Task(self.OnFeatureUpdate, self)
-    )
 end
 
 ------------------------------------------------------------------------------
@@ -144,23 +143,42 @@ end
 ---@param feature FactoryControl.Client.Entities.Controller.Feature
 function Client:WatchFeature(feature)
     self.m_features[feature.Id:ToString()] = feature
+    local callback = Callback(feature.Id, Usage.Events.FactoryControl_Feature_Invoked, Task(self.OnFeatureUpdate, self))
+    self.m_callbackService:AddCallback(callback)
+
+    for _, featureId in pairs(self.CurrentController:GetFeatureIds()) do
+        if featureId:Equals(feature.Id) then
+            return
+        end
+    end
+
+    self.m_client:WatchFeature(feature.Id)
 end
 
 ---@param featureId Core.UUID
 function Client:UnwatchFeature(featureId)
     self.m_features[featureId:ToString()] = nil
+    self.m_callbackService:RemoveCallback(featureId, Usage.Events.FactoryControl_Feature_Invoked)
+
+    for _, value in pairs(self.CurrentController:GetFeatureIds()) do
+        if value:Equals(featureId) then
+            return
+        end
+    end
+
+    self.m_client:UnwatchFeature(featureId)
 end
 
 ---@private
----@param context Net.Core.NetworkContext
-function Client:OnFeatureUpdate(context)
-    local featureUpdate = context:GetFeatureUpdate()
+---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Update
+function Client:OnFeatureUpdate(featureUpdate)
     local feature = self.m_features[featureUpdate.FeatureId:ToString()]
     if not feature then
         return
     end
 
     local logger = self.m_logger:subLogger("Feature[" .. feature.Id:ToString() .. "]")
+    feature:OnUpdate(featureUpdate)
     feature.OnChanged:Trigger(logger, featureUpdate)
 end
 
@@ -199,7 +217,7 @@ end
 
 ---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Update
 function Client:UpdateFeature(featureUpdate)
-    -- //TODO: update feature on server
+    self.m_client:UpdateFeature(featureUpdate)
 end
 
 return Utils.Class.CreateClass(Client, "FactoryControl.Client.Client")
@@ -211,7 +229,7 @@ PackageData["FactoryControlClientDataClient"] = {
     Namespace = "FactoryControl.Client.DataClient",
     IsRunnable = true,
     Data = [[
-local Usage = require("Core.Usage.Usage")
+local Usage = require("Core.Usage")
 local EndpointUrlConstructors = require("FactoryControl.Core.EndpointUrls")[2]
 local ControllerUrlConstructors = EndpointUrlConstructors.Controller
 local FeatureUrlConstructors = EndpointUrlConstructors.Feature
@@ -331,6 +349,38 @@ end
 -- Feature
 -------------------------------------------------------------------------
 
+---@param featureId Core.UUID
+---@return boolean
+function DataClient:WatchFeature(featureId)
+	local response = self:request(
+		"POST",
+		FeatureUrlConstructors.Watch(featureId),
+		self.m_client:GetNetworkClient():GetIPAddress()
+	)
+
+	if response:IsFaulted() then
+		return false
+	end
+
+	return response:GetBody()
+end
+
+---@param featureId Core.UUID
+---@return boolean
+function DataClient:UnwatchFeature(featureId)
+	local response = self:request(
+		"POST",
+		FeatureUrlConstructors.Unwatch(featureId),
+		self.m_client:GetNetworkClient():GetIPAddress()
+	)
+
+	if response:IsFaulted() then
+		return false
+	end
+
+	return response:GetBody()
+end
+
 ---@param feature FactoryControl.Core.Entities.Controller.FeatureDto
 ---@return FactoryControl.Core.Entities.Controller.FeatureDto?
 function DataClient:CreateFeature(feature)
@@ -365,6 +415,21 @@ function DataClient:GetFeatureByIds(featureIds)
 	end
 
 	return response:GetBody()
+end
+
+---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Update
+function DataClient:UpdateFeature(featureUpdate)
+	local ipAddress = self.m_client:GetAddress(FactoryControlConfig.DOMAIN)
+	if not ipAddress then
+		return
+	end
+
+	self.m_client:GetNetworkClient():Send(
+		ipAddress,
+		Usage.Ports.FactoryControl_FeatureUpdate,
+		Usage.Events.FactoryControl_Feature_Invoked,
+		featureUpdate
+	)
 end
 
 return Utils.Class.CreateClass(DataClient, "FactoryControl.Client.DataClient")
@@ -446,6 +511,11 @@ function Controller:Modify(func)
     self.m_client:ModfiyControllerById(self.Id, modify:ToDto())
 end
 
+---@return Core.UUID[]
+function Controller:GetFeatureIds()
+    return self.m_featuresIds
+end
+
 ---@return FactoryControl.Client.Entities.Controller.Feature[]
 function Controller:GetFeatures()
     if self.m_features then
@@ -462,7 +532,7 @@ function Controller:GetFeatures()
 end
 
 return Utils.Class.CreateClass(Controller, "FactoryControl.Client.Entities.Controller",
-    require("FactoryControl.Client.Entities.Entity") --{{{@as FactoryControl.Client.Entities.Entity}}})
+    require("FactoryControl.Client.Entities.Entity"))
 
 -- //TODO: implement some kind of status like online and offline
 ]]
@@ -598,7 +668,7 @@ function Feature:ToDto()
 end
 
 return Utils.Class.CreateClass(Feature, "FactoryControl.Client.Entities.Controller.Feature",
-    require("FactoryControl.Client.Entities.Entity") --{{{@as FactoryControl.Client.Entities.Entity}}})
+    require("FactoryControl.Client.Entities.Entity"))
 ]]
 }
 
@@ -638,7 +708,7 @@ function Button:Press()
 end
 
 return Utils.Class.CreateClass(Button, "FactoryControl.Client.Entities.Controller.Feature.Button",
-    require("FactoryControl.Client.Entities.Controller.Feature.Feature") --{{{@as FactoryControl.Client.Entities.Controller.Feature}}})
+    require("FactoryControl.Client.Entities.Controller.Feature.Feature"))
 ]]
 }
 
@@ -684,7 +754,7 @@ end
 -- //TODO: complete
 
 return Utils.Class.CreateClass(Chart, "FactoryControl.Client.Entities.Controller.Feature.Chart",
-    require("FactoryControl.Client.Entities.Controller.Feature.Feature") --{{{@as FactoryControl.Client.Entities.Controller.Feature}}})
+    require("FactoryControl.Client.Entities.Controller.Feature.Feature"))
 ]]
 }
 
@@ -760,7 +830,7 @@ function Radial:Update()
 end
 
 return Utils.Class.CreateClass(Radial, "FactoryControl.Client.Entities.Controller.Feature.Radial",
-    require("FactoryControl.Client.Entities.Controller.Feature.Feature") --{{{@as FactoryControl.Client.Entities.Controller.Feature}}})
+    require("FactoryControl.Client.Entities.Controller.Feature.Feature"))
 ]]
 }
 
@@ -836,7 +906,7 @@ function Switch:Toggle()
 end
 
 return Utils.Class.CreateClass(Switch, "FactoryControl.Client.Entities.Controller.Feature.Switch",
-    require("FactoryControl.Client.Entities.Controller.Feature.Feature") --{{{@as FactoryControl.Client.Entities.Controller.Feature}}})
+    require("FactoryControl.Client.Entities.Controller.Feature.Feature"))
 ]]
 }
 

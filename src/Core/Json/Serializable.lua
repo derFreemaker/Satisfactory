@@ -10,7 +10,7 @@ local Serializable = {}
 
 ---@return any ...
 function Serializable:Serialize()
-    local typeInfo = self:Static__GetType()
+    local typeInfo = typeof(self)
     error("Serialize function was not override for type " .. typeInfo.Name)
 end
 

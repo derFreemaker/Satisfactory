@@ -12,13 +12,13 @@ local JsonSerializer = require("Core.Json.JsonSerializer")
 local Events = {}
 
 function Events:OnLoaded()
-    JsonSerializer.Static__Serializer:AddTypeInfos({
+    JsonSerializer.Static__Serializer:AddClasses({
         -- Uri
-        require("Net.Rest.Uri"):Static__GetType(),
+        require("Net.Rest.Uri"),
 
         -- Api
-        require("Net.Rest.Api.Request"):Static__GetType(),
-        require("Net.Rest.Api.Response"):Static__GetType(),
+        require("Net.Rest.Api.Request"),
+        require("Net.Rest.Api.Response"),
     })
 
     require("Net.Rest.Api.NetworkContextExtensions")
@@ -124,7 +124,7 @@ function NetworkContextExtensions:GetApiResponse()
 	return self.Body
 end
 
-Utils.Class.ExtendClass(NetworkContextExtensions, NetworkContext --{{{@as Net.Core.NetworkContext}}})
+Utils.Class.ExtendClass(NetworkContextExtensions, NetworkContext)
 ]]
 }
 
@@ -288,7 +288,8 @@ function Controller:__init(netPort, logger)
     self.m_endpoints = {}
     self.m_netPort = netPort
     self.m_logger = logger
-    netPort:AddListener(EventNameUsage.RestRequest, Task(self.onMessageRecieved, self))
+
+    netPort:AddListener(EventNameUsage.RestRequest, self.onMessageRecieved, self)
 end
 
 ---@private
@@ -621,7 +622,6 @@ if not PackageLoader:TryGetModule("Hosting.Host", Host) then
 end
 ---@type Hosting.Host
 Host = Host.Value:Load()
--- Run only if module Hosting.Host is loaded
 
 local ApiController = require("Net.Rest.Api.Server.Controller")
 
@@ -658,7 +658,7 @@ function HostExtensions:AddEndpoint(port, endpointName, endpointBase, ...)
         self.Endpoints = {}
     end
 
-    local endpointLogger = self.m_logger:subLogger("Endpoint[" .. endpointName .. "]")
+    local endpointLogger = self:CreateLogger("Endpoint[" .. endpointName .. "]")
     local apiController = self:GetOrCreateApiController(port, endpointLogger)
 
     table.insert(self.Endpoints, endpointBase(endpointLogger, apiController, ...))

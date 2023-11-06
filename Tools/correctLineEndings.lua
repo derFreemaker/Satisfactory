@@ -1,6 +1,6 @@
-local FileSystem = require("Tools.FileSystem")
-
 local args = { ... }
+
+local FileSystem = require(args[3])
 
 local targetDirectory = args[1]
 

@@ -11,10 +11,6 @@ local DNSClient = require('DNS.Client.Client')
 ---@class FactoryControl.Server.Events : Github_Loading.Entities.Events
 local Events = {}
 
-function Events:OnLoaded()
-    require("FactoryControl.Server.Extensions.HostExtensions")
-end
-
 return Events
 ]]
 }
@@ -25,12 +21,15 @@ PackageData["FactoryControlServer__main"] = {
     IsRunnable = true,
     Data = [[
 local Config = require('FactoryControl.Core.Config')
-local Usage = require('Core.Usage.Usage')
+local Usage = require('Core.Usage')
 
 local DatabaseAccessLayer = require("FactoryControl.Server.DatabaseAccessLayer")
 
 local ControllerEndpoints = require('FactoryControl.Server.Endpoints.Controller')
 local FeatureEndpoints = require("FactoryControl.Server.Endpoints.Feature")
+
+local CallbackService = require("Services.Callback.Server.CallbackService")
+local FeatureService = require("FactoryControl.Server.Services.FeatureService")
 
 local Host = require('Hosting.Host')
 
@@ -43,29 +42,32 @@ function Main:Configure()
 
 	local databaseAccessLayer = DatabaseAccessLayer(self.Logger:subLogger("DatabaseAccessLayer"))
 
-	self.m_host:AddEndpoint(Usage.Ports.HTTP,
-		"Controller",
-		ControllerEndpoints --{{{@as FactoryControl.Server.Endpoints.Controller}}},
-		databaseAccessLayer
-	)
-
-	self.m_host:AddEndpoint(Usage.Ports.HTTP,
-		"Feature",
-		FeatureEndpoints,
-		databaseAccessLayer
-	)
-
-	self.Logger:LogDebug('setup endpoints')
-
-	self.m_host:FactoryControl_Server_AddFeatureService(databaseAccessLayer, self.m_host:GetNetworkClient())
-	local featureService = self.m_host:FactoryControl_Server_GetFeatureService()
-	self.m_host:AddCallableEvent(
+	local networkClient = self.m_host:GetNetworkClient()
+	local callbackService = CallbackService(self.m_host:CreateLogger("CallbackService"), networkClient)
+	local featureService = FeatureService(callbackService, databaseAccessLayer, networkClient)
+	self.m_host.Services:AddService(featureService)
+	self.m_host:AddCallableEventTask(
 		Usage.Events.FactoryControl_Feature_Invoked,
 		Usage.Ports.FactoryControl,
 		featureService.OnFeatureInvoked
 	)
 
 	self.Logger:LogDebug("started services")
+
+	self.m_host:AddEndpoint(Usage.Ports.HTTP,
+		"Controller",
+		ControllerEndpoints,
+		databaseAccessLayer
+	)
+
+	self.m_host:AddEndpoint(Usage.Ports.HTTP,
+		"Feature",
+		FeatureEndpoints,
+		databaseAccessLayer,
+		featureService
+	)
+
+	self.Logger:LogDebug('setup endpoints')
 
 	self.m_host:RegisterAddress(Config.DOMAIN)
 end
@@ -75,7 +77,8 @@ function Main:Run()
 	while true do
 		self.m_host:GetNetworkClient():BroadCast(
 			Usage.Ports.FactoryControl_Heartbeat,
-			Usage.Events.FactoryControl_Heartbeat)
+			Usage.Events.FactoryControl_Heartbeat
+		)
 
 		self.m_host:RunCycle(3)
 	end
@@ -311,7 +314,7 @@ function ControllerEndpoints:GetByName(name)
 end
 
 return Utils.Class.CreateClass(ControllerEndpoints, 'FactoryControl.Server.Endpoints.Controller',
-	require('Net.Rest.Api.Server.EndpointBase') --{{{@as Net.Rest.Api.Server.EndpointBase}}})
+	require('Net.Rest.Api.Server.EndpointBase'))
 ]]
 }
 
@@ -320,27 +323,43 @@ PackageData["FactoryControlServerEndpointsFeature"] = {
     Namespace = "FactoryControl.Server.Endpoints.Feature",
     IsRunnable = true,
     Data = [[
-local UUID = require("Core.Common.UUID")
-
 local FeatureUrlTemplates = require("FactoryControl.Core.EndpointUrls")[1].Feature
 
 ---@class FactoryControl.Server.Endpoints.Feature : Net.Rest.Api.Server.EndpointBase
 ---@field m_databaseAccessLayer FactoryControl.Server.DatabaseAccessLayer
+---@field m_featureService FactoryControl.Server.Services.FeatureService
 local FeatureEndpoints = {}
 
 ---@private
 ---@param logger Core.Logger
 ---@param apiController Net.Rest.Api.Server.Controller
 ---@param databaseAccessLayer FactoryControl.Server.DatabaseAccessLayer
+---@param featureService FactoryControl.Server.Services.FeatureService
 ---@param super fun(endpointLogger: Core.Logger, apiController: Net.Rest.Api.Server.Controller)
-function FeatureEndpoints:__init(super, logger, apiController, databaseAccessLayer)
+function FeatureEndpoints:__init(super, logger, apiController, databaseAccessLayer, featureService)
     super(logger, apiController)
 
     self.m_databaseAccessLayer = databaseAccessLayer
+    self.m_featureService = featureService
+
+    self:AddEndpoint("POST", FeatureUrlTemplates.Watch, self.Watch)
+    self:AddEndpoint("POST", FeatureUrlTemplates.Unwatch, self.Unwatch)
 
     self:AddEndpoint("CREATE", FeatureUrlTemplates.Create, self.Create)
     self:AddEndpoint("DELETE", FeatureUrlTemplates.Delete, self.Delete)
     self:AddEndpoint("GET", FeatureUrlTemplates.GetById, self.GetByIds)
+end
+
+---@param featureId Core.UUID
+---@param ipAddress Net.Core.IPAddress
+function FeatureEndpoints:Watch(featureId, ipAddress)
+    self.m_featureService:Watch(featureId, ipAddress)
+end
+
+---@param featureId Core.UUID
+---@param ipAddress Net.Core.IPAddress
+function FeatureEndpoints:Unwatch(featureId, ipAddress)
+    self.m_featureService:Unwatch(featureId, ipAddress)
 end
 
 ---@param feature FactoryControl.Core.Entities.Controller.FeatureDto
@@ -366,38 +385,7 @@ function FeatureEndpoints:GetByIds(featureIds)
 end
 
 return Utils.Class.CreateClass(FeatureEndpoints, "FactoryControl.Server.Endpoints.Feature",
-    require("Net.Rest.Api.Server.EndpointBase") --{{{@as Net.Rest.Api.Server.EndpointBase}}})
-]]
-}
-
-PackageData["FactoryControlServerExtensionsHostExtensions"] = {
-    Location = "FactoryControl.Server.Extensions.HostExtensions",
-    Namespace = "FactoryControl.Server.Extensions.HostExtensions",
-    IsRunnable = true,
-    Data = [[
-local FeatureService = require("FactoryControl.Server.Services.FeatureService")
-
----@class Hosting.Host
----@field package m_FeatureService FactoryControl.Server.Services.FeatureService
-local HostExtensions = {}
-
----@param databaseAccessLayer FactoryControl.Server.DatabaseAccessLayer
----@param networkClient Net.Core.NetworkClient
-function HostExtensions:FactoryControl_Server_AddFeatureService(databaseAccessLayer, networkClient)
-    self.m_FeatureService = FeatureService(databaseAccessLayer, networkClient)
-end
-
----@return FactoryControl.Server.Services.FeatureService
-function HostExtensions:FactoryControl_Server_GetFeatureService()
-    if not self.m_FeatureService then
-        error("feature service was not added")
-    end
-
-    return self.m_FeatureService
-end
-
-Utils.Class.ExtendClass(HostExtensions,
-    require("Hosting.Host") --{{{@as Hosting.Host}}})
+    require("Net.Rest.Api.Server.EndpointBase"))
 ]]
 }
 
@@ -406,26 +394,57 @@ PackageData["FactoryControlServerServicesFeatureService"] = {
     Namespace = "FactoryControl.Server.Services.FeatureService",
     IsRunnable = true,
     Data = [[
-local Usage = require("Core.Usage.Usage")
+local Usage = require("Core.Usage")
 
 local Task = require("Core.Common.Task")
 
----@class FactoryControl.Server.Services.FeatureService
+---@class FactoryControl.Server.Services.FeatureService : object
 ---@field OnFeatureInvoked Core.Task
----@field private m_WatchedFeatures table<string, Net.Core.IPAddress[]>
----@field private m_DatabaseAccessLayer FactoryControl.Server.DatabaseAccessLayer
----@field private m_NetworkClient Net.Core.NetworkClient
----@overload fun(databaseAccessLayer: FactoryControl.Server.DatabaseAccessLayer, networkClient: Net.Core.NetworkClient) : FactoryControl.Server.Services.FeatureService
+---@field private m_watchedFeatures table<string, Net.Core.IPAddress[]>
+---@field private m_callbackService Services.Callback.Server.CallbackService
+---@field private m_databaseAccessLayer FactoryControl.Server.DatabaseAccessLayer
+---@field private m_networkClient Net.Core.NetworkClient
+---@overload fun(callbackService: Services.Callback.Server.CallbackService, databaseAccessLayer: FactoryControl.Server.DatabaseAccessLayer, networkClient: Net.Core.NetworkClient) : FactoryControl.Server.Services.FeatureService
 local FeatureService = {}
 
 ---@private
+---@param callbackService Services.Callback.Server.CallbackService
 ---@param databaseAccessLayer FactoryControl.Server.DatabaseAccessLayer
 ---@param networkClient Net.Core.NetworkClient
-function FeatureService:__init(databaseAccessLayer, networkClient)
-    self.m_DatabaseAccessLayer = databaseAccessLayer
-    self.m_NetworkClient = networkClient
+function FeatureService:__init(callbackService, databaseAccessLayer, networkClient)
+    self.m_callbackService = callbackService
+    self.m_databaseAccessLayer = databaseAccessLayer
+    self.m_networkClient = networkClient
 
     self.OnFeatureInvoked = Task(self.onFeatureInvoked, self)
+end
+
+---@param featureId Core.UUID
+---@param ipAddress Net.Core.IPAddress
+function FeatureService:Watch(featureId, ipAddress)
+    local ipAddresses = self.m_watchedFeatures[featureId:ToString()]
+    if not ipAddresses then
+        ipAddresses = {}
+        self.m_watchedFeatures[featureId:ToString()] = ipAddresses
+    end
+
+    table.insert(ipAddresses, ipAddress)
+end
+
+---@param featureId Core.UUID
+---@param ipAddress Net.Core.IPAddress
+function FeatureService:Unwatch(featureId, ipAddress)
+    local ipAddresses = self.m_watchedFeatures[featureId:ToString()]
+    if not ipAddresses then
+        return
+    end
+
+    for i, ip in ipairs(ipAddresses) do
+        if ip == ipAddress then
+            table.remove(ipAddresses, i)
+            return
+        end
+    end
 end
 
 ---@private
@@ -433,43 +452,46 @@ end
 function FeatureService:onFeatureInvoked(context)
     local featureUpdate = context:GetFeatureUpdate()
 
-    self:SendToController(featureUpdate)
+    local feature = self.m_databaseAccessLayer:GetFeatureById(featureUpdate.FeatureId)
+    if not feature then
+        self.m_watchedFeatures[featureUpdate.FeatureId:ToString()] = nil
+    end
+
+    feature:OnUpdate(featureUpdate)
+
+    self:SendToController(feature)
     self:SendToWachters(featureUpdate)
 end
 
----@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Update
-function FeatureService:SendToController(featureUpdate)
-    local feature = self.m_DatabaseAccessLayer:GetFeatureById(featureUpdate.FeatureId)
-    if not feature then
-        self.m_WatchedFeatures[featureUpdate.FeatureId:ToString()] = nil
-        return
-    end
-
-    local controller = self.m_DatabaseAccessLayer:GetControllerById(feature.ControllerId)
+---@param feature FactoryControl.Core.Entities.Controller.FeatureDto
+function FeatureService:SendToController(feature)
+    local controller = self.m_databaseAccessLayer:GetControllerById(feature.ControllerId)
     if not controller then
         return
     end
 
-    self.m_NetworkClient:Send(
-        controller.IPAddress,
-        Usage.Ports.FactoryControl,
+    self.m_callbackService:Send(
+        feature.Id,
         Usage.Events.FactoryControl_Feature_Invoked,
-        featureUpdate
+        "Features",
+        controller.IPAddress,
+        feature
     )
 end
 
 ---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Update
 function FeatureService:SendToWachters(featureUpdate)
-    local ipAddresses = self.m_WatchedFeatures[featureUpdate.FeatureId:ToString()]
+    local ipAddresses = self.m_watchedFeatures[featureUpdate.FeatureId:ToString()]
     if not ipAddresses then
         return
     end
 
     for _, ipAddress in ipairs(ipAddresses) do
-        self.m_NetworkClient:Send(
-            ipAddress,
-            Usage.Ports.FactoryControl,
+        self.m_callbackService:Send(
+            featureUpdate.FeatureId,
             Usage.Events.FactoryControl_Feature_Invoked,
+            "Features",
+            ipAddress,
             featureUpdate
         )
     end

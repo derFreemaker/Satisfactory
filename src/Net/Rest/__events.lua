@@ -4,13 +4,13 @@ local JsonSerializer = require("Core.Json.JsonSerializer")
 local Events = {}
 
 function Events:OnLoaded()
-    JsonSerializer.Static__Serializer:AddTypeInfos({
+    JsonSerializer.Static__Serializer:AddClasses({
         -- Uri
-        require("Net.Rest.Uri"):Static__GetType(),
+        require("Net.Rest.Uri"),
 
         -- Api
-        require("Net.Rest.Api.Request"):Static__GetType(),
-        require("Net.Rest.Api.Response"):Static__GetType(),
+        require("Net.Rest.Api.Request"),
+        require("Net.Rest.Api.Response"),
     })
 
     require("Net.Rest.Api.NetworkContextExtensions")

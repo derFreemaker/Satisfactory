@@ -6,7 +6,7 @@ local Valve = {}
 
 ---@param nickName string?
 ---@return FIN.UUID[]
-function Valve.Static__FindAllValvesInNetwork(nickName)
+function Valve.Static__FindAllValveIdsInNetwork(nickName)
 	local valveIds = {}
 	if nickName == nil then
 		valveIds = component.findComponent(findClass('Build_Valve_C'))
@@ -18,8 +18,8 @@ end
 
 ---@param nickName string?
 ---@return Adapter.Pipeline.Valve[]
-function Valve.Static__FindAllValvesInNetworkAndAddAdapter(nickName)
-	local valveIds = Valve.Static__FindAllValvesInNetwork(nickName)
+function Valve.Static__GetAllValvesInNetwork(nickName)
+	local valveIds = Valve.Static__FindAllValveIdsInNetwork(nickName)
 	local valveAdapters = {}
 	for _, valveId in ipairs(valveIds) do
 		table.insert(valveAdapters, Valve(valveId))

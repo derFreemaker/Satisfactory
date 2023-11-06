@@ -12,9 +12,9 @@ local JsonSerializer = require("Core.Json.JsonSerializer")
 local Events = {}
 
 function Events:OnLoaded()
-    JsonSerializer.Static__Serializer:AddTypeInfos({
-        require("DNS.Core.Entities.Address.Address"):Static__GetType(),
-        require("DNS.Core.Entities.Address.Create"):Static__GetType(),
+    JsonSerializer.Static__Serializer:AddClasses({
+        require("DNS.Core.Entities.Address.Address"),
+        require("DNS.Core.Entities.Address.Create"),
     })
 end
 

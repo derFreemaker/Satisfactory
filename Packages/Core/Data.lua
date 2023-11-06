@@ -610,26 +610,9 @@ function UUID:__init(headOrSring, body, tail)
     self:__modifyBehavior({ DisableCustomIndexing = false })
 end
 
----@private
-function UUID:__newindex()
-    error("Core.UUID is completely read only", 3)
-end
-
----@private
 ---@param other Core.UUID
 ---@return boolean isSame
-function UUID:__eq(other)
-    local other_Static__GetType = other.Static__GetType
-    if type(other) ~= "table" or not other_Static__GetType or other_Static__GetType(other) ~= "Core.UUID" then
-        local typeName = type(other)
-        if type(other) == "table" and other_Static__GetType then
-            typeName = other_Static__GetType(other).Name
-        end
-
-        error("wrong argument #2: (Core.UUID expected; got " .. typeName .. ")")
-        return false
-    end
-
+function UUID:Equals(other)
     for i, char in ipairs(self.m_head) do
         if char ~= other.m_head[i] then
             return false
@@ -673,12 +656,17 @@ function UUID:ToString()
     return str
 end
 
----@private
-function UUID:__tostring()
+function UUID:Serialize()
     return self:ToString()
 end
 
-function UUID:Serialize()
+---@private
+function UUID:__newindex()
+    error("Core.UUID is completely read only", 3)
+end
+
+---@private
+function UUID:__tostring()
     return self:ToString()
 end
 
@@ -1746,11 +1734,26 @@ function JsonSerializer:AddTypeInfos(typeInfos)
     return self
 end
 
+---@param class object
+---@return Core.Json.Serializer
+function JsonSerializer:AddClass(class)
+    return self:AddTypeInfo(typeof(class))
+end
+
+---@param classes object[]
+---@return Core.Json.Serializer
+function JsonSerializer:AddClasses(classes)
+    for _, class in ipairs(classes) do
+        self:AddClass(class)
+    end
+    return self
+end
+
 ---@private
 ---@param class Core.Json.Serializable
 ---@return table data
 function JsonSerializer:serializeClass(class)
-    local typeInfo = class:Static__GetType()
+    local typeInfo = typeof(class)
     local data = { __Type = typeInfo.Name, __Data = { class:Serialize() } }
 
     local max = 0
@@ -1895,10 +1898,7 @@ end
 Utils.Class.CreateClass(JsonSerializer, "Core.Json.JsonSerializer")
 
 JsonSerializer.Static__Serializer = JsonSerializer()
-JsonSerializer.Static__Serializer:AddTypeInfos({
-    -- UUID
-    require("Core.Common.UUID"):Static__GetType()
-})
+JsonSerializer.Static__Serializer:AddClass(require("Core.Common.UUID"))
 
 return JsonSerializer
 ]]
@@ -1909,12 +1909,19 @@ PackageData["CoreJsonSerializable"] = {
     Namespace = "Core.Json.Serializable",
     IsRunnable = true,
     Data = [[
+---@alias Core.Json.Serializable.Types
+---| string
+---| number
+---| boolean
+---| table
+---| Core.Json.Serializable
+
 ---@class Core.Json.Serializable : object
 local Serializable = {}
 
 ---@return any ...
 function Serializable:Serialize()
-    local typeInfo = self:Static__GetType()
+    local typeInfo = typeof(self)
     error("Serialize function was not override for type " .. typeInfo.Name)
 end
 
@@ -1925,6 +1932,18 @@ function Serializable:Static__Deserialize(...)
 end
 
 return Utils.Class.CreateClass(Serializable, "Core.Json.Serializable")
+]]
+}
+
+PackageData["CoreUsageinit"] = {
+    Location = "Core.Usage.init",
+    Namespace = "Core.Usage.init",
+    IsRunnable = true,
+    Data = [[
+return {
+    Ports = require("Core.Usage.Usage_Port"),
+    Events = require("Core.Usage.Usage_EventName")
+}
 ]]
 }
 
@@ -1946,7 +1965,11 @@ local EventNameUsage = {
 
     -- FactoryControl
     FactoryControl_Heartbeat = "FactoryControl",
-    FactoryControl_Feature_Invoked = "FactoryControl-Feature-Invoked"
+    FactoryControl_Feature_Invoked = "FactoryControl-Feature-Invoked",
+
+    -- CallbackService
+    CallbackService = "CallbackService",
+    CallbackService_Response = "CallbackService-Response"
 }
 
 return EventNameUsage
@@ -1971,21 +1994,13 @@ local PortUsage = {
 	-- FactoryControl
 	FactoryControl_Heartbeat = 1250,
 	FactoryControl = 1251,
+
+	-- Callback
+	CallbackService = 2400,
+	CallbackService_Response = 2401,
 }
 
 return PortUsage
-]]
-}
-
-PackageData["CoreUsageUsage"] = {
-    Location = "Core.Usage.Usage",
-    Namespace = "Core.Usage.Usage",
-    IsRunnable = true,
-    Data = [[
-return {
-    Ports = require("Core.Usage.Usage_Port"),
-    Events = require("Core.Usage.Usage_EventName")
-}
 ]]
 }
 

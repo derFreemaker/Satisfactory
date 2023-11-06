@@ -12,24 +12,24 @@ local JsonSerializer = require("Core.Json.JsonSerializer")
 local Events = {}
 
 function Events:OnLoaded()
-    JsonSerializer.Static__Serializer:AddTypeInfos({
+    JsonSerializer.Static__Serializer:AddClasses({
         -- ControllerDto's
-        require("FactoryControl.Core.Entities.Controller.ControllerDto"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.ConnectDto"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.CreateDto"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.ModifyDto"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.ControllerDto"),
+        require("FactoryControl.Core.Entities.Controller.ConnectDto"),
+        require("FactoryControl.Core.Entities.Controller.CreateDto"),
+        require("FactoryControl.Core.Entities.Controller.ModifyDto"),
 
         -- FeatureDto's
-        require("FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto"),
+        require("FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto"),
+        require("FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto"),
+        require("FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto"),
 
         -- Feature Updates
-        require("FactoryControl.Core.Entities.Controller.Feature.Button.Update"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.Feature.Switch.Update"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.Feature.Radial.Update"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.Feature.Chart.Update"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.Feature.Button.Update"),
+        require("FactoryControl.Core.Entities.Controller.Feature.Switch.Update"),
+        require("FactoryControl.Core.Entities.Controller.Feature.Radial.Update"),
+        require("FactoryControl.Core.Entities.Controller.Feature.Chart.Update"),
     })
 
     require("FactoryControl.Core.Extensions.NetworkContextExtensions")
@@ -117,6 +117,18 @@ local FeatureTemplates = {}
 
 ---@class FactoryControl.Core.EndpointUrlConstructors.Feature
 local FeatureConstructors = {}
+
+FeatureTemplates.Watch = "/Feature/{id:Core.UUID}/Watch"
+---@param featureId Core.UUID
+function FeatureConstructors.Watch(featureId)
+    return "/Feature/" .. featureId:ToString() .. "/Watch"
+end
+
+FeatureTemplates.Unwatch = "/Feature/{id:Core.UUID}/Unwatch"
+---@param featureId Core.UUID
+function FeatureConstructors.Unwatch(featureId)
+    return "/Feature/" .. featureId:ToString() .. "/Unwatch"
+end
 
 FeatureTemplates.Create = "/Feature/Create"
 function FeatureConstructors.Create()
@@ -304,6 +316,11 @@ function FeatureDto:__init(id, name, type, controllerId)
     self.ControllerId = controllerId
 end
 
+---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Update
+function FeatureDto:OnUpdate(featureUpdate)
+    error("OnUpdate not implemented")
+end
+
 -- No Seriliaze function because this class should only be used as base not for instances
 
 return Utils.Class.CreateClass(FeatureDto, "FactoryControl.Core.Entities.Controller.FeatureDto",
@@ -329,7 +346,7 @@ function Update:__init(featureId)
 end
 
 return Utils.Class.CreateClass(Update, "FactoryControl.Core.Entities.Controller.Feature.Update",
-    require("Core.Json.Serializable") --{{{@as Core.Json.Serializable}}})
+    require("Core.Json.Serializable"))
 ]]
 }
 
@@ -351,13 +368,17 @@ function ButtonDto:__init(super, id, name, controllerId)
     super(id, name, "Button", controllerId)
 end
 
+---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Button.Update
+function ButtonDto:OnUpdate(featureUpdate)
+end
+
 ---@return Core.UUID id, string name
 function ButtonDto:Serialize()
     return self.Id, self.Name
 end
 
 return Utils.Class.CreateClass(ButtonDto, "FactoryControl.Core.Entities.Controller.Feature.ButtonDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --{{{@as FactoryControl.Core.Entities.Controller.FeatureDto}}})
+    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))
 ]]
 }
 
@@ -415,13 +436,18 @@ function ChartDto:__init(super, id, name, controllerId, xAxisName, yAxisName, da
     self.Data = data or {}
 end
 
+---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Chart.Update
+function ChartDto:OnUpdate(featureUpdate)
+    self.Data = featureUpdate.Data
+end
+
 ---@return Core.UUID id, string name, string xAxisName, string yAxisName, table<number, any> data
 function ChartDto:Serialize()
     return self.Id, self.Name, self.XAxisName, self.YAxisName, self.Data
 end
 
 return Utils.Class.CreateClass(ChartDto, "FactoryControl.Core.Entities.Controller.Feature.ChartDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --{{{@as FactoryControl.Core.Entities.Controller.FeatureDto}}})
+    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))
 ]]
 }
 
@@ -464,7 +490,7 @@ PackageData["FactoryControlCoreEntitiesControllerFeatureRadialRadialDto"] = {
 ---@field Max number
 ---@field Setting number
 ---@overload fun(id: Core.UUID, name: string, controllerId: Core.UUID, min: number?, max: number?, setting: number?) : FactoryControl.Core.Entities.Controller.Feature.RadialDto
-local RadialFeatureDto = {}
+local RadialDto = {}
 
 ---@private
 ---@param id Core.UUID
@@ -474,7 +500,7 @@ local RadialFeatureDto = {}
 ---@param max number
 ---@param setting number
 ---@param super FactoryControl.Core.Entities.Controller.FeatureDto.Constructor
-function RadialFeatureDto:__init(super, id, name, controllerId, min, max, setting)
+function RadialDto:__init(super, id, name, controllerId, min, max, setting)
     super(id, name, "Radial", controllerId)
 
     self.Min = min or 0
@@ -498,13 +524,20 @@ function RadialFeatureDto:__init(super, id, name, controllerId, min, max, settin
     self.Setting = setting
 end
 
+---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Radial.Update
+function RadialDto:OnUpdate(featureUpdate)
+    self.Min = featureUpdate.Min
+    self.Max = featureUpdate.Max
+    self.Setting = featureUpdate.Setting
+end
+
 ---@return Core.UUID id, string name, number min, number max, number setting
-function RadialFeatureDto:Serialize()
+function RadialDto:Serialize()
     return self.Id, self.Name, self.Min, self.Max, self.Setting
 end
 
-return Utils.Class.CreateClass(RadialFeatureDto, "FactoryControl.Core.Entities.Controller.Feature.RadialDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --{{{@as FactoryControl.Core.Entities.Controller.FeatureDto}}})
+return Utils.Class.CreateClass(RadialDto, "FactoryControl.Core.Entities.Controller.Feature.RadialDto",
+    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))
 ]]
 }
 
@@ -552,7 +585,7 @@ PackageData["FactoryControlCoreEntitiesControllerFeatureSwitchSwitchDto"] = {
 ---@class FactoryControl.Core.Entities.Controller.Feature.SwitchDto : FactoryControl.Core.Entities.Controller.FeatureDto
 ---@field IsEnabled boolean
 ---@overload fun(id: Core.UUID, name: string, controllerId: Core.UUID, isEnabled: boolean) : FactoryControl.Core.Entities.Controller.Feature.SwitchDto
-local SwitchFeatureDto = {}
+local SwitchDto = {}
 
 ---@private
 ---@param id Core.UUID
@@ -560,7 +593,7 @@ local SwitchFeatureDto = {}
 ---@param controllerId Core.UUID
 ---@param isEnabled boolean?
 ---@param super FactoryControl.Core.Entities.Controller.FeatureDto.Constructor
-function SwitchFeatureDto:__init(super, id, name, controllerId, isEnabled)
+function SwitchDto:__init(super, id, name, controllerId, isEnabled)
     super(id, name, "Switch", controllerId)
 
     if isEnabled == nil then
@@ -570,13 +603,18 @@ function SwitchFeatureDto:__init(super, id, name, controllerId, isEnabled)
     self.IsEnabled = isEnabled
 end
 
+---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Switch.Update
+function SwitchDto:OnUpdate(featureUpdate)
+    self.IsEnabled = featureUpdate.IsEnabled
+end
+
 ---@return Core.UUID id, string name, boolean isEnabled
-function SwitchFeatureDto:Serialize()
+function SwitchDto:Serialize()
     return self.Id, self.Name, self.IsEnabled
 end
 
-return Utils.Class.CreateClass(SwitchFeatureDto, "FactoryControl.Core.Entities.Controller.Feature.SwitchDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto") --{{{@as FactoryControl.Core.Entities.Controller.FeatureDto}}})
+return Utils.Class.CreateClass(SwitchDto, "FactoryControl.Core.Entities.Controller.Feature.SwitchDto",
+    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))
 ]]
 }
 
@@ -623,7 +661,7 @@ function NetworkContextExtensions:GetFeatureUpdate()
 end
 
 Utils.Class.ExtendClass(NetworkContextExtensions,
-    require("Net.Core.NetworkContext") --{{{@as Net.Core.NetworkContext}}})
+    require("Net.Core.NetworkContext"))
 ]]
 }
 

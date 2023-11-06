@@ -23,7 +23,7 @@ local InternetCard = {}
 ---@param url string The Url for which you want to make an HTTP Request.
 ---@param method FIN.Components.FINComputerMod.FINInternetCard.HttpMethods The http request method/verb you want to make the request.
 ---@param data string The http request payload you want to sent. Leave empty: ```""``` if you want to send no data.
----@return FIN.Components.Future ReturnValue
+---@return FIN.Components.Future responseFuture
 function InternetCard:request(url, method, data)
 end
 

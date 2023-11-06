@@ -4,9 +4,9 @@ local JsonSerializer = require("Core.Json.JsonSerializer")
 local Events = {}
 
 function Events:OnLoaded()
-    JsonSerializer.Static__Serializer:AddTypeInfos({
+    JsonSerializer.Static__Serializer:AddClasses({
         -- IPAddress
-        require("Net.Core.IPAddress"):Static__GetType(),
+        require("Net.Core.IPAddress"),
     })
 
     -- Loading Host Extensions

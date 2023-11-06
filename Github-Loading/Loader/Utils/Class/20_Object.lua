@@ -67,17 +67,10 @@ local metaMethods = {
 ---@class object : Utils.Class.ObjectMetaMethods, function
 local Object = {}
 
----@return Utils.Class.Type
-function Object:Static__GetType()
-	---@type Utils.Class.Metatable
-	local metatable = getmetatable(self)
-	return metatable.Type
-end
-
 ---@protected
 ---@return string typeName
 function Object:__tostring()
-	return self:Static__GetType().Name
+	return typeof(self).Name
 end
 
 ---@protected

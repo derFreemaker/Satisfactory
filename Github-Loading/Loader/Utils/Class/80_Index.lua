@@ -122,4 +122,13 @@ function Class.IsClass(obj, metatableOut)
     return true
 end
 
+---@param class object
+---@return Utils.Class.Type
+---@diagnostic disable-next-line
+function typeof(class)
+    ---@type Utils.Class.Metatable
+    local metatable = getmetatable(class)
+    return metatable.Type
+end
+
 return Class

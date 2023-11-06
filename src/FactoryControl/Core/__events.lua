@@ -4,24 +4,24 @@ local JsonSerializer = require("Core.Json.JsonSerializer")
 local Events = {}
 
 function Events:OnLoaded()
-    JsonSerializer.Static__Serializer:AddTypeInfos({
+    JsonSerializer.Static__Serializer:AddClasses({
         -- ControllerDto's
-        require("FactoryControl.Core.Entities.Controller.ControllerDto"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.ConnectDto"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.CreateDto"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.ModifyDto"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.ControllerDto"),
+        require("FactoryControl.Core.Entities.Controller.ConnectDto"),
+        require("FactoryControl.Core.Entities.Controller.CreateDto"),
+        require("FactoryControl.Core.Entities.Controller.ModifyDto"),
 
         -- FeatureDto's
-        require("FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto"),
+        require("FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto"),
+        require("FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto"),
+        require("FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto"),
 
         -- Feature Updates
-        require("FactoryControl.Core.Entities.Controller.Feature.Button.Update"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.Feature.Switch.Update"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.Feature.Radial.Update"):Static__GetType(),
-        require("FactoryControl.Core.Entities.Controller.Feature.Chart.Update"):Static__GetType(),
+        require("FactoryControl.Core.Entities.Controller.Feature.Button.Update"),
+        require("FactoryControl.Core.Entities.Controller.Feature.Switch.Update"),
+        require("FactoryControl.Core.Entities.Controller.Feature.Radial.Update"),
+        require("FactoryControl.Core.Entities.Controller.Feature.Chart.Update"),
     })
 
     require("FactoryControl.Core.Extensions.NetworkContextExtensions")

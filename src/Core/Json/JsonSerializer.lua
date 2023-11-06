@@ -47,11 +47,26 @@ function JsonSerializer:AddTypeInfos(typeInfos)
     return self
 end
 
+---@param class object
+---@return Core.Json.Serializer
+function JsonSerializer:AddClass(class)
+    return self:AddTypeInfo(typeof(class))
+end
+
+---@param classes object[]
+---@return Core.Json.Serializer
+function JsonSerializer:AddClasses(classes)
+    for _, class in ipairs(classes) do
+        self:AddClass(class)
+    end
+    return self
+end
+
 ---@private
 ---@param class Core.Json.Serializable
 ---@return table data
 function JsonSerializer:serializeClass(class)
-    local typeInfo = class:Static__GetType()
+    local typeInfo = typeof(class)
     local data = { __Type = typeInfo.Name, __Data = { class:Serialize() } }
 
     local max = 0
@@ -196,9 +211,6 @@ end
 Utils.Class.CreateClass(JsonSerializer, "Core.Json.JsonSerializer")
 
 JsonSerializer.Static__Serializer = JsonSerializer()
-JsonSerializer.Static__Serializer:AddTypeInfos({
-    -- UUID
-    require("Core.Common.UUID"):Static__GetType()
-})
+JsonSerializer.Static__Serializer:AddClass(require("Core.Common.UUID"))
 
 return JsonSerializer

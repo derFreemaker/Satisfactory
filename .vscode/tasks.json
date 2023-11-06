@@ -31,7 +31,8 @@
 			"args": [
 				"${workspaceFolder}/Tools/correctLineEndings.lua",
 				"${workspaceFolder}",
-				"${workspaceFolder}/Tools/dos2unix.exe"
+				"${workspaceFolder}/Tools/dos2unix.exe",
+				"Tools.FileSystem"
 			],
 			"presentation": {
 				"echo": true,
