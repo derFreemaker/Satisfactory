@@ -1,7 +1,9 @@
+local Reference = require("Core.References.Reference")
+
 ---@class Adapter.Pipeline.Valve : object
 ---@field private m_iPAddress Net.Core.IPAddress
 ---@field private m_valve Satisfactory.Components.Factory.Build_Valve_C
----@overload fun(id: FIN.UUID, valve: Satisfactory.Components.Factory.Build_Valve_C?)
+---@overload fun(id: FIN.UUID) : Adapter.Pipeline.Valve
 local Valve = {}
 
 ---@param nickName string?
@@ -28,14 +30,13 @@ function Valve.Static__GetAllValvesInNetwork(nickName)
 end
 
 ---@private
----@param idOrValve FIN.UUID | Satisfactory.Components.Factory.Build_Valve_C
-function Valve:__init(idOrValve)
-	if type(idOrValve) == 'string' then
-		self.m_valve = component.proxy(idOrValve) --[[@as Satisfactory.Components.Factory.Build_Valve_C]]
-		return
-	end
-	---@cast idOrValve Satisfactory.Components.Factory.Build_Valve_C
-	self.m_valve = idOrValve
+---@param id FIN.UUID
+function Valve:__init(id)
+	local valve = Reference(id)
+	valve:Raw__Check()
+
+	---@diagnostic disable-next-line
+	self.m_valve = valve
 end
 
 ---@return FIN.UUID

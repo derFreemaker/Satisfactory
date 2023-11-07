@@ -2,6 +2,8 @@
   "Name": "Adapter.Pipeline",
   "Namespace": "Adapter.Pipeline",
   "Version": "0.1.0-19",
-  "RequiredPackages": [],
+  "RequiredPackages": [
+    "Core"
+  ],
   "PackageType": "Library"
 }

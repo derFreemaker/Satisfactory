@@ -1,43 +1,33 @@
+local Reference = require("Core.References.Reference")
+local PCIDeviceReference = require("Core.References.PCIDeviceReference")
+
 ---@class Adapter.Computer.NetworkCard : object
 ---@field private m_networkCard FIN.Components.FINComputerMod.NetworkCard_C
 ---@field private m_openPorts table<integer, true>
----@overload fun(idOrIndexOrNetworkCard: FIN.UUID | integer | FIN.Components.FINComputerMod.NetworkCard_C) : Adapter.Computer.NetworkCard
+---@overload fun(idOrIndexOrNetworkCard: FIN.UUID | integer) : Adapter.Computer.NetworkCard
 local NetworkCard = {}
-
----@param index integer
-function NetworkCard.Static__GetNetworkCardByIndex(index)
-	return computer.getPCIDevices(findClass('NetworkCard_C'))[index]
-end
 
 local firstNetworkCard = true
 ---@private
----@param idOrIndexOrNetworkCard FIN.UUID | integer | FIN.Components.FINComputerMod.NetworkCard_C
-function NetworkCard:__init(idOrIndexOrNetworkCard)
+---@param idOrIndex FIN.UUID | integer
+function NetworkCard:__init(idOrIndex)
 	self.m_openPorts = {}
-
-	if not idOrIndexOrNetworkCard then
-		idOrIndexOrNetworkCard = 1
+	if not idOrIndex then
+		idOrIndex = 1
 	end
 
-	if type(idOrIndexOrNetworkCard) == 'string' then
-		---@cast idOrIndexOrNetworkCard FIN.UUID
-		self.m_networkCard = component.proxy(idOrIndexOrNetworkCard) --[[@as FIN.Components.FINComputerMod.NetworkCard_C]]
-		if self.m_networkCard == nil then
-			error('no networkCard was found')
-		end
-		return
+	local networkCard
+	if type(idOrIndex) == 'string' then
+		---@cast idOrIndex FIN.UUID
+		networkCard = Reference(idOrIndex)
+	else
+		---@cast idOrIndex integer
+		networkCard = PCIDeviceReference(findClass('NetworkCard_C'), idOrIndex)
 	end
+	networkCard:Raw__Check()
 
-	if type(idOrIndexOrNetworkCard) == 'number' then
-		self.m_networkCard = computer.getPCIDevices(findClass('NetworkCard_C'))[idOrIndexOrNetworkCard]
-		if self.m_networkCard == nil then
-			error('no networkCard was found')
-		end
-		return
-	end
-
-	---@cast idOrIndexOrNetworkCard FIN.Components.FINComputerMod.NetworkCard_C
-	self.m_networkCard = idOrIndexOrNetworkCard
+	---@diagnostic disable-next-line
+	self.m_networkCard = networkCard
 
 	if firstNetworkCard then
 		self:CloseAllPorts()

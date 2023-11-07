@@ -1,23 +1,20 @@
+local ComputerPartReference = require("Core.References.PCIDeviceReference")
+
 ---@class Adapter.InternetCard : object
 ---@field m_internetCard FIN.Components.FINComputerMod.InternetCard_C
 local InternetCard = {}
 
----@param indexOrInternetCard number | FIN.Components.FINComputerMod.InternetCard_C
-function InternetCard:__init(indexOrInternetCard)
-    if not indexOrInternetCard then
-        indexOrInternetCard = 1
+---@param index number
+function InternetCard:__init(index)
+    if not index then
+        index = 1
     end
 
-    if type(indexOrInternetCard) == "number" then
-        self.m_internetCard = computer.getPCIDevices(findClass('InternetCard_C'))[indexOrInternetCard]
-        if self.m_internetCard == nil then
-            error('no internetCard was found')
-        end
-        return
-    end
+    local internetCard = ComputerPartReference(findClass('InternetCard_C'), index)
+    internetCard:Raw__Check()
 
-    ---@cast indexOrInternetCard FIN.Components.FINComputerMod.InternetCard_C
-    self.m_internetCard = indexOrInternetCard
+    ---@diagnostic disable-next-line
+    self.m_internetCard = internetCard
 end
 
 ---@param url string

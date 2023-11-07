@@ -78,6 +78,8 @@ function MetatableHandler.CreateMetatable(typeInfo, metatable)
             local splittedKey = String.Split(key, "__")
             if Table.Contains(splittedKey, "Static") then
                 return TypeHandler.GetStatic(typeInfo, key)
+            elseif Table.Contains(splittedKey, "Raw") then
+                return rawget(obj, key)
             end
         end
 
@@ -99,8 +101,9 @@ function MetatableHandler.CreateMetatable(typeInfo, metatable)
         if type(key) == "string" then
             local splittedKey = String.Split(key, "__")
             if Table.Contains(splittedKey, "Static") then
-                TypeHandler.SetStatic(typeInfo, key, value)
-                return
+                return TypeHandler.SetStatic(typeInfo, key, value)
+            elseif Table.Contains(splittedKey, "Raw") then
+                return rawset(obj, key, value)
             end
         end
 

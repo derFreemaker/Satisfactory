@@ -100,11 +100,11 @@ function UUID:__init(headOrSring, body, tail)
         headOrSring, body, tail = parse(headOrSring)
     end
 
-    self:__modifyBehavior({ DisableCustomIndexing = true })
+    self:Raw__ModifyBehavior({ DisableCustomIndexing = true })
     self.m_head = headOrSring
     self.m_body = body
     self.m_tail = tail
-    self:__modifyBehavior({ DisableCustomIndexing = false })
+    self:Raw__ModifyBehavior({ DisableCustomIndexing = false })
 end
 
 ---@param other Core.UUID

@@ -26,7 +26,7 @@ end
 
 ---@protected
 ---@param modify object.Modify
-function Object:__modifyBehavior(modify)
+function Object:Raw__ModifyBehavior(modify)
 	local metatable = getmetatable(self)
 
 	if modify.DisableCustomIndexing ~= nil then
