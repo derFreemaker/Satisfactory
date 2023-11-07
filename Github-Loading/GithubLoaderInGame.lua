@@ -2,6 +2,10 @@
 local option = nil
 local showExtendOptionDetails = false
 
+-- Config --
+-- to define any config variables
+Config = {}
+
 -- logLevel
 -- 1 = Trace / 2 = Debug / 3 = Info / 4 = Warning / 5 = Error / 6 = Fatal
 local loaderLogLevel = 3
@@ -10,10 +14,6 @@ local programLogLevel = 3
 -- forceDownload
 local loaderForceDownload = false
 local programForceDownload = false
-
--- Config --
--- to define any config variables
-Config = {}
 
 local BaseUrl = "http://localhost"
 -- local BaseUrl = 'https://raw.githubusercontent.com/derFreemaker/Satisfactory/dev'
