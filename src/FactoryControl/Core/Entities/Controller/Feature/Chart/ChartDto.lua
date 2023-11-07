@@ -26,9 +26,9 @@ function ChartDto:OnUpdate(featureUpdate)
     self.Data = featureUpdate.Data
 end
 
----@return Core.UUID id, string name, string xAxisName, string yAxisName, table<number, any> data
+---@return Core.UUID id, string name, Core.UUID controllerId, string xAxisName, string yAxisName, table<number, any> data
 function ChartDto:Serialize()
-    return self.Id, self.Name, self.XAxisName, self.YAxisName, self.Data
+    return self.Id, self.Name, self.ControllerId, self.XAxisName, self.YAxisName, self.Data
 end
 
 return Utils.Class.CreateClass(ChartDto, "FactoryControl.Core.Entities.Controller.Feature.ChartDto",

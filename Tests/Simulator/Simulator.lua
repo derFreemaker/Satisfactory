@@ -41,6 +41,7 @@ function Simulator:loadComputer()
 end
 
 ---@param logLevel Github_Loading.Logger.LogLevel
+---@return Github_Loading.Logger
 function Simulator:setupLogger(logLevel)
 	---@type Github_Loading.Logger
 	local Logger = self.m_loadedLoaderFiles['/Github-Loading/Loader/Logger'][1]
@@ -52,10 +53,13 @@ function Simulator:setupLogger(logLevel)
 
 	___logger:initialize()
 	___logger:setLogger(logger)
+
+	return logger
 end
 
 ---@private
 ---@param logLevel Github_Loading.Logger.LogLevel
+---@return Core.Logger
 function Simulator:Prepare(logLevel)
 	component = {}
 	event = {}
@@ -64,22 +68,29 @@ function Simulator:Prepare(logLevel)
 
 	self:LoadLoaderFiles()
 
-	self:setupLogger(logLevel)
+	local logger = self:setupLogger(logLevel)
 
 	self:OverrideRequire()
 
 	Utils = self.m_loadedLoaderFiles['/Github-Loading/Loader/Utils'][1] --[[@as Utils]]
+
+	local Logger = require("Core.Common.Logger")
+	local newLogger = Logger("Simulator", logLevel)
+	logger:CopyListenersToCoreLogger(require("Core.Common.Task"), newLogger)
+	___logger:setLogger(newLogger)
+
+	return newLogger
 end
 
 ---@param logLevel Github_Loading.Logger.LogLevel?
----@return Test.Simulator
+---@return Test.Simulator, Core.Logger
 function Simulator:Initialize(logLevel)
 	local simulatorPath = FileSystem.GetCurrentDirectory()
 	CurrentPath = simulatorPath:gsub("/Tests/Simulator", "")
 
-	self:Prepare(logLevel or 3)
+	local logger = self:Prepare(logLevel or 3)
 
-	return self
+	return self, logger
 end
 
 return Simulator

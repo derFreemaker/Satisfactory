@@ -2,26 +2,6 @@ local LoadedLoaderFiles = ({ ... })[1]
 ---@type Utils.Class.Type
 local ObjectTypeInfo = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/Object'][1]
 
----@class Utils.Class.Type
----@field Name string
----@field Base Utils.Class.Type
----
----@field Static table<string, any>
----
----@field MetaMethods Utils.Class.MetaMethods
----@field Members table<string, any>
----
----
----@field HasConstructor boolean
----@field HasDeconstructor boolean
----
----@field IndexingDisabled boolean
----@field HasIndex boolean
----@field HasNewIndex boolean
----
----@field Template table
----@field Instances table<Utils.Class.Instance, boolean>
-
 ---@class Utils.Class.TypeHandler
 local TypeHandler = {}
 

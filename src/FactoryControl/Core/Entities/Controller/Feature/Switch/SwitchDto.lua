@@ -24,9 +24,9 @@ function SwitchDto:OnUpdate(featureUpdate)
     self.IsEnabled = featureUpdate.IsEnabled
 end
 
----@return Core.UUID id, string name, boolean isEnabled
+---@return Core.UUID id, string name, Core.UUID controllerId, boolean isEnabled
 function SwitchDto:Serialize()
-    return self.Id, self.Name, self.IsEnabled
+    return self.Id, self.Name, self.ControllerId, self.IsEnabled
 end
 
 return Utils.Class.CreateClass(SwitchDto, "FactoryControl.Core.Entities.Controller.Feature.SwitchDto",

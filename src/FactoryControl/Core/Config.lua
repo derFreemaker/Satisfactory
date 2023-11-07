@@ -1,3 +1,4 @@
 return {
-	DOMAIN = 'FactoryControl.com'
+	DOMAIN = 'FactoryControl.com',
+	CallbackServiceNameForFeatures = 'Features',
 }

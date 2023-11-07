@@ -6,6 +6,8 @@ Configs.AllMetaMethods = {
     __init = true,
     --- Garbage Collection
     __gc = true,
+    --- Out of Scope
+    __close = true,
 
     --- Special
     __call = true,

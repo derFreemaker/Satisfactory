@@ -30,16 +30,19 @@ function LazyEventHandler:Count()
 end
 
 ---@private
-function LazyEventHandler:Check()
+---@param onlyClose boolean?
+function LazyEventHandler:Check(onlyClose)
     local count = self.m_Event:Count()
 
-    if count > 0 and not self.m_IsSetup and self.m_OnSetup then
+    if count > 0 and not self.m_IsSetup and self.m_OnSetup and not onlyClose then
         self.m_OnSetup(self)
+        self.m_IsSetup = true
         return
     end
 
     if count == 0 and self.m_IsSetup and self.m_OnClose then
         self.m_OnClose(self)
+        self.m_IsSetup = false
         return
     end
 end
@@ -82,7 +85,7 @@ end
 ---@param ... any
 function LazyEventHandler:Trigger(logger, ...)
     self.m_Event:Trigger(logger, ...)
-    self:Check()
+    self:Check(true)
 end
 
 return Utils.Class.CreateClass(LazyEventHandler, "Core.LazyEventHandler")

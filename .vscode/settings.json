@@ -18,10 +18,17 @@
     ],
   },
   "files.exclude": {
+    "**/.git": true,
+    "**/.svn": false,
+    "**/.hg": false,
+    "**/CVS": false,
+    "**/.DS_Store": false,
+    "**/Thumbs.db": false,
     ".stfolder/**": true,
     "Code-Server/**": true,
     "Lua-Bundler/**": true,
     "Obsidian Vault/**": true,
-    "Packages/**": true,
-  }
+    "Packages/**": true
+  },
+  "explorerExclude.backup": {}
 }

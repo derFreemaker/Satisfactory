@@ -40,7 +40,7 @@ local function tableToLineTree(node, maxLevel, properties, level, padding)
 	level = level or 1
 	local lines = {}
 
-	if type(node) == 'table' then
+	if type(node) == 'table' and not Utils.Class.IsClass(node) then
 		local keys = {}
 		if type(properties) == 'string' then
 			local propSet = {}

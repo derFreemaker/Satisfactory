@@ -40,7 +40,7 @@ end
 function ___logger:log(...)
     local debugInfo = debug.getinfo(3)
     local callerMsg = ({ computer.magicTime() })[2] .. " [Log] -> "
-        .. debugInfo.short_src .. ":" .. debugInfo.currentline .. ":"
+        .. debugInfo.source .. ":" .. debugInfo.currentline .. ":"
 
     local currentLogger = self.m_currentLogger
     if currentLogger then

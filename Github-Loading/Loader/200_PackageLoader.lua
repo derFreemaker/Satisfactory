@@ -7,6 +7,7 @@ local Utils = LoadedLoaderFiles['/Github-Loading/Loader/Utils'][1]
 ---@class Github_Loading.PackageLoader
 ---@field Packages Github_Loading.Package[]
 ---@field Logger Github_Loading.Logger
+---@field private m_moduleCache table<string, Github_Loading.Module?>
 ---@field private m_packagesUrl string
 ---@field private m_packagesPath string
 ---@field private m_internetCard FIN.Components.FINComputerMod.InternetCard_C
@@ -59,6 +60,7 @@ function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard)
 		{
 			Packages = {},
 			Logger = logger,
+			m_moduleCache = {},
 			m_packagesUrl = packagesUrl,
 			m_packagesPath = packagesPath,
 			m_internetCard = internetCard
@@ -129,10 +131,17 @@ end
 function PackageLoader:GetModule(moduleToGet)
 	self.Logger:LogTrace("geting module: '" .. moduleToGet .. "'")
 
+	local module = self.m_moduleCache[moduleToGet]
+	if module then
+		self.Logger:LogDebug("geted module: '" .. moduleToGet .. "' from cache")
+		return module
+	end
+
 	for _, package in ipairs(self.Packages) do
-		local module = package:GetModule(moduleToGet)
+		module = package:GetModule(moduleToGet)
 		if module then
 			self.Logger:LogDebug("geted module: '" .. moduleToGet .. "'")
+			self.m_moduleCache[moduleToGet] = module
 			return module
 		end
 	end
@@ -140,9 +149,10 @@ function PackageLoader:GetModule(moduleToGet)
 	moduleToGet = moduleToGet .. ".init"
 
 	for _, package in ipairs(self.Packages) do
-		local module = package:GetModule(moduleToGet)
+		module = package:GetModule(moduleToGet)
 		if module then
 			self.Logger:LogDebug("geted module: '" .. moduleToGet .. "'")
+			self.m_moduleCache[moduleToGet] = module
 			return module
 		end
 	end

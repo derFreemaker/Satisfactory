@@ -7,6 +7,7 @@ PackageData["FactoryControlClientClient"] = {
     IsRunnable = true,
     Data = [[
 local Usage = require("Core.Usage")
+local Config = require("FactoryControl.Core.Config")
 
 local Task = require("Core.Common.Task")
 local NetworkClient = require("Net.Core.NetworkClient")
@@ -26,7 +27,6 @@ local CallbackService = require("Services.Callback.Client.CallbackService")
 ---@field CurrentController FactoryControl.Client.Entities.Controller
 ---@field NetClient Net.Core.NetworkClient
 ---@field private m_callbackService Services.Callback.Client.CallbackService
----@field private m_features table<string, FactoryControl.Client.Entities.Controller.Feature>
 ---@field private m_client FactoryControl.Client.DataClient
 ---@field private m_logger Core.Logger
 ---@overload fun(logger: Core.Logger, client: FactoryControl.Client.DataClient?, networkClient: Net.Core.NetworkClient?) : FactoryControl.Client
@@ -39,9 +39,12 @@ local Client = {}
 function Client:__init(logger, client, networkClient)
     self.NetClient = networkClient or NetworkClient(logger:subLogger("NetClient"))
 
-    self.m_callbackService = CallbackService(logger:subLogger("CallbackService"), self.NetClient)
-    self.m_features = {}
-    self.m_client = client or DataClient(logger:subLogger("DataClient"))
+    self.m_callbackService = CallbackService(
+        Config.CallbackServiceNameForFeatures,
+        logger:subLogger("CallbackService"),
+        self.NetClient
+    )
+    self.m_client = client or DataClient(logger:subLogger("DataClient"), self.NetClient)
     self.m_logger = logger
 end
 
@@ -142,12 +145,15 @@ end
 
 ---@param feature FactoryControl.Client.Entities.Controller.Feature
 function Client:WatchFeature(feature)
-    self.m_features[feature.Id:ToString()] = feature
-    local callback = Callback(feature.Id, Usage.Events.FactoryControl_Feature_Invoked, Task(self.OnFeatureUpdate, self))
+    local callback = Callback(
+        feature.Id,
+        Usage.Events.FactoryControl_Feature_Update,
+        Task(self.OnFeatureUpdate, self, feature)
+    )
     self.m_callbackService:AddCallback(callback)
 
-    for _, featureId in pairs(self.CurrentController:GetFeatureIds()) do
-        if featureId:Equals(feature.Id) then
+    for _, value in pairs(self.CurrentController:GetFeatureIds()) do
+        if value:Equals(value) then
             return
         end
     end
@@ -157,8 +163,7 @@ end
 
 ---@param featureId Core.UUID
 function Client:UnwatchFeature(featureId)
-    self.m_features[featureId:ToString()] = nil
-    self.m_callbackService:RemoveCallback(featureId, Usage.Events.FactoryControl_Feature_Invoked)
+    self.m_callbackService:RemoveCallback(featureId, Usage.Events.FactoryControl_Feature_Update)
 
     for _, value in pairs(self.CurrentController:GetFeatureIds()) do
         if value:Equals(featureId) then
@@ -171,12 +176,7 @@ end
 
 ---@private
 ---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Update
-function Client:OnFeatureUpdate(featureUpdate)
-    local feature = self.m_features[featureUpdate.FeatureId:ToString()]
-    if not feature then
-        return
-    end
-
+function Client:OnFeatureUpdate(feature, featureUpdate)
     local logger = self.m_logger:subLogger("Feature[" .. feature.Id:ToString() .. "]")
     feature:OnUpdate(featureUpdate)
     feature.OnChanged:Trigger(logger, featureUpdate)
@@ -243,7 +243,7 @@ local HttpRequest = require('Net.Http.Request')
 ---@class FactoryControl.Client.DataClient : object
 ---@field private m_client Net.Http.Client
 ---@field private m_logger Core.Logger
----@overload fun(logger: Core.Logger) : FactoryControl.Client.DataClient
+---@overload fun(logger: Core.Logger, networkClient: Net.Core.NetworkClient?) : FactoryControl.Client.DataClient
 local DataClient = {}
 
 ---@param networkClient Net.Core.NetworkClient
@@ -253,9 +253,10 @@ end
 
 ---@private
 ---@param logger Core.Logger
-function DataClient:__init(logger)
+---@param networkClient Net.Core.NetworkClient?
+function DataClient:__init(logger, networkClient)
 	self.m_logger = logger
-	self.m_client = HttpClient(self.m_logger:subLogger('RestApiClient'))
+	self.m_client = HttpClient(self.m_logger:subLogger('RestApiClient'), nil, networkClient)
 
 	self.m_logger:LogDebug("waiting for server heartbeat...")
 	self.Static__WaitForHeartbeat(self.m_client:GetNetworkClient())
@@ -426,8 +427,8 @@ function DataClient:UpdateFeature(featureUpdate)
 
 	self.m_client:GetNetworkClient():Send(
 		ipAddress,
-		Usage.Ports.FactoryControl_FeatureUpdate,
-		Usage.Events.FactoryControl_Feature_Invoked,
+		Usage.Ports.FactoryControl,
+		Usage.Events.FactoryControl_Feature_Update,
 		featureUpdate
 	)
 end
@@ -480,7 +481,21 @@ PackageData["FactoryControlClientEntitiesControllerController"] = {
     Namespace = "FactoryControl.Client.Entities.Controller.Controller",
     IsRunnable = true,
     Data = [[
+local UUID = require("Core.Common.UUID")
+
 local Modify = require("FactoryControl.Client.Entities.Controller.Modify")
+
+local ButtonDto = require("FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto")
+local Button = require("FactoryControl.Client.Entities.Controller.Feature.Button.Button")
+
+local SwitchDto = require("FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto")
+local Switch = require("FactoryControl.Client.Entities.Controller.Feature.Switch.Switch")
+
+local RadialDto = require("FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto")
+local Radial = require("FactoryControl.Client.Entities.Controller.Feature.Radial.Radial")
+
+local ChartDto = require("FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto")
+local Chart = require("FactoryControl.Client.Entities.Controller.Feature.Chart.Chart")
 
 ---@class FactoryControl.Client.Entities.Controller : FactoryControl.Client.Entities.Entity
 ---@field Name string
@@ -529,6 +544,47 @@ function Controller:GetFeatures()
 
     self.m_features = features
     return self.m_features
+end
+
+---@param name string
+---@return FactoryControl.Client.Entities.Controller.Feature.Button?
+function Controller:AddButton(name)
+    local buttonDto = ButtonDto(UUID.Static__New(), name, self.Id)
+    local button = self.m_client:CreateFeature(Button(buttonDto, self.m_client))
+    ---@cast button FactoryControl.Client.Entities.Controller.Feature.Button?
+    return button
+end
+
+---@param name string
+---@param isEnabled boolean?
+---@return FactoryControl.Client.Entities.Controller.Feature.Switch?
+function Controller:AddSwitch(name, isEnabled)
+    if isEnabled == nil then
+        isEnabled = false
+    end
+
+    local switchDto = SwitchDto(UUID.Static__New(), name, self.Id, isEnabled)
+    local switch = self.m_client:CreateFeature(Switch(switchDto, self.m_client))
+    ---@cast switch FactoryControl.Client.Entities.Controller.Feature.Switch?
+    return switch
+end
+
+function Controller:AddRadial(name, min, max, setting)
+    local radialDto = RadialDto(UUID.Static__New(), name, self.Id, min, max, setting)
+    local radial = self.m_client:CreateFeature(Radial(radialDto, self.m_client))
+    ---@cast radial FactoryControl.Client.Entities.Controller.Feature.Radial?
+    return radial
+end
+
+---@param name string
+---@param xAxisName string
+---@param yAxisName string
+---@param data table<number, any>
+function Controller:AddChart(name, xAxisName, yAxisName, data)
+    local chartDto = ChartDto(UUID.Static__New(), name, self.Id, xAxisName, yAxisName, data)
+    local chart = self.m_client:CreateFeature(Chart(chartDto, self.m_client))
+    ---@cast chart FactoryControl.Client.Entities.Controller.Feature.Chart?
+    return chart
 end
 
 return Utils.Class.CreateClass(Controller, "FactoryControl.Client.Entities.Controller",
@@ -621,6 +677,7 @@ PackageData["FactoryControlClientEntitiesControllerFeatureFeature"] = {
     Namespace = "FactoryControl.Client.Entities.Controller.Feature.Feature",
     IsRunnable = true,
     Data = [[
+local Task = require("Core.Common.Task")
 local LazyEventHandler = require("Core.Common.LazyEventHandler")
 
 ---@class FactoryControl.Client.Entities.Controller.Feature : FactoryControl.Client.Entities.Entity

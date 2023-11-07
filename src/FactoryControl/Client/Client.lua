@@ -1,4 +1,5 @@
 local Usage = require("Core.Usage")
+local Config = require("FactoryControl.Core.Config")
 
 local Task = require("Core.Common.Task")
 local NetworkClient = require("Net.Core.NetworkClient")
@@ -18,7 +19,6 @@ local CallbackService = require("Services.Callback.Client.CallbackService")
 ---@field CurrentController FactoryControl.Client.Entities.Controller
 ---@field NetClient Net.Core.NetworkClient
 ---@field private m_callbackService Services.Callback.Client.CallbackService
----@field private m_features table<string, FactoryControl.Client.Entities.Controller.Feature>
 ---@field private m_client FactoryControl.Client.DataClient
 ---@field private m_logger Core.Logger
 ---@overload fun(logger: Core.Logger, client: FactoryControl.Client.DataClient?, networkClient: Net.Core.NetworkClient?) : FactoryControl.Client
@@ -31,9 +31,12 @@ local Client = {}
 function Client:__init(logger, client, networkClient)
     self.NetClient = networkClient or NetworkClient(logger:subLogger("NetClient"))
 
-    self.m_callbackService = CallbackService(logger:subLogger("CallbackService"), self.NetClient)
-    self.m_features = {}
-    self.m_client = client or DataClient(logger:subLogger("DataClient"))
+    self.m_callbackService = CallbackService(
+        Config.CallbackServiceNameForFeatures,
+        logger:subLogger("CallbackService"),
+        self.NetClient
+    )
+    self.m_client = client or DataClient(logger:subLogger("DataClient"), self.NetClient)
     self.m_logger = logger
 end
 
@@ -134,12 +137,15 @@ end
 
 ---@param feature FactoryControl.Client.Entities.Controller.Feature
 function Client:WatchFeature(feature)
-    self.m_features[feature.Id:ToString()] = feature
-    local callback = Callback(feature.Id, Usage.Events.FactoryControl_Feature_Invoked, Task(self.OnFeatureUpdate, self))
+    local callback = Callback(
+        feature.Id,
+        Usage.Events.FactoryControl_Feature_Update,
+        Task(self.OnFeatureUpdate, self, feature)
+    )
     self.m_callbackService:AddCallback(callback)
 
-    for _, featureId in pairs(self.CurrentController:GetFeatureIds()) do
-        if featureId:Equals(feature.Id) then
+    for _, value in pairs(self.CurrentController:GetFeatureIds()) do
+        if value:Equals(value) then
             return
         end
     end
@@ -149,8 +155,7 @@ end
 
 ---@param featureId Core.UUID
 function Client:UnwatchFeature(featureId)
-    self.m_features[featureId:ToString()] = nil
-    self.m_callbackService:RemoveCallback(featureId, Usage.Events.FactoryControl_Feature_Invoked)
+    self.m_callbackService:RemoveCallback(featureId, Usage.Events.FactoryControl_Feature_Update)
 
     for _, value in pairs(self.CurrentController:GetFeatureIds()) do
         if value:Equals(featureId) then
@@ -163,12 +168,7 @@ end
 
 ---@private
 ---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Update
-function Client:OnFeatureUpdate(featureUpdate)
-    local feature = self.m_features[featureUpdate.FeatureId:ToString()]
-    if not feature then
-        return
-    end
-
+function Client:OnFeatureUpdate(feature, featureUpdate)
     local logger = self.m_logger:subLogger("Feature[" .. feature.Id:ToString() .. "]")
     feature:OnUpdate(featureUpdate)
     feature.OnChanged:Trigger(logger, featureUpdate)

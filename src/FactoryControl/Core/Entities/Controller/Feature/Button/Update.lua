@@ -15,4 +15,4 @@ function Update:Serialize()
 end
 
 return Utils.Class.CreateClass(Update, "FactoryControl.Core.Entities.Controller.Feature.Button.Update",
-    require("Core.Json.Serializable"))
+    require("FactoryControl.Core.Entities.Controller.Feature.Update"))

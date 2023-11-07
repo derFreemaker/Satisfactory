@@ -20,31 +20,41 @@ function Event:Count()
 end
 
 ---@param task Core.Task
----@return Core.Event
+---@return integer index
 function Event:AddTask(task)
     table.insert(self.m_funcs, task)
-    return self
+    return #self.m_funcs
 end
 
 ---@param task Core.Task
----@return Core.Event
+---@return integer index
 function Event:AddTaskOnce(task)
     table.insert(self.m_onceFuncs, task)
-    return self
+    return #self.m_onceFuncs
 end
 
 ---@param func function
 ---@param ... any
----@return Core.Event
+---@return integer index
 function Event:AddListener(func, ...)
     return self:AddTask(Task(func, ...))
 end
 
 ---@param func function
 ---@param ... any
----@return Core.Event
+---@return integer index
 function Event:AddListenerOnce(func, ...)
     return self:AddTaskOnce(Task(func, ...))
+end
+
+---@param index integer
+function Event:Remove(index)
+    table.remove(self.m_funcs, index)
+end
+
+---@param index integer
+function Event:RemoveOnce(index)
+    table.remove(self.m_onceFuncs, index)
 end
 
 ---@param logger Core.Logger?

@@ -81,6 +81,9 @@ function Package:OnLoaded()
     end
     ---@type Github_Loading.Entities.Events
     local eventsModuleLoaded = eventsModule:Load()
+    if not eventsModuleLoaded then
+        return
+    end
 
     -- ######## OnLoaded ######## --
     if type(eventsModuleLoaded.OnLoaded) == "function" then

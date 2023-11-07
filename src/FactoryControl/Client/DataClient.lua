@@ -12,7 +12,7 @@ local HttpRequest = require('Net.Http.Request')
 ---@class FactoryControl.Client.DataClient : object
 ---@field private m_client Net.Http.Client
 ---@field private m_logger Core.Logger
----@overload fun(logger: Core.Logger) : FactoryControl.Client.DataClient
+---@overload fun(logger: Core.Logger, networkClient: Net.Core.NetworkClient?) : FactoryControl.Client.DataClient
 local DataClient = {}
 
 ---@param networkClient Net.Core.NetworkClient
@@ -22,9 +22,10 @@ end
 
 ---@private
 ---@param logger Core.Logger
-function DataClient:__init(logger)
+---@param networkClient Net.Core.NetworkClient?
+function DataClient:__init(logger, networkClient)
 	self.m_logger = logger
-	self.m_client = HttpClient(self.m_logger:subLogger('RestApiClient'))
+	self.m_client = HttpClient(self.m_logger:subLogger('RestApiClient'), nil, networkClient)
 
 	self.m_logger:LogDebug("waiting for server heartbeat...")
 	self.Static__WaitForHeartbeat(self.m_client:GetNetworkClient())
@@ -195,8 +196,8 @@ function DataClient:UpdateFeature(featureUpdate)
 
 	self.m_client:GetNetworkClient():Send(
 		ipAddress,
-		Usage.Ports.FactoryControl_FeatureUpdate,
-		Usage.Events.FactoryControl_Feature_Invoked,
+		Usage.Ports.FactoryControl,
+		Usage.Events.FactoryControl_Feature_Update,
 		featureUpdate
 	)
 end

@@ -1,4 +1,18 @@
+local UUID = require("Core.Common.UUID")
+
 local Modify = require("FactoryControl.Client.Entities.Controller.Modify")
+
+local ButtonDto = require("FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto")
+local Button = require("FactoryControl.Client.Entities.Controller.Feature.Button.Button")
+
+local SwitchDto = require("FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto")
+local Switch = require("FactoryControl.Client.Entities.Controller.Feature.Switch.Switch")
+
+local RadialDto = require("FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto")
+local Radial = require("FactoryControl.Client.Entities.Controller.Feature.Radial.Radial")
+
+local ChartDto = require("FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto")
+local Chart = require("FactoryControl.Client.Entities.Controller.Feature.Chart.Chart")
 
 ---@class FactoryControl.Client.Entities.Controller : FactoryControl.Client.Entities.Entity
 ---@field Name string
@@ -47,6 +61,47 @@ function Controller:GetFeatures()
 
     self.m_features = features
     return self.m_features
+end
+
+---@param name string
+---@return FactoryControl.Client.Entities.Controller.Feature.Button?
+function Controller:AddButton(name)
+    local buttonDto = ButtonDto(UUID.Static__New(), name, self.Id)
+    local button = self.m_client:CreateFeature(Button(buttonDto, self.m_client))
+    ---@cast button FactoryControl.Client.Entities.Controller.Feature.Button?
+    return button
+end
+
+---@param name string
+---@param isEnabled boolean?
+---@return FactoryControl.Client.Entities.Controller.Feature.Switch?
+function Controller:AddSwitch(name, isEnabled)
+    if isEnabled == nil then
+        isEnabled = false
+    end
+
+    local switchDto = SwitchDto(UUID.Static__New(), name, self.Id, isEnabled)
+    local switch = self.m_client:CreateFeature(Switch(switchDto, self.m_client))
+    ---@cast switch FactoryControl.Client.Entities.Controller.Feature.Switch?
+    return switch
+end
+
+function Controller:AddRadial(name, min, max, setting)
+    local radialDto = RadialDto(UUID.Static__New(), name, self.Id, min, max, setting)
+    local radial = self.m_client:CreateFeature(Radial(radialDto, self.m_client))
+    ---@cast radial FactoryControl.Client.Entities.Controller.Feature.Radial?
+    return radial
+end
+
+---@param name string
+---@param xAxisName string
+---@param yAxisName string
+---@param data table<number, any>
+function Controller:AddChart(name, xAxisName, yAxisName, data)
+    local chartDto = ChartDto(UUID.Static__New(), name, self.Id, xAxisName, yAxisName, data)
+    local chart = self.m_client:CreateFeature(Chart(chartDto, self.m_client))
+    ---@cast chart FactoryControl.Client.Entities.Controller.Feature.Chart?
+    return chart
 end
 
 return Utils.Class.CreateClass(Controller, "FactoryControl.Client.Entities.Controller",

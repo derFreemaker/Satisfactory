@@ -15,7 +15,7 @@ local DatabaseAccessLayer = {}
 ---@param logger Core.Logger
 function DatabaseAccessLayer:__init(logger)
     self.m_controllers = DbTable("Controllers", Path("/Database/Controllers/"), logger:subLogger("ControllerTable"))
-    self.m_features = DbTable("Features", Path("/Database/Features"), logger:subLogger("FeaturesTable"))
+    self.m_features = DbTable("Features", Path("/Database/Features/"), logger:subLogger("FeaturesTable"))
     self.m_logger = logger
 
     self.m_controllers:Load()
@@ -73,7 +73,7 @@ end
 ---@param feature FactoryControl.Core.Entities.Controller.FeatureDto
 ---@return FactoryControl.Core.Entities.Controller.FeatureDto feature
 function DatabaseAccessLayer:CreateFeature(feature)
-    if self:GetFeatureByIds(feature.Id) then
+    if self:GetFeatureById(feature.Id) then
         feature.Id = UUID.Static__New()
     end
 

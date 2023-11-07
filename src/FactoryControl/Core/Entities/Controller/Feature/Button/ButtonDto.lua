@@ -15,9 +15,9 @@ end
 function ButtonDto:OnUpdate(featureUpdate)
 end
 
----@return Core.UUID id, string name
+---@return Core.UUID id, string name, Core.UUID controllerId
 function ButtonDto:Serialize()
-    return self.Id, self.Name
+    return self.Id, self.Name, self.ControllerId
 end
 
 return Utils.Class.CreateClass(ButtonDto, "FactoryControl.Core.Entities.Controller.Feature.ButtonDto",

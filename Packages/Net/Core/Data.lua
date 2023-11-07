@@ -202,16 +202,18 @@ end
 ---@private
 ---@param port Net.Core.Port
 ---@param context Net.Core.NetworkContext
+---@return boolean foundPort
 function NetworkClient:executeNetworkPort(port, context)
 	local netPort = self:GetNetworkPort(port)
 	if not netPort then
-		return
+		return false
 	end
 
 	netPort:Execute(context)
 	if netPort:GetEventsCount() == 0 then
 		self:RemoveNetworkPort(netPort)
 	end
+	return true
 end
 
 ---@private
@@ -221,7 +223,12 @@ function NetworkClient:networkMessageRecieved(data)
 	self.m_logger:LogDebug("recieved network message with event: '" ..
 		context.EventName .. "' on port: " .. context.Port)
 
-	self:executeNetworkPort(context.Port, context)
+
+	local foundPort = self:executeNetworkPort(context.Port, context)
+	if not foundPort then
+		self:Close(context.Port)
+	end
+
 	self:executeNetworkPort("all", context)
 end
 

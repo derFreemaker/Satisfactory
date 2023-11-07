@@ -34,6 +34,10 @@ function Path:__init(pathOrNodes)
         return
     end
 
+    if not pathOrNodes[#pathOrNodes]:find("%.") then
+        pathOrNodes[#pathOrNodes + 1] = ""
+    end
+
     self.m_nodes = pathOrNodes
 end
 

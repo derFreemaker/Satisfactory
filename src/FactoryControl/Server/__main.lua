@@ -25,7 +25,7 @@ function Main:Configure()
 	local featureService = FeatureService(callbackService, databaseAccessLayer, networkClient)
 	self.m_host.Services:AddService(featureService)
 	self.m_host:AddCallableEventTask(
-		Usage.Events.FactoryControl_Feature_Invoked,
+		Usage.Events.FactoryControl_Feature_Update,
 		Usage.Ports.FactoryControl,
 		featureService.OnFeatureInvoked
 	)

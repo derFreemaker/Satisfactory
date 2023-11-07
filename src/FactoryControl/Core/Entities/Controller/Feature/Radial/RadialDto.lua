@@ -44,9 +44,9 @@ function RadialDto:OnUpdate(featureUpdate)
     self.Setting = featureUpdate.Setting
 end
 
----@return Core.UUID id, string name, number min, number max, number setting
+---@return Core.UUID id, string name, Core.UUID controllerId, number min, number max, number setting
 function RadialDto:Serialize()
-    return self.Id, self.Name, self.Min, self.Max, self.Setting
+    return self.Id, self.Name, self.ControllerId, self.Min, self.Max, self.Setting
 end
 
 return Utils.Class.CreateClass(RadialDto, "FactoryControl.Core.Entities.Controller.Feature.RadialDto",

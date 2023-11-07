@@ -1,4 +1,5 @@
 local Usage = require("Core.Usage")
+local Config = require("FactoryControl.Core.Config")
 
 local Task = require("Core.Common.Task")
 
@@ -16,6 +17,7 @@ local FeatureService = {}
 ---@param databaseAccessLayer FactoryControl.Server.DatabaseAccessLayer
 ---@param networkClient Net.Core.NetworkClient
 function FeatureService:__init(callbackService, databaseAccessLayer, networkClient)
+    self.m_watchedFeatures = {}
     self.m_callbackService = callbackService
     self.m_databaseAccessLayer = databaseAccessLayer
     self.m_networkClient = networkClient
@@ -63,12 +65,13 @@ function FeatureService:onFeatureInvoked(context)
 
     feature:OnUpdate(featureUpdate)
 
-    self:SendToController(feature)
+    self:SendToController(feature, featureUpdate)
     self:SendToWachters(featureUpdate)
 end
 
 ---@param feature FactoryControl.Core.Entities.Controller.FeatureDto
-function FeatureService:SendToController(feature)
+---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Update
+function FeatureService:SendToController(feature, featureUpdate)
     local controller = self.m_databaseAccessLayer:GetControllerById(feature.ControllerId)
     if not controller then
         return
@@ -76,10 +79,10 @@ function FeatureService:SendToController(feature)
 
     self.m_callbackService:Send(
         feature.Id,
-        Usage.Events.FactoryControl_Feature_Invoked,
-        "Features",
+        Usage.Events.FactoryControl_Feature_Update,
+        Config.CallbackServiceNameForFeatures,
         controller.IPAddress,
-        feature
+        { featureUpdate }
     )
 end
 
@@ -93,10 +96,10 @@ function FeatureService:SendToWachters(featureUpdate)
     for _, ipAddress in ipairs(ipAddresses) do
         self.m_callbackService:Send(
             featureUpdate.FeatureId,
-            Usage.Events.FactoryControl_Feature_Invoked,
-            "Features",
+            Usage.Events.FactoryControl_Feature_Update,
+            Config.CallbackServiceNameForFeatures,
             ipAddress,
-            featureUpdate
+            { featureUpdate }
         )
     end
 end

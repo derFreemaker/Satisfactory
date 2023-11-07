@@ -529,7 +529,7 @@ end
 
 ---@param method Net.Core.Method
 ---@param endpointUrl string
----@param func function
+---@param func fun(...) : Net.Rest.Api.Response
 function EndpointBase:AddEndpoint(method, endpointUrl, func)
 	self.ApiController:AddEndpoint(method, endpointUrl, Task(func, self))
 end

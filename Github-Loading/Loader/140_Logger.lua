@@ -43,7 +43,7 @@ local function tableToLineTree(node, maxLevel, properties, level, padding)
     level = level or 1
     local lines = {}
 
-    if type(node) == 'table' then
+    if type(node) == 'table' and not Utils.Class.IsClass(node) then
         local keys = {}
         if type(properties) == 'string' then
             local propSet = {}
@@ -128,7 +128,7 @@ end
 ---@param Task Core.Task | fun(func: function, parent: table?) : Core.Task
 ---@param logger Core.Logger
 ---@return Core.Logger logger
-function Logger:CopyListenersToCoreEvent(Task, logger)
+function Logger:CopyListenersToCoreLogger(Task, logger)
     self.OnLog:CopyToCoreEvent(Task, logger.OnLog)
     self.OnClear:CopyToCoreEvent(Task, logger.OnClear)
     return logger
@@ -192,6 +192,7 @@ function Logger:Log(logLevel, ...)
     else
         message = message:gsub("\n", "\n    ")
     end
+
     self.OnLog:Trigger(nil, message)
 end
 

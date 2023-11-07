@@ -1,3 +1,4 @@
+local Task = require("Core.Common.Task")
 local LazyEventHandler = require("Core.Common.LazyEventHandler")
 
 ---@class FactoryControl.Client.Entities.Controller.Feature : FactoryControl.Client.Entities.Entity

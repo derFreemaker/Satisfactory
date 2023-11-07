@@ -45,7 +45,8 @@ PackageData["FactoryControlCoreConfig"] = {
     IsRunnable = true,
     Data = [[
 return {
-	DOMAIN = 'FactoryControl.com'
+	DOMAIN = 'FactoryControl.com',
+	CallbackServiceNameForFeatures = 'Features',
 }
 ]]
 }
@@ -372,9 +373,9 @@ end
 function ButtonDto:OnUpdate(featureUpdate)
 end
 
----@return Core.UUID id, string name
+---@return Core.UUID id, string name, Core.UUID controllerId
 function ButtonDto:Serialize()
-    return self.Id, self.Name
+    return self.Id, self.Name, self.ControllerId
 end
 
 return Utils.Class.CreateClass(ButtonDto, "FactoryControl.Core.Entities.Controller.Feature.ButtonDto",
@@ -404,7 +405,7 @@ function Update:Serialize()
 end
 
 return Utils.Class.CreateClass(Update, "FactoryControl.Core.Entities.Controller.Feature.Button.Update",
-    require("Core.Json.Serializable"))
+    require("FactoryControl.Core.Entities.Controller.Feature.Update"))
 ]]
 }
 
@@ -441,9 +442,9 @@ function ChartDto:OnUpdate(featureUpdate)
     self.Data = featureUpdate.Data
 end
 
----@return Core.UUID id, string name, string xAxisName, string yAxisName, table<number, any> data
+---@return Core.UUID id, string name, Core.UUID controllerId, string xAxisName, string yAxisName, table<number, any> data
 function ChartDto:Serialize()
-    return self.Id, self.Name, self.XAxisName, self.YAxisName, self.Data
+    return self.Id, self.Name, self.ControllerId, self.XAxisName, self.YAxisName, self.Data
 end
 
 return Utils.Class.CreateClass(ChartDto, "FactoryControl.Core.Entities.Controller.Feature.ChartDto",
@@ -531,9 +532,9 @@ function RadialDto:OnUpdate(featureUpdate)
     self.Setting = featureUpdate.Setting
 end
 
----@return Core.UUID id, string name, number min, number max, number setting
+---@return Core.UUID id, string name, Core.UUID controllerId, number min, number max, number setting
 function RadialDto:Serialize()
-    return self.Id, self.Name, self.Min, self.Max, self.Setting
+    return self.Id, self.Name, self.ControllerId, self.Min, self.Max, self.Setting
 end
 
 return Utils.Class.CreateClass(RadialDto, "FactoryControl.Core.Entities.Controller.Feature.RadialDto",
@@ -608,9 +609,9 @@ function SwitchDto:OnUpdate(featureUpdate)
     self.IsEnabled = featureUpdate.IsEnabled
 end
 
----@return Core.UUID id, string name, boolean isEnabled
+---@return Core.UUID id, string name, Core.UUID controllerId, boolean isEnabled
 function SwitchDto:Serialize()
-    return self.Id, self.Name, self.IsEnabled
+    return self.Id, self.Name, self.ControllerId, self.IsEnabled
 end
 
 return Utils.Class.CreateClass(SwitchDto, "FactoryControl.Core.Entities.Controller.Feature.SwitchDto",

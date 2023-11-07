@@ -16,41 +16,48 @@ PackageData["ServicesCallbackClientCallback"] = {
     IsRunnable = true,
     Data = [[
 ---@class Services.Callback.Client.Callback : object
----@field private m_id Core.UUID
----@field private m_callbackMethod string
----@field private m_handler Core.Task
----@overload fun(id: Core.UUID, callbackMethod: string, handler: Core.Task) : Services.Callback.Client.Callback
+---@field protected Id Core.UUID
+---@field protected CallbackMethod string
+---@field protected Handler Core.Task?
+---@overload fun(id: Core.UUID, callbackMethod: string, handler: Core.Task?) : Services.Callback.Client.Callback
 local Callback = {}
+
+---@alias Services.Callback.Client.Callback.Constructor fun(id: Core.UUID, callbackMethod: string, handler: Core.Task?) : Services.Callback.Client.Callback
 
 ---@private
 ---@param id Core.UUID
 ---@param callbackMethod string
----@param handler Core.Task
+---@param handler Core.Task?
 function Callback:__init(id, callbackMethod, handler)
-    self.m_id = id
-    self.m_callbackMethod = callbackMethod
-    self.m_handler = handler
+    self.Id = id
+    self.CallbackMethod = callbackMethod
+    self.Handler = handler
 end
 
 ---@return Core.UUID
 function Callback:GetId()
-    return self.m_id
+    return self.Id
 end
 
 ---@return string
 function Callback:GetCallbackMethod()
-    return self.m_callbackMethod
+    return self.CallbackMethod
+end
+
+---@param task Core.Task
+function Callback:SetHandler(task)
+    self.Handler = task
 end
 
 ---@param id Core.UUID
 ---@param callbackMethod string
 ---@return boolean
 function Callback:Check(id, callbackMethod)
-    if not self.m_id:Equals(id) then
+    if not self.Id:Equals(id) then
         return false
     end
 
-    if self.m_callbackMethod ~= callbackMethod then
+    if self.CallbackMethod ~= callbackMethod then
         return false
     end
 
@@ -59,10 +66,25 @@ end
 
 ---@param logger Core.Logger
 ---@param args any[]
+function Callback:Send(logger, args)
+    if not self.Handler then
+        return
+    end
+
+    self.Handler:Execute(table.unpack(args))
+    self.Handler:LogError(logger)
+end
+
+---@param logger Core.Logger
+---@param args any[]
 ---@return any[] results
 function Callback:Invoke(logger, args)
-    local results = { self.m_handler:Execute(table.unpack(args)) }
-    self.m_handler:LogError(logger)
+    if not self.Handler then
+        return {}
+    end
+
+    local results = { self.Handler:Execute(table.unpack(args)) }
+    self.Handler:LogError(logger)
     return results
 end
 
@@ -85,7 +107,7 @@ local NetworkClient = require("Net.Core.NetworkClient")
 ---@field private m_callbacks Services.Callback.Client.Callback[]
 ---@field private m_networkClient Net.Core.NetworkClient
 ---@field private m_logger Core.Logger
----@overload fun(logger: Core.Logger, networkClient: Net.Core.NetworkClient?) : Services.Callback.Client.CallbackService
+---@overload fun(name: string, logger: Core.Logger, networkClient: Net.Core.NetworkClient?) : Services.Callback.Client.CallbackService
 local CallbackService = {}
 
 ---@private
@@ -103,6 +125,7 @@ function CallbackService:__init(name, logger, networkClient)
         Usage.Ports.CallbackService,
         self.onCallbackRecieved, self
     )
+    self.m_networkClient:Open(Usage.Ports.CallbackService)
 end
 
 ---@param callback Services.Callback.Client.Callback
@@ -110,6 +133,7 @@ function CallbackService:AddCallback(callback)
     if self:GetCallback(callback:GetId(), callback:GetCallbackMethod()) then
         error("callback already exists")
     end
+    self.m_logger:LogDebug("added callback: " .. callback:GetId():ToString() .. " - " .. callback:GetCallbackMethod())
 
     table.insert(self.m_callbacks, callback)
 end
@@ -119,6 +143,7 @@ end
 function CallbackService:RemoveCallback(id, callbackMethod)
     for i, callback in ipairs(self.m_callbacks) do
         if callback:Check(id, callbackMethod) then
+            self.m_logger:LogDebug("removed callback: " .. id:ToString() .. " - " .. callbackMethod)
             table.remove(self.m_callbacks, i)
             return
         end
@@ -155,7 +180,7 @@ function CallbackService:onCallbackRecieved(context)
 
     local callbackLogger = self.m_logger:subLogger("Callback[" .. callbackInfo.CallbackMethod .. "]")
     if callbackInfo.ExecutionMode == "Send" then
-        callback:Invoke(callbackLogger, args)
+        callback:Send(callbackLogger, args)
         return
     end
 
@@ -170,6 +195,66 @@ function CallbackService:onCallbackRecieved(context)
 end
 
 return Utils.Class.CreateClass(CallbackService, "Services.Callback.Client.CallbackService")
+]]
+}
+
+PackageData["ServicesCallbackClientEventCallback"] = {
+    Location = "Services.Callback.Client.EventCallback",
+    Namespace = "Services.Callback.Client.EventCallback",
+    IsRunnable = true,
+    Data = [[
+local Event = require("Core.Event.Event")
+
+---@class Services.Callback.Client.EventCallback : Services.Callback.Client.Callback
+---@field m_onCalled Core.Event
+local EventCallback = {}
+
+---@param id Core.UUID
+---@param callbackMethod string
+---@param super Services.Callback.Client.Callback.Constructor
+function EventCallback:__init(super, id, callbackMethod)
+    super(id, callbackMethod)
+
+    self.m_onCalled = Event()
+end
+
+---@param task Core.Task
+function EventCallback:AddTask(task)
+    self.m_onCalled:AddTask(task)
+end
+
+---@param task Core.Task
+function EventCallback:AddTaskOnce(task)
+    self.m_onCalled:AddTaskOnce(task)
+end
+
+---@param func function
+---@param ... any[]
+function EventCallback:AddListener(func, ...)
+    self.m_onCalled:AddListener(func, ...)
+end
+
+---@param func function
+---@param ... any[]
+function EventCallback:AddListenerOnce(func, ...)
+    self.m_onCalled:AddListenerOnce(func, ...)
+end
+
+---@param logger Core.Logger
+---@param args any[]
+function EventCallback:Send(logger, args)
+    self.m_onCalled:Trigger(logger, table.unpack(args))
+end
+
+---@param logger Core.Logger
+---@param args any[]
+function EventCallback:Invoke(logger, args)
+    logger:LogError("cannot invoke event callback")
+    return {}
+end
+
+return Utils.Class.CreateClass(EventCallback, "Services.Callback.Client.EventCallback",
+    require("Services.Callback.Client.Callback"))
 ]]
 }
 

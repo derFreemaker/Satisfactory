@@ -2,8 +2,6 @@ local LoadedLoaderFiles = ({ ... })[1]
 ---@type Utils.Table
 local Table = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Table'][1]
 
----@class Utils.Class.Instance : table
-
 ---@class Utils.Class.InstanceHandler
 local InstanceHandler = {}
 

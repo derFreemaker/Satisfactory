@@ -47,7 +47,7 @@ function Main:Configure()
 	local featureService = FeatureService(callbackService, databaseAccessLayer, networkClient)
 	self.m_host.Services:AddService(featureService)
 	self.m_host:AddCallableEventTask(
-		Usage.Events.FactoryControl_Feature_Invoked,
+		Usage.Events.FactoryControl_Feature_Update,
 		Usage.Ports.FactoryControl,
 		featureService.OnFeatureInvoked
 	)
@@ -110,7 +110,7 @@ local DatabaseAccessLayer = {}
 ---@param logger Core.Logger
 function DatabaseAccessLayer:__init(logger)
     self.m_controllers = DbTable("Controllers", Path("/Database/Controllers/"), logger:subLogger("ControllerTable"))
-    self.m_features = DbTable("Features", Path("/Database/Features"), logger:subLogger("FeaturesTable"))
+    self.m_features = DbTable("Features", Path("/Database/Features/"), logger:subLogger("FeaturesTable"))
     self.m_logger = logger
 
     self.m_controllers:Load()
@@ -168,7 +168,7 @@ end
 ---@param feature FactoryControl.Core.Entities.Controller.FeatureDto
 ---@return FactoryControl.Core.Entities.Controller.FeatureDto feature
 function DatabaseAccessLayer:CreateFeature(feature)
-    if self:GetFeatureByIds(feature.Id) then
+    if self:GetFeatureById(feature.Id) then
         feature.Id = UUID.Static__New()
     end
 
@@ -352,14 +352,18 @@ end
 
 ---@param featureId Core.UUID
 ---@param ipAddress Net.Core.IPAddress
+---@return Net.Rest.Api.Response response
 function FeatureEndpoints:Watch(featureId, ipAddress)
     self.m_featureService:Watch(featureId, ipAddress)
+    return self.Templates:Ok(true)
 end
 
 ---@param featureId Core.UUID
 ---@param ipAddress Net.Core.IPAddress
+---@return Net.Rest.Api.Response response
 function FeatureEndpoints:Unwatch(featureId, ipAddress)
     self.m_featureService:Unwatch(featureId, ipAddress)
+    return self.Templates:Ok(true)
 end
 
 ---@param feature FactoryControl.Core.Entities.Controller.FeatureDto
@@ -395,6 +399,7 @@ PackageData["FactoryControlServerServicesFeatureService"] = {
     IsRunnable = true,
     Data = [[
 local Usage = require("Core.Usage")
+local Config = require("FactoryControl.Core.Config")
 
 local Task = require("Core.Common.Task")
 
@@ -412,6 +417,7 @@ local FeatureService = {}
 ---@param databaseAccessLayer FactoryControl.Server.DatabaseAccessLayer
 ---@param networkClient Net.Core.NetworkClient
 function FeatureService:__init(callbackService, databaseAccessLayer, networkClient)
+    self.m_watchedFeatures = {}
     self.m_callbackService = callbackService
     self.m_databaseAccessLayer = databaseAccessLayer
     self.m_networkClient = networkClient
@@ -459,12 +465,13 @@ function FeatureService:onFeatureInvoked(context)
 
     feature:OnUpdate(featureUpdate)
 
-    self:SendToController(feature)
+    self:SendToController(feature, featureUpdate)
     self:SendToWachters(featureUpdate)
 end
 
 ---@param feature FactoryControl.Core.Entities.Controller.FeatureDto
-function FeatureService:SendToController(feature)
+---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Update
+function FeatureService:SendToController(feature, featureUpdate)
     local controller = self.m_databaseAccessLayer:GetControllerById(feature.ControllerId)
     if not controller then
         return
@@ -472,10 +479,10 @@ function FeatureService:SendToController(feature)
 
     self.m_callbackService:Send(
         feature.Id,
-        Usage.Events.FactoryControl_Feature_Invoked,
-        "Features",
+        Usage.Events.FactoryControl_Feature_Update,
+        Config.CallbackServiceNameForFeatures,
         controller.IPAddress,
-        feature
+        { featureUpdate }
     )
 end
 
@@ -489,10 +496,10 @@ function FeatureService:SendToWachters(featureUpdate)
     for _, ipAddress in ipairs(ipAddresses) do
         self.m_callbackService:Send(
             featureUpdate.FeatureId,
-            Usage.Events.FactoryControl_Feature_Invoked,
-            "Features",
+            Usage.Events.FactoryControl_Feature_Update,
+            Config.CallbackServiceNameForFeatures,
             ipAddress,
-            featureUpdate
+            { featureUpdate }
         )
     end
 end

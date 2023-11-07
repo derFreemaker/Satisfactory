@@ -8,7 +8,7 @@ local NetworkClient = require("Net.Core.NetworkClient")
 ---@field private m_callbacks Services.Callback.Client.Callback[]
 ---@field private m_networkClient Net.Core.NetworkClient
 ---@field private m_logger Core.Logger
----@overload fun(logger: Core.Logger, networkClient: Net.Core.NetworkClient?) : Services.Callback.Client.CallbackService
+---@overload fun(name: string, logger: Core.Logger, networkClient: Net.Core.NetworkClient?) : Services.Callback.Client.CallbackService
 local CallbackService = {}
 
 ---@private
@@ -26,6 +26,7 @@ function CallbackService:__init(name, logger, networkClient)
         Usage.Ports.CallbackService,
         self.onCallbackRecieved, self
     )
+    self.m_networkClient:Open(Usage.Ports.CallbackService)
 end
 
 ---@param callback Services.Callback.Client.Callback
@@ -33,6 +34,7 @@ function CallbackService:AddCallback(callback)
     if self:GetCallback(callback:GetId(), callback:GetCallbackMethod()) then
         error("callback already exists")
     end
+    self.m_logger:LogDebug("added callback: " .. callback:GetId():ToString() .. " - " .. callback:GetCallbackMethod())
 
     table.insert(self.m_callbacks, callback)
 end
@@ -42,6 +44,7 @@ end
 function CallbackService:RemoveCallback(id, callbackMethod)
     for i, callback in ipairs(self.m_callbacks) do
         if callback:Check(id, callbackMethod) then
+            self.m_logger:LogDebug("removed callback: " .. id:ToString() .. " - " .. callbackMethod)
             table.remove(self.m_callbacks, i)
             return
         end
@@ -78,7 +81,7 @@ function CallbackService:onCallbackRecieved(context)
 
     local callbackLogger = self.m_logger:subLogger("Callback[" .. callbackInfo.CallbackMethod .. "]")
     if callbackInfo.ExecutionMode == "Send" then
-        callback:Invoke(callbackLogger, args)
+        callback:Send(callbackLogger, args)
         return
     end
 

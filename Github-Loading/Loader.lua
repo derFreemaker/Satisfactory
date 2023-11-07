@@ -400,10 +400,10 @@ end
 ---@param logLevel Github_Loading.Logger.LogLevel
 function Loader:Configure(program, package, logLevel)
 	self.Logger:LogTrace('configuring program...')
-	local Logger = require('src.Core.Common.Logger')
+	local Logger = require('Core.Common.Logger')
 	program.Logger = Logger(package.Name, logLevel)
 	local Task = require('Core.Common.Task')
-	self.Logger:CopyListenersToCoreEvent(Task, program.Logger)
+	self.Logger:CopyListenersToCoreLogger(Task, program.Logger)
 	___logger:setLogger(program.Logger)
 	local success, errorMsg, returns = Utils.Function.InvokeProtected(program.Configure, program)
 	if not success then

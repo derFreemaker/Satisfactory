@@ -131,6 +131,7 @@ function UUID:Equals(other)
     return true
 end
 
+---@return string str
 function UUID:ToString()
     local str = ""
 

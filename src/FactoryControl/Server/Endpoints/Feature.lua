@@ -27,14 +27,18 @@ end
 
 ---@param featureId Core.UUID
 ---@param ipAddress Net.Core.IPAddress
+---@return Net.Rest.Api.Response response
 function FeatureEndpoints:Watch(featureId, ipAddress)
     self.m_featureService:Watch(featureId, ipAddress)
+    return self.Templates:Ok(true)
 end
 
 ---@param featureId Core.UUID
 ---@param ipAddress Net.Core.IPAddress
+---@return Net.Rest.Api.Response response
 function FeatureEndpoints:Unwatch(featureId, ipAddress)
     self.m_featureService:Unwatch(featureId, ipAddress)
+    return self.Templates:Ok(true)
 end
 
 ---@param feature FactoryControl.Core.Entities.Controller.FeatureDto

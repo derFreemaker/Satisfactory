@@ -13,13 +13,7 @@ function Main:Configure()
 end
 
 function Main:Run()
-    log("test running")
-
-    local controller = self.m_client:Connect("Test")
-
-    assert(controller.IPAddress:Equals(self.m_client.NetClient:GetIPAddress()), "IP Address mismatch")
-
-    log("test passed")
+    require("Test.FactoryControl.Tests.Tests")(self.m_client)
 end
 
 return Main

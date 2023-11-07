@@ -8,7 +8,7 @@ local MetatableHandler = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/M
 ---@type Utils.Class.InstanceHandler
 local InstanceHandler = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/Instance'][1]
 
----@class Utils.Class.Template
+
 
 ---@class Utils.Class.ConstructionHandler
 local ConstructionHandler = {}

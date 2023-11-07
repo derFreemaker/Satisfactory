@@ -26,6 +26,7 @@ function HttpClient:__init(logger, dnsClient, networkClient)
 		networkClient = dnsClient:GetNetClient()
 	end
 
+	self.m_cache = {}
 	self.m_netClient = networkClient or NetworkClient(logger:subLogger('NetworkClient'))
 	self.m_dnsClient = dnsClient or DNSClient(self.m_netClient, logger:subLogger('DNSClient'))
 	self.m_logger = logger
