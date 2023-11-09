@@ -13,6 +13,7 @@ local excludedFolders = {
     "Packages",
     "Obsidian Vault",
     "Tools",
+    "FIN Source Code"
 }
 
 ---@param path string

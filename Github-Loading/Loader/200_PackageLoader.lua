@@ -196,14 +196,13 @@ function PackageLoader:OnLoaded()
 end
 
 ---@param moduleToGet string
----@param ... any
 ---@return any ...
-function require(moduleToGet, ...)
+function require(moduleToGet)
 	if _G.PackageLoader == nil then
 		computer.panic("'PackageLoader' was not set")
 	end
 	local module = _G.PackageLoader:GetModule(moduleToGet)
-	return module:Load(...)
+	return module:Load()
 end
 
 return PackageLoader

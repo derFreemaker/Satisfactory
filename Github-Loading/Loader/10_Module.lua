@@ -16,16 +16,15 @@ function Module.new(moduleData)
     return setmetatable(moduleData, { __index = Module })
 end
 
----@param ... any
 ---@return any ...
-function Module:Load(...)
+function Module:Load()
     if self.StoredData then
         return table.unpack(self.StoredData)
     end
 
     local result
     if self.IsRunnable then
-        result = { load(self.Data, self.Location)(...) }
+        result = { load(self.Data, self.Location)() }
     else
         result = { self.Data }
     end

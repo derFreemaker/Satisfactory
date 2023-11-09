@@ -1,0 +1,30 @@
+= Vehicle Scanner
+:description: The vehicle scanner allows for communication with vehicles driving over it.
+
+[cols="1,3a"]
+|===
+|Building Type
+|Buildable Network Component
+
+|Max Network Connections
+|1
+|===
+
+[cols="a,a"]
+|===
+|Build Gun |In Game
+
+|image::buildings/VehicleScanner_bg.png[300,300,role="left"]
+|image::buildings/VehicleScanner_ig.jpg[300,300,role="left"]
+|===
+
+The vehicle scanner is a computer network component that allows you to communicate with the vehicles that drive over it.
+The scanner beam colors can be modified.
+It also emits a couple of signals that allow for notification when a vehicle drives over it.
+
+== Interface
+include::page$Reflection.adoc[tag=Class-VehicleScanner,leveloffset=-1]
+
+
+
+include::partial$building_footer.adoc[]

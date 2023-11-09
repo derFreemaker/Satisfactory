@@ -103,9 +103,11 @@ function DbTable:Get(key)
         local path = self.m_path:Extend(fileName)
 
         if path:IsFile() then
-            if not key ~= fileName:match("^(.+)%.dto%.json$") then
+            local fileKey = fileName:match("^(.+)%.dto%.json$")
+            if key ~= fileKey then
                 goto continue
             end
+
             local data = File.Static__ReadAll(path)
             value = self.m_serializer:Deserialize(data)
         end
@@ -125,11 +127,14 @@ function DbTable:__pairs()
     local childs = filesystem.childs(self.m_path:GetPath())
 
     local function iterator(tbl, key)
-        local _, nextFile
+        local nextFile
         if key == nil then
-            _, nextFile = next(tbl, key)
+            nextFile = next(tbl, key)
         else
-            _, nextFile = next(tbl, key .. ".dto.json")
+            nextFile = next(tbl, key .. ".dto.json")
+        end
+        if nextFile == nil then
+            return nil, nil
         end
 
         local nextKey = nextFile:match("^(.+)%.dto%.json$")
@@ -137,7 +142,7 @@ function DbTable:__pairs()
         return nextKey, nextValue
     end
 
-    return iterator, childs, nil
+    return iterator, Utils.Table.Invert(childs), nil
 end
 
 return Utils.Class.CreateClass(DbTable, "Database.DbTable")

@@ -95,4 +95,14 @@ function Table.Count(t)
     return count
 end
 
+---@param t table
+---@return table
+function Table.Invert(t)
+    local inverted = {}
+    for key, value in pairs(t) do
+        inverted[value] = key
+    end
+    return inverted
+end
+
 return Table

@@ -11,7 +11,7 @@
     "log"
   ],
   "Lua.completion.autoRequire": true,
-  "Lua.workspace.ignoreDir": [".stfolder", ".vscode", "Code-Server", "Lua-Bundler", "Obsidian Vault", "Packages", "PackageTemplate"],
+  "Lua.workspace.ignoreDir": [".git", ".stfolder", ".vscode", "Code-Server", "Lua-Bundler", "Obsidian Vault", "Packages", "PackageTemplate", "FIN Source Code" ],
   "triggerTaskOnSave.tasks": {
     "check all": [
       "*"
@@ -28,7 +28,7 @@
     "Code-Server/**": true,
     "Lua-Bundler/**": true,
     "Obsidian Vault/**": true,
-    "Packages/**": true
+    "Packages/**": true,
   },
   "explorerExclude.backup": {}
 }
