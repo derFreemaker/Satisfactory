@@ -2,7 +2,7 @@ local Reference = require("Core.References.Reference")
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
 ---@class Adapter.Computer.NetworkCard : object
----@field private m_networkCard FIN.Components.FINComputerMod.NetworkCard_C
+---@field private m_refNetworkCard Core.IReference<FIN.Components.NetworkCard_C>
 ---@field private m_openPorts table<integer, true>
 ---@overload fun(idOrIndexOrNetworkCard: FIN.UUID | integer) : Adapter.Computer.NetworkCard
 local NetworkCard = {}
@@ -24,10 +24,8 @@ function NetworkCard:__init(idOrIndex)
 		---@cast idOrIndex integer
 		networkCard = PCIDeviceReference(findClass('NetworkCard_C'), idOrIndex)
 	end
-	networkCard:Raw__Check()
-
-	---@diagnostic disable-next-line
-	self.m_networkCard = networkCard
+	networkCard:Check()
+	self.m_refNetworkCard = networkCard
 
 	if firstNetworkCard then
 		self:CloseAllPorts()
@@ -35,18 +33,28 @@ function NetworkCard:__init(idOrIndex)
 	end
 end
 
+---@private
+function NetworkCard:__close()
+	self:CloseAllPorts()
+end
+
+---@private
+function NetworkCard:__gc()
+	self:CloseAllPorts()
+end
+
 ---@return FIN.UUID
 function NetworkCard:GetIPAddress()
-	return self.m_networkCard.id
+	return self.m_refNetworkCard:Get().id
 end
 
 ---@return string nick
 function NetworkCard:GetNick()
-	return self.m_networkCard.nick
+	return self.m_refNetworkCard:Get().nick
 end
 
 function NetworkCard:Listen()
-	event.listen(self.m_networkCard)
+	event.listen(self.m_refNetworkCard)
 end
 
 ---@param port integer
@@ -56,7 +64,7 @@ function NetworkCard:OpenPort(port)
 		return false
 	end
 
-	self.m_networkCard:open(port)
+	self.m_refNetworkCard:Get():open(port)
 	self.m_openPorts[port] = true
 	return true
 end
@@ -65,26 +73,26 @@ end
 function NetworkCard:ClosePort(port)
 	self.m_openPorts[port] = nil
 
-	self.m_networkCard:close(port)
+	self.m_refNetworkCard:Get():close(port)
 end
 
 function NetworkCard:CloseAllPorts()
 	self.m_openPorts = {}
 
-	self.m_networkCard:closeAll()
+	self.m_refNetworkCard:Get():closeAll()
 end
 
 ---@param address Net.Core.IPAddress
 ---@param port integer
 ---@param ... any
 function NetworkCard:Send(address, port, ...)
-	self.m_networkCard:send(address:GetAddress(), port, ...)
+	self.m_refNetworkCard:Get():send(address:GetAddress(), port, ...)
 end
 
 ---@param port integer
 ---@param ... any
 function NetworkCard:BroadCast(port, ...)
-	self.m_networkCard:broadcast(port, ...)
+	self.m_refNetworkCard:Get():broadcast(port, ...)
 end
 
 return Utils.Class.CreateClass(NetworkCard, 'Adapter.Computer.NetworkCard')

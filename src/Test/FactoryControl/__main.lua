@@ -1,19 +1,19 @@
-local EventPullAdapter = require("Core.Event.EventPullAdapter")
-
-local FactoryControlClient = require("FactoryControl.Client.Client")
+local Framework = require("Test.Framework.Framework")
+local Host = require("Hosting.Host")
 
 ---@class FactoryControl.Test.Main : Github_Loading.Entities.Main
----@field private m_client FactoryControl.Client
+---@field private m_host Hosting.Host
+---@field private m_testFramework Test.Framework
 local Main = {}
 
 function Main:Configure()
-    EventPullAdapter:Initialize(self.Logger:subLogger("EventPullAdapter"))
+    self.m_host = Host(self.Logger:subLogger("Host"), "Host")
 
-    self.m_client = FactoryControlClient(self.Logger:subLogger("ApiClient"))
+    self.m_testFramework = self.m_host:AddTesting()
 end
 
 function Main:Run()
-    require("Test.FactoryControl.Tests.Tests")(self.m_client)
+    self.m_testFramework:Run(self.Logger:subLogger("TestFramework"))
 end
 
 return Main

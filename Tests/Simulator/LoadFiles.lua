@@ -23,15 +23,16 @@ local LoaderFiles = {
 			{ '10_Table.lua' },
 			{ '100_Index.lua' }
 		},
-		{ '10_ComputerLogger.lua' },
-		{ '10_Entities.lua' },
-		{ '10_Module.lua' },
-		{ '10_Option.lua' },
-		{ '120_Event.lua' },
-		{ '120_Listener.lua' },
-		{ '120_Package.lua' },
-		{ '140_Logger.lua' },
-		{ '200_PackageLoader.lua' }
+		{ "10_ComputerLogger.lua" },
+		{ "10_Entities.lua" },
+		{ "10_Event.lua" },
+		{ "10_Module.lua" },
+		{ "10_Option.lua" },
+		{ "120_Listener.lua" },
+		{ "120_Package.lua" },
+		{ "140_Logger.lua" },
+		{ "200_PackageLoader.lua" },
+		{ "300_Overrides.lua" }
 	},
 	{ '00_Options.lua' },
 	{ 'Version.latest.txt' }

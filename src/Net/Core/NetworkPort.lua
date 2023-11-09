@@ -49,7 +49,7 @@ function NetworkPort:Execute(context)
 end
 
 ---@protected
----@param eventName string | "all"
+---@param eventName Net.Core.EventName
 ---@return Core.Event?
 function NetworkPort:GetEvent(eventName)
 	for name, event in pairs(self.m_events) do
@@ -60,7 +60,7 @@ function NetworkPort:GetEvent(eventName)
 end
 
 ---@protected
----@param eventName string | "all"
+---@param eventName Net.Core.EventName
 ---@return Core.Event
 function NetworkPort:CreateOrGetEvent(eventName)
 	local event = self:GetEvent(eventName)
@@ -73,7 +73,7 @@ function NetworkPort:CreateOrGetEvent(eventName)
 	return event
 end
 
----@param onRecivedEventName string | "all"
+---@param onRecivedEventName Net.Core.EventName
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
 function NetworkPort:AddTask(onRecivedEventName, listener)
@@ -82,7 +82,7 @@ function NetworkPort:AddTask(onRecivedEventName, listener)
 	return self
 end
 
----@param onRecivedEventName string | "all"
+---@param onRecivedEventName Net.Core.EventName
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
 function NetworkPort:AddTaskOnce(onRecivedEventName, listener)
@@ -91,7 +91,7 @@ function NetworkPort:AddTaskOnce(onRecivedEventName, listener)
 	return self
 end
 
----@param onRecivedEventName string | "all"
+---@param onRecivedEventName Net.Core.EventName
 ---@param listener fun(context: Net.Core.NetworkContext)
 ---@param ... any
 ---@return Net.Core.NetworkPort
@@ -99,7 +99,7 @@ function NetworkPort:AddListener(onRecivedEventName, listener, ...)
 	return self:AddTask(onRecivedEventName, Task(listener, ...))
 end
 
----@param onRecivedEventName string | "all"
+---@param onRecivedEventName Net.Core.EventName
 ---@param listener fun(context: Net.Core.NetworkContext)
 ---@param ... any
 ---@return Net.Core.NetworkPort
@@ -107,7 +107,7 @@ function NetworkPort:AddListenerOnce(onRecivedEventName, listener, ...)
 	return self:AddTaskOnce(onRecivedEventName, Task(listener, ...))
 end
 
----@param eventName string | "all"
+---@param eventName Net.Core.EventName
 function NetworkPort:RemoveListener(eventName)
 	self.m_events[eventName] = nil
 end

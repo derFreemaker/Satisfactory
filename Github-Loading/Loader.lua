@@ -22,15 +22,16 @@ local LoaderFiles = {
 			{ '10_Table.lua' },
 			{ '100_Index.lua' }
 		},
-		{ '10_ComputerLogger.lua' },
-		{ '10_Entities.lua' },
-		{ '10_Module.lua' },
-		{ '10_Option.lua' },
-		{ '120_Event.lua' },
-		{ '120_Listener.lua' },
-		{ '120_Package.lua' },
-		{ '140_Logger.lua' },
-		{ '200_PackageLoader.lua' }
+		{ "10_ComputerLogger.lua" },
+		{ "10_Entities.lua" },
+		{ "10_Event.lua" },
+		{ "10_Module.lua" },
+		{ "10_Option.lua" },
+		{ "120_Listener.lua" },
+		{ "120_Package.lua" },
+		{ "140_Logger.lua" },
+		{ "200_PackageLoader.lua" },
+		{ "300_Overrides.lua" }
 	},
 	{ '00_Options.lua' },
 	{ 'Version.latest.txt' }
@@ -45,23 +46,27 @@ local function internalDownload(url, path, forceDownload, internetCard)
 	if forceDownload == nil then
 		forceDownload = false
 	end
+
 	if filesystem.exists(path) and not forceDownload then
 		return true
 	end
+
 	local req = internetCard:request(url, 'GET', '')
-	repeat
-	until req:canGet()
-	local code,
-	data = req:get()
+	repeat until req:canGet()
+
+	local code, data = req:get()
 	if code ~= 200 or data == nil then
 		return false
 	end
+
 	local file = filesystem.open(path, 'w')
 	if file == nil then
 		return false
 	end
+
 	file:write(data)
 	file:close()
+
 	return true
 end
 
@@ -308,12 +313,14 @@ function Loader:CheckVersion()
 	local OldVersionString = Utils.File.ReadAll(versionFilePath)
 	local NewVersionString = self:Get('/Github-Loading/Version.latest')
 	Utils.File.Write(versionFilePath, 'w', NewVersionString, true)
+
 	local diffrentVersionFound = OldVersionString ~= NewVersionString
 	if diffrentVersionFound then
 		self.Logger:LogInfo('found new Github Loader version: ' .. NewVersionString)
 	else
 		self.Logger:LogDebug('Github Loader Version: ' .. NewVersionString)
 	end
+
 	return diffrentVersionFound
 end
 
@@ -324,12 +331,14 @@ function Loader:LoadOption(option, extendOptionDetails)
 	---@type Github_Loading.Option
 	local Option = self:Get('/Github-Loading/Loader/Option')
 	local options = self:Get('/Github-Loading/Options')
+
 	---@type Github_Loading.Option[]
 	local mappedOptions = {}
 	for name, url in pairs(options) do
 		local optionObj = Option.new(name, url)
 		table.insert(mappedOptions, optionObj)
 	end
+
 	self.Logger:LogDebug('loaded Options')
 	if option == nil then
 		print('\nOptions:')
@@ -349,11 +358,13 @@ function Loader:LoadOption(option, extendOptionDetails)
 			end
 		end
 	end
+
 	local chosenOption = getOption(option)
 	if not chosenOption then
 		computer.panic("Option: '" .. option .. "' not found")
 		return {}
 	end
+
 	self.Logger:LogDebug('found Option')
 	return chosenOption
 end
@@ -367,7 +378,7 @@ function Loader:LoadProgram(option, baseUrl, forceDownload)
 	local PackageLoader = self:Get('/Github-Loading/Loader/PackageLoader')
 	PackageLoader = PackageLoader.new(baseUrl .. '/Packages', self.m_loaderBasePath .. '/Packages',
 		self.Logger:subLogger('PackageLoader'), self.m_internetCard)
-	PackageLoader:setGlobal()
+	PackageLoader:SetGlobal()
 	self.Logger:LogDebug('setup PackageLoader')
 
 	self.Logger:LogTrace('loading Core package...')
@@ -376,6 +387,7 @@ function Loader:LoadProgram(option, baseUrl, forceDownload)
 
 	self.Logger:LogTrace('loading option package...')
 	local package = PackageLoader:LoadPackage(option.Url, forceDownload)
+	PackageLoader:SetCurrentPackage(package)
 	PackageLoader:OnLoaded()
 	self.Logger:LogTrace('loaded package from chosen Option: ' .. option.Name)
 
@@ -400,17 +412,20 @@ end
 ---@param logLevel Github_Loading.Logger.LogLevel
 function Loader:Configure(program, package, logLevel)
 	self.Logger:LogTrace('configuring program...')
+
 	local Logger = require('Core.Common.Logger')
 	program.Logger = Logger(package.Name, logLevel)
 	local Task = require('Core.Common.Task')
 	self.Logger:CopyListenersToCoreLogger(Task, program.Logger)
 	___logger:setLogger(program.Logger)
+
 	local success, errorMsg, returns = Utils.Function.InvokeProtected(program.Configure, program)
 	if not success then
 		self.Logger:LogError(errorMsg)
 		error("Unable to complete configure function")
 	end
-	___logger:setLogger(self.Logger)
+	___logger:revert()
+
 	if returns[1] == "$%not found%$" then
 		self.Logger:LogTrace('no configure function found')
 	else
@@ -421,13 +436,15 @@ end
 ---@param program Github_Loading.Entities.Main
 function Loader:Run(program)
 	self.Logger:LogTrace('running program...')
+
 	___logger:setLogger(program.Logger)
 	local success, errorMsg, returns = Utils.Function.InvokeProtected(program.Run, program)
 	if not success then
 		self.Logger:LogError(errorMsg)
 		error("program stoped")
 	end
-	___logger:setLogger(self.Logger)
+	___logger:revert()
+
 	if returns[1] == '$%not found%$' then
 		error('no main run function found')
 	end

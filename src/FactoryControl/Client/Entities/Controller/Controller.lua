@@ -86,7 +86,24 @@ function Controller:AddSwitch(name, isEnabled)
     return switch
 end
 
-function Controller:AddRadial(name, min, max, setting)
+---@param name string
+---@param data FactoryControl.Client.Entities.Controller.Feature.Radial.Data?
+function Controller:AddRadial(name, data)
+    if data == nil then
+        data = {}
+    end
+    local min = data.Min or 0
+    local max = data.Max or 1
+    local setting = data.Setting or 1
+
+    if max < min then
+        error("max (" .. max .. ") cannot be smaller then min (" .. min .. ")", 2)
+    end
+
+    if setting < min or setting > max then
+        error("setting (" .. setting .. ") is out of bounds of " .. min .. " - " .. max, 2)
+    end
+
     local radialDto = RadialDto(UUID.Static__New(), name, self.Id, min, max, setting)
     local radial = self.m_client:CreateFeature(Radial(radialDto, self.m_client))
     ---@cast radial FactoryControl.Client.Entities.Controller.Feature.Radial?
@@ -94,10 +111,13 @@ function Controller:AddRadial(name, min, max, setting)
 end
 
 ---@param name string
----@param xAxisName string
----@param yAxisName string
----@param data table<number, any>
-function Controller:AddChart(name, xAxisName, yAxisName, data)
+---@param data FactoryControl.Client.Entities.Controller.Feature.Chart.Data?
+function Controller:AddChart(name, data)
+    data = data or {}
+    local xAxisName = data.XAxisName or "X"
+    local yAxisName = data.YAxisName or "Y"
+    data = data.Data or {}
+
     local chartDto = ChartDto(UUID.Static__New(), name, self.Id, xAxisName, yAxisName, data)
     local chart = self.m_client:CreateFeature(Chart(chartDto, self.m_client))
     ---@cast chart FactoryControl.Client.Entities.Controller.Feature.Chart?

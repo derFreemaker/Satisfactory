@@ -35,16 +35,17 @@ local Host = require('Hosting.Host')
 
 ---@class FactoryControl.Server.Main : Github_Loading.Entities.Main
 ---@field private m_host Hosting.Host
+---@field private m_databaseAccessLayer FactoryControl.Server.DatabaseAccessLayer
 local Main = {}
 
 function Main:Configure()
 	self.m_host = Host(self.Logger:subLogger('Host'), "FactoryControl Server")
 
-	local databaseAccessLayer = DatabaseAccessLayer(self.Logger:subLogger("DatabaseAccessLayer"))
+	self.m_databaseAccessLayer = DatabaseAccessLayer(self.Logger:subLogger("DatabaseAccessLayer"))
 
 	local networkClient = self.m_host:GetNetworkClient()
 	local callbackService = CallbackService(self.m_host:CreateLogger("CallbackService"), networkClient)
-	local featureService = FeatureService(callbackService, databaseAccessLayer, networkClient)
+	local featureService = FeatureService(callbackService, self.m_databaseAccessLayer, networkClient)
 	self.m_host.Services:AddService(featureService)
 	self.m_host:AddCallableEventTask(
 		Usage.Events.FactoryControl_Feature_Update,
@@ -57,13 +58,13 @@ function Main:Configure()
 	self.m_host:AddEndpoint(Usage.Ports.HTTP,
 		"Controller",
 		ControllerEndpoints,
-		databaseAccessLayer
+		self.m_databaseAccessLayer
 	)
 
 	self.m_host:AddEndpoint(Usage.Ports.HTTP,
 		"Feature",
 		FeatureEndpoints,
-		databaseAccessLayer,
+		self.m_databaseAccessLayer,
 		featureService
 	)
 
@@ -81,6 +82,8 @@ function Main:Run()
 		)
 
 		self.m_host:RunCycle(3)
+
+		self.m_databaseAccessLayer:Save()
 	end
 end
 
@@ -115,6 +118,11 @@ function DatabaseAccessLayer:__init(logger)
 
     self.m_controllers:Load()
     self.m_features:Load()
+end
+
+function DatabaseAccessLayer:Save()
+    self.m_controllers:Save()
+    self.m_features:Save()
 end
 
 --------------------------------------------------------------

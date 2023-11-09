@@ -357,20 +357,23 @@ end
 function Task:Close()
     if self.m_closed then return end
     if not self.m_success then
-        self:Traceback()
+        self:Traceback(false)
     end
     coroutine.close(self.m_thread)
     self.m_closed = true
 end
 
 ---@private
+---@param all boolean?
 ---@return string traceback
-function Task:Traceback()
+function Task:Traceback(all)
     if self.m_traceback ~= nil or self.m_closed then
         return self.m_traceback
     end
-    self.m_traceback = debug.traceback(self.m_thread, self.m_error or "")
-        .. "\n[THREAD START]\n" .. debug.traceback():sub(18)
+    self.m_traceback = debug.traceback(self.m_thread, self.m_error or "") .. "\n[THREAD START]"
+    if all then
+        self.m_traceback = self.m_traceback .. "\n" .. debug.traceback():sub(18)
+    end
     return self.m_traceback
 end
 
@@ -383,10 +386,11 @@ function Task:State()
 end
 
 ---@param logger Core.Logger?
-function Task:LogError(logger)
+---@param all boolean?
+function Task:LogError(logger, all)
     self:Close()
     if not self.m_success and logger then
-        logger:LogError("Task [Error]:\n" .. self:Traceback())
+        logger:LogError("Task [Error]:\n" .. self:Traceback(all))
     end
 end
 

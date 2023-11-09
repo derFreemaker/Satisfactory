@@ -5,6 +5,7 @@ local Package = LoadedLoaderFiles['/Github-Loading/Loader/Package'][1]
 local Utils = LoadedLoaderFiles['/Github-Loading/Loader/Utils'][1]
 
 ---@class Github_Loading.PackageLoader
+---@field CurrentPackage Github_Loading.Package?
 ---@field Packages Github_Loading.Package[]
 ---@field Logger Github_Loading.Logger
 ---@field private m_moduleCache table<string, Github_Loading.Module?>
@@ -69,7 +70,12 @@ function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard)
 	)
 end
 
-function PackageLoader:setGlobal()
+---@param package Github_Loading.Package
+function PackageLoader:SetCurrentPackage(package)
+	self.CurrentPackage = package
+end
+
+function PackageLoader:SetGlobal()
 	_G.PackageLoader = self
 end
 
@@ -88,17 +94,20 @@ end
 ---@return boolean, Github_Loading.Package?
 function PackageLoader:DownloadPackage(packageName, forceDownload)
 	self.Logger:LogTrace("downloading package: '" .. packageName .. "'...")
+
 	forceDownload = forceDownload or false
 	packageName = packageName:gsub('%.', '/')
+
 	local packagePath = self.m_packagesPath .. '/' .. packageName
 	assert(not (not filesystem.exists(packagePath) and not filesystem.createDir(packagePath, true)),
 		"Unable to create folder for package: '" .. packageName .. "'")
+
 	local packageUrl = self.m_packagesUrl .. '/' .. packageName
-	local success,
-	package = self:internalDownloadPackage(packageUrl, packagePath, forceDownload)
+	local success, package = self:internalDownloadPackage(packageUrl, packagePath, forceDownload)
 	if not success or not package or not package:Download(packageUrl, packagePath) then
 		return false
 	end
+
 	self.Logger:LogTrace("downloaded package: '" .. packageName .. "'")
 	return true, package
 end
@@ -107,11 +116,13 @@ end
 ---@return Github_Loading.Package
 function PackageLoader:LoadPackage(packageName, forceDownload)
 	self.Logger:LogTrace("loading package: '" .. packageName .. "'...")
+
 	local package = self:GetPackage(packageName)
 	if package then
 		self.Logger:LogTrace("found package: '" .. packageName .. "'")
 		return package
 	end
+
 	local success
 	success, package = self:DownloadPackage(packageName, forceDownload)
 	if success then
@@ -121,6 +132,7 @@ function PackageLoader:LoadPackage(packageName, forceDownload)
 	else
 		computer.panic("could not find or download package: '" .. packageName .. "'")
 	end
+
 	---@cast package Github_Loading.Package
 	self.Logger:LogDebug("loaded package: '" .. package.Name .. "'")
 	return package

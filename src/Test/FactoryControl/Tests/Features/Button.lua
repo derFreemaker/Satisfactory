@@ -1,7 +1,12 @@
+local TestFramework = require("Test.Framework.Framework")
+local Helper = require("Test.FactoryControl.Helper")
+
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
----@param controller FactoryControl.Client.Entities.Controller
-local function test(controller)
+---@param logger Core.Logger
+local function overall(logger)
+    local controller = Helper.CreateController(logger, "Button")
+
     -- Test: adding button
 
     local button = controller:AddButton("Test")
@@ -24,5 +29,4 @@ local function test(controller)
 
     log("passed test: pressing button")
 end
-
-return test
+TestFramework:AddTest("Button Overall", overall)

@@ -1,14 +1,12 @@
----@param client FactoryControl.Client
----@return FactoryControl.Client.Entities.Controller
-local function test(client)
-    -- Test: connecting
+local TestFramework = require("Test.Framework.Framework")
+local Helper = require("Test.FactoryControl.Helper")
 
-    local controller = client:Connect("Test")
+---@param logger Core.Logger
+local function connection(logger)
+    local client = Helper.CreateFactoryControlClient(logger)
+
+    local controller = client:Connect("Connection")
 
     assert(controller.IPAddress:Equals(client.NetClient:GetIPAddress()), "IP Address mismatch")
-
-    log("passed test: connecting")
-
-    return controller
 end
-return test
+TestFramework:AddTest("Connection", connection)

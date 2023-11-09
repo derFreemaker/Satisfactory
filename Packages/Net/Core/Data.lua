@@ -38,9 +38,9 @@ local IPAddress = {}
 ---@private
 ---@param address string
 function IPAddress:__init(address)
-    self:__modifyBehavior({ DisableCustomIndexing = true })
+    self:Raw__ModifyBehavior({ DisableCustomIndexing = true })
     self.m_address = address
-    self:__modifyBehavior({ DisableCustomIndexing = false })
+    self:Raw__ModifyBehavior({ DisableCustomIndexing = false })
 end
 
 function IPAddress:GetAddress()
@@ -117,6 +117,10 @@ local IPAddress = require("Net.Core.IPAddress")
 ---|integer
 ---|"all"
 
+---@alias Net.Core.EventName
+---|string
+---|"all"
+
 ---@class Net.Core.NetworkClient : object
 ---@field private m_iPAddress Net.Core.IPAddress
 ---@field private m_ports table<Net.Core.Port, Net.Core.NetworkPort?>
@@ -141,6 +145,11 @@ function NetworkClient:__init(logger, networkCard, serializer)
 
 	self.m_networkCard:Listen()
 	EventPullAdapter:AddListener('NetworkMessage', Task(self.networkMessageRecieved, self))
+end
+
+---@private
+function NetworkClient:__gc()
+	self.m_ports = nil
 end
 
 ---@return Net.Core.IPAddress
@@ -232,8 +241,8 @@ function NetworkClient:networkMessageRecieved(data)
 	self:executeNetworkPort("all", context)
 end
 
----@param onRecivedEventName (string | "all")?
----@param onRecivedPort (Net.Core.Port)?
+---@param onRecivedEventName Net.Core.EventName?
+---@param onRecivedPort Net.Core.Port?
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
 function NetworkClient:AddTask(onRecivedEventName, onRecivedPort, listener)
@@ -245,7 +254,7 @@ function NetworkClient:AddTask(onRecivedEventName, onRecivedPort, listener)
 	return networkPort
 end
 
----@param onRecivedEventName string | "all"
+---@param onRecivedEventName Net.Core.EventName
 ---@param onRecivedPort Net.Core.Port
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
@@ -258,8 +267,8 @@ function NetworkClient:AddTaskOnce(onRecivedEventName, onRecivedPort, listener)
 	return networkPort
 end
 
----@param onRecivedEventName (string | "all")?
----@param onRecivedPort (Net.Core.Port)?
+---@param onRecivedEventName Net.Core.EventName?
+---@param onRecivedPort Net.Core.Port?
 ---@param listener fun(context: Net.Core.NetworkClient)
 ---@param ... any
 ---@return Net.Core.NetworkPort
@@ -267,7 +276,7 @@ function NetworkClient:AddListener(onRecivedEventName, onRecivedPort, listener, 
 	return self:AddTask(onRecivedEventName, onRecivedPort, Task(listener, ...))
 end
 
----@param onRecivedEventName string | "all"
+---@param onRecivedEventName Net.Core.EventName
 ---@param onRecivedPort Net.Core.Port
 ---@param listener fun(context: Net.Core.NetworkContext)
 ---@param ... any
@@ -277,7 +286,7 @@ function NetworkClient:AddListenerOnce(onRecivedEventName, onRecivedPort, listen
 end
 
 ---@async
----@param eventName string | "all"
+---@param eventName Net.Core.EventName
 ---@param port Net.Core.Port
 ---@param timeoutSeconds number?
 ---@return Net.Core.NetworkContext?
@@ -503,7 +512,7 @@ function NetworkPort:Execute(context)
 end
 
 ---@protected
----@param eventName string | "all"
+---@param eventName Net.Core.EventName
 ---@return Core.Event?
 function NetworkPort:GetEvent(eventName)
 	for name, event in pairs(self.m_events) do
@@ -514,7 +523,7 @@ function NetworkPort:GetEvent(eventName)
 end
 
 ---@protected
----@param eventName string | "all"
+---@param eventName Net.Core.EventName
 ---@return Core.Event
 function NetworkPort:CreateOrGetEvent(eventName)
 	local event = self:GetEvent(eventName)
@@ -527,7 +536,7 @@ function NetworkPort:CreateOrGetEvent(eventName)
 	return event
 end
 
----@param onRecivedEventName string | "all"
+---@param onRecivedEventName Net.Core.EventName
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
 function NetworkPort:AddTask(onRecivedEventName, listener)
@@ -536,7 +545,7 @@ function NetworkPort:AddTask(onRecivedEventName, listener)
 	return self
 end
 
----@param onRecivedEventName string | "all"
+---@param onRecivedEventName Net.Core.EventName
 ---@param listener Core.Task
 ---@return Net.Core.NetworkPort
 function NetworkPort:AddTaskOnce(onRecivedEventName, listener)
@@ -545,7 +554,7 @@ function NetworkPort:AddTaskOnce(onRecivedEventName, listener)
 	return self
 end
 
----@param onRecivedEventName string | "all"
+---@param onRecivedEventName Net.Core.EventName
 ---@param listener fun(context: Net.Core.NetworkContext)
 ---@param ... any
 ---@return Net.Core.NetworkPort
@@ -553,7 +562,7 @@ function NetworkPort:AddListener(onRecivedEventName, listener, ...)
 	return self:AddTask(onRecivedEventName, Task(listener, ...))
 end
 
----@param onRecivedEventName string | "all"
+---@param onRecivedEventName Net.Core.EventName
 ---@param listener fun(context: Net.Core.NetworkContext)
 ---@param ... any
 ---@return Net.Core.NetworkPort
@@ -561,7 +570,7 @@ function NetworkPort:AddListenerOnce(onRecivedEventName, listener, ...)
 	return self:AddTaskOnce(onRecivedEventName, Task(listener, ...))
 end
 
----@param eventName string | "all"
+---@param eventName Net.Core.EventName
 function NetworkPort:RemoveListener(eventName)
 	self.m_events[eventName] = nil
 end

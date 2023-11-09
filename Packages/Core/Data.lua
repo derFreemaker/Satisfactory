@@ -720,20 +720,23 @@ end
 function Task:Close()
     if self.m_closed then return end
     if not self.m_success then
-        self:Traceback()
+        self:Traceback(false)
     end
     coroutine.close(self.m_thread)
     self.m_closed = true
 end
 
 ---@private
+---@param all boolean?
 ---@return string traceback
-function Task:Traceback()
+function Task:Traceback(all)
     if self.m_traceback ~= nil or self.m_closed then
         return self.m_traceback
     end
-    self.m_traceback = debug.traceback(self.m_thread, self.m_error or "")
-        .. "\n[THREAD START]\n" .. debug.traceback():sub(18)
+    self.m_traceback = debug.traceback(self.m_thread, self.m_error or "") .. "\n[THREAD START]"
+    if all then
+        self.m_traceback = self.m_traceback .. "\n" .. debug.traceback():sub(18)
+    end
     return self.m_traceback
 end
 
@@ -746,10 +749,11 @@ function Task:State()
 end
 
 ---@param logger Core.Logger?
-function Task:LogError(logger)
+---@param all boolean?
+function Task:LogError(logger, all)
     self:Close()
     if not self.m_success and logger then
-        logger:LogError("Task [Error]:\n" .. self:Traceback())
+        logger:LogError("Task [Error]:\n" .. self:Traceback(all))
     end
 end
 
@@ -864,11 +868,11 @@ function UUID:__init(headOrSring, body, tail)
         headOrSring, body, tail = parse(headOrSring)
     end
 
-    self:__modifyBehavior({ DisableCustomIndexing = true })
+    self:Raw__ModifyBehavior({ DisableCustomIndexing = true })
     self.m_head = headOrSring
     self.m_body = body
     self.m_tail = tail
-    self:__modifyBehavior({ DisableCustomIndexing = false })
+    self:Raw__ModifyBehavior({ DisableCustomIndexing = false })
 end
 
 ---@param other Core.UUID
@@ -1005,11 +1009,13 @@ end
 function Event:Trigger(logger, ...)
     for _, task in ipairs(self.m_funcs) do
         task:Execute(...)
+        task:Close()
         task:LogError(logger)
     end
 
     for _, task in ipairs(self.m_onceFuncs) do
         task:Execute(...)
+        task:Close()
         task:LogError(logger)
     end
     self.m_onceFuncs = {}
@@ -2208,6 +2214,111 @@ function Serializable:Static__Deserialize(...)
 end
 
 return Utils.Class.CreateClass(Serializable, "Core.Json.Serializable")
+]]
+}
+
+PackageData["CoreReferencesIReference"] = {
+    Location = "Core.References.IReference",
+    Namespace = "Core.References.IReference",
+    IsRunnable = true,
+    Data = [[
+---@class Core.IReference<T> : object, { Get: fun() : T }
+---@field protected m_obj Satisfactory.Components.Object?
+local IReference = {}
+
+---@generic TReference : FIN.Component
+---@return TReference
+function IReference:Get()
+    if not self:IsValid() then
+        if not self:Refresh() then
+            error("could not be refreshed", 2)
+        end
+    end
+
+    return self.m_obj
+end
+
+---@return boolean isValid
+function IReference:IsValid()
+    if not self.m_obj then
+        return false
+    end
+
+    local success = pcall(function() local _ = self.m_obj.hash end)
+    return success
+end
+
+---@return boolean found
+function IReference:Refresh()
+    error("cannot call abstract method IReference:Refresh")
+end
+
+function IReference:Check()
+    if not self:IsValid() then
+        if not self:Refresh() then
+            error("could not be refreshed", 2)
+        end
+    end
+end
+
+return Utils.Class.CreateClass(IReference, "Core.IReference")
+]]
+}
+
+PackageData["CoreReferencesPCIDeviceReference"] = {
+    Location = "Core.References.PCIDeviceReference",
+    Namespace = "Core.References.PCIDeviceReference",
+    IsRunnable = true,
+    Data = [[
+---@class Core.PCIDeviceReference<T> : Core.IReference<T>
+---@field m_class FIN.Class
+---@field m_index integer
+---@overload fun(class: FIN.Class, index: integer) : Core.PCIDeviceReference
+local PCIDeviceReference = {}
+
+---@private
+---@param class FIN.Class
+---@param index integer
+function PCIDeviceReference:__init(class, index)
+    self.m_class = class
+    self.m_index = index
+end
+
+---@return boolean notFound
+function PCIDeviceReference:Refresh()
+    self.m_obj = computer.getPCIDevices(self.m_class)[self.m_index]
+    return self.m_obj ~= nil
+end
+
+return Utils.Class.CreateClass(PCIDeviceReference, "Core.PCIDeviceReference",
+    require("Core.References.IReference"))
+]]
+}
+
+PackageData["CoreReferencesReference"] = {
+    Location = "Core.References.Reference",
+    Namespace = "Core.References.Reference",
+    IsRunnable = true,
+    Data = [[
+---@class Core.Reference<T> : Core.IReference<T>
+---@field m_id FIN.UUID
+---@overload fun(id: FIN.UUID) : Core.Reference
+local Reference = {}
+
+---@private
+---@param id FIN.UUID
+function Reference:__init(id)
+    self.m_id = id
+end
+
+---@return boolean found
+function Reference:Refresh()
+    self.m_obj = component.proxy(self.m_id)
+    return component ~= nil
+end
+
+return Utils.Class.CreateClass(Reference, "Core.Reference",
+    require("Core.References.IReference"))
 ]]
 }
 

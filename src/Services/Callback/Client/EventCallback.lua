@@ -2,6 +2,8 @@ local Event = require("Core.Event.Event")
 
 ---@class Services.Callback.Client.EventCallback : Services.Callback.Client.Callback
 ---@field m_onCalled Core.Event
+---@field private Handler unknown
+---@field private SetHandler unknown
 local EventCallback = {}
 
 ---@param id Core.UUID

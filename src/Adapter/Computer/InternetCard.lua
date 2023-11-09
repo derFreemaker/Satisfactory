@@ -1,7 +1,7 @@
 local ComputerPartReference = require("Core.References.PCIDeviceReference")
 
 ---@class Adapter.InternetCard : object
----@field m_internetCard FIN.Components.FINComputerMod.InternetCard_C
+---@field m_internetCard Core.IReference<FIN.Components.FINComputerMod.InternetCard_C>
 local InternetCard = {}
 
 ---@param index number
@@ -11,9 +11,8 @@ function InternetCard:__init(index)
     end
 
     local internetCard = ComputerPartReference(findClass('InternetCard_C'), index)
-    internetCard:Raw__Check()
+    internetCard:Check()
 
-    ---@diagnostic disable-next-line
     self.m_internetCard = internetCard
 end
 
@@ -25,7 +24,7 @@ function InternetCard:Download(url, logger)
         logger:LogTrace("downloading from: '" .. url .. "'...")
     end
 
-    local req = self.m_internetCard:request(url, 'GET', '')
+    local req = self.m_internetCard:Get():request(url, 'GET', '')
     repeat until req:canGet()
 
     local code, data = req:get()

@@ -62,11 +62,13 @@ end
 function Event:Trigger(logger, ...)
     for _, task in ipairs(self.m_funcs) do
         task:Execute(...)
+        task:Close()
         task:LogError(logger)
     end
 
     for _, task in ipairs(self.m_onceFuncs) do
         task:Execute(...)
+        task:Close()
         task:LogError(logger)
     end
     self.m_onceFuncs = {}

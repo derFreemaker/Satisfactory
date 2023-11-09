@@ -569,7 +569,24 @@ function Controller:AddSwitch(name, isEnabled)
     return switch
 end
 
-function Controller:AddRadial(name, min, max, setting)
+---@param name string
+---@param data FactoryControl.Client.Entities.Controller.Feature.Radial.Data?
+function Controller:AddRadial(name, data)
+    if data == nil then
+        data = {}
+    end
+    local min = data.Min or 0
+    local max = data.Max or 1
+    local setting = data.Setting or 1
+
+    if max < min then
+        error("max (" .. max .. ") cannot be smaller then min (" .. min .. ")", 2)
+    end
+
+    if setting < min or setting > max then
+        error("setting (" .. setting .. ") is out of bounds of " .. min .. " - " .. max, 2)
+    end
+
     local radialDto = RadialDto(UUID.Static__New(), name, self.Id, min, max, setting)
     local radial = self.m_client:CreateFeature(Radial(radialDto, self.m_client))
     ---@cast radial FactoryControl.Client.Entities.Controller.Feature.Radial?
@@ -577,10 +594,13 @@ function Controller:AddRadial(name, min, max, setting)
 end
 
 ---@param name string
----@param xAxisName string
----@param yAxisName string
----@param data table<number, any>
-function Controller:AddChart(name, xAxisName, yAxisName, data)
+---@param data FactoryControl.Client.Entities.Controller.Feature.Chart.Data?
+function Controller:AddChart(name, data)
+    data = data or {}
+    local xAxisName = data.XAxisName or "X"
+    local yAxisName = data.YAxisName or "Y"
+    data = data.Data or {}
+
     local chartDto = ChartDto(UUID.Static__New(), name, self.Id, xAxisName, yAxisName, data)
     local chart = self.m_client:CreateFeature(Chart(chartDto, self.m_client))
     ---@cast chart FactoryControl.Client.Entities.Controller.Feature.Chart?
@@ -775,6 +795,12 @@ PackageData["FactoryControlClientEntitiesControllerFeatureChartChart"] = {
     IsRunnable = true,
     Data = [[
 local ChartDto = require("FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto")
+local Update = require("FactoryControl.Core.Entities.Controller.Feature.Chart.Update")
+
+---@class FactoryControl.Client.Entities.Controller.Feature.Chart.Data
+---@field XAxisName string?
+---@field YAxisName string?
+---@field Data table<number, any>?
 
 ---@class FactoryControl.Client.Entities.Controller.Feature.Chart : FactoryControl.Client.Entities.Controller.Feature
 ---@field private m_xAxisName string
@@ -808,7 +834,29 @@ function Chart:ToDto()
     return ChartDto(self.Id, self.Name, self.ControllerId, self.m_xAxisName, self.m_yAxisName, self.m_data)
 end
 
--- //TODO: complete
+---@return string x, string y
+function Chart:GetAxisNames()
+    return self.m_xAxisName, self.m_yAxisName
+end
+
+---@return table<number, any>
+function Chart:GetData()
+    return Utils.Table.Copy(self.m_data)
+end
+
+---@class FactoryControl.Client.Entities.Controller.Feature.Chart.Modify
+---@field Data table<number, any>
+
+---@param func fun(modify: FactoryControl.Client.Entities.Controller.Feature.Chart.Modify)
+function Chart:Modify(func)
+    ---@type FactoryControl.Client.Entities.Controller.Feature.Chart.Modify
+    local modify = { Data = {} }
+
+    func(modify)
+
+    local update = Update(self.Id, modify.Data)
+    self.m_client:UpdateFeature(update)
+end
 
 return Utils.Class.CreateClass(Chart, "FactoryControl.Client.Entities.Controller.Feature.Chart",
     require("FactoryControl.Client.Entities.Controller.Feature.Feature"))
@@ -824,13 +872,15 @@ local RadialDto = require("FactoryControl.Core.Entities.Controller.Feature.Radia
 
 local Update = require("FactoryControl.Core.Entities.Controller.Feature.Radial.Update")
 
+---@class FactoryControl.Client.Entities.Controller.Feature.Radial.Data
+---@field Min number?
+---@field Max number?
+---@field Setting number?
+
 ---@class FactoryControl.Client.Entities.Controller.Feature.Radial : FactoryControl.Client.Entities.Controller.Feature
----@field Min number
----@field Max number
----@field Setting number
----@field private m_old_Min number
----@field private m_old_Max number
----@field private m_old_Setting number
+---@field m_min number
+---@field m_max number
+---@field m_setting number
 ---@overload fun(radialDto: FactoryControl.Core.Entities.Controller.Feature.RadialDto, client: FactoryControl.Client) : FactoryControl.Client.Entities.Controller.Feature.Radial
 local Radial = {}
 
@@ -841,48 +891,53 @@ local Radial = {}
 function Radial:__init(super, radialDto, client)
     super(radialDto, client)
 
-    self.Min = radialDto.Min
-    self.m_old_Min = radialDto.Min
+    self.m_min = radialDto.Min
+    self.m_max = radialDto.Max
+    self.m_setting = radialDto.Setting
 
-    self.Max = radialDto.Max
-    self.m_old_Max = radialDto.Max
+    if self.m_max < self.m_min then
+        error("max cannot be smaller then min")
+    end
 
-    self.Setting = radialDto.Setting
-    self.m_old_Setting = radialDto.Setting
+    if self.m_setting < self.m_min or self.m_setting > self.m_max then
+        error("setting is out of bounds of " .. self.m_min .. " - " .. self.m_max)
+    end
 end
 
 ---@private
 ---@param update FactoryControl.Core.Entities.Controller.Feature.Radial.Update
 function Radial:OnUpdate(update)
-    self.Min = update.Min
-    self.m_old_Min = update.Min
-
-    self.Max = update.Max
-    self.m_old_Max = update.Max
-
-    self.Setting = update.Setting
-    self.m_old_Setting = update.Setting
+    self.m_min = update.Min
+    self.m_max = update.Max
+    self.m_setting = update.Setting
 end
 
 ---@return FactoryControl.Core.Entities.Controller.Feature.RadialDto
 function Radial:ToDto()
-    return RadialDto(self.Id, self.Name, self.ControllerId, self.Min, self.Max, self.Setting)
+    return RadialDto(self.Id, self.Name, self.ControllerId, self.m_min, self.m_max, self.m_setting)
 end
 
-function Radial:Update()
-    if self.Min < self.Max then
+---@class FactoryControl.Client.Entities.Controller.Feature.Radial.Modify
+---@field Min number
+---@field Max number
+---@field Setting number
+
+---@param func fun(modify: FactoryControl.Client.Entities.Controller.Feature.Radial.Modify)
+function Radial:Modify(func)
+    ---@type FactoryControl.Client.Entities.Controller.Feature.Radial.Modify
+    local modify = { Min = self.m_min, Max = self.m_max, Setting = self.m_setting }
+
+    func(modify)
+
+    if modify.Max < modify.Min then
         error("max cannot be smaller then min")
     end
 
-    if self.Min > self.Setting or self.Setting > self.Max then
-        error("setting is out of bounds of " .. self.Min .. " - " .. self.Max)
+    if modify.Setting < modify.Min or modify.Setting > modify.Max then
+        error("setting is out of bounds of " .. self.m_min .. " - " .. self.m_max)
     end
 
-    if self.m_old_Min == self.Min and self.m_old_Max == self.Max and self.m_old_Setting == self.Setting then
-        return
-    end
-
-    local update = Update(self.Id, self.Min, self.Max, self.Setting)
+    local update = Update(self.Id, self.m_min, self.m_max, self.m_setting)
     self.m_client:UpdateFeature(update)
 end
 

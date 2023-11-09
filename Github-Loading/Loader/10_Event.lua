@@ -1,6 +1,4 @@
-local LoadedLoaderFiles = ({ ... })[1]
----@type Utils
-local Utils = LoadedLoaderFiles["/Github-Loading/Loader/Utils"][1]
+-- local LoadedLoaderFiles = ({ ... })[1]
 
 ---@class Github_Loading.Event
 ---@field private m_funcs Github_Loading.Listener[]
@@ -22,16 +20,12 @@ function Event:AddListener(listener)
     return self
 end
 
-Event.On = Event.AddListener
-
 ---@param listener Github_Loading.Listener
 ---@return Github_Loading.Event
 function Event:AddListenerOnce(listener)
     table.insert(self.m_onceFuncs, listener)
     return self
 end
-
-Event.Once = Event.AddListenerOnce
 
 ---@param logger Github_Loading.Logger?
 ---@param ... any

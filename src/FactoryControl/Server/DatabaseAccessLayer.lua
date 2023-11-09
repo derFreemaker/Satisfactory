@@ -22,6 +22,11 @@ function DatabaseAccessLayer:__init(logger)
     self.m_features:Load()
 end
 
+function DatabaseAccessLayer:Save()
+    self.m_controllers:Save()
+    self.m_features:Save()
+end
+
 --------------------------------------------------------------
 -- Controller
 --------------------------------------------------------------

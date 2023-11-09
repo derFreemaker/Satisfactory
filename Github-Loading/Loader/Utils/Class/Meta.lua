@@ -29,7 +29,7 @@
 ---@field protected __ipairs (fun(t: table) : ((fun(t: table, key: number) : key: number, value: any), t: table, startKey: number))? ipairs(self)
 ---@field protected __tostring (fun(t):string)? tostring(self)
 ---@field protected __index (fun(class, key) : any)? xxx = self.xxx | self[xxx]
----@field protected __newindex fun(class, key, value)? self.xxx | self[xxx] = xxx
+---@field protected __newindex fun(class, key, value)? self.xxx = xxx | self[xxx] = xxx
 
 ---@class Utils.Class.MetaMethods
 ---@field __init (fun(self: object, ...))? self(...) before construction

@@ -31,7 +31,8 @@ function Host:__init(logger, name, jsonSerializer)
 
     for _, task in pairs(self._Static__ReadyTasks) do
         task:Execute(self)
-        task:LogError(self.m_logger)
+        task:Close()
+        task:LogError(self.m_logger, false)
     end
 
     self.m_logger:LogDebug(self.m_name .. " starting...")

@@ -22,6 +22,7 @@ function Module:Load(...)
     if self.StoredData then
         return table.unpack(self.StoredData)
     end
+
     local result
     if self.IsRunnable then
         result = { load(self.Data, self.Location)(...) }
@@ -29,6 +30,8 @@ function Module:Load(...)
         result = { self.Data }
     end
     self.StoredData = result
+
+    self.Data = nil
     return table.unpack(result)
 end
 

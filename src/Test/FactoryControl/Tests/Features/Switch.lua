@@ -1,7 +1,12 @@
+local TestFramework = require("Test.Framework.Framework")
+local Helper = require("Test.FactoryControl.Helper")
+
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
----@param controller FactoryControl.Client.Entities.Controller
-local function test(controller)
+---@param logger Core.Logger
+local function overall(logger)
+    local controller = Helper.CreateController(logger, "Switch")
+
     -- Test: adding switch
 
     local switch = controller:AddSwitch("Test")
@@ -28,5 +33,4 @@ local function test(controller)
 
     log("passed test: flipping switch")
 end
-
-return test
+TestFramework:AddTest("Switch Overall", overall)

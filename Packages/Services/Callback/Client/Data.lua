@@ -72,6 +72,7 @@ function Callback:Send(logger, args)
     end
 
     self.Handler:Execute(table.unpack(args))
+    self.Handler:Close()
     self.Handler:LogError(logger)
 end
 
@@ -84,7 +85,8 @@ function Callback:Invoke(logger, args)
     end
 
     local results = { self.Handler:Execute(table.unpack(args)) }
-    self.Handler:LogError(logger)
+    self.Handler:Close()
+    self.Handler:LogError(logger, false)
     return results
 end
 
@@ -207,6 +209,8 @@ local Event = require("Core.Event.Event")
 
 ---@class Services.Callback.Client.EventCallback : Services.Callback.Client.Callback
 ---@field m_onCalled Core.Event
+---@field private Handler unknown
+---@field private SetHandler unknown
 local EventCallback = {}
 
 ---@param id Core.UUID

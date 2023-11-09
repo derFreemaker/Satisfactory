@@ -58,6 +58,9 @@ function Package:Download(url, path)
         modules[id] = Module.new(module)
     end
 
+    ---@diagnostic disable-next-line
+    dataContent = nil
+
     self.Modules = modules
     return true
 end
