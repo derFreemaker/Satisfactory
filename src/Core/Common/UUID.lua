@@ -11,6 +11,8 @@ local UUID = {}
 ---@type integer
 UUID.Static__GeneratedCount = 1
 
+UUID.Static__TemplateRegex = ".{6}\\-.{4}\\-.{6}"
+
 --- Replaces 'x' in template with random character.
 ---@param amount integer
 ---@return number[] char
@@ -70,13 +72,6 @@ end
 ---@return number[] head, number[] body, number[] tail
 local function parse(str)
     local splitedStr = Utils.String.Split(str, "-")
-    if not splitedStr[1] or splitedStr[1]:len() ~= 6
-        or not splitedStr[2] or splitedStr[2]:len() ~= 4
-        or not splitedStr[3] or splitedStr[3]:len() ~= 6
-    then
-        error("Unable to parse: " .. tostring(str))
-        return getEmptyData()
-    end
 
     local head = convertStringToCharArray(splitedStr[1])
     local body = convertStringToCharArray(splitedStr[2])
@@ -88,6 +83,10 @@ end
 ---@param str string
 ---@return Core.UUID?
 function UUID.Static__Parse(str)
+    if not str:find(UUID.Static__TemplateRegex) then
+        return nil
+    end
+
     return UUID(parse(str))
 end
 

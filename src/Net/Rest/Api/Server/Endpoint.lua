@@ -1,6 +1,3 @@
-local EventNameUsage    = require("Core.Usage.Usage_EventName")
-local StatusCodes       = require("Net.Core.StatusCodes")
-
 local ResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 
 local UUID              = require("Core.Common.UUID")

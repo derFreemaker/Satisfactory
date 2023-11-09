@@ -547,6 +547,16 @@ function Controller:GetFeatures()
 end
 
 ---@param name string
+---@return FactoryControl.Client.Entities.Controller.Feature?
+function Controller:GetFeatureByName(name)
+    for _, feature in pairs(self:GetFeatures()) do
+        if feature.Name == name then
+            return feature
+        end
+    end
+end
+
+---@param name string
 ---@return FactoryControl.Client.Entities.Controller.Feature.Button?
 function Controller:AddButton(name)
     local buttonDto = ButtonDto(UUID.Static__New(), name, self.Id)

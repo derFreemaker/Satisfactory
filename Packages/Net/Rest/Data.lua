@@ -342,13 +342,21 @@ function Controller:GetEndpoint(endpointMethod, endpointUrl)
         return
     end
 
+    local bestMatch = nil
+    local bestMatchLength = 0
     for uriStr, endpoint in pairs(methodEndpoints) do
         local uriPattern = "^" .. uriStr:gsub("{.*}", ".*") .. "$"
-        if tostring(endpointUrl):match(uriPattern) then
-            self.m_logger:LogDebug("found endpoint: " .. tostring(endpointUrl) .. " -> " .. uriStr)
-            return endpoint
+        local endpointUrlStr = tostring(endpointUrl)
+        local match = endpointUrlStr:gsub(uriPattern, "")
+        local matchLength = endpointUrlStr:len() - match:len()
+
+        if matchLength > bestMatchLength then
+            bestMatch = endpoint
+            bestMatchLength = matchLength
         end
     end
+
+    return bestMatch
 end
 
 ---@param method Net.Core.Method
@@ -380,9 +388,6 @@ PackageData["NetRestApiServerEndpoint"] = {
     Namespace = "Net.Rest.Api.Server.Endpoint",
     IsRunnable = true,
     Data = [[
-local EventNameUsage    = require("Core.Usage.Usage_EventName")
-local StatusCodes       = require("Net.Core.StatusCodes")
-
 local ResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 
 local UUID              = require("Core.Common.UUID")
