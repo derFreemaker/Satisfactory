@@ -1,35 +1,23 @@
 {
-  "Lua.diagnostics.globals": [
-    "event",
-    "findClass",
-    "Config",
-    "component",
-    "filesystem",
-    "computer",
-    "findStruct",
-    "findItem",
-    "log"
-  ],
-  "Lua.completion.autoRequire": true,
-  "Lua.workspace.ignoreDir": [".git", ".stfolder", ".vscode", "Code-Server", "Lua-Bundler", "Obsidian Vault", "Packages", "PackageTemplate", "FIN Source Code" ],
-  "triggerTaskOnSave.tasks": {
-    "check all": [
-      "*"
-    ],
-  },
-  "files.exclude": {
-    "**/.git": true,
-    "**/.svn": false,
-    "**/.hg": false,
-    "**/CVS": false,
-    "**/.DS_Store": false,
-    "**/Thumbs.db": false,
-    ".stfolder/**": true,
-    "Code-Server/**": true,
-    "Lua-Bundler/**": true,
-    "Obsidian Vault/**": true,
-    "Packages/**": false,
-    "FIN Source Code": true
-  },
-  "explorerExclude.backup": {}
+	"Lua.diagnostics.globals": ["event", "findClass", "Config", "component", "filesystem", "computer", "findStruct", "findItem", "log"],
+	"Lua.completion.autoRequire": true,
+	"Lua.workspace.ignoreDir": [".git", ".stfolder", ".vscode", "Code-Server", "Lua-Bundler", "Obsidian Vault", "Packages", "PackageTemplate", "FIN Source Code"],
+	"triggerTaskOnSave.tasks": {
+		"check all": ["*"]
+	},
+	"files.exclude": {
+		"**/.git": true,
+		"**/.svn": false,
+		"**/.hg": false,
+		"**/CVS": false,
+		"**/.DS_Store": false,
+		"**/Thumbs.db": false,
+		".stfolder/**": true,
+		"Code-Server/**": true,
+		"Lua-Bundler/**": true,
+		"Obsidian Vault/**": true,
+		"Packages/**": true,
+		"FIN Source Code": true
+	},
+	"explorerExclude.backup": {},
 }
