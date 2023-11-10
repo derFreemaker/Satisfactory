@@ -29,6 +29,7 @@
     "Lua-Bundler/**": true,
     "Obsidian Vault/**": true,
     "Packages/**": true,
+    "FIN Source Code": true
   },
   "explorerExclude.backup": {}
 }

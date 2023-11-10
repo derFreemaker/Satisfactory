@@ -15,6 +15,7 @@ local MembersHandler = {}
 function MembersHandler.UpdateState(typeInfo)
     typeInfo.HasConstructor = typeInfo.MetaMethods.__init ~= nil
     typeInfo.HasDeconstructor = typeInfo.MetaMethods.__gc ~= nil
+    typeInfo.HasClose = typeInfo.MetaMethods.__close ~= nil
     typeInfo.HasIndex = typeInfo.MetaMethods.__index ~= nil
     typeInfo.HasNewIndex = typeInfo.MetaMethods.__newindex ~= nil
 end

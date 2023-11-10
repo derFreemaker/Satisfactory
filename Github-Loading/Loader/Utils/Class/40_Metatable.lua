@@ -62,6 +62,10 @@ function MetatableHandler.CreateTemplateMetatable(typeInfo)
         metatable[key] = blockMetaMethod
     end
 
+    metatable.__tostring = function()
+        return typeInfo.Name .. "->Template"
+    end
+
     return metatable
 end
 

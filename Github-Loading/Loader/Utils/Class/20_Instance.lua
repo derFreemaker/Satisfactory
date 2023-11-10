@@ -7,7 +7,7 @@ local InstanceHandler = {}
 
 ---@param typeInfo Utils.Class.Type
 function InstanceHandler.Initialize(typeInfo)
-    typeInfo.Instances = setmetatable({}, { __mode = 'v' })
+    typeInfo.Instances = setmetatable({}, { __mode = "k" })
 end
 
 ---@param typeInfo Utils.Class.Type

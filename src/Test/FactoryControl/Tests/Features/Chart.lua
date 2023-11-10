@@ -7,8 +7,7 @@ local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local function overall(logger)
     local controller = Helper.CreateController(logger, "Chart")
 
-    -- Test: adding switch
-
+    log("adding chart")
     local chart = controller:AddChart(
         "Test",
         {
@@ -17,10 +16,7 @@ local function overall(logger)
     )
     assert(chart, "chart is nil")
 
-    log("passed test: adding chart")
-
-    -- Test: flipping switch
-
+    log("adding listener to chart")
     local called = false
     local dataCount = 0
     ---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Chart.Update
@@ -29,6 +25,7 @@ local function overall(logger)
         dataCount = #chart:GetData() - #featureUpdate.Data
     end)
 
+    log("modifying chart")
     chart:Modify(function(modify)
         modify.Data = { [1] = "lol1" }
     end)
@@ -36,7 +33,5 @@ local function overall(logger)
         EventPullAdapter:Wait()
     end
     assert(dataCount == 1, "dataCount is not 1")
-
-    log("passed test: update chart")
 end
 TestFramework:AddTest("Chart Overall", overall)

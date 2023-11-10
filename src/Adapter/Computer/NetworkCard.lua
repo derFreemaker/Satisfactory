@@ -1,19 +1,25 @@
 local Reference = require("Core.References.Reference")
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
+---@type { [integer | string]: Adapter.Computer.NetworkCard }
+local NetworkCards = setmetatable({}, { __mode = 'v' })
+
 ---@class Adapter.Computer.NetworkCard : object
 ---@field private m_refNetworkCard Core.IReference<FIN.Components.NetworkCard_C>
 ---@field private m_openPorts table<integer, true>
 ---@overload fun(idOrIndexOrNetworkCard: FIN.UUID | integer) : Adapter.Computer.NetworkCard
 local NetworkCard = {}
 
-local firstNetworkCard = true
 ---@private
 ---@param idOrIndex FIN.UUID | integer
 function NetworkCard:__init(idOrIndex)
 	self.m_openPorts = {}
 	if not idOrIndex then
 		idOrIndex = 1
+	end
+
+	if Utils.Table.ContainsKey(NetworkCards, idOrIndex) then
+		return NetworkCards[idOrIndex]
 	end
 
 	local networkCard
@@ -25,16 +31,10 @@ function NetworkCard:__init(idOrIndex)
 		networkCard = PCIDeviceReference(findClass('NetworkCard_C'), idOrIndex)
 	end
 	networkCard:Check()
+
 	self.m_refNetworkCard = networkCard
+	NetworkCards[idOrIndex] = self
 
-	if firstNetworkCard then
-		self:CloseAllPorts()
-		firstNetworkCard = false
-	end
-end
-
----@private
-function NetworkCard:__close()
 	self:CloseAllPorts()
 end
 

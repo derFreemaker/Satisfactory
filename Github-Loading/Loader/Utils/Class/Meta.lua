@@ -74,6 +74,7 @@
 ---
 ---@field HasConstructor boolean
 ---@field HasDeconstructor boolean
+---@field HasClose boolean
 ---
 ---@field IndexingDisabled boolean
 ---@field HasIndex boolean

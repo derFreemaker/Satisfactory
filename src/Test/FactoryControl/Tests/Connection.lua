@@ -5,6 +5,7 @@ local Helper = require("Test.FactoryControl.Helper")
 local function connection(logger)
     local client = Helper.CreateFactoryControlClient(logger)
 
+    log("connecting...")
     local controller = client:Connect("Connection")
 
     assert(controller.IPAddress:Equals(client.NetClient:GetIPAddress()), "IP Address mismatch")

@@ -7,15 +7,11 @@ local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local function overall(logger)
     local controller = Helper.CreateController(logger, "Radial")
 
-    -- Test: adding switch
-
+    log("adding radial")
     local radial = controller:AddRadial("Test")
     assert(radial, "radial is nil")
 
-    log("passed test: adding radial")
-
-    -- Test: flipping switch
-
+    log("adding listener to radial")
     local called = false
     local setting = 0
     ---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Radial.Update
@@ -24,6 +20,7 @@ local function overall(logger)
         setting = featureUpdate.Setting
     end)
 
+    log("modifying radial")
     radial:Modify(function(modify)
         modify.Setting = 1
     end)
@@ -31,7 +28,5 @@ local function overall(logger)
         EventPullAdapter:Wait()
     end
     assert(setting == 1, "setting is not 1")
-
-    log("passed test: update radial")
 end
 TestFramework:AddTest("Radial Overall", overall)

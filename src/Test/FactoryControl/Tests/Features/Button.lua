@@ -7,26 +7,20 @@ local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local function overall(logger)
     local controller = Helper.CreateController(logger, "Button")
 
-    -- Test: adding button
-
+    log("adding button")
     local button = controller:AddButton("Test")
     assert(button, "button is nil")
 
-    log("passed test: adding button")
-
-
-    -- Test: pressing button
-
+    log("adding listener to button")
     local pressed = false
     button.OnChanged:AddListener(function()
         pressed = true
     end)
 
+    log("pressing button")
     button:Press()
     while not pressed do
         EventPullAdapter:Wait()
     end
-
-    log("passed test: pressing button")
 end
 TestFramework:AddTest("Button Overall", overall)

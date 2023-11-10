@@ -13,9 +13,7 @@ function TypeHandler.CreateType(name, baseClass)
 	---@cast typeInfo Utils.Class.Type
 
 	if baseClass then
-		---@type Utils.Class.Metatable
-		local baseClassMetatable = getmetatable(baseClass)
-		typeInfo.Base = baseClassMetatable.Type
+		typeInfo.Base = typeof(baseClass)
 	else
 		typeInfo.Base = ObjectTypeInfo
 	end

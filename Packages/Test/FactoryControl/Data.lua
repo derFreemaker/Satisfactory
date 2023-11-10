@@ -70,6 +70,7 @@ local Helper = require("Test.FactoryControl.Helper")
 local function connection(logger)
     local client = Helper.CreateFactoryControlClient(logger)
 
+    log("connecting...")
     local controller = client:Connect("Connection")
 
     assert(controller.IPAddress:Equals(client.NetClient:GetIPAddress()), "IP Address mismatch")
@@ -143,27 +144,21 @@ local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local function overall(logger)
     local controller = Helper.CreateController(logger, "Button")
 
-    -- Test: adding button
-
+    log("adding button")
     local button = controller:AddButton("Test")
     assert(button, "button is nil")
 
-    log("passed test: adding button")
-
-
-    -- Test: pressing button
-
+    log("adding listener to button")
     local pressed = false
     button.OnChanged:AddListener(function()
         pressed = true
     end)
 
+    log("pressing button")
     button:Press()
     while not pressed do
         EventPullAdapter:Wait()
     end
-
-    log("passed test: pressing button")
 end
 TestFramework:AddTest("Button Overall", overall)
 ]]
@@ -183,8 +178,7 @@ local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local function overall(logger)
     local controller = Helper.CreateController(logger, "Chart")
 
-    -- Test: adding switch
-
+    log("adding chart")
     local chart = controller:AddChart(
         "Test",
         {
@@ -193,10 +187,7 @@ local function overall(logger)
     )
     assert(chart, "chart is nil")
 
-    log("passed test: adding chart")
-
-    -- Test: flipping switch
-
+    log("adding listener to chart")
     local called = false
     local dataCount = 0
     ---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Chart.Update
@@ -205,6 +196,7 @@ local function overall(logger)
         dataCount = #chart:GetData() - #featureUpdate.Data
     end)
 
+    log("modifying chart")
     chart:Modify(function(modify)
         modify.Data = { [1] = "lol1" }
     end)
@@ -212,8 +204,6 @@ local function overall(logger)
         EventPullAdapter:Wait()
     end
     assert(dataCount == 1, "dataCount is not 1")
-
-    log("passed test: update chart")
 end
 TestFramework:AddTest("Chart Overall", overall)
 ]]
@@ -233,15 +223,11 @@ local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local function overall(logger)
     local controller = Helper.CreateController(logger, "Radial")
 
-    -- Test: adding switch
-
+    log("adding radial")
     local radial = controller:AddRadial("Test")
     assert(radial, "radial is nil")
 
-    log("passed test: adding radial")
-
-    -- Test: flipping switch
-
+    log("adding listener to radial")
     local called = false
     local setting = 0
     ---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Radial.Update
@@ -250,6 +236,7 @@ local function overall(logger)
         setting = featureUpdate.Setting
     end)
 
+    log("modifying radial")
     radial:Modify(function(modify)
         modify.Setting = 1
     end)
@@ -257,8 +244,6 @@ local function overall(logger)
         EventPullAdapter:Wait()
     end
     assert(setting == 1, "setting is not 1")
-
-    log("passed test: update radial")
 end
 TestFramework:AddTest("Radial Overall", overall)
 ]]
@@ -278,15 +263,11 @@ local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local function overall(logger)
     local controller = Helper.CreateController(logger, "Switch")
 
-    -- Test: adding switch
-
+    log("adding switch")
     local switch = controller:AddSwitch("Test")
     assert(switch, "switch is nil")
 
-    log("passed test: adding switch")
-
-    -- Test: flipping switch
-
+    log("adding listener to switch")
     local called = false
     local switched = false
     switch.OnChanged:AddListener(function(isEnabled)
@@ -296,13 +277,12 @@ local function overall(logger)
         end
     end)
 
+    log("toggling switch")
     switch:Toggle()
     while not called do
         EventPullAdapter:Wait()
     end
     assert(switched, "switched is false")
-
-    log("passed test: flipping switch")
 end
 TestFramework:AddTest("Switch Overall", overall)
 ]]

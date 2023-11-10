@@ -8,8 +8,6 @@ local MetatableHandler = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/M
 ---@type Utils.Class.InstanceHandler
 local InstanceHandler = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/Instance'][1]
 
-
-
 ---@class Utils.Class.ConstructionHandler
 local ConstructionHandler = {}
 
@@ -100,7 +98,10 @@ end
 ---@param typeInfo Utils.Class.Type
 ---@param class table
 local function invokeDeconstructor(typeInfo, class)
-    if typeInfo.HasConstructor then
+    if typeInfo.HasClose then
+        typeInfo.MetaMethods.__close(class, "Class Deconstruct")
+    end
+    if typeInfo.HasDeconstructor then
         typeInfo.MetaMethods.__gc(class)
         invokeDeconstructor(typeInfo.Base, class)
     end

@@ -7,15 +7,11 @@ local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local function overall(logger)
     local controller = Helper.CreateController(logger, "Switch")
 
-    -- Test: adding switch
-
+    log("adding switch")
     local switch = controller:AddSwitch("Test")
     assert(switch, "switch is nil")
 
-    log("passed test: adding switch")
-
-    -- Test: flipping switch
-
+    log("adding listener to switch")
     local called = false
     local switched = false
     switch.OnChanged:AddListener(function(isEnabled)
@@ -25,12 +21,11 @@ local function overall(logger)
         end
     end)
 
+    log("toggling switch")
     switch:Toggle()
     while not called do
         EventPullAdapter:Wait()
     end
     assert(switched, "switched is false")
-
-    log("passed test: flipping switch")
 end
 TestFramework:AddTest("Switch Overall", overall)
