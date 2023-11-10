@@ -1,38 +1,9 @@
 local luaunit = require('Tests.Luaunit')
+local functions = require("Tests.Functions")
 require('Tests.Simulator.Simulator'):Initialize(1)
 
----@param func fun(num: integer?)
----@param amount integer
-local function benchmarkFunction(func, amount)
-    local startTime = os.clock()
-
-    for i = 1, amount, 1 do
-        func(i)
-    end
-
-    local endTime = os.clock()
-    local totalTime = endTime - startTime
-
-    print('total time: ' .. totalTime .. 's amount: ' .. amount)
-    print('each time : ' .. (totalTime / amount) * 1000 * 1000 .. 'us')
-end
-
----@param func function
----@param amount integer
-local function captureFunction(func, amount)
-    local startTime = os.clock()
-
-    func()
-
-    local endTime = os.clock()
-    local totalTime = endTime - startTime
-
-    print('total time: ' .. totalTime .. 's amount: ' .. amount)
-    print('each time : ' .. (totalTime / amount) * 1000 * 1000 .. 'us')
-end
-
 function TestCreateClassBenchmark()
-    benchmarkFunction(
+    functions.benchmarkFunction(
         function()
             Utils.Class.CreateClass({}, 'CreateEmpty')
         end,
@@ -43,7 +14,7 @@ end
 function TestCreateClassWithBaseClassBenchmark()
     local test = Utils.Class.CreateClass({}, 'EmptyClass')
 
-    benchmarkFunction(
+    functions.benchmarkFunction(
         function()
             Utils.Class.CreateClass({}, 'CreateEmptyClassWithBaseClass', test)
         end,
@@ -54,7 +25,7 @@ end
 function TestConstructClassBenchmark()
     local test = Utils.Class.CreateClass({}, 'EmptyClass')
 
-    benchmarkFunction(test --[[@as function]], 100000)
+    functions.benchmarkFunction(test --[[@as function]], 100000)
 end
 
 function TestExtendClassBenchmark()
@@ -68,7 +39,7 @@ function TestExtendClassBenchmark()
     local extensions = {}
     extensions.Test = "hi"
 
-    benchmarkFunction(function(num)
+    functions.benchmarkFunction(function(num)
         Utils.Class.ExtendClass(extensions, testClasses[num])
     end, amount)
 end
@@ -95,7 +66,7 @@ function TestExtendClassInstancesBenchmark()
         Test9 = "hi",
     }
 
-    captureFunction(function()
+    functions.captureFunction(function()
         Utils.Class.ExtendClass(extensions, testClass)
     end, amount)
 
@@ -122,7 +93,7 @@ function TestDeconstructClassBenchmark()
         testClasses[i] = test()
     end
 
-    benchmarkFunction(function(num)
+    functions.benchmarkFunction(function(num)
         local class = testClasses[num]
         Utils.Class.Deconstruct(class)
     end, amount)

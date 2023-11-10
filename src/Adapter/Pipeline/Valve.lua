@@ -1,5 +1,7 @@
 local Reference = require("Core.References.Reference")
 
+local PipeValves = setmetatable({}, { __mode = 'v' })
+
 ---@class Adapter.Pipeline.Valve : object
 ---@field private m_iPAddress Net.Core.IPAddress
 ---@field private m_valve Core.IReference<Satisfactory.Components.Factory.Build_Valve_C>
@@ -32,10 +34,15 @@ end
 ---@private
 ---@param id FIN.UUID
 function Valve:__init(id)
+	if Utils.Table.ContainsKey(PipeValves, id) then
+		return PipeValves[id]
+	end
+
 	local valve = Reference(id)
 	valve:Check()
 
 	self.m_valve = valve
+	PipeValves[id] = self
 end
 
 ---@return FIN.UUID

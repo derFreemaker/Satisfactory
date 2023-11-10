@@ -779,7 +779,7 @@ local UUID = {}
 ---@type integer
 UUID.Static__GeneratedCount = 1
 
-UUID.Static__TemplateRegex = ".{6}\\-.{4}\\-.{6}"
+UUID.Static__TemplateRegex = ".+-.+-.+"
 
 --- Replaces 'x' in template with random character.
 ---@param amount integer
@@ -1404,15 +1404,18 @@ function Path:__init(pathOrNodes)
 
     if type(pathOrNodes) == "string" then
         pathOrNodes = formatStr(pathOrNodes)
-        self.m_nodes = Utils.String.Split(pathOrNodes, "/")
-        return
+        pathOrNodes = Utils.String.Split(pathOrNodes, "/")
     end
 
-    if not pathOrNodes[#pathOrNodes]:find("%.") then
-        pathOrNodes[#pathOrNodes + 1] = ""
+    local lenght = #pathOrNodes
+    local node = pathOrNodes[lenght]
+    if node ~= "" and not node:find("^.+%..*$") and node:find(".+") then
+        pathOrNodes[lenght] = ""
     end
 
     self.m_nodes = pathOrNodes
+
+    self:Normalize()
 end
 
 ---@return string path
@@ -1514,7 +1517,7 @@ function Path:Normalize()
         if value == "." then
         elseif value == "" then
             if index == 1 or index == #self.m_nodes then
-                newNodes[index] = ""
+                newNodes[#newNodes + 1] = ""
             end
         elseif value == ".." then
             if index ~= 1 then
@@ -1523,10 +1526,6 @@ function Path:Normalize()
         else
             newNodes[#newNodes + 1] = value
         end
-    end
-
-    if not newNodes[#newNodes]:find("^.+%..+$") then
-        newNodes[#newNodes + 1] = ""
     end
 
     self.m_nodes = newNodes

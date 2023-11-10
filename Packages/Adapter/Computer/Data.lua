@@ -8,8 +8,10 @@ PackageData["AdapterComputerInternetCard"] = {
     Data = [[
 local ComputerPartReference = require("Core.References.PCIDeviceReference")
 
----@class Adapter.InternetCard : object
----@field m_internetCard Core.IReference<FIN.Components.FINComputerMod.InternetCard_C>
+local InternetCards = setmetatable({}, { __mode = 'v' })
+
+---@class Adapter.Computer.InternetCard : object
+---@field m_refInternetCard Core.IReference<FIN.Components.FINComputerMod.InternetCard_C>
 local InternetCard = {}
 
 ---@param index number
@@ -18,10 +20,15 @@ function InternetCard:__init(index)
         index = 1
     end
 
+    if Utils.Table.ContainsKey(InternetCards, index) then
+        return InternetCards[index]
+    end
+
     local internetCard = ComputerPartReference(findClass('InternetCard_C'), index)
     internetCard:Check()
 
-    self.m_internetCard = internetCard
+    self.m_refInternetCard = internetCard
+    InternetCards[index] = self
 end
 
 ---@param url string
@@ -32,7 +39,7 @@ function InternetCard:Download(url, logger)
         logger:LogTrace("downloading from: '" .. url .. "'...")
     end
 
-    local req = self.m_internetCard:Get():request(url, 'GET', '')
+    local req = self.m_refInternetCard:Get():request(url, 'GET', '')
     repeat until req:canGet()
 
     local code, data = req:get()
@@ -48,7 +55,7 @@ function InternetCard:Download(url, logger)
     return true, data, code
 end
 
-return Utils.Class.CreateClass(InternetCard, "Adapter.InternetCard")
+return Utils.Class.CreateClass(InternetCard, "Adapter.Computer.InternetCard")
 ]]
 }
 

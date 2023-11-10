@@ -19,8 +19,9 @@ function TestParseUUID()
 	local uuidStr = "000000-0000-000000"
 
 	local test = UUID.Static__Parse(uuidStr)
+	local testStr = tostring(test)
 
-	luaunit.assertEquals(tostring(test), uuidStr)
+	luaunit.assertEquals(testStr, uuidStr)
 end
 
 os.exit(luaunit.LuaUnit.run())

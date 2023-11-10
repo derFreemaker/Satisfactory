@@ -28,8 +28,9 @@ function TestIsFile()
     local path = "\\Test\\../Test/Path/./log.txt"
 
     local test = Path(path)
+    local isFile = test:IsFile()
 
-    luaunit.assertIsTrue(test:IsFile())
+    luaunit.assertIsTrue(isFile)
 end
 
 function TestIsDir()
@@ -44,8 +45,9 @@ function TestGetParentFolderPath()
     local path = "/Test/Path/"
 
     local test = Path(path)
+    local parentFolderPath = test:GetParentFolderPath():GetPath()
 
-    luaunit.assertEquals(test:GetParentFolderPath():GetPath(), "/Test/")
+    luaunit.assertEquals(parentFolderPath, "/Test/")
 end
 
 function TestGetFileName()
@@ -113,9 +115,15 @@ function TestCopy()
     local test = Path(path)
     local testCopy = test:Copy()
 
+    local testNodes = tostring(test.m_nodes) ---@diagnostic disable-line
+    local copyNodes = tostring(testCopy.m_nodes) ---@diagnostic disable-line
+
+    local testPath = test:GetPath()
+    local copyPath = testCopy:GetPath()
+
     ---@diagnostic disable-next-line
-    luaunit.assertNotEquals(tostring(test.m_nodes), tostring(testCopy.m_nodes))
-    luaunit.assertEquals(test:GetPath(), testCopy:GetPath())
+    luaunit.assertNotEquals(testNodes, copyNodes)
+    luaunit.assertEquals(copyPath, testPath)
 end
 
 os.exit(luaunit.LuaUnit.run())

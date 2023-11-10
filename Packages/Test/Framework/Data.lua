@@ -17,10 +17,10 @@ PackageData["TestFrameworkFramework"] = {
     Data = [[
 local Task = require("Core.Common.Task")
 
-local Test = require("Test.Framework.Test")
+local Test = require("Test.Framework.Wrapper")
 
 ---@class Test.Framework : object
----@field m_tests Test.Framework.Test[]
+---@field m_tests Test.Framework.Wrapper[]
 ---@overload fun() : Test.Framework
 local Framework = {}
 
@@ -61,27 +61,27 @@ return Utils.Class.CreateClass(Framework, "Test.Framework")()
 ]]
 }
 
-PackageData["TestFrameworkTest"] = {
-    Location = "Test.Framework.Test",
-    Namespace = "Test.Framework.Test",
+PackageData["TestFrameworkWrapper"] = {
+    Location = "Test.Framework.Wrapper",
+    Namespace = "Test.Framework.Wrapper",
     IsRunnable = true,
     Data = [[
----@class Test.Framework.Test : object
+---@class Test.Framework.Wrapper : object
 ---@field m_name string
 ---@field m_task Core.Task
----@overload fun(name: string, task: Core.Task) : Test.Framework.Test
-local Test = {}
+---@overload fun(name: string, task: Core.Task) : Test.Framework.Wrapper
+local Wrapper = {}
 
 ---@private
 ---@param name string
 ---@param task Core.Task
-function Test:__init(name, task)
+function Wrapper:__init(name, task)
     self.m_name = name
     self.m_task = task
 end
 
 ---@param logger Core.Logger
-function Test:Run(logger)
+function Wrapper:Run(logger)
     logger:LogInfo("Test: \"" .. self.m_name .. "\" running...")
 
     local testLogger = require("Core.Common.Logger")("TestFramework", 1)
@@ -111,11 +111,11 @@ function Test:Run(logger)
 end
 
 ---@return boolean
-function Test:WasSuccessfull()
+function Wrapper:WasSuccessfull()
     return self.m_task:IsSuccess()
 end
 
-return Utils.Class.CreateClass(Test, "Test.Framework.Test")
+return Utils.Class.CreateClass(Wrapper, "Test.Framework.Wrapper")
 ]]
 }
 

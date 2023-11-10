@@ -36,12 +36,9 @@ end
 function String.Join(array, sep)
     local str = ""
 
-    for index, value in ipairs(array) do
-        if index == 1 then
-            str = value
-        else
-            str = str .. sep .. value
-        end
+    str = array[1]
+    for _, value in next, array, 1 do
+        str = str .. sep .. value
     end
 
     return str

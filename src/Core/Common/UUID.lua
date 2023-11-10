@@ -11,7 +11,7 @@ local UUID = {}
 ---@type integer
 UUID.Static__GeneratedCount = 1
 
-UUID.Static__TemplateRegex = ".{6}\\-.{4}\\-.{6}"
+UUID.Static__TemplateRegex = ".+-.+-.+"
 
 --- Replaces 'x' in template with random character.
 ---@param amount integer

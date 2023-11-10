@@ -1,9 +1,9 @@
 local Task = require("Core.Common.Task")
 
-local Test = require("Test.Framework.Test")
+local Test = require("Test.Framework.Wrapper")
 
 ---@class Test.Framework : object
----@field m_tests Test.Framework.Test[]
+---@field m_tests Test.Framework.Wrapper[]
 ---@overload fun() : Test.Framework
 local Framework = {}
 
