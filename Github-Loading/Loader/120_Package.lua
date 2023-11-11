@@ -8,6 +8,7 @@ local Utils = LoadedLoaderFiles["/Github-Loading/Loader/Utils"][1]
 ---@field Name string
 ---@field Namespace string
 ---@field Version string
+---@field PackageType "Library" | "Application"
 ---@field RequiredPackages string[]?
 
 ---@class Github_Loading.Package : Github_Loading.Package.InfoFile
@@ -25,6 +26,7 @@ function Package.new(info, forceDownload, packageLoader)
         Name = info.Name,
         Namespace = info.Namespace,
         Version = info.Version or 0.01,
+        PackageType = info.PackageType,
         RequiredPackages = info.RequiredPackages,
         m_forceDownload = forceDownload,
         m_packageLoader = packageLoader

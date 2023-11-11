@@ -6,7 +6,6 @@ PackageData["TestFactoryControl__main"] = {
     Namespace = "Test.FactoryControl.__main",
     IsRunnable = true,
     Data = [[
-local Framework = require("Test.Framework.Framework")
 local Host = require("Hosting.Host")
 
 ---@class FactoryControl.Test.Main : Github_Loading.Entities.Main

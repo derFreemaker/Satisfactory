@@ -5,9 +5,7 @@
   "RequiredPackages": [
     "Core",
     "Database",
-    "DNS.Client",
     "FactoryControl.Core",
-    "Hosting",
     "Net.Rest",
     "Services.Callback.Server"
   ],

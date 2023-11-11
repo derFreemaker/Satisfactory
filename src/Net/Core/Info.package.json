@@ -3,7 +3,6 @@
   "Namespace": "Net.Core",
   "Version": "0.1.0-83",
   "RequiredPackages": [
-    "Adapter.Computer",
     "Core"
   ],
   "PackageType": "Library"

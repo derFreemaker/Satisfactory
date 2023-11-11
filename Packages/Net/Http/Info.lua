@@ -2,10 +2,8 @@ return {
     Name = "Http",
     Namespace = "Net.Http",
     Version = "0.1.0-63",
+    PackageType = "Library",
     RequiredPackages = {
-        "Core",
-        "DNS.Client",
-        "Net.Core",
-        "Net.Rest"
+        "Net.Core"
     },
 }

@@ -1,35 +1,19 @@
-# Code for Satisfactory FicsIt-Networks Mod
+# Overview
 
 This Repository contains all my code for the [FicsIt-Networks Mod](https://github.com/Panakotta00/FicsIt-Networks) for [Satisfactory](https://www.satisfactorygame.com).
-
-## Coding Languages
-
-- [Lua](https://www.lua.org)
 
 ## Supported Module Modifiers
 
 - **---@namespace {moduleNamespace}** -> overrides the namespace of the module its in
 - **---@isRunnable {true|false}** -> overrides the IsRunnable mark of the module its in
-
-## Bundler Features
-
-### Checks
-
-- **Packages** in [RequiredPackages](https://github.com/derFreemaker/Satisfactory/blob/05084fcd3c762d58193abb0072917733042324c6/PackageTemplate/Info.package.json#L5) exist
-- **Package Circle Reference** -> checks if two packages depend on each other
-- **require({module})** -> checks if module exists after a bundle would happen
-
-### Autocorrection
-
-- adds missing package to [RequiredPackages](https://github.com/derFreemaker/Satisfactory/blob/05084fcd3c762d58193abb0072917733042324c6/PackageTemplate/Info.package.json#L5) of the package
-- removes unused packages from [RequiredPackages](https://github.com/derFreemaker/Satisfactory/blob/05084fcd3c762d58193abb0072917733042324c6/PackageTemplate/Info.package.json#L5) of the package
+- **---@using {Package}** -> adds the package to the required Packges if not already in
 
 ## Push Pipeline
 
 1. write source code
 2. bundle the code with task: "bundle all" or "bundle all optimized" for smaller files
 3. push the code to repo
-4. can download in game
+4. can download in game (github has a 300sec raw data cache)
 
 ## Run Sequence Overview
 

@@ -3,7 +3,8 @@ return {
 	FactoryControl_Server = "FactoryControl.Server",
 
 	-- Testing --
-	Test_FactoryControl = "Test.FactoryControl",
+	Test_Core = "Test.Core",
 	Test_DNS = "Test.DNS",
 	Test_Http = "Test.Http",
+	Test_FactoryControl = "Test.FactoryControl",
 }

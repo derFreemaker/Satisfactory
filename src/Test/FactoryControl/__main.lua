@@ -1,4 +1,3 @@
-local Framework = require("Test.Framework.Framework")
 local Host = require("Hosting.Host")
 
 ---@class FactoryControl.Test.Main : Github_Loading.Entities.Main
