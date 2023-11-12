@@ -1064,15 +1064,15 @@ PackageData["CoreEventEventPullAdapter"] = {
     Namespace = "Core.Event.EventPullAdapter",
     IsRunnable = true,
     Data = [[
+local Task = require("Core.Common.Task")
 local Event = require('Core.Event.Event')
 
 --- Assists in handling events from `event.pull()`
 ---
 ---@class Core.EventPullAdapter
----@field private m_initialized boolean
+---@field OnEventPull Core.Event
 ---@field private m_events table<string, Core.Event>
 ---@field private m_logger Core.Logger
----@field OnEventPull Core.Event
 local EventPullAdapter = {}
 
 ---@private
@@ -1096,14 +1096,9 @@ end
 ---@param logger Core.Logger
 ---@return Core.EventPullAdapter
 function EventPullAdapter:Initialize(logger)
-	if self.m_initialized then
-		return self
-	end
-
 	self.m_events = {}
 	self.m_logger = logger
 	self.OnEventPull = Event()
-	self.m_initialized = true
 
 	return self
 end
@@ -1123,7 +1118,8 @@ end
 
 ---@param signalName string
 ---@param task Core.Task
-function EventPullAdapter:AddListener(signalName, task)
+---@return Core.EventPullAdapter
+function EventPullAdapter:AddTask(signalName, task)
 	local event = self:GetEvent(signalName)
 	event:AddTask(task)
 	return self
@@ -1131,10 +1127,27 @@ end
 
 ---@param signalName string
 ---@param task Core.Task
-function EventPullAdapter:AddListenerOnce(signalName, task)
+---@return Core.EventPullAdapter
+function EventPullAdapter:AddTaskOnce(signalName, task)
 	local event = self:GetEvent(signalName)
 	event:AddTaskOnce(task)
 	return self
+end
+
+---@param signalName string
+---@param listener function
+---@param ... any
+---@return Core.EventPullAdapter
+function EventPullAdapter:AddListener(signalName, listener, ...)
+	return self:AddTask(signalName, Task(listener, ...))
+end
+
+---@param signalName string
+---@param listener function
+---@param ... any
+---@return Core.EventPullAdapter
+function EventPullAdapter:AddListenerOnce(signalName, listener, ...)
+	return self:AddTaskOnce(signalName, Task(listener, ...))
 end
 
 --- Waits for an event to be handled or timeout to run out
@@ -2224,14 +2237,15 @@ PackageData["CoreReferencesIReference"] = {
 ---@field protected m_obj Satisfactory.Components.Object?
 local IReference = {}
 
----@generic TReference : FIN.Component
----@return TReference
+---@private
+function IReference:__gc()
+    log("__gc called on reference")
+    self.m_obj = nil
+end
+
+---@return Satisfactory.Components.Object
 function IReference:Get()
-    if not self:IsValid() then
-        if not self:Refresh() then
-            error("could not be refreshed", 2)
-        end
-    end
+    self:Check()
 
     return self.m_obj
 end
@@ -2242,7 +2256,10 @@ function IReference:IsValid()
         return false
     end
 
-    local success = pcall(function() local _ = self.m_obj.hash end)
+    log("trying to see if reference is valid")
+    local success = Utils.Function.InvokeProtected(function(obj) local _ = obj.hash end, self.m_obj)
+    log("reference is valid: " .. tostring(success))
+
     return success
 end
 
@@ -2255,6 +2272,8 @@ function IReference:Check()
     if not self:IsValid() then
         if not self:Refresh() then
             error("could not be refreshed", 2)
+        elseif not self:IsValid() then
+            error("not valid after refresh", 2)
         end
     end
 end

@@ -66,6 +66,8 @@ PackageData["TestFrameworkWrapper"] = {
     Namespace = "Test.Framework.Wrapper",
     IsRunnable = true,
     Data = [[
+local EventPullAdapter = require("Core.Event.EventPullAdapter")
+
 ---@class Test.Framework.Wrapper : object
 ---@field m_name string
 ---@field m_task Core.Task
@@ -93,6 +95,8 @@ function Wrapper:Run(logger)
     end)
     testLogger:Clear()
     ___logger:setLogger(testLogger)
+
+    EventPullAdapter:Initialize(testLogger:subLogger("EventPullAdapter"))
 
     self.m_task:Execute(testLogger)
     self.m_task:Close()

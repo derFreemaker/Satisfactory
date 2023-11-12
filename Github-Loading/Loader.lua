@@ -238,6 +238,9 @@ local Loader = {}
 ---@param internetCard FIN.Components.FINComputerMod.InternetCard_C
 ---@return Github_Loading.Loader
 function Loader.new(loaderBaseUrl, loaderBasePath, forceDownload, internetCard)
+	-- //TODO: computer.promote used
+	computer.promote()
+
 	return setmetatable(
 		{
 			m_loaderBaseUrl = loaderBaseUrl,

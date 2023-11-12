@@ -1,16 +1,17 @@
 ---@class Net.Core.IPAddress : Core.Json.Serializable
----@field private m_address string
+---@field private m_address FIN.UUID
 ---@overload fun(address: string) : Net.Core.IPAddress
 local IPAddress = {}
 
 ---@private
----@param address string
+---@param address FIN.UUID
 function IPAddress:__init(address)
     self:Raw__ModifyBehavior({ DisableCustomIndexing = true })
     self.m_address = address
     self:Raw__ModifyBehavior({ DisableCustomIndexing = false })
 end
 
+---@return FIN.UUID
 function IPAddress:GetAddress()
     return self.m_address
 end

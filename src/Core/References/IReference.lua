@@ -2,14 +2,15 @@
 ---@field protected m_obj Satisfactory.Components.Object?
 local IReference = {}
 
----@generic TReference : FIN.Component
----@return TReference
+---@private
+function IReference:__gc()
+    log("__gc called on reference")
+    self.m_obj = nil
+end
+
+---@return Satisfactory.Components.Object
 function IReference:Get()
-    if not self:IsValid() then
-        if not self:Refresh() then
-            error("could not be refreshed", 2)
-        end
-    end
+    self:Check()
 
     return self.m_obj
 end
@@ -20,7 +21,10 @@ function IReference:IsValid()
         return false
     end
 
-    local success = pcall(function() local _ = self.m_obj.hash end)
+    log("trying to see if reference is valid")
+    local success = Utils.Function.InvokeProtected(function(obj) local _ = obj.hash end, self.m_obj)
+    log("reference is valid: " .. tostring(success))
+
     return success
 end
 
@@ -33,6 +37,8 @@ function IReference:Check()
     if not self:IsValid() then
         if not self:Refresh() then
             error("could not be refreshed", 2)
+        elseif not self:IsValid() then
+            error("not valid after refresh", 2)
         end
     end
 end

@@ -39,7 +39,7 @@ function NetworkClient:__init(logger, networkCard, serializer)
 	self.m_serializer = serializer or JsonSerializer.Static__Serializer
 
 	self.m_networkCard:Listen()
-	EventPullAdapter:AddListener('NetworkMessage', Task(self.networkMessageRecieved, self))
+	EventPullAdapter:AddTask('NetworkMessage', Task(self.networkMessageRecieved, self))
 end
 
 ---@private
@@ -244,7 +244,7 @@ function NetworkClient:Send(ipAddress, port, eventName, body, headers)
 		.. "' on port: " .. port
 		.. " with event: '" .. eventName .. "'")
 
-	self.m_networkCard:Send(ipAddress, port, eventName, jsonBody, jsonHeader)
+	self.m_networkCard:Send(ipAddress:GetAddress(), port, eventName, jsonBody, jsonHeader)
 end
 
 ---@param port integer

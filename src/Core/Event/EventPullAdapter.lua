@@ -1,12 +1,12 @@
+local Task = require("Core.Common.Task")
 local Event = require('Core.Event.Event')
 
 --- Assists in handling events from `event.pull()`
 ---
 ---@class Core.EventPullAdapter
----@field private m_initialized boolean
+---@field OnEventPull Core.Event
 ---@field private m_events table<string, Core.Event>
 ---@field private m_logger Core.Logger
----@field OnEventPull Core.Event
 local EventPullAdapter = {}
 
 ---@private
@@ -30,14 +30,9 @@ end
 ---@param logger Core.Logger
 ---@return Core.EventPullAdapter
 function EventPullAdapter:Initialize(logger)
-	if self.m_initialized then
-		return self
-	end
-
 	self.m_events = {}
 	self.m_logger = logger
 	self.OnEventPull = Event()
-	self.m_initialized = true
 
 	return self
 end
@@ -57,7 +52,8 @@ end
 
 ---@param signalName string
 ---@param task Core.Task
-function EventPullAdapter:AddListener(signalName, task)
+---@return Core.EventPullAdapter
+function EventPullAdapter:AddTask(signalName, task)
 	local event = self:GetEvent(signalName)
 	event:AddTask(task)
 	return self
@@ -65,10 +61,27 @@ end
 
 ---@param signalName string
 ---@param task Core.Task
-function EventPullAdapter:AddListenerOnce(signalName, task)
+---@return Core.EventPullAdapter
+function EventPullAdapter:AddTaskOnce(signalName, task)
 	local event = self:GetEvent(signalName)
 	event:AddTaskOnce(task)
 	return self
+end
+
+---@param signalName string
+---@param listener function
+---@param ... any
+---@return Core.EventPullAdapter
+function EventPullAdapter:AddListener(signalName, listener, ...)
+	return self:AddTask(signalName, Task(listener, ...))
+end
+
+---@param signalName string
+---@param listener function
+---@param ... any
+---@return Core.EventPullAdapter
+function EventPullAdapter:AddListenerOnce(signalName, listener, ...)
+	return self:AddTaskOnce(signalName, Task(listener, ...))
 end
 
 --- Waits for an event to be handled or timeout to run out

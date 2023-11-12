@@ -17,7 +17,9 @@ function InternetCard:__init(index)
     end
 
     local internetCard = ComputerPartReference(findClass('InternetCard_C'), index)
-    internetCard:Check()
+    if not internetCard:Refresh() then
+        error("no internet card found")
+    end
 
     self.m_refInternetCard = internetCard
     InternetCards[index] = self

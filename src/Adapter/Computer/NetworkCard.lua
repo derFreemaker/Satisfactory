@@ -7,11 +7,11 @@ local NetworkCards = setmetatable({}, { __mode = 'v' })
 ---@class Adapter.Computer.NetworkCard : object
 ---@field private m_refNetworkCard Core.IReference<FIN.Components.NetworkCard_C>
 ---@field private m_openPorts table<integer, true>
----@overload fun(idOrIndexOrNetworkCard: FIN.UUID | integer) : Adapter.Computer.NetworkCard
+---@overload fun(idOrIndexOrNetworkCard: (FIN.UUID | integer)?) : Adapter.Computer.NetworkCard
 local NetworkCard = {}
 
 ---@private
----@param idOrIndex FIN.UUID | integer
+---@param idOrIndex (FIN.UUID | integer)?
 function NetworkCard:__init(idOrIndex)
 	self.m_openPorts = {}
 	if not idOrIndex then
@@ -30,7 +30,9 @@ function NetworkCard:__init(idOrIndex)
 		---@cast idOrIndex integer
 		networkCard = PCIDeviceReference(findClass('NetworkCard_C'), idOrIndex)
 	end
-	networkCard:Check()
+	if not networkCard:Refresh() then
+		error("no network card found")
+	end
 
 	self.m_refNetworkCard = networkCard
 	NetworkCards[idOrIndex] = self
@@ -82,11 +84,11 @@ function NetworkCard:CloseAllPorts()
 	self.m_refNetworkCard:Get():closeAll()
 end
 
----@param address Net.Core.IPAddress
+---@param address FIN.UUID
 ---@param port integer
 ---@param ... any
 function NetworkCard:Send(address, port, ...)
-	self.m_refNetworkCard:Get():send(address:GetAddress(), port, ...)
+	self.m_refNetworkCard:Get():send(address, port, ...)
 end
 
 ---@param port integer

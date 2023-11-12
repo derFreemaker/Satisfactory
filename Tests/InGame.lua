@@ -1,23 +1,58 @@
-filesystem.initFileSystem('/dev')
-local drive = ''
-for _, child in pairs(filesystem.childs('/dev')) do
-    if not (child == 'serial') then
-        drive = child
-        break
+---@type FIN.Components.NetworkCard_C
+local networkCard = computer.getPCIDevices(findClass("NetworkCard_C"))[1]
+
+function InvokeProtected(func, ...)
+    local results = {}
+    local function invokeFunc(...)
+        results = { func(...) }
     end
+    local thread = coroutine.create(invokeFunc)
+    local success, error = coroutine.resume(thread, ...)
+    if not success then
+        error = debug.traceback(thread, error)
+    end
+    coroutine.close(thread)
+    return success, error, results
 end
-if drive:len() < 1 then
-    computer.beep(0.2)
-    error('Unable to find filesystem to load on! Insert a drive or floppy.')
-    return
+
+local function foo()
+    print(networkCard, networkCard.hash)
 end
-filesystem.mount('/dev/' .. drive, '/')
 
-local dirPath = "/Long/Long/Long/Long/Long/Long/Long/Long/Long/Long"
-    .. "/Long/Long/Long/Long/Long/Long/Long/Long/Long/Long"
-    .. "/Long/Long/Long/Long/Long/Long/Long/Long/Long/Long/File/"
+local function foo2()
+    print(InvokeProtected(foo))
+end
 
-filesystem.createDir(dirPath, true)
-local file = filesystem.open(dirPath .. "Path.txt", "w")
-file:write("foo")
-file:close()
+local function foo3()
+    print(InvokeProtected(foo2))
+end
+
+local function foo4()
+    print(InvokeProtected(foo3))
+end
+
+local function foo5()
+    print(InvokeProtected(foo4))
+end
+
+local function foo6()
+    print(InvokeProtected(foo5))
+end
+
+local function foo7()
+    print(InvokeProtected(foo6))
+end
+
+local function foo8()
+    print(InvokeProtected(foo7))
+end
+
+local function foo9()
+    print(InvokeProtected(foo8))
+end
+
+local function foo10()
+    print(InvokeProtected(foo9))
+end
+
+InvokeProtected(foo10)
