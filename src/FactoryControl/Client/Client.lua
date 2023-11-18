@@ -1,4 +1,4 @@
-local Usage = require("Core.Usage")
+local Usage = require("Core.Usage.init")
 local Config = require("FactoryControl.Core.Config")
 
 local Task = require("Core.Common.Task")

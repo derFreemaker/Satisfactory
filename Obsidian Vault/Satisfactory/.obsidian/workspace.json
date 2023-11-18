@@ -11,8 +11,10 @@
             "id": "cfa5c4a70c678963",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {}
+              "type": "mk-space",
+              "state": {
+                "path": "Spaces/Home"
+              }
             }
           }
         ]
@@ -170,13 +172,15 @@
   },
   "active": "cfa5c4a70c678963",
   "lastOpenFiles": [
+    "Objects/boolean.md",
+    "Code Projects/Factory Control/Map.canvas",
+    "Code Projects/Code Projects.md",
     "Code Projects/Github Loading/Map.canvas",
     "Code Projects/Github Loading/Lua Bundler.md",
     "Code Projects/Github Loading/Github Loader.md",
     "Spaces/Home/Home.md",
     "Spaces/Home",
     "Spaces",
-    "Code Projects/Factory Control/Map.canvas",
     "Code Projects/DNS/DNS.md",
     "Code Projects/DNS/Map.canvas",
     "Objects/Dictionary.md",
@@ -204,7 +208,6 @@
     "Code Projects/Factory Control/ControllerDto/ControllerDto.md",
     "Projects/Factory Control/ControllerDto/(...).ControllerDto.md",
     "Code Projects/Factory Control/ControllerDto/Feature/Feature.Type.md",
-    "Objects/Net.Core.IPAddress.md",
     "Objects",
     "Code Projects/Factory Control/ControllerDto/Feature",
     "Code Projects/Factory Control/ControllerDto",

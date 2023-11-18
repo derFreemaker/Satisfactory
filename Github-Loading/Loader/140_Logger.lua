@@ -147,7 +147,7 @@ local function formatMessagePart(obj)
         end
 
         local str = tostring(obj)
-        for _, line in ipairs(tableToLineTree(obj)) do
+        for _, line in ipairs(tableToLineTree(obj, nil, nil, nil, nil)) do
             str = str .. "\n" .. line
         end
         return str
@@ -174,7 +174,7 @@ local function formatMessage(...)
     return message
 end
 
----@param logLevel Core.Logger.LogLevel
+---@param logLevel Github_Loading.Logger.LogLevel
 ---@param ... any
 function Logger:Log(logLevel, ...)
     if logLevel < self.LogLevel then
@@ -197,7 +197,7 @@ function Logger:Log(logLevel, ...)
 end
 
 ---@param t table
----@param logLevel Core.Logger.LogLevel
+---@param logLevel Github_Loading.Logger.LogLevel
 ---@param maxLevel integer?
 ---@param properties string[]?
 function Logger:LogTable(t, logLevel, maxLevel, properties)
@@ -210,7 +210,7 @@ function Logger:LogTable(t, logLevel, maxLevel, properties)
     end
 
     local str = ""
-    for _, line in ipairs(tableToLineTree(t, maxLevel, properties)) do
+    for _, line in ipairs(tableToLineTree(t, maxLevel, properties, nil, nil)) do
         str = str .. "\n" .. line
     end
     self:Log(logLevel, str)
@@ -220,7 +220,7 @@ function Logger:Clear()
     self.OnClear:Trigger()
 end
 
----@param logLevel Core.Logger.LogLevel
+---@param logLevel Github_Loading.Logger.LogLevel
 function Logger:FreeLine(logLevel)
     if logLevel < self.LogLevel then
         return

@@ -1,4 +1,4 @@
-local Usage = require("Core.Usage")
+local Usage = require("Core.Usage.init")
 local EndpointUrlConstructors = require("FactoryControl.Core.EndpointUrls")[2]
 local ControllerUrlConstructors = EndpointUrlConstructors.Controller
 local FeatureUrlConstructors = EndpointUrlConstructors.Feature

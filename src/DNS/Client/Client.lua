@@ -1,4 +1,4 @@
-local Usage = require("Core.Usage")
+local Usage = require("Core.Usage.init")
 
 local IPAddress = require("Net.Core.IPAddress")
 local NetworkClient = require('Net.Core.NetworkClient')

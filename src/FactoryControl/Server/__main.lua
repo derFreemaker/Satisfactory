@@ -1,5 +1,5 @@
 local Config = require('FactoryControl.Core.Config')
-local Usage = require('Core.Usage')
+local Usage = require('Core.Usage.init')
 
 local DatabaseAccessLayer = require("FactoryControl.Server.DatabaseAccessLayer")
 
