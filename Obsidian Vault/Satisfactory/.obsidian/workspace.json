@@ -11,9 +11,11 @@
             "id": "cfa5c4a70c678963",
             "type": "leaf",
             "state": {
-              "type": "mk-space",
+              "type": "markdown",
               "state": {
-                "path": "Spaces/Home"
+                "file": "API/FicsIt Networks/New Note.md",
+                "mode": "source",
+                "source": false
               }
             }
           }
@@ -92,6 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "API/FicsIt Networks/New Note.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -108,6 +111,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "API/FicsIt Networks/New Note.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -129,7 +133,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "API/FicsIt Networks/New Note.md"
+              }
             }
           },
           {
@@ -147,7 +153,9 @@
             "type": "leaf",
             "state": {
               "type": "file-properties",
-              "state": {}
+              "state": {
+                "file": "API/FicsIt Networks/New Note.md"
+              }
             }
           }
         ],
@@ -167,11 +175,20 @@
       "templates:Vorlage einfügen": false,
       "command-palette:Befehlspalette öffnen": false,
       "zk-prefixer:Neue eindeutige Notiz erstellen": false,
-      "markdown-importer:Markdown Importprogramm öffnen": false
+      "markdown-importer:Markdown Importprogramm öffnen": false,
+      "dbfolder:Create a new database table": false
     }
   },
   "active": "cfa5c4a70c678963",
   "lastOpenFiles": [
+    "API/FicsIt Networks/InGame API.md",
+    "API/FicsIt Networks/Global.md",
+    "API/FicsIt Networks/New Note.md",
+    "API/FicsIt Networks/FicsIt Networks.md",
+    "API/FicsIt Networks",
+    "API/New Note.md",
+    "API/API.md",
+    "API",
     "Objects/boolean.md",
     "Code Projects/Factory Control/Map.canvas",
     "Code Projects/Code Projects.md",
@@ -202,17 +219,9 @@
     "Code Projects/Factory Control/ControllerDto/Feature/ChartDto.md",
     "Objects/string.md",
     "Code Projects/Factory Control/ControllerDto/Feature/RadialDto.md",
-    "Objects/number.md",
-    "Code Projects/Factory Control/ControllerDto/Feature/SwitchDto.md",
-    "Code Projects/Factory Control/ControllerDto/Feature/ButtonDto.md",
-    "Code Projects/Factory Control/ControllerDto/ControllerDto.md",
-    "Projects/Factory Control/ControllerDto/(...).ControllerDto.md",
-    "Code Projects/Factory Control/ControllerDto/Feature/Feature.Type.md",
     "Objects",
     "Code Projects/Factory Control/ControllerDto/Feature",
-    "Code Projects/Factory Control/ControllerDto",
     "Projects/Github Loading/Github Loading.canvas",
-    "Projects/Github Loading/Map - Kopie.canvas",
-    "Code Projects/Github Loading/Package"
+    "Projects/Github Loading/Map - Kopie.canvas"
   ]
 }
