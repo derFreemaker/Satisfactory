@@ -1,87 +1,50 @@
 ---@class Utils.Table
 local Table = {}
 
----@param t table
----@return table table
+---@param obj table?
+---@param seen table[]
+---@return table?
+local function copyTable(obj, copy, seen)
+    if obj == nil then return nil end
+    if seen[obj] then return seen[obj] end
+
+    seen[obj] = copy
+    setmetatable(copy, copyTable(getmetatable(obj), {}, seen))
+
+    for key, value in next, obj, nil do
+        key = (type(key) == "table") and copyTable(key, {}, seen) or key
+        value = (type(value) == "table") and copyTable(value, {}, seen) or value
+        rawset(copy, key, value)
+    end
+
+    return copy
+end
+
+---@generic TTable
+---@param t TTable
+---@return TTable table
 function Table.Copy(t)
-    local seen = {}
-
-    ---@param obj any?
-    ---@return any
-    local function copyTable(obj)
-        if obj == nil then return nil end
-        if seen[obj] then return seen[obj] end
-
-        local copy = {}
-        seen[obj] = copy
-        setmetatable(copy, copyTable(getmetatable(obj)))
-
-        for key, value in next, obj, nil do
-            key = (type(key) == "table") and copyTable(key) or key
-            value = (type(value) == "table") and copyTable(value) or value
-            rawset(copy, key, value)
-        end
-
-        return copy
-    end
-
-    return copyTable(t)
+    return copyTable(t, {}, {})
 end
 
---- removes all margins like table[1] = "1", table[2] = nil, table[3] = "3" -> table[2] would be removed meaning table[3] would be table[2] now and so on. Removes no named values (table["named"]). And sets n to number of cleaned results. Should only be used on arrays really.
----@generic T
----@param t T[]
----@return T[] table cleaned table
----@return integer numberOfCleanedValues
-function Table.Clean(t)
-    ---@generic T
-    ---@param tableToLook T[]
-    ---@param index integer
-    ---@return integer
-    local function findNearestNilValueDownward(tableToLook, index)
-        if tableToLook[index] == nil then
-            return index
-        end
-        return findNearestNilValueDownward(tableToLook, index - 1)
-    end
-
-    local numberOfCleanedValues = 0
-    for index = 1, #t, 1 do
-        local value = t[index]
-        if index ~= 1 and type(index) == "number" then
-            local nearestNilValue = findNearestNilValueDownward(t, index)
-            t[nearestNilValue] = value
-            t[index] = nil
-            numberOfCleanedValues = numberOfCleanedValues + 1
-        elseif value ~= nil and type(index) == "number" then
-            numberOfCleanedValues = numberOfCleanedValues + 1
-        end
-    end
-    return t, numberOfCleanedValues
-end
-
---- Gets the value out of the array at specifyed index if not nil.
---- And fills the removed value by sorting the array.
---- Uses ```Table.Clean``` so ```t.n``` will be used.
----@generic T
----@param t T[]
----@param index integer
----@return T value
-function Table.Retrive(t, index)
-    local value = t[index]
-    t[index] = nil
-    t = Table.Clean(t)
-    return value
+---@param from table
+---@param to table
+function Table.CopyTo(from, to)
+    copyTable(from, to, {})
 end
 
 ---@param t table
----@return integer count
-function Table.Count(t)
-    local count = 0
-    for _, _ in pairs(t) do
-        count = count + 1
+---@param ignoreProperties string[]?
+function Table.Clear(t, ignoreProperties)
+    if not ignoreProperties then
+        ignoreProperties = {}
     end
-    return count
+    for key, _ in next, t, nil do
+        if not Table.Contains(ignoreProperties, key) then
+            t[key] = nil
+        end
+    end
+    setmetatable(t, nil)
 end
 
 ---@param t table
@@ -94,6 +57,52 @@ function Table.Contains(t, value)
         end
     end
     return false
+end
+
+---@param t table
+---@param key any
+---@return boolean
+function Table.ContainsKey(t, key)
+    if t[key] ~= nil then
+        return true
+    end
+    return false
+end
+
+--- removes all spaces between
+---@param t any[]
+function Table.Clean(t)
+    for key, value in pairs(t) do
+        for i = key - 1, 1, -1 do
+            if key ~= 1 then
+                if t[i] == nil and (t[i - 1] ~= nil or i == 1) then
+                    t[i] = value
+                    t[key] = nil
+                    break
+                end
+            end
+        end
+    end
+end
+
+---@param t table
+---@return integer count
+function Table.Count(t)
+    local count = 0
+    for _, _ in next, t, nil do
+        count = count + 1
+    end
+    return count
+end
+
+---@param t table
+---@return table
+function Table.Invert(t)
+    local inverted = {}
+    for key, value in pairs(t) do
+        inverted[value] = key
+    end
+    return inverted
 end
 
 return Table

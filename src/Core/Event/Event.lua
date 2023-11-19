@@ -1,60 +1,94 @@
+local Task = require("Core.Common.Task")
+
 ---@class Core.Event : object
----@field private funcs Core.Task[]
----@field private onceFuncs Core.Task[]
----@operator len() : integer
+---@field private m_funcs Core.Task[]
+---@field private m_onceFuncs Core.Task[]
 ---@overload fun() : Core.Event
 local Event = {}
 
+---@alias Core.Event.Constructor fun()
+
 ---@private
 function Event:__init()
-    self.funcs = {}
-    self.onceFuncs = {}
+    self.m_funcs = {}
+    self.m_onceFuncs = {}
+end
+
+---@return integer count
+function Event:Count()
+    return #self.m_funcs + #self.m_onceFuncs
 end
 
 ---@param task Core.Task
----@return Core.Event
-function Event:AddListener(task)
-    table.insert(self.funcs, task)
-    return self
+---@return integer index
+function Event:AddTask(task)
+    table.insert(self.m_funcs, task)
+    return #self.m_funcs
 end
-Event.On = Event.AddListener
 
 ---@param task Core.Task
----@return Core.Event
-function Event:AddListenerOnce(task)
-    table.insert(self.onceFuncs, task)
-    return self
+---@return integer index
+function Event:AddTaskOnce(task)
+    table.insert(self.m_onceFuncs, task)
+    return #self.m_onceFuncs
 end
-Event.Once = Event.AddListenerOnce
+
+---@param func function
+---@param ... any
+---@return integer index
+function Event:AddListener(func, ...)
+    return self:AddTask(Task(func, ...))
+end
+
+---@param func function
+---@param ... any
+---@return integer index
+function Event:AddListenerOnce(func, ...)
+    return self:AddTaskOnce(Task(func, ...))
+end
+
+---@param index integer
+function Event:Remove(index)
+    table.remove(self.m_funcs, index)
+end
+
+---@param index integer
+function Event:RemoveOnce(index)
+    table.remove(self.m_onceFuncs, index)
+end
 
 ---@param logger Core.Logger?
 ---@param ... any
 function Event:Trigger(logger, ...)
-    for _, task in ipairs(self.funcs) do
+    for _, task in ipairs(self.m_funcs) do
         task:Execute(...)
+        task:Close()
+        task:LogError(logger)
     end
 
-    for _, task in ipairs(self.onceFuncs) do
+    for _, task in ipairs(self.m_onceFuncs) do
         task:Execute(...)
+        task:Close()
+        task:LogError(logger)
     end
-    self.OnceFuncs = {}
+    self.m_onceFuncs = {}
 end
 
 ---@alias Core.Event.Mode
 ---|"Permanent"
 ---|"Once"
 
----@return Dictionary<Core.Event.Mode, Core.Task[]>
+---@return table<Core.Event.Mode, Core.Task[]>
 function Event:Listeners()
     ---@type Core.Task[]
     local permanentTask = {}
-    for _, task in ipairs(self.funcs) do
+    for _, task in ipairs(self.m_funcs) do
         table.insert(permanentTask, task)
     end
 
     ---@type Core.Task[]
     local onceTask = {}
-    for _, task in ipairs(self.onceFuncs) do
+    for _, task in ipairs(self.m_onceFuncs) do
         table.insert(onceTask, task)
     end
     return {
@@ -63,20 +97,14 @@ function Event:Listeners()
     }
 end
 
----@private
----@return integer count
-function Event:__len()
-    return #self.funcs + #self.onceFuncs
-end
-
 ---@param event Core.Event
 ---@return Core.Event event
 function Event:CopyTo(event)
-    for _, listener in ipairs(self.funcs) do
-        event:AddListener(listener)
+    for _, listener in ipairs(self.m_funcs) do
+        event:AddTask(listener)
     end
-    for _, listener in ipairs(self.onceFuncs) do
-        event:AddListenerOnce(listener)
+    for _, listener in ipairs(self.m_onceFuncs) do
+        event:AddTaskOnce(listener)
     end
     return event
 end

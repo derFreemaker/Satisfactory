@@ -1,9 +1,9 @@
 {
   "Name": "DNS.Core",
   "Namespace": "DNS.Core",
-  "Version": "0.1-38",
+  "Version": "0.1-58",
   "RequiredPackages": [
-    "Core",
-    "Database"
-  ]
+    "Core"
+  ],
+  "PackageType": "Library"
 }

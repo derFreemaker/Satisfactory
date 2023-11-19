@@ -4,6 +4,50 @@
     "version": "2.0.0",
     "tasks": [
 		{
+			"label": "Start Code Server",
+			"type": "shell",
+			"command": "${workspaceFolder}/Tools/start_Code_Server.bat",
+			"args": [
+				"\"${workspaceFolder}/Code-Server\""
+			],
+			"presentation": {
+				"echo": true,
+				"reveal": "never",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true
+			},
+			"runOptions": {
+				"instanceLimit": 1
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "correct line endings",
+			"type": "shell",
+			"command": "lua",
+			"args": [
+				"${workspaceFolder}/Tools/correctLineEndings.lua",
+				"${workspaceFolder}",
+				"${workspaceFolder}/Tools/dos2unix.exe",
+				"Tools.FileSystem"
+			],
+			"presentation": {
+				"echo": true,
+				"reveal": "never",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true,
+				"close": true
+			},
+			"runOptions": {
+				"instanceLimit": 1
+			},
+			"problemMatcher": []
+		},
+		{
 			"label": "check all",
 			"command": "${workspaceFolder}\\Lua-Bundler\\Lua-Bundler.exe",
 			"args": ["--SourcePath", "${workspaceFolder}\\src", "--OutputPath", "${workspaceFolder}\\Packages", "--Package", "."],
@@ -17,7 +61,7 @@
 					"file": 3,
 					"line": 4,
 					"column": 5,
-					"endColumn": 6
+					"endColumn": 6,
 				}
 			},
 			"presentation": {
@@ -26,12 +70,13 @@
 				"focus": false,
 				"panel": "shared",
 				"showReuseMessage": true,
-				"clear": false
+				"clear": true,
+				"close": true
 			},
 			"runOptions": {
 				"runOn": "folderOpen",
 				"instanceLimit": 1,
-				"reevaluateOnRerun": true
+				"reevaluateOnRerun": true,
 			}
 		},
 		{
@@ -57,9 +102,10 @@
 				"focus": false,
 				"panel": "shared",
 				"showReuseMessage": true,
-				"clear": false
+				"clear": true,
+				"close": true
 			},
-			"group": "test"
+			"dependsOn": [ "correct line endings" ]
 		},
 		{
 			"label": "bundle All optimized",
@@ -84,14 +130,25 @@
 				"focus": false,
 				"panel": "shared",
 				"showReuseMessage": true,
-				"clear": false
+				"clear": true,
+				"close": true
 			},
-			"group": "build"
+			"dependsOn": [ "correct line endings" ]
 		},
 		{
 			"label": "open FicsIt files",
 			"type": "shell",
-			"command": "code %localappdata%\\FactoryGame\\Saved\\SaveGames\\Computers"
+			"command": "code %localappdata%\\FactoryGame\\Saved\\SaveGames\\Computers",
+			"presentation": {
+				"echo": true,
+				"reveal": "never",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true,
+				"close": true
+			},
+			"problemMatcher": []
 		}
 	]
 }

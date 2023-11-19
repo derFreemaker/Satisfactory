@@ -1,6 +1,60 @@
 ---@class Utils.File
 local File = {}
 
+---@type table<string, FIN.Filesystem.File>
+local OpenFiles = {}
+
+---@return string key
+local function getUniqeKey(key)
+    if OpenFiles[key] then
+        return getUniqeKey(key .. "$")
+    end
+
+    return key
+end
+
+local OpenFileFunc = filesystem.open
+
+---@class Uitls.File.WrappedFile : FIN.Filesystem.File
+---@field private m_file FIN.Filesystem.File
+---@field private m_openFilesKey string
+local WrappedFile = {}
+
+---@package
+---@param path string
+---@param mode FIN.Filesystem.openmode
+---@return FIN.Filesystem.File
+function WrappedFile.new(path, mode)
+    local key = getUniqeKey(path)
+
+    local instance = setmetatable({
+        m_file = OpenFileFunc(path, mode),
+        m_openFilesKey = key,
+    }, { __index = WrappedFile })
+
+    OpenFiles[key] = instance
+    return instance
+end
+
+function WrappedFile:read(length)
+    return self.m_file:read(length)
+end
+
+function WrappedFile:seek(offset)
+    self.m_file:seek(offset)
+end
+
+function WrappedFile:write(data)
+    self.m_file:write(data)
+end
+
+function WrappedFile:close()
+    self.m_file:close()
+    OpenFiles[self.m_openFilesKey] = nil
+end
+
+filesystem.open = WrappedFile.new
+
 ---@alias Utils.File.writeModes
 ---|"w" write -> file stream can read and write creates the file if it doesn’t exist
 ---|"a" end of file -> file stream can read and write cursor is set to the end of file
@@ -58,4 +112,4 @@ function File.Clear(path)
     file:close()
 end
 
-return File
+return File, OpenFiles

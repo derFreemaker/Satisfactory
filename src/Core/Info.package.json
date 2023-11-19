@@ -1,6 +1,7 @@
 {
   "Name": "Core",
   "Namespace": "Core",
-  "Version": "0.3.10-49",
-  "RequiredPackages": []
+  "Version": "0.3.10-141",
+  "RequiredPackages": [],
+  "PackageType": "Library"
 }

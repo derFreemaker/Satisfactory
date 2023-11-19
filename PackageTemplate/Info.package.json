@@ -2,5 +2,6 @@
     "Name": "PackageName",
     "Version": "0.1.0-1",
     "Namespace": "PackageNamespace",
-    "RequiredPackages": [ "Package1", "Package2" ]
+    "RequiredPackages": [ "Package1", "Package2" ],
+    "PackageType": "Library"
 }

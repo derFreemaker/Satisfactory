@@ -1,7 +1,7 @@
 ---@class Computer.Logger
----@field private LoggerHistory { [integer]: (Github_Loading.Logger | Core.Logger) }
----@field package CurrentLogger (Github_Loading.Logger | Core.Logger)?
-___logger = { LoggerHistory = {}, CurrentLogger = nil}
+---@field package m_loggerHistory { [integer]: (Github_Loading.Logger | Core.Logger) }
+---@field package m_currentLogger (Github_Loading.Logger | Core.Logger)?
+___logger = { m_loggerHistory = {} }
 
 function ___logger:initialize()
     local function wrapFunc(func)
@@ -12,94 +12,51 @@ function ___logger:initialize()
     end
 
     log = wrapFunc(self.log)
-    error = wrapFunc(self.error)
-    assert = wrapFunc(self.assert)
     computer.panic = wrapFunc(self.panic)
 end
 
 ---@param logger Github_Loading.Logger | Core.Logger
 function ___logger:setLogger(logger)
     if logger == nil then
-        return end
-    table.insert(self.LoggerHistory, logger)
-    self.CurrentLogger = logger
+        return
+    end
+    table.insert(self.m_loggerHistory, logger)
+    self.m_currentLogger = logger
 end
 
 function ___logger:revert()
-    local loggerHistoryLength = #self.LoggerHistory
+    local loggerHistoryLength = #self.m_loggerHistory
     if loggerHistoryLength == 1 then
         error("Should never remove last logger")
         return
     end
-    local logger = self.LoggerHistory[loggerHistoryLength]
-    self.LoggerHistory[loggerHistoryLength] = nil
+    local logger = self.m_loggerHistory[loggerHistoryLength]
+    self.m_loggerHistory[loggerHistoryLength] = nil
     if logger == nil then return end
-    self.CurrentLogger = logger
+    self.m_currentLogger = logger
 end
 
 ---@param ... any
 function ___logger:log(...)
-    local message = ""
-    for i, arg in pairs({ ... }) do
-        if i == 1 then
-            message = tostring(arg) or "nil"
-        else
-            message = message .. " " .. (tostring(arg) or "nil")
-        end
-    end
-    local currentLogger = self.CurrentLogger
-    if currentLogger then
-        pcall(currentLogger.Log, currentLogger, "[LOG]: " .. message, 10)
-    end
-end
+    local debugInfo = debug.getinfo(3)
+    local callerMsg = ({ computer.magicTime() })[2] .. " [Log] -> "
+        .. debugInfo.source .. ":" .. debugInfo.currentline .. ":"
 
-local errorFunc = error
----@param message string
----@param level integer?
-function ___logger:error(message, level)
-    message = message or "no error message"
-    level = level or 1
-    level = level + 1
-    local currentLogger = self.CurrentLogger
+    local currentLogger = self.m_currentLogger
     if currentLogger then
-        local debugInfo = debug.getinfo(level)
-        local errorMessage = "[ERROR-LOG] " .. debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
-        errorMessage = debug.traceback(errorMessage, level + 1)
-        pcall(currentLogger.Log, currentLogger, errorMessage, 4)
+        pcall(currentLogger.LogWrite, currentLogger, callerMsg, ...)
     end
-    errorFunc(message, level)
-end
-
-local asserFunc = assert
----@generic T
----@param condition T
----@param message? any
----@param ... any
----@return T, any ...
-function ___logger:assert(condition, message, ...)
-    message = message or "assertation failed"
-    if not condition then
-        local currentLogger = self.CurrentLogger
-        if currentLogger then
-            local debugInfo = debug.getinfo(2)
-            local errorMessage = "[ASSERT-LOG] " ..
-            debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. message
-            errorMessage = debug.traceback(errorMessage, 3)
-            pcall(currentLogger.Log, currentLogger, errorMessage, 4)
-        end
-    end
-    return asserFunc(condition, message, ...)
 end
 
 local panicFunc = computer.panic
 ---@param errorMsg string
 function ___logger:panic(errorMsg) ---@diagnostic disable-line
-    local currentLogger = self.CurrentLogger
+    local currentLogger = self.m_currentLogger
     if currentLogger then
-        local debugInfo = debug.getinfo(2)
+        local debugInfo = debug.getinfo(3)
         local errorMessage = "[PANIC-LOG] " .. debugInfo.short_src .. ":" .. debugInfo.currentline .. ": " .. errorMsg
         errorMessage = debug.traceback(errorMessage, 3)
-        pcall(currentLogger.Log, currentLogger, errorMessage, 10)
+        pcall(currentLogger.LogFatal, currentLogger, errorMessage)
     end
     return panicFunc(errorMsg)
 end

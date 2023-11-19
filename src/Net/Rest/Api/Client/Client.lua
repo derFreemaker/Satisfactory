@@ -1,42 +1,51 @@
+local EventNameUsage = require("Core.Usage.Usage_EventName")
+local StatusCodes = require("Net.Core.StatusCodes")
+
 local Response = require('Net.Rest.Api.Response')
----@type Net.Rest.Api.Extensions
-local Extensions = require('Net.Core.NetworkContext.Api.Extensions')
+
+local DEFAULT_TIMEOUT = 5
 
 ---@class Net.Rest.Api.Client : object
----@field ServerIPAddress string
+---@field ServerIPAddress Net.Core.IPAddress
 ---@field ServerPort integer
 ---@field ReturnPort integer
----@field private NetClient Net.Core.NetworkClient
----@field private logger Core.Logger
----@overload fun(serverIPAddress: string, serverPort: integer, returnPort: integer, netClient: Net.Core.NetworkClient, logger: Core.Logger) : Net.Rest.Api.Client
+---@field private m_netClient Net.Core.NetworkClient
+---@field private m_logger Core.Logger
+---@overload fun(serverIPAddress: Net.Core.IPAddress, serverPort: integer, returnPort: integer, netClient: Net.Core.NetworkClient, logger: Core.Logger) : Net.Rest.Api.Client
 local Client = {}
 
 ---@private
----@param serverIPAddress string
+---@param serverIPAddress Net.Core.IPAddress
 ---@param serverPort integer
 ---@param returnPort integer
 ---@param netClient Net.Core.NetworkClient
 ---@param logger Core.Logger
 function Client:__init(serverIPAddress, serverPort, returnPort, netClient, logger)
-	self.ServerIPAddress = serverIPAddress
-	self.ServerPort = serverPort
-	self.ReturnPort = returnPort
-	self.NetClient = netClient
-	self.logger = logger
+    self.ServerIPAddress = serverIPAddress
+    self.ServerPort = serverPort
+    self.ReturnPort = returnPort
+    self.m_netClient = netClient
+    self.m_logger = logger
 end
 
 ---@param request Net.Rest.Api.Request
 ---@param timeout integer?
 ---@return Net.Rest.Api.Response response
-function Client:Request(request, timeout)
-	self.NetClient:SendMessage(self.ServerIPAddress, self.ServerPort, 'Rest-Request', request:ExtractData(), {ReturnPort = self.ReturnPort})
-	local context = self.NetClient:WaitForEvent('Rest-Response', self.ReturnPort, timeout or 5)
-	if not context then
-		return Response(nil, {Code = 408})
-	end
+function Client:Send(request, timeout)
+    local networkFuture = self.m_netClient:CreateEventFuture(
+        EventNameUsage.RestResponse,
+        self.ReturnPort,
+        timeout or DEFAULT_TIMEOUT)
 
-	local response = Extensions:Static_NetworkContextToApiResponse(context)
-	return response
+    self.m_netClient:Send(self.ServerIPAddress, self.ServerPort, EventNameUsage.RestRequest, request,
+        { ReturnPort = self.ReturnPort })
+
+    local context = networkFuture:Wait()
+    if not context then
+        return Response(nil, { Code = StatusCodes.Status408RequestTimeout })
+    end
+
+    return context:GetApiResponse()
 end
 
 return Utils.Class.CreateClass(Client, 'Net.Rest.Api.Client')

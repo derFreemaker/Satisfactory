@@ -1,14 +1,15 @@
-local Task = require('Core.Task')
-local RestApiEndpoint = require('Net.Rest.Api.Server.Endpoint')
-local RestApiResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
-local RestApiMethod = require('Net.Core.Method')
----@type Net.Rest.Api.Extensions
-local Extensions = require('Net.Core.NetworkContext.Api.Extensions')
+local EventNameUsage = require("Core.Usage.Usage_EventName")
+
+local Task = require('Core.Common.Task')
+
+local Endpoint = require("Net.Rest.Api.Server.Endpoint")
+
+local ResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 
 ---@class Net.Rest.Api.Server.Controller : object
----@field Endpoints Dictionary<string, Net.Rest.Api.Server.Endpoint>
----@field private netPort Net.Core.NetworkPort
----@field private logger Core.Logger
+---@field private m_endpoints table<Net.Core.Method, table<string, Net.Rest.Api.Server.Endpoint>>
+---@field private m_netPort Net.Core.NetworkPort
+---@field private m_logger Core.Logger
 ---@overload fun(netPort: Net.Core.NetworkPort, logger: Core.Logger) : Net.Rest.Api.Server.Controller
 local Controller = {}
 
@@ -16,65 +17,98 @@ local Controller = {}
 ---@param netPort Net.Core.NetworkPort
 ---@param logger Core.Logger
 function Controller:__init(netPort, logger)
-	self.Endpoints = {}
-	self.netPort = netPort
-	self.logger = logger
-	netPort:AddListener('Rest-Request', Task(self.onMessageRecieved, self))
+    self.m_endpoints = {}
+    self.m_netPort = netPort
+    self.m_logger = logger
+
+    netPort:AddListener(EventNameUsage.RestRequest, self.onMessageRecieved, self)
 end
 
 ---@private
 ---@param context Net.Core.NetworkContext
 function Controller:onMessageRecieved(context)
-	local request = Extensions:Static_NetworkContextToApiRequest(context)
-	self.logger:LogDebug("recieved request on endpoint: '" .. request.Endpoint .. "'")
-	local endpoint = self:GetEndpoint(request.Method, request.Endpoint)
-	if endpoint == nil then
-		self.logger:LogTrace('found no endpoint')
-		if context.Header.ReturnPort then
-			self.netPort:GetNetClient():SendMessage(context.SenderIPAddress, context.Header.ReturnPort, 'Rest-Response', RestApiResponseTemplates.NotFound('Unable to find endpoint'):ExtractData())
-		end
-		return
-	end
-	self.logger:LogTrace('found endpoint: ' .. request.Endpoint)
-	endpoint:Execute(request, context, self.netPort:GetNetClient())
+    local request = context:GetApiRequest()
+
+    local endpoint = self:GetEndpoint(request.Method, request.Endpoint)
+    if not endpoint then
+        self.m_logger:LogTrace('found no endpoint:', request.Endpoint:GetUrl())
+        if context.Header.ReturnPort then
+            self.m_netPort:GetNetClient():Send(
+                context.Header.ReturnIPAddress,
+                context.Header.ReturnPort,
+                EventNameUsage.RestResponse,
+                ResponseTemplates.NotFound('Unable to find endpoint'))
+        end
+        return
+    end
+
+    self.m_logger:LogTrace('found endpoint:', request.Endpoint:GetUrl())
+    local response = endpoint:Invoke(request, context)
+
+    if context.Header.ReturnPort then
+        self.m_logger:LogTrace("sending response to '" ..
+            context.SenderIPAddress .. "' on port: " .. context.Header.ReturnPort .. " ...")
+        self.m_netPort:GetNetClient():Send(
+            context.Header.ReturnIPAddress,
+            context.Header.ReturnPort,
+            EventNameUsage.RestResponse,
+            response
+        )
+    else
+        self.m_logger:LogTrace('sending no response')
+    end
 end
 
----@param method Net.Core.Method
----@param endpointName string
+---@param endpointMethod Net.Core.Method
+---@return table<string, Net.Rest.Api.Server.Endpoint>?
+function Controller:GetMethodEndpoints(endpointMethod)
+    return self.m_endpoints[endpointMethod]
+end
+
+---@param endpointMethod Net.Core.Method
+---@param endpointUrl Net.Rest.Uri
 ---@return Net.Rest.Api.Server.Endpoint?
-function Controller:GetEndpoint(method, endpointName)
-	for name, endpoint in pairs(self.Endpoints) do
-		if name == method .. '__' .. endpointName then
-			return endpoint
-		end
-	end
+function Controller:GetEndpoint(endpointMethod, endpointUrl)
+    local methodEndpoints = self:GetMethodEndpoints(endpointMethod)
+    if not methodEndpoints then
+        return
+    end
+
+    local bestMatch = nil
+    local bestMatchLength = 0
+    for uriStr, endpoint in pairs(methodEndpoints) do
+        local uriPattern = "^" .. uriStr:gsub("{.*}", ".*") .. "$"
+        local endpointUrlStr = tostring(endpointUrl)
+        local match = endpointUrlStr:gsub(uriPattern, "")
+        local matchLength = endpointUrlStr:len() - match:len()
+
+        if matchLength > bestMatchLength then
+            bestMatch = endpoint
+            bestMatchLength = matchLength
+        end
+    end
+
+    return bestMatch
 end
 
 ---@param method Net.Core.Method
----@param name string
+---@param endpointUrl string
 ---@param task Core.Task
----@return Net.Rest.Api.Server.Controller
-function Controller:AddEndpoint(method, name, task)
-	if self:GetEndpoint(method, name) ~= nil then
-		error('Endpoint allready exists')
-	end
-	local endpointName = method .. '__' .. name
-	self.Endpoints[endpointName] = RestApiEndpoint(task, self.logger:subLogger('RestApiEndpoint[' .. endpointName .. ']'))
-	self.logger:LogTrace("Added endpoint: '" .. method .. "' -> '" .. name .. "'")
-	return self
+function Controller:AddEndpoint(method, endpointUrl, task)
+    local methodEndpoints = self:GetMethodEndpoints(method)
+    if not methodEndpoints then
+        methodEndpoints = {}
+        self.m_endpoints[method] = methodEndpoints
+    end
+
+    local endpoint = methodEndpoints[tostring(endpointUrl)]
+    if endpoint then
+        self.m_logger:LogWarning('Endpoint already exists: ' .. tostring(endpointUrl))
+        return
+    end
+
+    endpoint = Endpoint(endpointUrl, task, self.m_logger:subLogger("Endpoint[" .. endpointUrl .. "]"))
+    methodEndpoints[endpointUrl] = endpoint
 end
 
----@param endpoint Net.Rest.Api.Server.EndpointBase
-function Controller:AddRestApiEndpointBase(endpoint)
-	for name, func in pairs(endpoint) do
-		if type(name) == 'string' and type(func) == 'function' then
-			local method,
-				endpointName = name:match('^(.+)__(.+)$')
-			if method ~= nil and endpoint ~= nil and RestApiMethod[method] then
-				self:AddEndpoint(method, endpointName, Task(func, endpoint))
-			end
-		end
-	end
-end
-
-return Utils.Class.CreateClass(Controller, 'Net.Rest.Api.Server.Controller')
+return Utils.Class.CreateClass(Controller, "Net.Rest.Api.Server.Controller")

@@ -1,0 +1,13 @@
+{
+  "Name": "FactoryControl.Client",
+  "Namespace": "FactoryControl.Client",
+  "Version": "0.1-34",
+  "RequiredPackages": [
+    "Core",
+    "FactoryControl.Core",
+    "Net.Core",
+    "Net.Rest",
+    "Services.Callback.Client"
+  ],
+  "PackageType": "Library"
+}

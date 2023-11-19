@@ -1,29 +1,21 @@
----@class DNS.Core.Entities.Address.Create
----@field Address string
----@field Id string
----@overload fun(address: string, id: string) : DNS.Core.Entities.Address.Create
-local CreateAddress = {}
+---@class DNS.Core.Entities.Address.Create : Core.Json.Serializable
+---@field Domain string
+---@field IPAddress Net.Core.IPAddress
+---@overload fun(domain: string, ipAddress: Net.Core.IPAddress) : DNS.Core.Entities.Address.Create
+local Create = {}
 
 ---@private
----@param address string
----@param id string
-function CreateAddress:__init(address, id)
-    self.Address = address
-    self.Id = id
+---@param domain string
+---@param ipAddress Net.Core.IPAddress
+function Create:__init(domain, ipAddress)
+    self.Domain = domain
+    self.IPAddress = ipAddress
 end
 
----@return table data
-function CreateAddress:ExtractData()
-    return {
-        Address = self.Address,
-        Id = self.Id
-    }
+---@return string url, Net.Core.IPAddress ipAddress
+function Create:Serialize()
+    return self.Domain, self.IPAddress
 end
 
----@param data table
----@return DNS.Core.Entities.Address.Create entitiy
-function CreateAddress:Static__CreateFromData(data)
-    return CreateAddress(data.Address, data.Id)
-end
-
-return Utils.Class.CreateClass(CreateAddress, "DNS.Entities.Address.Create")
+return Utils.Class.CreateClass(Create, "DNS.Entities.Address.Create",
+    require("Core.Json.Serializable"))

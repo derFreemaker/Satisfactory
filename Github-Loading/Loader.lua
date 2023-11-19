@@ -5,54 +5,68 @@ local LoaderFiles = {
 		'Loader',
 		{
 			'Utils',
-			{'10_File.lua'},
-			{'10_Function.lua'},
-			{'10_Object.lua'},
-			{'10_String.lua'},
-			{'10_Table.lua'},
-			{'20_Class.lua'},
-			{'30_Index.lua'}
+			{
+				"Class",
+				{ "00_Config.lua" },
+				{ "20_Instance.lua" },
+				{ "20_Object.lua" },
+				{ "30_Members.lua" },
+				{ "30_Type.lua" },
+				{ "40_Metatable.lua" },
+				{ "50_Construction.lua" },
+				{ "80_Index.lua" }
+			},
+			{ '10_File.lua' },
+			{ '10_Function.lua' },
+			{ '10_String.lua' },
+			{ '10_Table.lua' },
+			{ '100_Index.lua' }
 		},
-		{'10_ComputerLogger.lua'},
-		{'10_Entities.lua'},
-		{'10_Module.lua'},
-		{'10_Option.lua'},
-		{'40_Package.lua'},
-		{'50_Event.lua'},
-		{'50_Listener.lua'},
-		{'70_Logger.lua'},
-		{'100_PackageLoader.lua'}
+		{ "10_ComputerLogger.lua" },
+		{ "10_Entities.lua" },
+		{ "10_Event.lua" },
+		{ "10_Module.lua" },
+		{ "10_Option.lua" },
+		{ "120_Listener.lua" },
+		{ "120_Package.lua" },
+		{ "140_Logger.lua" },
+		{ "200_PackageLoader.lua" },
+		{ "300_Overrides.lua" }
 	},
-	{'00_Options.lua'},
-	{'Version.latest.txt'}
+	{ '00_Options.lua' },
+	{ 'Version.latest.txt' }
 }
 
 ---@param url string
 ---@param path string
 ---@param forceDownload boolean
----@param internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+---@param internetCard FIN.Components.FINComputerMod.InternetCard_C
 ---@return boolean
 local function internalDownload(url, path, forceDownload, internetCard)
 	if forceDownload == nil then
 		forceDownload = false
 	end
+
 	if filesystem.exists(path) and not forceDownload then
 		return true
 	end
+
 	local req = internetCard:request(url, 'GET', '')
-	repeat
-	until req:canGet()
-	local code,
-		data = req:get()
+	repeat until req:canGet()
+
+	local code, data = req:get()
 	if code ~= 200 or data == nil then
 		return false
 	end
+
 	local file = filesystem.open(path, 'w')
 	if file == nil then
 		return false
 	end
+
 	file:write(data)
 	file:close()
+
 	return true
 end
 
@@ -109,7 +123,7 @@ end
 ---@param loaderBaseUrl string
 ---@param loaderBasePath string
 ---@param forceDownload boolean
----@param internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+---@param internetCard FIN.Components.FINComputerMod.InternetCard_C
 ---@return boolean
 local function downloadFiles(loaderBaseUrl, loaderBasePath, forceDownload, internetCard)
 	---@param path string
@@ -121,7 +135,8 @@ local function downloadFiles(loaderBaseUrl, loaderBasePath, forceDownload, inter
 		if path:find('Version.latest.txt') or path:find('00_Options.lua') then
 			downloadAnyway = true
 		end
-		assert(internalDownload(url, path, downloadAnyway or forceDownload, internetCard), "Unable to download file: '" .. path .. "'")
+		assert(internalDownload(url, path, downloadAnyway or forceDownload, internetCard),
+			"Unable to download file: '" .. path .. "'")
 		return true
 	end
 
@@ -138,13 +153,13 @@ local function downloadFiles(loaderBaseUrl, loaderBasePath, forceDownload, inter
 end
 
 ---@param loaderBasePath string
----@return Dictionary<string, any> loadedLoaderFiles
+---@return table<string, table> loadedLoaderFiles
 local function loadFiles(loaderBasePath)
 	---@type string[][]
 	local loadEntries = {}
 	---@type integer[]
 	local loadOrder = {}
-	---@type Dictionary<string, any>
+	---@type table<string, table>
 	local loadedLoaderFiles = {}
 
 	---@param path string
@@ -173,7 +188,7 @@ local function loadFiles(loaderBasePath)
 				str = str .. buf
 			end
 			path = path:match('^(.+/.+)%..+$')
-			loadedLoaderFiles[path] = {str}
+			loadedLoaderFiles[path] = { str }
 			file:close()
 		end
 		return true
@@ -194,9 +209,9 @@ local function loadFiles(loaderBasePath)
 	table.sort(loadOrder)
 	for _, num in ipairs(loadOrder) do
 		for _, path in pairs(loadEntries[num]) do
-			local loadedFile = {filesystem.loadFile(loaderBasePath .. path)(loadedLoaderFiles)}
+			local loadedFile = { filesystem.loadFile(loaderBasePath .. path)(loadedLoaderFiles) }
 			local folderPath,
-				filename = path:match('^(.+)/%d+_(.+)%..+$')
+			filename = path:match('^(.+)/%d+_(.+)%..+$')
 			if filename == 'Index' then
 				loadedLoaderFiles[folderPath] = loadedFile
 			else
@@ -209,43 +224,41 @@ local function loadFiles(loaderBasePath)
 end
 
 ---@class Github_Loading.Loader
----@field private loaderBaseUrl string
----@field private loaderBasePath string
----@field private forceDownload boolean
----@field private internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
----@field private loadedLoaderFiles Dictionary<string, any>
+---@field private m_loaderBaseUrl string
+---@field private m_loaderBasePath string
+---@field private m_forceDownload boolean
+---@field private m_internetCard FIN.Components.FINComputerMod.InternetCard_C
+---@field private m_loadedLoaderFiles table<string, table>
 ---@field Logger Github_Loading.Logger
 local Loader = {}
 
 ---@param loaderBaseUrl string
 ---@param loaderBasePath string
 ---@param forceDownload boolean
----@param internetCard FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+---@param internetCard FIN.Components.FINComputerMod.InternetCard_C
 ---@return Github_Loading.Loader
 function Loader.new(loaderBaseUrl, loaderBasePath, forceDownload, internetCard)
-	local metatable = {
-		__index = Loader
-	}
+	-- //TODO: computer.promote used
+	computer.promote()
+
 	return setmetatable(
 		{
-			loaderBaseUrl = loaderBaseUrl,
-			loaderBasePath = loaderBasePath,
-			forceDownload = forceDownload,
-			internetCard = internetCard,
-			loadedLoaderFiles = {}
-		},
-		metatable
-	)
+			m_loaderBaseUrl = loaderBaseUrl,
+			m_loaderBasePath = loaderBasePath,
+			m_forceDownload = forceDownload,
+			m_internetCard = internetCard,
+			m_loadedLoaderFiles = {}
+		}, { __index = Loader })
 end
 
 function Loader:LoadFiles()
-	self.loadedLoaderFiles = loadFiles(self.loaderBasePath)
+	self.m_loadedLoaderFiles = loadFiles(self.m_loaderBasePath)
 end
 
 ---@param moduleToGet string
 ---@return any ...
 function Loader:Get(moduleToGet)
-	local module = self.loadedLoaderFiles[moduleToGet]
+	local module = self.m_loadedLoaderFiles[moduleToGet]
 	if not module then
 		return
 	end
@@ -270,17 +283,22 @@ function Loader:setupLogger(logLevel)
 	---@type Github_Loading.Logger
 	local Logger = self:Get('/Github-Loading/Loader/Logger')
 	self.Logger = Logger.new('Github Loader', logLevel)
+
 	self.Logger.OnLog:AddListener(Listener.new(logFile))
 	self.Logger.OnClear:AddListener(Listener.new(clear))
 	___logger:setLogger(self.Logger)
+
 	self.Logger:Clear()
-	self.Logger:Log('###### LOG START: ' .. tostring(({computer.magicTime()})[2]) .. ' ######', 10)
+	self.Logger:LogWrite('###### LOG START: ' .. tostring(({ computer.magicTime() })[2]) .. ' ######')
+	self.Logger:LogWrite("###### Loader Version: " .. tostring(self:Get('/Github-Loading/Version.latest')) .. " ######")
+
 	self.Logger.OnLog:AddListener(Listener.new(logConsole))
 end
 
 ---@param logLevel Github_Loading.Logger.LogLevel
 function Loader:Load(logLevel)
-	assert(downloadFiles(self.loaderBaseUrl, self.loaderBasePath, self.forceDownload, self.internetCard), 'Unable to download loader Files')
+	assert(downloadFiles(self.m_loaderBaseUrl, self.m_loaderBasePath, self.m_forceDownload, self.m_internetCard),
+		'Unable to download loader Files')
 	self:LoadFiles()
 
 	---@type Utils
@@ -294,16 +312,18 @@ end
 ---@return boolean diffrentVersionFound
 function Loader:CheckVersion()
 	self.Logger:LogTrace('checking Version...')
-	local versionFilePath = self.loaderBasePath .. '/Github-Loading/Version.current.txt'
+	local versionFilePath = self.m_loaderBasePath .. '/Github-Loading/Version.current.txt'
 	local OldVersionString = Utils.File.ReadAll(versionFilePath)
 	local NewVersionString = self:Get('/Github-Loading/Version.latest')
 	Utils.File.Write(versionFilePath, 'w', NewVersionString, true)
+
 	local diffrentVersionFound = OldVersionString ~= NewVersionString
 	if diffrentVersionFound then
 		self.Logger:LogInfo('found new Github Loader version: ' .. NewVersionString)
 	else
 		self.Logger:LogDebug('Github Loader Version: ' .. NewVersionString)
 	end
+
 	return diffrentVersionFound
 end
 
@@ -314,12 +334,14 @@ function Loader:LoadOption(option, extendOptionDetails)
 	---@type Github_Loading.Option
 	local Option = self:Get('/Github-Loading/Loader/Option')
 	local options = self:Get('/Github-Loading/Options')
+
 	---@type Github_Loading.Option[]
 	local mappedOptions = {}
 	for name, url in pairs(options) do
 		local optionObj = Option.new(name, url)
 		table.insert(mappedOptions, optionObj)
 	end
+
 	self.Logger:LogDebug('loaded Options')
 	if option == nil then
 		print('\nOptions:')
@@ -339,11 +361,13 @@ function Loader:LoadOption(option, extendOptionDetails)
 			end
 		end
 	end
+
 	local chosenOption = getOption(option)
 	if not chosenOption then
 		computer.panic("Option: '" .. option .. "' not found")
 		return {}
 	end
+
 	self.Logger:LogDebug('found Option')
 	return chosenOption
 end
@@ -355,14 +379,19 @@ end
 function Loader:LoadProgram(option, baseUrl, forceDownload)
 	---@type Github_Loading.PackageLoader
 	local PackageLoader = self:Get('/Github-Loading/Loader/PackageLoader')
-	PackageLoader = PackageLoader.new(baseUrl .. '/Packages', self.loaderBasePath .. '/Packages', self.Logger:subLogger('PackageLoader'), self.internetCard)
-	PackageLoader:setGlobal()
+	PackageLoader = PackageLoader.new(baseUrl .. '/Packages', self.m_loaderBasePath .. '/Packages',
+		self.Logger:subLogger('PackageLoader'), self.m_internetCard)
+	PackageLoader:SetGlobal()
 	self.Logger:LogDebug('setup PackageLoader')
 
-	PackageLoader:DownloadPackage('Core')
+	self.Logger:LogTrace('loading Core package...')
+	PackageLoader:LoadPackage('Core')
+	self.Logger:LogTrace('loaded Core package')
 
 	self.Logger:LogTrace('loading option package...')
 	local package = PackageLoader:LoadPackage(option.Url, forceDownload)
+	PackageLoader:SetCurrentPackage(package)
+	PackageLoader:OnLoaded()
 	self.Logger:LogTrace('loaded package from chosen Option: ' .. option.Name)
 
 	local mainModule = package:GetModule(package.Namespace .. '.__main')
@@ -386,40 +415,52 @@ end
 ---@param logLevel Github_Loading.Logger.LogLevel
 function Loader:Configure(program, package, logLevel)
 	self.Logger:LogTrace('configuring program...')
-	local Logger = require('Core.Logger')
+
+	local Logger = require('Core.Common.Logger')
 	program.Logger = Logger(package.Name, logLevel)
-	local Task = require('Core.Task')
-	self.Logger:CopyListenersToCoreEvent(Task, program.Logger)
+	local Task = require('Core.Common.Task')
+	self.Logger:CopyListenersToCoreLogger(Task, program.Logger)
 	___logger:setLogger(program.Logger)
-	local thread,
-		success,
-		returns = Utils.Function.InvokeProtected(program.Configure, program)
+
+	local success, errorMsg, returns = Utils.Function.InvokeProtected(program.Configure, program)
 	if not success then
-		self.Logger:LogError(debug.traceback(thread, returns[1]))
+		self.Logger:LogError(errorMsg)
+		error("Unable to complete configure function")
 	end
-	___logger:setLogger(self.Logger)
-	if returns[1] ~= 'not found' then
-		self.Logger:LogTrace('configured program')
-	else
+	___logger:revert()
+
+	if returns[1] == "$%not found%$" then
 		self.Logger:LogTrace('no configure function found')
+	else
+		self.Logger:LogTrace('configured program')
 	end
 end
 
 ---@param program Github_Loading.Entities.Main
 function Loader:Run(program)
 	self.Logger:LogTrace('running program...')
+
 	___logger:setLogger(program.Logger)
-	local thread,
-		success,
-		returns = Utils.Function.InvokeProtected(program.Run, program)
+	local success, errorMsg, returns = Utils.Function.InvokeProtected(program.Run, program)
 	if not success then
-		self.Logger:LogError(debug.traceback(thread, returns[1]))
+		self.Logger:LogError(errorMsg)
+		error("program stoped")
 	end
-	___logger:setLogger(self.Logger)
+	___logger:revert()
+
 	if returns[1] == '$%not found%$' then
 		error('no main run function found')
 	end
 	self.Logger:LogInfo('program stoped running: ' .. tostring(returns[1]))
+end
+
+function Loader:Cleanup()
+	---@type FIN.Filesystem.File[]
+	local openFiles = self.m_loadedLoaderFiles["/Github-Loading/Loader/Utils/File"][2]
+
+	for _, file in pairs(openFiles) do
+		file:close()
+	end
 end
 
 return Loader

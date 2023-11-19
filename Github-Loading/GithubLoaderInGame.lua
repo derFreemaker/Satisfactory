@@ -2,30 +2,32 @@
 local option = nil
 local showExtendOptionDetails = false
 
+-- Config --
+-- to define any config variables
+Config = {}
+
 -- logLevel
--- 0 = Trace / 1 = Debug / 2 = Info / 3 = Warning / 4 = Error
-local loaderLogLevel = 2
-local programLogLevel = 2
+-- 1 = Trace / 2 = Debug / 3 = Info / 4 = Warning / 5 = Error / 6 = Fatal
+local loaderLogLevel = 3
+local programLogLevel = 3
 
 -- forceDownload
 local loaderForceDownload = false
 local programForceDownload = false
 
--- Config --
--- to define any config variables
-Config = {}
-
-local BaseUrl = 'https://raw.githubusercontent.com/derFreemaker/Satisfactory/staging'
+local BaseUrl = "http://localhost"
+-- local BaseUrl = 'https://raw.githubusercontent.com/derFreemaker/Satisfactory/dev'
 
 local showDriveUUID = false
 
 -- ########## Don't touch that ########## --
+-- ! Changing this can cause the game to crash, because of some file watch bug in the mod code.
 local LoaderFilesUrl = BaseUrl .. '/Github-Loading'
 local LoaderUrl = LoaderFilesUrl .. '/Loader.lua'
-local LoaderFilesPath = 'Loader'
+local LoaderFilesPath = ''
 local LoaderPath = LoaderFilesPath .. '/Loader.lua'
 
----@type FicsIt_Networks.Components.FINComputerMod.InternetCard_C
+---@type FIN.Components.FINComputerMod.InternetCard_C
 local internetCard = computer.getPCIDevices(findClass('FINInternetCard'))[1]
 if not internetCard then
 	computer.beep(0.2)
@@ -51,6 +53,9 @@ if showDriveUUID then
 	print('[Computer] DEBUG mounted filesystem on drive: ' .. drive)
 end
 
+---@type Github_Loading.Loader?
+local Loader
+
 ---@return boolean restart
 local function Run()
 	if not filesystem.exists(LoaderFilesPath) then
@@ -61,8 +66,7 @@ local function Run()
 		local req = internetCard:request(LoaderUrl, 'GET', '')
 		repeat
 		until req:canGet()
-		local _,
-			libdata = req:get()
+		local _, libdata = req:get()
 		---@cast libdata string
 		local file = filesystem.open(LoaderPath, 'w')
 		assert(file, "Unable to open file: '" .. LoaderPath .. "'")
@@ -73,7 +77,7 @@ local function Run()
 
 	-- ######## load Loader Files and initialize ######## --
 	---@type Github_Loading.Loader
-	local Loader = filesystem.doFile(LoaderPath)
+	Loader = filesystem.doFile(LoaderPath)
 	assert(Loader, 'Unable to load Github Loader')
 
 	Loader = Loader.new(BaseUrl, LoaderFilesPath, loaderForceDownload, internetCard)
@@ -86,8 +90,7 @@ local function Run()
 
 	-- ######## load option ######## --
 	local chosenOption = Loader:LoadOption(option, showExtendOptionDetails)
-	local program,
-		package = Loader:LoadProgram(chosenOption, BaseUrl, programForceDownload)
+	local program, package = Loader:LoadProgram(chosenOption, BaseUrl, programForceDownload)
 
 	-- ######## start Program ######## --
 	Loader:Configure(program, package, programLogLevel)
@@ -97,16 +100,20 @@ local function Run()
 end
 
 repeat
+	local result
 	local thread =
 		coroutine.create(
-		function()
-			coroutine.yield(Run())
-		end
-	)
-	local success,
-		result = coroutine.resume(thread)
+			function()
+				result = Run()
+			end
+		)
+	local success, errorMsg = coroutine.resume(thread)
 	if not success then
-		print(debug.traceback(thread, result))
+		print(debug.traceback(thread, errorMsg))
 	end
 	coroutine.close(thread)
 until not result or type(result) ~= 'boolean'
+
+if Loader then
+	Loader:Cleanup()
+end

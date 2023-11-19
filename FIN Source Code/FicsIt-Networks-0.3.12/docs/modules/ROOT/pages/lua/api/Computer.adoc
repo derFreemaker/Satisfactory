@@ -1,0 +1,156 @@
+= Computer API
+:description: The Computer API allows you to manage the computer itself.
+
+The Computer API provides a interface to the computer owns functionalities.
+
+== Functions
+
+=== `beep(number pitch)`
+
+Lets the computer emit a simple beep sound with the given pitch.
+
+Parameter::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|pitch
+|number
+|The pitch of the beep sound you want to play.
+|===
+
+=== `stop()`
+
+Stops the current code execution.
+
+Basically kills the PC runtime immediately.
+
+=== `panic(string error)`
+
+Crashes the computer with the given error message.
+
+Parameter::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|error
+|string
+|The crash error message you want to use
+|===
+
+=== `reset()`
+
+Stops the current code execution immediately and queues the system to restart in the next tick.
+
+=== `skip()`
+
+This function is mainly used to allow switching to a higher tick runtime state.
+Usually you use this when you want to make your code run faster when using functions that can run in asynchronous environment.
+
+=== `string getEEPROM()`
+
+Returns the code the current eeprom contents.
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|string
+|string
+|The code in the EEPROM
+|===
+
+=== `setEEPROM(string code)`
+
+Sets the code of the current eeprom. Doesn't cause a system reset.
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|code
+|string
+|The code you want to place into the eeprom.
+|===
+
+=== `number time()`
+
+Returns the number of game seconds passed since the save got created.
+A game day consists of 24 game hours, a game hour consists of 60 game minutes, a game minute consists of 60 game seconds.
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|number
+|number
+|The number of game seconds passed since the save got created.
+|===
+
+=== `int millis()`
+
+Returns the amount of milliseconds passed since the system started.
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|int
+|int
+|Amount of milliseconds since system start
+|===
+
+=== `int, string, string magiTime()`
+
+Returns some kind of strange/mysterious time data from a unknown place (the real life).
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|int
+|int
+|Unix Timestamp
+
+|string
+|string
+|Serverside Formated Date-Time-Stamp
+
+|string
+|string
+|Date-Time-Stamp after ISO 8601
+|===
+
+=== `Object[] getPCIDevices(Class type)`
+
+This function allows you to get all installed xref:buildings/ComputerCase/index.adoc#_pci_interface[PCI-Devices] in a computer of a given type.
+
+Have a look at xref:lua/examples/PCIDevices.adoc[this] example to fully understand how it works.
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|Object[]
+|Object[]
+|An array containing instances for each xref:buildings/ComputerCase/index.adoc#_pci_interface[PCI-Device] built into the computer.
+|===
+
+
+
+include::partial$api_footer.adoc[]

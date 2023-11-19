@@ -1,6 +1,6 @@
 ---@enum Net.Core.StatusCodes
 local StatusCodes = {
-	StatusCode100Continue = 100,
+	Status100Continue = 100,
 	Status101SwitchingProtocols = 101,
 	Status102Processing = 102,
 	Status200OK = 200,
