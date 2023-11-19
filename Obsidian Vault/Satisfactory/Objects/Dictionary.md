@@ -1,0 +1,1 @@
+Stores values like a array but with a key instead of an index.

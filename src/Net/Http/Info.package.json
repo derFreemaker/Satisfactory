@@ -1,0 +1,9 @@
+{
+  "Name": "Http",
+  "Namespace": "Net.Http",
+  "Version": "0.1.0-63",
+  "RequiredPackages": [
+    "Net.Core"
+  ],
+  "PackageType": "Library"
+}

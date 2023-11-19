@@ -1,0 +1,26 @@
+= Lever
+:description: This IO-Module allows you to use a bi-stable switch as input.
+
+[cols="1,3"]
+|===
+|Building Type
+|IO Module
+|===
+
+[cols="a,a"]
+|===
+|Build Gun |In Game
+
+|image::buildings/ModularIO_Lever_bg.png[300,300,role="left"]
+|image::buildings/ModularIO_Lever_ig.jpg[300,300,role="left"]
+|===
+
+This IO-Module allows you to use a bi-stable lever to trigger a signal and get the lever state.
+So you can f.e. turn on and off a part of a computer program.
+
+== Interface
+include::page$Reflection.adoc[tag=Class-ModuleSwitch_C,leveloffset=-1]
+
+
+
+include::partial$io_modules_footer.adoc[]

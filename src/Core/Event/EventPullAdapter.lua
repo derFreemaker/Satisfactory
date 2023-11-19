@@ -1,92 +1,133 @@
-local Event = require("Core.Event.Event")
+local Task = require("Core.Common.Task")
+local Event = require('Core.Event.Event')
 
+--- Assists in handling events from `event.pull()`
+---
 ---@class Core.EventPullAdapter
----@field private events Dictionary<string, Core.Event>
----@field private logger Core.Logger
 ---@field OnEventPull Core.Event
+---@field private m_events table<string, Core.Event>
+---@field private m_logger Core.Logger
 local EventPullAdapter = {}
 
 ---@private
 ---@param eventPullData any[]
 function EventPullAdapter:onEventPull(eventPullData)
-    ---@type string[]
-    local removeEvent = {}
-    for name, event in pairs(self.events) do
-        if name == eventPullData[1] then
-            event:Trigger(self.logger, eventPullData)
-        end
-        if #event == 0 then
-            table.insert(removeEvent, name)
-        end
-    end
-    for _, name in ipairs(removeEvent) do
-        self.events[name] = nil
-    end
+	---@type string[]
+	local removeEvent = {}
+	for name, event in pairs(self.m_events) do
+		if name == eventPullData[1] then
+			event:Trigger(self.m_logger, eventPullData)
+		end
+		if event:Count() == 0 then
+			table.insert(removeEvent, name)
+		end
+	end
+	for _, name in ipairs(removeEvent) do
+		self.m_events[name] = nil
+	end
 end
 
 ---@param logger Core.Logger
 ---@return Core.EventPullAdapter
 function EventPullAdapter:Initialize(logger)
-    self.events = {}
-    self.logger = logger
-    self.OnEventPull = Event()
-    return self
+	self.m_events = {}
+	self.m_logger = logger
+	self.OnEventPull = Event()
+
+	return self
 end
 
 ---@param signalName string
 ---@return Core.Event
 function EventPullAdapter:GetEvent(signalName)
-    for name, event in pairs(self.events) do
-        if name == signalName then
-            return event
-        end
-    end
-    local event = Event()
-    self.events[signalName] = event
-    return event
+	for name, event in pairs(self.m_events) do
+		if name == signalName then
+			return event
+		end
+	end
+	local event = Event()
+	self.m_events[signalName] = event
+	return event
 end
 
 ---@param signalName string
 ---@param task Core.Task
-function EventPullAdapter:AddListener(signalName, task)
-    local event = self:GetEvent(signalName)
-    event:AddListener(task)
-    return self
+---@return Core.EventPullAdapter
+function EventPullAdapter:AddTask(signalName, task)
+	local event = self:GetEvent(signalName)
+	event:AddTask(task)
+	return self
 end
 
 ---@param signalName string
 ---@param task Core.Task
-function EventPullAdapter:AddListenerOnce(signalName, task)
-    local event = self:GetEvent(signalName)
-    event:AddListenerOnce(task)
-    return self
+---@return Core.EventPullAdapter
+function EventPullAdapter:AddTaskOnce(signalName, task)
+	local event = self:GetEvent(signalName)
+	event:AddTaskOnce(task)
+	return self
 end
 
----@param timeout number?
+---@param signalName string
+---@param listener function
+---@param ... any
+---@return Core.EventPullAdapter
+function EventPullAdapter:AddListener(signalName, listener, ...)
+	return self:AddTask(signalName, Task(listener, ...))
+end
+
+---@param signalName string
+---@param listener function
+---@param ... any
+---@return Core.EventPullAdapter
+function EventPullAdapter:AddListenerOnce(signalName, listener, ...)
+	return self:AddTaskOnce(signalName, Task(listener, ...))
+end
+
+--- Waits for an event to be handled or timeout to run out
+--- Returns true if event was handled and false if timeout ran out
+---
+---@async
+---@param timeoutSeconds number?
 ---@return boolean gotEvent
-function EventPullAdapter:Wait(timeout)
-    self.logger:LogTrace("## waiting for event pull ##")
-    ---@type table?
-    local eventPullData = nil
-    if timeout == nil then
-        eventPullData = { event.pull() }
-    else
-        eventPullData = { event.pull(timeout) }
-    end
-    if #eventPullData == 0 then
-        return false
-    end
-    self.logger:LogDebug("event with signalName: '" .. eventPullData[1] .. "' was recieved")
-    self.OnEventPull:Trigger(self.logger, eventPullData)
-    self:onEventPull(eventPullData)
-    return true
+function EventPullAdapter:Wait(timeoutSeconds)
+	self.m_logger:LogTrace('## waiting for event pull ##')
+	---@type table?
+	local eventPullData = nil
+	if timeoutSeconds == nil then
+		eventPullData = { event.pull() }
+	else
+		eventPullData = { event.pull(timeoutSeconds) }
+	end
+	if #eventPullData == 0 then
+		return false
+	end
+
+	self.m_logger:LogDebug("event with signalName: '"
+		.. eventPullData[1] .. "' was recieved from component: "
+		.. tostring(eventPullData[2]))
+
+	self.OnEventPull:Trigger(self.m_logger, eventPullData)
+	self:onEventPull(eventPullData)
+	return true
 end
 
+--- Waits for all events in the event queue to be handled or timeout to run out
+---
+---@async
+---@param timeoutSeconds number?
+function EventPullAdapter:WaitForAll(timeoutSeconds)
+	while self:Wait(timeoutSeconds) do
+	end
+end
+
+--- Starts event pull loop
+--- ## will never return
 function EventPullAdapter:Run()
-    self.logger:LogDebug("## started event pull loop ##")
-    while true do
-        self:Wait()
-    end
+	self.m_logger:LogDebug('## started event pull loop ##')
+	while true do
+		self:Wait()
+	end
 end
 
 return EventPullAdapter

@@ -1,45 +1,38 @@
+---@meta
 local PackageData = {}
 
-PackageData.XxLPBgcB = {
+PackageData["TestHttp__main"] = {
     Location = "Test.Http.__main",
     Namespace = "Test.Http.__main",
     IsRunnable = true,
     Data = [[
-local EventPullAdapter = require('Core.Event.EventPullAdapter')
-local NetworkClient = require('Net.Core.NetworkClient')
-local DNSClient = require('DNS.Client.Client')
-local HttpClient = require('Http.Client')
-local HttpRequest = require('Http.Request')
-local Address = require('DNS.Core.Entities.Address.Address')
+local EventPullAdapter = require("Core.Event.EventPullAdapter")
+
+local Config = require("FactoryControl.Core.Config")
+
+local Uri = require("Net.Rest.Uri")
+local HttpClient = require("Net.Http.Client")
+local HttpRequest = require("Net.Http.Request")
 
 ---@class Test.Http.Main : Github_Loading.Entities.Main
----@field private netClient Net.Core.NetworkClient
----@field private dnsClient DNS.Client
----@field private httpClient Http.Client
+---@field private m_httpClient Net.Http.Client
 local Main = {}
 
 function Main:Configure()
-	EventPullAdapter:Initialize(self.Logger:subLogger('EventPullAdapter'))
+    EventPullAdapter:Initialize(self.Logger:subLogger('EventPullAdapter'))
 
-	self.netClient = NetworkClient(self.Logger:subLogger('NetworkClient'))
-	self.dnsClient = DNSClient(self.netClient, self.Logger:subLogger('DNSClient'))
-	self.httpClient = HttpClient(self.Logger:subLogger('HttpClient'), self.dnsClient)
+    self.m_httpClient = HttpClient(self.Logger:subLogger('HttpClient'))
 end
 
 function Main:Run()
-	local domain = 'factoryControl.de'
+    log("running test")
 
-	local success = self.dnsClient:CreateAddress(domain, self.netClient:GetId())
-	assert(success, 'unable to create address on dns server')
+    local request = HttpRequest("GET", Config.DOMAIN, Uri.Static__Parse("/Controller/GetWithName/Test"))
+    local response = self.m_httpClient:Send(request)
 
-	local request = HttpRequest('GET', 'AddressWithAddress', self.dnsClient:GetDNSServerAddressIfNeeded(), domain)
-	local response = self.httpClient:Send(request)
-	assert(response:IsSuccess(), 'http request was not successfull')
+    assert(response:GetStatusCode() == 404, "Expected 404, got " .. response:GetStatusCode())
 
-	local address = Address:Static__CreateFromData(response:GetBody())
-	assert(address.Id == self.netClient:GetId(), "got wrong address id back from dns server '" .. tostring(address.Id) .. "'")
-
-	log(address.Address, address.Id)
+    log("test passed")
 end
 
 return Main

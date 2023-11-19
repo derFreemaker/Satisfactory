@@ -1,0 +1,12 @@
+{
+  "make-md:mk-blink": [],
+  "slides:start": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "F8"
+    }
+  ]
+}

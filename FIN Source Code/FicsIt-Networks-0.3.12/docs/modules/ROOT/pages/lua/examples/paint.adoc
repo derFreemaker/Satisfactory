@@ -1,0 +1,78 @@
+= Paint Example
+
+This small program uses a GPU and a Screen to make a small paint program ingame.
+
+In the lower left corner you can choose between five different colors (clear, red, green, blue and white)
+by simply clicking with your mouse onto one.
+
+After that you can begin to draw on the screen with that selected color, by click and holding the mouse button
+and then moving the mouse around. To stop drawing simply release the mouse button.
+
+== Setup
+
+You need small computer with a Lua CPU, a little bit RAM, a Screen Driver and GPU T1.
+Then just plug in a Lua EEPROM and fill it with the code below.
+Then just run it and switch to the computer screen and have some fun ^^
+
+== Code
+
+[source,Lua]
+----
+-- get first T1 GPU avialable from PCI-Interface
+local gpu = computer.getPCIDevices(findClass("GPUT1"))[1]
+if not gpu then
+ error("No GPU T1 found!")
+end
+
+-- get first Screen-Driver available from PCI-Interface
+local screen = computer.getPCIDevices(findClass("FINComputerScreen"))[1]
+-- if no scren found, try to find large screen from component network
+if not screen then
+ local comp = component.findComponent(findClass("Screen"))[1]
+ if not comp then
+  error("No Screen found!")
+ end
+ screen = component.proxy(comp)
+end
+
+-- setup gpu
+event.listen(gpu)
+gpu:bindScreen(screen)
+w, h = gpu:getSize()
+
+-- clear background
+gpu:setBackground(0,0,0,0)
+gpu:fill(0, 0, w, h, " ", " ")
+
+-- setup color palette
+colors = {{0,0,0,0},{0,0,0,0},{1,0,0,1},{1,0,0,1},{0,1,0,1},{0,1,0,1},{0,0,1,1},{0,0,1,1},{1,1,1,1},{1,1,1,1}}
+
+-- draw color palette
+for i, color in ipairs(colors) do
+ gpu:setBackground(color[1], color[2], color[3], color[4])
+ gpu:setText(i - 1, h - 1, " ")
+end
+
+gpu:setBackground(1,1,1,1)
+
+-- draw loop
+isDown = false
+while true do
+ e, s, x, y = event.pull()
+ if e == "OnMouseDown" then
+  isDown = true
+  -- is press on color palette, select color
+  if y == h - 1 and x < #colors then
+   color = colors[x + 1]
+   gpu:setBackground(color[1], color[2], color[3], color[4])
+  end
+ elseif e == "OnMouseUp" then
+  isDown = false
+ elseif e == "OnMouseMove" and not (y == h - 1 and x < #colors) and isDown then
+  gpu:setText(x, y, " ")
+ end
+ gpu:flush()
+end
+----
+
+include::partial$lua_examples_footer.adoc[]

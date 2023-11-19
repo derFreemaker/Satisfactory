@@ -1,51 +1,56 @@
-local RestApiResponseTemplates = require("Net.Rest.Api.Server.ResponseTemplates")
+local Task = require("Core.Common.Task")
+
+local ResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
 
 ---@class Net.Rest.Api.Server.EndpointBase : object
----@field protected Templates Core.RestApi.Server.RestApiEndpointBase.RestApiResponseTemplates
+---@field protected Logger Core.Logger
+---@field protected ApiController Net.Rest.Api.Server.Controller
+---@field protected Templates Core.RestNew.Api.Server.EndpointBase.ResponseTemplates
+---@overload fun(endpointLogger: Core.Logger, apiController: Net.Rest.Api.Server.Controller) : Net.Rest.Api.Server.EndpointBase
 local EndpointBase = {}
 
----@return fun(self: object, key: any) : key: any, value: any
----@return Net.Rest.Api.Server.EndpointBase tbl
----@return any startPoint
-function EndpointBase:__pairs()
-    local function iterator(tbl, key)
-        local newKey, value = next(tbl, key)
-        if type(newKey) == "string" and type(value) == "function" then
-            return newKey, value
-        end
-        if newKey == nil and value == nil then
-            return nil, nil
-        end
-        return iterator(tbl, newKey)
-    end
-    return iterator, self, nil
+---@private
+---@param endpointLogger Core.Logger
+---@param apiController Net.Rest.Api.Server.Controller
+function EndpointBase:__init(endpointLogger, apiController)
+	self.Logger = endpointLogger
+	self.ApiController = apiController
 end
 
----@class Core.RestApi.Server.RestApiEndpointBase.RestApiResponseTemplates
-EndpointBase.Templates = {}
+---@param method Net.Core.Method
+---@param endpointUrl string
+---@param func fun(...) : Net.Rest.Api.Response
+function EndpointBase:AddEndpoint(method, endpointUrl, func)
+	self.ApiController:AddEndpoint(method, endpointUrl, Task(func, self))
+end
+
+---@class Core.RestNew.Api.Server.EndpointBase.ResponseTemplates
+local Templates = {}
 
 ---@param value any
 ---@return Net.Rest.Api.Response
-function EndpointBase.Templates:Ok(value)
-    return RestApiResponseTemplates.Ok(value)
+function Templates:Ok(value)
+	return ResponseTemplates.Ok(value)
 end
 
 ---@param message string
 ---@return Net.Rest.Api.Response
-function EndpointBase.Templates:BadRequest(message)
-    return RestApiResponseTemplates.BadRequest(message)
+function Templates:BadRequest(message)
+	return ResponseTemplates.BadRequest(message)
 end
 
 ---@param message string
 ---@return Net.Rest.Api.Response
-function EndpointBase.Templates:NotFound(message)
-    return RestApiResponseTemplates.NotFound(message)
+function Templates:NotFound(message)
+	return ResponseTemplates.NotFound(message)
 end
 
 ---@param message string
 ---@return Net.Rest.Api.Response
-function EndpointBase.Templates:InternalServerError(message)
-    return RestApiResponseTemplates.InternalServerError(message)
+function Templates:InternalServerError(message)
+	return ResponseTemplates.InternalServerError(message)
 end
 
-return Utils.Class.CreateClass(EndpointBase, "Net.Rest.Api.Server.EndpointBase")
+EndpointBase.Templates = Templates
+
+return Utils.Class.CreateClass(EndpointBase, 'Net.Rest.Api.Server.EndpointBase')

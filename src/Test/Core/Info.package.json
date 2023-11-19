@@ -1,0 +1,12 @@
+{
+  "Name": "Test.Core",
+  "Namespace": "Test.Core",
+  "Version": "0.1.0-7",
+  "RequiredPackages": [
+    "Adapter.Computer",
+    "Core",
+    "Hosting",
+    "Test.Framework"
+  ],
+  "PackageType": "Library"
+}

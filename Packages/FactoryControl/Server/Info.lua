@@ -1,11 +1,13 @@
 return {
     Name = "FactoryControlServer",
     Namespace = "FactoryControl.Server",
-    Version = "0.1-37",
+    Version = "0.1-77",
+    PackageType = "Application",
     RequiredPackages = {
         "Core",
+        "Database",
         "FactoryControl.Core",
-        "Net.Core",
-        "Net.Rest"
+        "Net.Rest",
+        "Services.Callback.Server"
     },
 }

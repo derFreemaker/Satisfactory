@@ -1,0 +1,1 @@
+-- local _, logger = require('Tests.Simulator.Simulator'):Initialize(1)

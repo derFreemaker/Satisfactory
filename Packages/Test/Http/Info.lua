@@ -1,12 +1,12 @@
 return {
-    Name = "Test-Http",
+    Name = "Test.Http",
     Namespace = "Test.Http",
-    Version = "0.1.0-41",
+    Version = "0.1.0-3",
+    PackageType = "Application",
     RequiredPackages = {
         "Core",
-        "DNS.Client",
-        "DNS.Core",
-        "Http",
-        "Net.Core"
+        "FactoryControl.Core",
+        "Net.Http",
+        "Net.Rest"
     },
 }

@@ -2,7 +2,7 @@
 local Events = {}
 
 function Events:OnLoaded()
-    print("called on loaded")
+    log("called on loaded")
 end
 
 return Events

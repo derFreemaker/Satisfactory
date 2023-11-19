@@ -1,24 +1,30 @@
 ---@class Utils.Function
 local Function = {}
 
----@param success boolean
----@param ... any
----@return boolean success, table data
-local function extractSuccess(success, ...)
-	return success, {...}
-end
 ---@param func function
 ---@param ... any
----@return thread thread, boolean success, any[] returns
+---@return boolean success, string? error, any[] returns
 function Function.InvokeProtected(func, ...)
+	local results = {}
 	local function invokeFunc(...)
-		coroutine.yield(func(...))
+		results = { func(...) }
 	end
 	local thread = coroutine.create(invokeFunc)
-	local results = {coroutine.resume(thread, ...)}
-	local success,
-		filteredResults = extractSuccess(table.unpack(results))
-	return thread, success, filteredResults
+	local success, error = coroutine.resume(thread, ...)
+	if not success then
+		error = debug.traceback(thread, error)
+	end
+	coroutine.close(thread)
+	return success, error, results
+end
+
+---@param message string
+function Function.LogTraceback(message)
+	if not log then
+		return
+	end
+
+	log(debug.traceback(message or "traceback", 2))
 end
 
 return Function
