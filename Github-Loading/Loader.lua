@@ -344,10 +344,11 @@ function Loader:LoadOption(option, extendOptionDetails)
 
 	self.Logger:LogDebug('loaded Options')
 	if option == nil then
-		print('\nOptions:')
+		local output = 'Options:'
 		for _, optionObj in ipairs(mappedOptions) do
-			optionObj:Print(extendOptionDetails)
+			output = output .. "\n" .. optionObj:Get(extendOptionDetails)
 		end
+		print(output)
 		computer.stop()
 		return {}
 	end

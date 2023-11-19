@@ -14,13 +14,13 @@ function Option.new(name, url)
 end
 
 ---@param extended boolean
-function Option:Print(extended)
+function Option:Get(extended)
     ---@type string
     local output = self.Name
     if extended == true then
         output = output .. " -> " .. self.Url
     end
-    print(output)
+    return output
 end
 
 return Option

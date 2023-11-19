@@ -1,0 +1,27 @@
+=== `function loadFile(string path)`
+
+Loads the file refered by the given path as a Lua function and returns it.
+
+Functions fails if path doesn't exist or path doesn't reger to a file.
+
+Parameters::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|path
+|string
+|path to the file you want to load as Lua function
+|===
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|function
+|function
+|the file compiled as Lua function
+|===

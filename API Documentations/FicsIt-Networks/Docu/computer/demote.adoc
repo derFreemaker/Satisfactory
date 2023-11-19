@@ -1,0 +1,3 @@
+=== `demote()`
+
+This function is used to allow switching back to the normal tick rate.

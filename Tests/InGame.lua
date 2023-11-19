@@ -1,58 +1,59 @@
----@type FIN.Components.NetworkCard_C
-local networkCard = computer.getPCIDevices(findClass("NetworkCard_C"))[1]
-
-function InvokeProtected(func, ...)
-    local results = {}
-    local function invokeFunc(...)
-        results = { func(...) }
-    end
-    local thread = coroutine.create(invokeFunc)
-    local success, error = coroutine.resume(thread, ...)
-    if not success then
-        error = debug.traceback(thread, error)
-    end
-    coroutine.close(thread)
-    return success, error, results
+local function test1(bool)
+    return bool
 end
 
-local function foo()
-    print(networkCard, networkCard.hash)
+local thread1 = coroutine.create(test1)
+print(coroutine.resume(thread1, false))
+
+
+
+local function test2(bool)
+    error("test error")
 end
 
-local function foo2()
-    print(InvokeProtected(foo))
+local thread2 = coroutine.create(test2)
+print(coroutine.resume(thread2, false))
+
+
+
+local function test3(bool)
+    return bool, 2
 end
 
-local function foo3()
-    print(InvokeProtected(foo2))
+local thread3 = coroutine.create(test3)
+print(coroutine.resume(thread3, false))
+
+
+
+local function test4(bool)
+    return bool, 2, 3
 end
 
-local function foo4()
-    print(InvokeProtected(foo3))
-end
+local thread4 = coroutine.create(test4)
+print(coroutine.resume(thread4, false))
 
-local function foo5()
-    print(InvokeProtected(foo4))
-end
+-- Standard Lua 5.4 Outputs:
+-- ```text
+-- true	false
+-- false	[Source]:[line]: test error
+-- true	false	2
+-- true	false	2	3
+-- ```
 
-local function foo6()
-    print(InvokeProtected(foo5))
-end
+-- In Update 7 before Update 8 comp.
+-- You get with in the mod back:
+-- ```text
+-- true
+-- false	[Source]:[line]: test error
+-- true
+-- true
+-- ```
 
-local function foo7()
-    print(InvokeProtected(foo6))
-end
-
-local function foo8()
-    print(InvokeProtected(foo7))
-end
-
-local function foo9()
-    print(InvokeProtected(foo8))
-end
-
-local function foo10()
-    print(InvokeProtected(foo9))
-end
-
-InvokeProtected(foo10)
+-- And now after the Update 8 comp.
+-- You get:
+-- ```text
+-- [DateTimeStamp] [Info]
+-- [DateTimeStamp] [Info]
+-- [DateTimeStamp] [Info] 2
+-- [DateTimeStamp] [Info] 2 3
+-- ```

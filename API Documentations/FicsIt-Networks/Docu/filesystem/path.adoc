@@ -1,0 +1,52 @@
+=== `string path([int,] string...)`
+
+Combines a variable amount of strings as paths together to one big path.
+
+Additionally, applies given conversion.
+
+Parameters::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|int
+|int
+|This optional parameter defines a conversion that should get applied to the output path. +
+Following Conversions are possible:
+[cols="1,10a"]
+!===
+!0
+!Normalize the path. +
+`/my/../weird/./path` -> `/weird/path`
+!1
+!Normalizes and converts the path to an absolute path. +
+`my/abs/path` -> `/my/abs/path`
+!2
+!Normalizes and converts the path to an relative path. +
+`/my/relative/path` -> `my/relative/path`
+!3
+!Returns the whole file/folder name. +
+`/path/to/file.txt` -> `file.txt`
+!4
+!Returns the stem of the filename. +
+`/path/to/file.txt` -> `file` +
+`/path/to/.file` -> `.file`
+!5
+!Returns the file-extension of the filename. +
+`/path/to/file.txt` -> `.txt` +
+`/path/to/.file` -> empty-str +
+`/path/to/file.` -> `.`
+!===
+|===
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|string
+|string
+|the final combined and converted output path
+|===

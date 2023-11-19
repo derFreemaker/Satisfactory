@@ -1,0 +1,18 @@
+=== `int, int getMemory()`
+
+Returns the used memory and memory capacity the computer has.
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|usage
+|int
+|The memory usage at the current time
+
+|capacity
+|int
+|The memory capacity the computer has
+|===

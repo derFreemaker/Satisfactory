@@ -1,0 +1,14 @@
+=== `string getEEPROM()`
+
+Returns the code the current eeprom contents.
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|string
+|string
+|The code in the EEPROM
+|===

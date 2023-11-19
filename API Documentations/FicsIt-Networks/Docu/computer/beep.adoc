@@ -1,0 +1,14 @@
+=== `beep(number pitch)`
+
+Lets the computer emit a simple beep sound with the given pitch.
+
+Parameter::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|pitch
+|number
+|The pitch of the beep sound you want to play.
+|===

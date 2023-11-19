@@ -1,0 +1,46 @@
+= Computer API
+:description: The Computer API allows you to manage the computer itself.
+
+The Computer API provides a interface to the computer owns functionalities.
+
+== Functions
+
+include::computer/getMemory.adoc[]
+
+include::computer/getInstance.adoc[]
+
+include::computer/reset.adoc[]
+
+include::computer/stop.adoc[]
+
+include::computer/panic.adoc[]
+
+include::computer/skip.adoc[]
+
+include::computer/promote.adoc[]
+
+include::computer/demote.adoc[]
+
+include::computer/isPromoted.adoc[]
+
+include::computer/state.adoc[]
+
+include::computer/beep.adoc[]
+
+include::computer/setEEPROM.adoc[]
+
+include::computer/getEEPROM.adoc[]
+
+include::computer/time.adoc[]
+
+include::computer/millis.adoc[]
+
+include::computer/magicTime.adoc[]
+
+include::computer/log.adoc[]
+
+include::computer/getPCIDevices.adoc[]
+
+include::computer/textNotification.adoc[]
+
+include::computer/attentionPing.adoc[]

@@ -1,0 +1,41 @@
+=== `int... analyzePath(string...)`
+
+Each string will be viewed as one filesystem-path and will be checked for lexical features.
+Each of those string will then have a integer return value which is a bit-flag-register describing those lexical features.
+
+Parameters::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|string...
+|string...
+|filesystem-paths you want to get lexical features from.
+|===
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|int...
+|int...
+|bit-registers describing the features of each path with following bit assignments:
+[cols="1,10a"]
+!===
+!1
+!Is filesystem root
+!2
+!Is Empty (includes if it is root-path)
+!3
+!Is absolute path
+!4
+!Is only a file/folder name
+!5
+!Filename has extension
+!6
+!Ends with a `/` -> refers a directory
+!===
+|===

@@ -20,4 +20,5 @@
 		"FIN Source Code": true
 	},
 	"explorerExclude.backup": {},
+	"asciidoc.antora.enableAntoraSupport": true,
 }

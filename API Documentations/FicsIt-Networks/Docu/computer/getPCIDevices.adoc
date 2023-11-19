@@ -1,0 +1,31 @@
+=== `Object[] getPCIDevices(Class type)`
+
+This function allows you to get all installed **PCI-Devices** in a computer of a given type.
+
+Parameters::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|type
+|Class
+|The class type that should be geted.
+
+Example:
+[source, lua]
+----
+local networkCard = computer.getPCIDevices(classes.NetworkCard)
+----
+|===
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|Object[]
+|Object[]
+|An array containing instances for each **PCI-Device** built into the computer.
+|===

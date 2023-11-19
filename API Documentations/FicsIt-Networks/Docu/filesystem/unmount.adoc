@@ -1,0 +1,25 @@
+=== `bool unmount(string mountPoint)`
+
+This function unmounts if the device at the given mount point.
+
+Parameters::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|mountPoint
+|string
+|the path the device is mounted to
+|===
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|bool
+|bool
+|returns true if it was able to unmount the device located at the mount point
+|===
