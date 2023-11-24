@@ -6,7 +6,7 @@ PackageData["AdapterPipelineValve"] = {
     Namespace = "Adapter.Pipeline.Valve",
     IsRunnable = true,
     Data = [[
-local Reference = require("Core.References.Reference")
+local ProxyReference = require("Core.References.ProxyReference")
 
 local PipeValves = setmetatable({}, { __mode = 'v' })
 
@@ -46,8 +46,10 @@ function Valve:__init(id)
 		return PipeValves[id]
 	end
 
-	local valve = Reference(id)
-	valve:Check()
+	local valve = ProxyReference(id)
+	if not valve:Fetch() then
+		error("was not found")
+	end
 
 	self.m_valve = valve
 	PipeValves[id] = self

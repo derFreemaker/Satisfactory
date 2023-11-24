@@ -21,7 +21,7 @@ PackageData["FactoryControlServer__main"] = {
     IsRunnable = true,
     Data = [[
 local Config = require('FactoryControl.Core.Config')
-local Usage = require('Core.Usage')
+local Usage = require('Core.Usage.init')
 
 local DatabaseAccessLayer = require("FactoryControl.Server.DatabaseAccessLayer")
 
@@ -406,7 +406,7 @@ PackageData["FactoryControlServerServicesFeatureService"] = {
     Namespace = "FactoryControl.Server.Services.FeatureService",
     IsRunnable = true,
     Data = [[
-local Usage = require("Core.Usage")
+local Usage = require("Core.Usage.init")
 local Config = require("FactoryControl.Core.Config")
 
 local Task = require("Core.Common.Task")

@@ -45,6 +45,10 @@ function computer.promote() end
 --- ### Not in Documentation. ###
 function computer.demote() end
 
+--- Returns `true` if the tick state is to higher
+---@return boolean isPromoted
+function computer.isPromoted() end
+
 ---@alias FIN.Computer.State
 ---|0 # Sync
 ---|1 # Async
@@ -80,8 +84,31 @@ function computer.millis() end
 ---@return string DateTimeStamp Date-Time-Stamp after ISO 8601
 function computer.magicTime() end
 
+---@alias FIN.Computer.Verbosity
+---|0 Debug
+---|1 Info
+---|2 Warning
+---|3 Error
+---|4 Fatal
+---|5 Max
+
+---@param verbosity FIN.Computer.Verbosity
+---@param format string
+---@param ... any
+function computer.log(verbosity, format, ...) end
+
 --- This function allows you to get all installed PCI-Devices in a computer of a given type.
 ---@generic TPCIDevice
 ---@param type FIN.Class
 ---@return TPCIDevice[]
 function computer.getPCIDevices(type) end
+
+--- Shows a text notification to the player. If player is `nil` to all players.
+---@param text string
+---@param playerName string?
+function computer.textNotification(text, playerName) end
+
+--- Creates an attentionPing at the given position to the player. If player is `nil` to all players.
+---@param position Satisfactory.Components.Vector
+---@param playerName string?
+function computer.attentionPing(position, playerName) end

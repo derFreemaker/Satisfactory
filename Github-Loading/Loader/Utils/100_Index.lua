@@ -66,6 +66,9 @@ function Utils.DownloadToFile(url, path, forceDownload, internetCard, logger)
 	return true
 end
 
+---@type Utils.Value
+Utils.Value = LoadedLoaderFiles["/Github-Loading/Loader/Utils/Value"][1]
+
 ---@type Utils.File
 Utils.File = LoadedLoaderFiles['/Github-Loading/Loader/Utils/File'][1]
 

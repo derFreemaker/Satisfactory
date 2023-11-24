@@ -12,10 +12,11 @@ function PCIDeviceReference:__init(class, index)
     self.m_index = index
 end
 
----@return boolean notFound
-function PCIDeviceReference:Refresh()
-    self.m_obj = computer.getPCIDevices(self.m_class)[self.m_index]
-    return self.m_obj ~= nil
+---@return boolean found
+function PCIDeviceReference:Fetch()
+    local obj = computer.getPCIDevices(self.m_class)[self.m_index]
+    self.m_obj = obj
+    return obj ~= nil
 end
 
 return Utils.Class.CreateClass(PCIDeviceReference, "Core.PCIDeviceReference",

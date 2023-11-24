@@ -25,7 +25,7 @@ function InternetCard:__init(index)
     end
 
     local internetCard = ComputerPartReference(findClass('InternetCard_C'), index)
-    if not internetCard:Refresh() then
+    if not internetCard:Fetch() then
         error("no internet card found")
     end
 
@@ -66,7 +66,7 @@ PackageData["AdapterComputerNetworkCard"] = {
     Namespace = "Adapter.Computer.NetworkCard",
     IsRunnable = true,
     Data = [[
-local Reference = require("Core.References.Reference")
+local ProxyReference = require("Core.References.ProxyReference")
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
 ---@type { [integer | string]: Adapter.Computer.NetworkCard }
@@ -93,12 +93,12 @@ function NetworkCard:__init(idOrIndex)
 	local networkCard
 	if type(idOrIndex) == 'string' then
 		---@cast idOrIndex FIN.UUID
-		networkCard = Reference(idOrIndex)
+		networkCard = ProxyReference(idOrIndex)
 	else
 		---@cast idOrIndex integer
 		networkCard = PCIDeviceReference(findClass('NetworkCard_C'), idOrIndex)
 	end
-	if not networkCard:Refresh() then
+	if not networkCard:Fetch() then
 		error("no network card found")
 	end
 

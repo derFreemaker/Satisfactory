@@ -68,8 +68,6 @@ end
 function Actor:getNetworkConnectors()
 end
 
----@deprecated
---- ## Update 8 Only
 --- Returns the components that make-up this actor.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick

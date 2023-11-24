@@ -117,3 +117,6 @@ until not result or type(result) ~= 'boolean'
 if Loader then
 	Loader:Cleanup()
 end
+
+-- to invoke GC
+computer.stop()

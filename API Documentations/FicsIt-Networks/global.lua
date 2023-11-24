@@ -2,12 +2,6 @@
 
 -- //TODO: update documentation
 
---- [Documentation](https://docs.ficsit.app/ficsit-networks/latest/index.html)
---- [Code](https://github.com/Panakotta00/FicsIt-Networks/tree/master)
---- Date: 08.09.2023
-
---#region global variables
-
 --- # Not in FicsIt-Networks available #
 package = nil
 
@@ -26,9 +20,9 @@ arg = nil
 --- # Not in FicsIt-Networks available #
 require = nil
 
---#endregion
-
---#region FicsIt-Networks types
+----------------------------------------
+--- FicsIt-Networks Types
+----------------------------------------
 
 ---@class float : number
 
@@ -62,20 +56,15 @@ Component.id = nil
 ---@type string
 Component.nick = nil
 
---#endregion
-
---#region functions
+----------------------------------------
+--- Functions
+----------------------------------------
 
 --- Tries to find an object type with the given name, and returns the found type.
+---@deprecated
 ---@param name string
 ---@return FIN.Class Class
 function findClass(name)
-end
-
---- Tries to find a structure type with the given name, and returns the found type.
----@param name string
----@return FIN.Class Class
-function findStruct(name)
 end
 
 --- Tries to find an item type with the given name, and returns the found item type.
@@ -83,5 +72,3 @@ end
 ---@return FIN.ItemType ItemType
 function findItem(name)
 end
-
---#endregion
