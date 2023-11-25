@@ -1,5 +1,5 @@
 local args = { ... }
-local WorkspaceFolder = args[1] or "C:\\Coding\\Games\\Satisfactory"
+local WorkspaceFolder = args[1]
 
 local FileSystem = require("Tools.FileSystem")
 
