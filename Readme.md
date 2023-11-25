@@ -13,7 +13,7 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
 1. write source code
 2. bundle the code with task: "bundle all" or "bundle all optimized" for smaller files
 3. push the code to repo
-4. can download in game (github has a 300sec raw data cache or use "Start Code Server" and "localhost" as url)
+4. can download in game (github has a 300sec raw data cache or run task: "Start Code Server" and use "localhost" as url)
 
 ## Run Sequence Overview
 
