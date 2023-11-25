@@ -155,9 +155,14 @@
 			"command": "lua",
 			"args": ["${workspaceFolder}/Tools/CreateDocumentation.lua", "${workspaceFolder}"],
 			"problemMatcher": [],
-			"runOptions": {
-				"runOn": "folderOpen",
-				"instanceLimit": 1,
+			"presentation": {
+				"echo": true,
+				"reveal": "never",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true,
+				"close": true
 			}
 		}
 	]
