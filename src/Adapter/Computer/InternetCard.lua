@@ -3,7 +3,7 @@ local ComputerPartReference = require("Core.References.PCIDeviceReference")
 local InternetCards = setmetatable({}, { __mode = 'v' })
 
 ---@class Adapter.Computer.InternetCard : object
----@field m_refInternetCard Core.IReference<FIN.Components.FINComputerMod.InternetCard_C>
+---@field m_refInternetCard Core.IReference<FIN.Components.InternetCard_C>
 local InternetCard = {}
 
 ---@param index number

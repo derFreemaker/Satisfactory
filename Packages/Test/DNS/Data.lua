@@ -45,7 +45,7 @@ function Main:Run()
 	log("getting address...")
 	local address = self.m_dnsClient:GetWithDomain(domain)
 
-	assert(address ~= nil, 'http request was not successfull')
+	assert(address ~= nil, 'http request was not successful')
 
 	assert(address.IPAddress:Equals(self.m_netClient:GetIPAddress()),
 		"got wrong address id back from dns server '" .. tostring(address.Id) .. "'")

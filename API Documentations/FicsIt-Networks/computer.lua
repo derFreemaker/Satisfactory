@@ -1,7 +1,5 @@
 ---@meta
 
--- //TODO: update documentation
-
 --- Computer Api from Documentation and in Code found.
 --- [Documentation](https://docs.ficsit.app/ficsit-networks/latest/index.html)
 --- [Code](https://github.com/Panakotta00/FicsIt-Networks/tree/master)
@@ -84,15 +82,7 @@ function computer.millis() end
 ---@return string DateTimeStamp Date-Time-Stamp after ISO 8601
 function computer.magicTime() end
 
----@alias FIN.Computer.Verbosity
----|0 Debug
----|1 Info
----|2 Warning
----|3 Error
----|4 Fatal
----|5 Max
-
----@param verbosity FIN.Computer.Verbosity
+---@param verbosity FIN.Components.LogEntry.Verbosity
 ---@param format string
 ---@param ... any
 function computer.log(verbosity, format, ...) end

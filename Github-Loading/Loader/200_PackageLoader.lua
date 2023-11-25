@@ -11,7 +11,7 @@ local Utils = LoadedLoaderFiles['/Github-Loading/Loader/Utils'][1]
 ---@field private m_moduleCache table<string, Github_Loading.Module?>
 ---@field private m_packagesUrl string
 ---@field private m_packagesPath string
----@field private m_internetCard FIN.Components.FINComputerMod.InternetCard_C
+---@field private m_internetCard FIN.Components.InternetCard_C
 local PackageLoader = {}
 
 ---@param url string
@@ -52,7 +52,7 @@ end
 ---@param packagesUrl string
 ---@param packagesPath string
 ---@param logger Github_Loading.Logger
----@param internetCard FIN.Components.FINComputerMod.InternetCard_C
+---@param internetCard FIN.Components.InternetCard_C
 ---@return Github_Loading.PackageLoader
 function PackageLoader.new(packagesUrl, packagesPath, logger, internetCard)
 	assert(not (not filesystem.exists(packagesPath) and not filesystem.createDir(packagesPath)),

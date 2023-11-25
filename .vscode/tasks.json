@@ -149,6 +149,16 @@
 				"close": true
 			},
 			"problemMatcher": []
+		},
+		{
+			"label": "create documentation",
+			"command": "lua",
+			"args": ["${workspaceFolder}/Tools/CreateDocumentation.lua", "${workspaceFolder}"],
+			"problemMatcher": [],
+			"runOptions": {
+				"runOn": "folderOpen",
+				"instanceLimit": 1,
+			}
 		}
 	]
 }

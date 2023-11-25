@@ -11,7 +11,7 @@ local ComputerPartReference = require("Core.References.PCIDeviceReference")
 local InternetCards = setmetatable({}, { __mode = 'v' })
 
 ---@class Adapter.Computer.InternetCard : object
----@field m_refInternetCard Core.IReference<FIN.Components.FINComputerMod.InternetCard_C>
+---@field m_refInternetCard Core.IReference<FIN.Components.InternetCard_C>
 local InternetCard = {}
 
 ---@param index number
@@ -108,10 +108,11 @@ function NetworkCard:__init(idOrIndex)
 	self:CloseAllPorts()
 end
 
----@private
-function NetworkCard:__gc()
-	self:CloseAllPorts()
-end
+-- //TODO: find new of closing all ports on computer.stop
+-- ---@private
+-- function NetworkCard:__gc()
+-- 	self:CloseAllPorts()
+-- end
 
 ---@return FIN.UUID
 function NetworkCard:GetIPAddress()

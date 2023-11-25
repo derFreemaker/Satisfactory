@@ -104,15 +104,11 @@ function DbTable:Get(key)
 
         if path:IsFile() then
             local fileKey = fileName:match("^(.+)%.dto%.json$")
-            if key ~= fileKey then
-                goto continue
+            if key == fileKey then
+                local data = File.Static__ReadAll(path)
+                value = self.m_serializer:Deserialize(data)
             end
-
-            local data = File.Static__ReadAll(path)
-            value = self.m_serializer:Deserialize(data)
         end
-
-        ::continue::
     end
 
     if value ~= nil then

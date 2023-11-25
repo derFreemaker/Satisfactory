@@ -48,14 +48,12 @@ function Uri.Static__Parse(uri)
 
     local query = {}
     local splittedQuery = Utils.String.Split(splittedUri[2], "&")
-    for _, queryPart in ipairs(splittedQuery) do
-        if not splittedQuery == "" then
-            goto continue
-        end
 
-        local splittedQueryPart = Utils.String.Split(queryPart, "=")
-        query[splittedQueryPart[1}}} = splittedQueryPart[2]
-        ::continue::
+    if not splittedQuery == "" then
+        for _, queryPart in ipairs(splittedQuery) do
+            local splittedQueryPart = Utils.String.Split(queryPart, "=")
+            query[splittedQueryPart[1}}} = splittedQueryPart[2]
+        end
     end
 
     return Uri(path, query)
@@ -175,7 +173,7 @@ PackageData["NetRestApiResponse"] = {
 ---@class Net.Rest.Api.Response : Core.Json.Serializable
 ---@field Headers Net.Rest.Api.Response.Header
 ---@field Body any
----@field WasSuccessfull boolean
+---@field WasSuccessful boolean
 ---@overload fun(body: any, header: (Net.Rest.Api.Response.Header)?) : Net.Rest.Api.Response
 local Response = {}
 
@@ -186,9 +184,9 @@ function Response:__init(body, header)
     self.Body = body
     self.Headers = header or {}
     if type(self.Headers.Code) == 'number' then
-        self.WasSuccessfull = self.Headers.Code < 300
+        self.WasSuccessful = self.Headers.Code < 300
     else
-        self.WasSuccessfull = false
+        self.WasSuccessful = false
     end
 end
 

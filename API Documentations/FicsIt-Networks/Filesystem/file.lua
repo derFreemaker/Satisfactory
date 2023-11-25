@@ -1,7 +1,5 @@
 ---@meta
 
--- //TODO: update documentation
-
 ---@class FIN.Filesystem.File
 local File = {}
 

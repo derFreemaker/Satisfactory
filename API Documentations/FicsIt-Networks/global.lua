@@ -32,7 +32,7 @@ require = nil
 
 ---@class FIN.UUID : string
 
----@class FIN.Component
+---@class FIN.Component : FIN.Class
 local Component = {}
 
 --- The network id of this component.
@@ -71,4 +71,16 @@ end
 ---@param name string
 ---@return FIN.ItemType ItemType
 function findItem(name)
+end
+
+--- Tries to find the items or item provided via name.
+---@param name string
+---@return FIN.ItemType itemType
+function getItems(name)
+end
+
+--- Tries to find the items or item provided via name.
+---@param ... string name
+---@return FIN.ItemType ...
+function getItems(...)
 end

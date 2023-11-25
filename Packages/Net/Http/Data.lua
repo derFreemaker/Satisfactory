@@ -170,7 +170,7 @@ end
 
 ---@return boolean
 function HttpResponse:IsSuccess()
-	return self.ApiResponse.WasSuccessfull
+	return self.ApiResponse.WasSuccessful
 end
 
 function HttpResponse:IsFaulted()
