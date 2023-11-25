@@ -1,0 +1,3 @@
+=== `reset()`
+
+Stops the current code execution immediately and queues the system to restart in the next tick.

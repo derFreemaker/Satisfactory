@@ -1,0 +1,14 @@
+=== `listen(Component...)`
+
+Adds the running lua context to the listen queue of the given component(s).
+
+Parameters::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|Component
+|Component
+|The network component lua representation the computer should now listen to.
+|===

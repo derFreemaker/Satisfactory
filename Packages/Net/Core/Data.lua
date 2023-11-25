@@ -148,10 +148,11 @@ function NetworkClient:__init(logger, networkCard, serializer)
 	EventPullAdapter:AddTask('NetworkMessage', Task(self.networkMessageRecieved, self))
 end
 
----@private
-function NetworkClient:__gc()
-	self.m_ports = nil
-end
+-- //TODO: find new of closing all ports on computer.stop
+-- ---@private
+-- function NetworkClient:__gc()
+-- 	self.m_ports = nil
+-- end
 
 ---@return Net.Core.IPAddress
 function NetworkClient:GetIPAddress()

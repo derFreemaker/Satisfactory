@@ -45,6 +45,7 @@ Configs.OverrideMetaMethods = {
 }
 
 Configs.IndirectMetaMethods = {
+    __gc = true,
     __index = true,
     __newindex = true
 }

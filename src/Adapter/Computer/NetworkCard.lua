@@ -1,4 +1,4 @@
-local Reference = require("Core.References.Reference")
+local ProxyReference = require("Core.References.ProxyReference")
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
 ---@type { [integer | string]: Adapter.Computer.NetworkCard }
@@ -25,12 +25,12 @@ function NetworkCard:__init(idOrIndex)
 	local networkCard
 	if type(idOrIndex) == 'string' then
 		---@cast idOrIndex FIN.UUID
-		networkCard = Reference(idOrIndex)
+		networkCard = ProxyReference(idOrIndex)
 	else
 		---@cast idOrIndex integer
-		networkCard = PCIDeviceReference(findClass('NetworkCard_C'), idOrIndex)
+		networkCard = PCIDeviceReference(classes.NetworkCard_C, idOrIndex)
 	end
-	if not networkCard:Refresh() then
+	if not networkCard:Fetch() then
 		error("no network card found")
 	end
 
@@ -40,10 +40,11 @@ function NetworkCard:__init(idOrIndex)
 	self:CloseAllPorts()
 end
 
----@private
-function NetworkCard:__gc()
-	self:CloseAllPorts()
-end
+-- //TODO: find new of closing all ports on computer.stop
+-- ---@private
+-- function NetworkCard:__gc()
+-- 	self:CloseAllPorts()
+-- end
 
 ---@return FIN.UUID
 function NetworkCard:GetIPAddress()

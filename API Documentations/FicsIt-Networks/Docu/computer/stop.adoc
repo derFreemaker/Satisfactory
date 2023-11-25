@@ -1,0 +1,5 @@
+=== `stop()`
+
+Stops the current code execution.
+
+Basically kills the PC runtime immediately.

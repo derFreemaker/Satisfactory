@@ -1,0 +1,3 @@
+=== `clear()`
+
+Clears every signal from the signal queue.

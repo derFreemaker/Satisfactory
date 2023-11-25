@@ -1,10 +1,6 @@
 ---@meta
 
---- [Documentation](https://docs.ficsit.app/ficsit-networks/latest/index.html)
---- [Code](https://github.com/Panakotta00/FicsIt-Networks/tree/master)
---- Date: 08.09.2023
-
---#region global variables
+-- //TODO: update documentation
 
 --- # Not in FicsIt-Networks available #
 package = nil
@@ -24,9 +20,9 @@ arg = nil
 --- # Not in FicsIt-Networks available #
 require = nil
 
---#endregion
-
---#region FicsIt-Networks types
+----------------------------------------
+--- FicsIt-Networks Types
+----------------------------------------
 
 ---@class float : number
 
@@ -36,7 +32,7 @@ require = nil
 
 ---@class FIN.UUID : string
 
----@class FIN.Component
+---@class FIN.Component : FIN.Class
 local Component = {}
 
 --- The network id of this component.
@@ -60,20 +56,15 @@ Component.id = nil
 ---@type string
 Component.nick = nil
 
---#endregion
-
---#region functions
+----------------------------------------
+--- Functions
+----------------------------------------
 
 --- Tries to find an object type with the given name, and returns the found type.
+---@deprecated
 ---@param name string
 ---@return FIN.Class Class
 function findClass(name)
-end
-
---- Tries to find a structure type with the given name, and returns the found type.
----@param name string
----@return FIN.Class Class
-function findStruct(name)
 end
 
 --- Tries to find an item type with the given name, and returns the found item type.
@@ -82,4 +73,14 @@ end
 function findItem(name)
 end
 
---#endregion
+--- Tries to find the items or item provided via name.
+---@param name string
+---@return FIN.ItemType itemType
+function getItems(name)
+end
+
+--- Tries to find the items or item provided via name.
+---@param ... string name
+---@return FIN.ItemType ...
+function getItems(...)
+end

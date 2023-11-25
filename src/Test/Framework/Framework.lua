@@ -22,12 +22,12 @@ end
 function Framework:Run(logger)
     logger:LogInfo("Running tests...")
 
-    local successfull = 0
+    local successful = 0
     local failed = 0
     for _, test in ipairs(self.m_tests) do
         test:Run(logger)
-        if test:WasSuccessfull() then
-            successfull = successfull + 1
+        if test:WasSuccessful() then
+            successful = successful + 1
         else
             failed = failed + 1
         end
@@ -35,7 +35,7 @@ function Framework:Run(logger)
 
     logger:LogInfo(
         "Tests finished with "
-        .. successfull .. " successfull tests and "
+        .. successful .. " successful tests and "
         .. failed .. " failed tests"
     )
 end

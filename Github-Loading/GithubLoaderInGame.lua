@@ -27,8 +27,8 @@ local LoaderUrl = LoaderFilesUrl .. '/Loader.lua'
 local LoaderFilesPath = ''
 local LoaderPath = LoaderFilesPath .. '/Loader.lua'
 
----@type FIN.Components.FINComputerMod.InternetCard_C
-local internetCard = computer.getPCIDevices(findClass('FINInternetCard'))[1]
+---@type FIN.Components.InternetCard_C
+local internetCard = computer.getPCIDevices(classes.FINInternetCard)[1]
 if not internetCard then
 	computer.beep(0.2)
 	error('No internet-card found!')
@@ -117,3 +117,6 @@ until not result or type(result) ~= 'boolean'
 if Loader then
 	Loader:Cleanup()
 end
+
+-- to invoke garbage collection
+computer.stop()

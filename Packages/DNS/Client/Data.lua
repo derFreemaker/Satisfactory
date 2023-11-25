@@ -22,7 +22,7 @@ PackageData["DNSClientClient"] = {
     Namespace = "DNS.Client.Client",
     IsRunnable = true,
     Data = [[
-local Usage = require("Core.Usage")
+local Usage = require("Core.Usage.init")
 
 local IPAddress = require("Net.Core.IPAddress")
 local NetworkClient = require('Net.Core.NetworkClient')
@@ -109,7 +109,7 @@ function Client:CreateAddress(url, ipAddress)
 
 	local response = self:InternalRequest('CREATE', '/Address/Create/', createAddress)
 
-	if not response.WasSuccessfull then
+	if not response.WasSuccessful then
 		return false
 	end
 	return response.Body
@@ -120,7 +120,7 @@ end
 function Client:DeleteAddress(id)
 	local response = self:InternalRequest('DELETE', "/Address/" .. tostring(id) .. "/Delete/")
 
-	if not response.WasSuccessfull then
+	if not response.WasSuccessful then
 		return false
 	end
 	return response.Body
@@ -131,7 +131,7 @@ end
 function Client:GetWithId(id)
 	local response = self:InternalRequest('GET', "/Address/Id/" .. tostring(id) .. "/")
 
-	if not response.WasSuccessfull then
+	if not response.WasSuccessful then
 		return nil
 	end
 	return response.Body
@@ -142,7 +142,7 @@ end
 function Client:GetWithDomain(domain)
 	local response = self:InternalRequest('GET', "/Address/Domain/" .. domain .. "/")
 
-	if not response.WasSuccessfull then
+	if not response.WasSuccessful then
 		return nil
 	end
 	return response.Body

@@ -1,0 +1,14 @@
+=== `int millis()`
+
+Returns the amount of milliseconds passed since the system started.
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|int
+|int
+|Amount of milliseconds since system start
+|===

@@ -51,269 +51,54 @@ function Task:GetTraceback()
     return self:Traceback()
 end
 
+---@param length integer
+---@return fun(func: function, tbl: table, ...: any) : ... : any
+local function createInvokeFunc(length)
+    local funcStart = "return function(func, tbl, ...)\n    return func(\n"
+    local parameter = "        tbl[%d],\n"
+    local funcEnd = "        ...)\nend"
+
+    local newFunc = funcStart
+
+    for i = 1, length, 1 do
+        newFunc = newFunc .. string.format(parameter, i)
+    end
+
+    newFunc = newFunc .. funcEnd
+
+    ---@type (fun() : (fun(func: function, tbl: table, ...: any) : ... : any))?
+    local createFunc = load(newFunc)
+    if not createFunc then
+        error("unable to create func")
+    end
+
+    return createFunc()
+end
+
 ---@param ... any parameters
 ---@return any ... results
 function Task:Execute(...)
     ---@param ... any parameters
-    local function invokeFunc(...)
-        if self.m_passthrough ~= nil then
-            -- //TODO: this has to change
+    local function invokeFunc(func, passthrough, ...)
+        if passthrough ~= nil then
+            -- //TODO
             -- Having to do this is a bit annoying, but it's the only way to get the correct number of arguments
             -- example code that doesn't work for some reason:
             --
-            -- local args = { "hi1", "hi2" }
+            -- local args1 = { "hi1", "hi2" }
             -- local args2 = { "hi3", "hi4" }
-            -- function foo2(...)
+            -- local function foo(...)
             --     print(...)
             -- end
-            -- foo2(table.unpack(args, 1, #args), table.unpack(args2, 1, #args2))
+            -- foo(table.unpack(args1), table.unpack(args2))
             --
             -- Output:
             -- hi1 hi3 hi4
-            local count = #self.m_passthrough
-            if count < 5 then
-                if count == 1 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            ...
-                        )
-                    }
-                elseif count == 2 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            ...
-                        )
-                    }
-                elseif count == 3 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            ...
-                        )
-                    }
-                elseif count == 4 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            ...
-                        )
-                    }
-                end
-            elseif count < 9 then
-                if count == 5 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            ...
-                        )
-                    }
-                elseif count == 6 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            ...
-                        )
-                    }
-                elseif count == 7 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            ...
-                        )
-                    }
-                elseif count == 8 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            self.m_passthrough[8],
-                            ...
-                        )
-                    }
-                end
-            elseif count < 13 then
-                if count == 9 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            self.m_passthrough[8],
-                            self.m_passthrough[9],
-                            ...
-                        )
-                    }
-                elseif count == 10 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            self.m_passthrough[8],
-                            self.m_passthrough[9],
-                            self.m_passthrough[10],
-                            ...
-                        )
-                    }
-                elseif count == 11 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            self.m_passthrough[8],
-                            self.m_passthrough[9],
-                            self.m_passthrough[10],
-                            self.m_passthrough[11],
-                            ...
-                        )
-                    }
-                elseif count == 12 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            self.m_passthrough[8],
-                            self.m_passthrough[9],
-                            self.m_passthrough[10],
-                            self.m_passthrough[11],
-                            self.m_passthrough[12],
-                            ...
-                        )
-                    }
-                end
-            else
-                if count == 13 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            self.m_passthrough[8],
-                            self.m_passthrough[9],
-                            self.m_passthrough[10],
-                            self.m_passthrough[11],
-                            self.m_passthrough[12],
-                            self.m_passthrough[13],
-                            ...
-                        )
-                    }
-                elseif count == 14 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            self.m_passthrough[8],
-                            self.m_passthrough[9],
-                            self.m_passthrough[10],
-                            self.m_passthrough[11],
-                            self.m_passthrough[12],
-                            self.m_passthrough[13],
-                            self.m_passthrough[14],
-                            ...
-                        )
-                    }
-                elseif count == 15 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            self.m_passthrough[8],
-                            self.m_passthrough[9],
-                            self.m_passthrough[10],
-                            self.m_passthrough[11],
-                            self.m_passthrough[12],
-                            self.m_passthrough[13],
-                            self.m_passthrough[14],
-                            self.m_passthrough[15],
-                            ...
-                        )
-                    }
-                elseif count == 16 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            self.m_passthrough[8],
-                            self.m_passthrough[9],
-                            self.m_passthrough[10],
-                            self.m_passthrough[11],
-                            self.m_passthrough[12],
-                            self.m_passthrough[13],
-                            self.m_passthrough[14],
-                            self.m_passthrough[15],
-                            self.m_passthrough[16],
-                            ...
-                        )
-                    }
-                end
-            end
+
+            local invoke = createInvokeFunc(#passthrough)
+            return { invoke(func, passthrough, ...) }
         else
-            self.m_results = { self.m_func(...) }
+            return { self.m_func(...) }
         end
     end
 
@@ -321,7 +106,14 @@ function Task:Execute(...)
     self.m_closed = false
     self.m_traceback = nil
 
-    self.m_success, self.m_error = coroutine.resume(self.m_thread, ...)
+    local success, results = coroutine.resume(self.m_thread, self.m_func, self.m_passthrough, ...)
+    self.m_success = success
+    if success then
+        self.m_results = results
+    else
+        self.m_error = results
+    end
+
     return table.unpack(self.m_results)
 end
 

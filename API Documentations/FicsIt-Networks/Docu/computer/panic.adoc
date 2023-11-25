@@ -1,0 +1,14 @@
+=== `panic(string error)`
+
+Crashes the computer with the given error message.
+
+Parameter::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|error
+|string
+|The crash error message you want to use
+|===

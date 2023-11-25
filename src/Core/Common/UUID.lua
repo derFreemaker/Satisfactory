@@ -38,13 +38,13 @@ function UUID.Static__New()
     math.randomseed(math.floor(computer.time()) + UUID.Static__GeneratedCount)
     local head = generateRandomChars(6)
     local body = generateRandomChars(4)
-    local tail = generateRandomChars(6)
+    local tail = generateRandomChars(8)
     return UUID(head, body, tail)
 end
 
 local emptyHead = { 48, 48, 48, 48, 48, 48 }
 local emptyBody = { 48, 48, 48, 48 }
-local emptyTail = { 48, 48, 48, 48, 48, 48 }
+local emptyTail = { 48, 48, 48, 48, 48, 48, 48, 48 }
 
 ---@return number[] head, number[] body, number[] tail
 local function getEmptyData()

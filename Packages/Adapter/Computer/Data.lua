@@ -11,7 +11,7 @@ local ComputerPartReference = require("Core.References.PCIDeviceReference")
 local InternetCards = setmetatable({}, { __mode = 'v' })
 
 ---@class Adapter.Computer.InternetCard : object
----@field m_refInternetCard Core.IReference<FIN.Components.FINComputerMod.InternetCard_C>
+---@field m_refInternetCard Core.IReference<FIN.Components.InternetCard_C>
 local InternetCard = {}
 
 ---@param index number
@@ -24,8 +24,8 @@ function InternetCard:__init(index)
         return InternetCards[index]
     end
 
-    local internetCard = ComputerPartReference(findClass('InternetCard_C'), index)
-    if not internetCard:Refresh() then
+    local internetCard = ComputerPartReference(classes.InternetCard_C, index)
+    if not internetCard:Fetch() then
         error("no internet card found")
     end
 
@@ -66,7 +66,7 @@ PackageData["AdapterComputerNetworkCard"] = {
     Namespace = "Adapter.Computer.NetworkCard",
     IsRunnable = true,
     Data = [[
-local Reference = require("Core.References.Reference")
+local ProxyReference = require("Core.References.ProxyReference")
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
 ---@type { [integer | string]: Adapter.Computer.NetworkCard }
@@ -93,12 +93,12 @@ function NetworkCard:__init(idOrIndex)
 	local networkCard
 	if type(idOrIndex) == 'string' then
 		---@cast idOrIndex FIN.UUID
-		networkCard = Reference(idOrIndex)
+		networkCard = ProxyReference(idOrIndex)
 	else
 		---@cast idOrIndex integer
-		networkCard = PCIDeviceReference(findClass('NetworkCard_C'), idOrIndex)
+		networkCard = PCIDeviceReference(classes.NetworkCard_C, idOrIndex)
 	end
-	if not networkCard:Refresh() then
+	if not networkCard:Fetch() then
 		error("no network card found")
 	end
 
@@ -108,10 +108,11 @@ function NetworkCard:__init(idOrIndex)
 	self:CloseAllPorts()
 end
 
----@private
-function NetworkCard:__gc()
-	self:CloseAllPorts()
-end
+-- //TODO: find new of closing all ports on computer.stop
+-- ---@private
+-- function NetworkCard:__gc()
+-- 	self:CloseAllPorts()
+-- end
 
 ---@return FIN.UUID
 function NetworkCard:GetIPAddress()

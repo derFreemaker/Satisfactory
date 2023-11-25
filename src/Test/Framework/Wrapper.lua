@@ -47,7 +47,7 @@ function Wrapper:Run(logger)
 end
 
 ---@return boolean
-function Wrapper:WasSuccessfull()
+function Wrapper:WasSuccessful()
     return self.m_task:IsSuccess()
 end
 

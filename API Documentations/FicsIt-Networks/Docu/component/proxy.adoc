@@ -1,0 +1,68 @@
+=== `Component... proxy(string id...)`
+
+Generates and returns instances of the network components with the given UUIDs. +
+You can pass any amount of parameters and each parameter will then have a corresponding return value. +
+Each parameter can be either a string, or an array of strings.
+These strings should then contain just the UUID of a network component. +
+If a network component cannot be found for a given string, nil will be used for the return.
+Otherwise, an instance of the network component will be returned. +
+If a parameter is a string array, the return value will be an array of network component instances.
+
+Parameter::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|id
+|string
+|The UUID of the network component.
+|===
+
+Return 	Value::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|Component
+|Component
+|The lua table representation of the network component.
+
+Nil if the network component with the given ID was not found.
+|===
+
+=== `Component[]... proxy(string[] ids...)`
+
+Generates and returns instances of the network components with the given UUIDs. +
+You can pass any amount of parameters and each parameter will then have a corresponding return value. +
+Each parameter can be either a string, or an array of strings.
+These strings should then contain just the UUID of a network component. +
+If a network component cannot be found for a given string, nil will be used for the return.
+Otherwise, an instance of the network component will be returned. +
+If a parameter is a string array, the return value will be an array of network component instances.
+
+Parameter::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|ids
+|string[]
+|An array of UUIDs of the network components.
+
+|===
+
+Return 	Value::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|Components
+|Component[]
+|An array of the lua table representation of the network component.
+
+Entries are Nil if the network component with the given ID was not found.
+|===

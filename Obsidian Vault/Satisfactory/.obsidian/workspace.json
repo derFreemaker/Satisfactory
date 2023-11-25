@@ -4,16 +4,16 @@
     "type": "split",
     "children": [
       {
-        "id": "14a3bc362d26c5c7",
+        "id": "deac3e0676b453ff",
         "type": "tabs",
         "children": [
           {
-            "id": "cfa5c4a70c678963",
+            "id": "f9b5bd2b3a799a6a",
             "type": "leaf",
             "state": {
               "type": "mk-space",
               "state": {
-                "path": "Spaces/Home"
+                "path": "API/FicsIt Networks"
               }
             }
           }
@@ -64,7 +64,7 @@
             }
           },
           {
-            "id": "f6863fd6f3fdecb8",
+            "id": "2aec740479281028",
             "type": "leaf",
             "state": {
               "type": "mk-file-view",
@@ -149,9 +149,17 @@
               "type": "file-properties",
               "state": {}
             }
+          },
+          {
+            "id": "e52f3becba7b5f1d",
+            "type": "leaf",
+            "state": {
+              "type": "make-context-view",
+              "state": {}
+            }
           }
         ],
-        "currentTab": 5
+        "currentTab": 6
       }
     ],
     "direction": "horizontal",
@@ -167,52 +175,54 @@
       "templates:Vorlage einfügen": false,
       "command-palette:Befehlspalette öffnen": false,
       "zk-prefixer:Neue eindeutige Notiz erstellen": false,
-      "markdown-importer:Markdown Importprogramm öffnen": false
+      "markdown-importer:Markdown Importprogramm öffnen": false,
+      "dbfolder:Create a new database table": false
     }
   },
-  "active": "cfa5c4a70c678963",
+  "active": "f9b5bd2b3a799a6a",
   "lastOpenFiles": [
-    "Objects/boolean.md",
-    "Code Projects/Factory Control/Map.canvas",
-    "Code Projects/Code Projects.md",
-    "Code Projects/Github Loading/Map.canvas",
-    "Code Projects/Github Loading/Lua Bundler.md",
-    "Code Projects/Github Loading/Github Loader.md",
-    "Spaces/Home/Home.md",
+    "API/FicsIt Networks/event/API.md",
+    "API/FicsIt Networks/computer/API.md",
+    "API/FicsIt Networks/computer/attentionPing.md",
+    "API/FicsIt Networks/computer/textNotification.md",
+    "API/FicsIt Networks/computer/getPCIDevices.md",
+    "API/FicsIt Networks/computer/log.md",
+    "API/FicsIt Networks/computer/magicTime.md",
+    "API/FicsIt Networks/computer/millis.md",
+    "API/FicsIt Networks/computer/time.md",
+    "API/FicsIt Networks/computer/getEEPROM.md",
+    "API/FicsIt Networks/computer/setEPPROM.md",
+    "API/FicsIt Networks/computer/beep.md",
+    "API/FicsIt Networks/computer/state.md",
+    "API/FicsIt Networks/computer/isPromoted.md",
+    "API/FicsIt Networks/computer/demote.md",
+    "API/FicsIt Networks/computer/promote.md",
+    "API/FicsIt Networks/computer/skip.md",
+    "API/FicsIt Networks/computer/panic.md",
+    "API/FicsIt Networks/computer/stop.md",
+    "API/FicsIt Networks/computer/reset.md",
+    "API/FicsIt Networks/computer/getInstance.md",
+    "API/FicsIt Networks/computer/getMemory.md",
+    "API/FicsIt Networks/computer/computer.md",
+    "API/FicsIt Networks/computer",
+    "API/FicsIt Networks/event/listen.md",
+    "API/FicsIt Networks/event/clear.md",
+    "API/FicsIt Networks/event/ignoreAll.md",
+    "API/FicsIt Networks/event",
+    "API/FicsIt Networks/component/asdas",
     "Spaces/Home",
     "Spaces",
-    "Code Projects/DNS/DNS.md",
+    "Spaces/Unbenannt.canvas",
+    "Neuer Ordner",
+    "Spaces/Home/API/FicsIt Networks/component",
+    "Spaces/Home/API/FicsIt Networks",
+    "Spaces/Home/API",
+    "Spaces/Home/Code Projects/Factory Control/Map.canvas",
+    "Spaces/Home/Code Projects/Github Loading/Map.canvas",
     "Code Projects/DNS/Map.canvas",
-    "Objects/Dictionary.md",
     "Code Projects/DNS",
-    "Factories",
-    "Objects/Objects.md",
-    "Context/~syncthing~spacesLastSync.log.tmp",
-    "Projects/Class System/Type.md",
-    "Projects/Class System/Template.md",
-    "Projects/Class System/Class.md",
     "Projects/Class System/Map.canvas",
-    "Projects/Unbenannt.md",
-    "Projects/Class System",
-    "Projects/Factory Control/Client/Controller.md",
-    "Code Projects/Factory Control/Client/Feature Info.md",
-    "Projects/Factory Control/Client/Feature Types.md",
-    "Code Projects/Factory Control/ControllerDto/Feature/FeatureDto.md",
-    "Code Projects/Factory Control/Server/Database.md",
-    "Code Projects/Factory Control/ControllerDto/Feature/ChartDto.md",
-    "Objects/string.md",
-    "Code Projects/Factory Control/ControllerDto/Feature/RadialDto.md",
-    "Objects/number.md",
-    "Code Projects/Factory Control/ControllerDto/Feature/SwitchDto.md",
-    "Code Projects/Factory Control/ControllerDto/Feature/ButtonDto.md",
-    "Code Projects/Factory Control/ControllerDto/ControllerDto.md",
-    "Projects/Factory Control/ControllerDto/(...).ControllerDto.md",
-    "Code Projects/Factory Control/ControllerDto/Feature/Feature.Type.md",
-    "Objects",
-    "Code Projects/Factory Control/ControllerDto/Feature",
-    "Code Projects/Factory Control/ControllerDto",
     "Projects/Github Loading/Github Loading.canvas",
-    "Projects/Github Loading/Map - Kopie.canvas",
-    "Code Projects/Github Loading/Package"
+    "Projects/Github Loading/Map - Kopie.canvas"
   ]
 }

@@ -1,0 +1,30 @@
+=== `bool createDir(string path, bool all)`
+
+Creates the folder path.
+
+Parameters::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|path
+|string
+|folder path the function should create
+
+|all
+|bool
+|If false creates only the last folder of the path +
+If true creates all folders in the path
+|===
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|bool
+|bool
+|returns if it was able to create the directory
+|===

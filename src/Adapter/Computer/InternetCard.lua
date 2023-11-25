@@ -3,7 +3,7 @@ local ComputerPartReference = require("Core.References.PCIDeviceReference")
 local InternetCards = setmetatable({}, { __mode = 'v' })
 
 ---@class Adapter.Computer.InternetCard : object
----@field m_refInternetCard Core.IReference<FIN.Components.FINComputerMod.InternetCard_C>
+---@field m_refInternetCard Core.IReference<FIN.Components.InternetCard_C>
 local InternetCard = {}
 
 ---@param index number
@@ -16,8 +16,8 @@ function InternetCard:__init(index)
         return InternetCards[index]
     end
 
-    local internetCard = ComputerPartReference(findClass('InternetCard_C'), index)
-    if not internetCard:Refresh() then
+    local internetCard = ComputerPartReference(classes.InternetCard_C, index)
+    if not internetCard:Fetch() then
         error("no internet card found")
     end
 

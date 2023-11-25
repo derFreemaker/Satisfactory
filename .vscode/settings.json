@@ -1,7 +1,6 @@
 {
-	"Lua.diagnostics.globals": ["event", "findClass", "Config", "component", "filesystem", "computer", "findStruct", "findItem", "log"],
-	"Lua.completion.autoRequire": true,
-	"Lua.workspace.ignoreDir": [".git", ".stfolder", ".vscode", "Code-Server", "Lua-Bundler", "Obsidian Vault", "Packages", "PackageTemplate", "FIN Source Code"],
+	"Lua.diagnostics.globals": ["event", "Config", "component", "filesystem", "computer", "findItem", "log"],
+	"Lua.workspace.ignoreDir": [".git", ".stfolder", ".vscode", "Code-Server", "Lua-Bundler", "Obsidian Vault", "Packages", "PackageTemplate"],
 	"triggerTaskOnSave.tasks": {
 		"check all": ["*"]
 	},
@@ -16,8 +15,8 @@
 		"Code-Server/**": true,
 		"Lua-Bundler/**": true,
 		"Obsidian Vault/**": true,
-		"Packages/**": true,
-		"FIN Source Code": true
+		"Packages/**": true
 	},
 	"explorerExclude.backup": {},
+	"asciidoc.antora.enableAntoraSupport": true,
 }

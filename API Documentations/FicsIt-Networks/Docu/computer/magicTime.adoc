@@ -1,0 +1,22 @@
+=== `int, string, string magicTime()`
+
+Returns some kind of strange/mysterious time data from a unknown place (the real life).
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|int
+|int
+|Unix Timestamp
+
+|string
+|string
+|Serverside Formated Date-Time-Stamp
+
+|string
+|string
+|Date-Time-Stamp after ISO 8601
+|===

@@ -1,0 +1,25 @@
+=== `bool isFile(string path)`
+
+Checks if path refers to a file.
+
+Parameters::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|path
+|string
+|path you want to check if it refers to a file
+|===
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|bool
+|bool
+|true if path refers to a file
+|===

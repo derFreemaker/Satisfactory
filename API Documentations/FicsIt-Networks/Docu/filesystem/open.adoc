@@ -1,0 +1,67 @@
+=== `File open(string path, string mode)`
+
+Opens a file-stream and returns it as File-table.
+
+Parameters::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|path
+|string
+|the path to the file you want to open a file-stream for
+
+|mode
+|string
+|The mode for the file stream
+
+- `r` read only
++
+file stream can just read from file.
++
+If file doesn't exist, open will return nil
+
+- `w` write
++
+file stream can read and write
++
+creates the file if it doesn't exist
+
+- `a` end of file
++
+file stream can read and write
++
+cursor is set to the end of file
+
+- `+r` truncate
++
+file stream can read and write
++
+all previous data in file gets dropped
+
+- `+w` ?
++
+file stream can read and write and truncates
++
+creates the file if it doesn't exist
+
+- `+a` append
++
+file stream can read the full file but can only write to the end of the existing file
+
+with `b{mode}` will do everthing in binary
+|===
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|File
+|File
+|The File table of the file stream
+
+Nil if not able to open file in read only
+|===

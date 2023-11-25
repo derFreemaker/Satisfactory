@@ -1,0 +1,18 @@
+=== `attentionPing(position, [playerName])`
+
+Creates an attention ping at the give position.
+
+Parameters::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|position
+|Vector
+|the position where the attention ping should be created
+
+|playerName
+|string
+|name of the player which should recieve the attention ping
+|===

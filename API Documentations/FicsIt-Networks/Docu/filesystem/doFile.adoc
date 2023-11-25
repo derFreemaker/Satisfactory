@@ -1,0 +1,27 @@
+=== `any... doFile(string path)`
+
+Executes Lua code in the file referd by the given path.
+
+Function fails if path doesn't exist or path doesn't refer to a file.
+
+Parameters::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|path
+|string
+|path to file you want to execute as Lua code
+|===
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|any
+|any
+|returns what the file returns after execution
+|===

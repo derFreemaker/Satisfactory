@@ -149,6 +149,21 @@
 				"close": true
 			},
 			"problemMatcher": []
+		},
+		{
+			"label": "create documentation",
+			"command": "lua",
+			"args": ["${workspaceFolder}/Tools/CreateDocumentation.lua", "${workspaceFolder}"],
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "never",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true,
+				"close": true
+			}
 		}
 	]
 }

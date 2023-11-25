@@ -1,0 +1,15 @@
+=== `ignore(Component...)`
+
+Removes the running lua context from the listen queue of the given components.
+Basically the opposite of listen.
+
+Parameters::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|Component...
+|Component...
+|The network component lua representations the computer should stop listening to.
+|===

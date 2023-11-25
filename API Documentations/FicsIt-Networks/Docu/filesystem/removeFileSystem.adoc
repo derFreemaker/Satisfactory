@@ -1,0 +1,27 @@
+=== `bool removeFileSystem(string name)`
+
+Trys to remove the filesystem with the given name from the system DevDevice.
+
+All mounts of the device will run invalid.
+
+Parameters::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|name
+|string
+|the name of the new filesystem you want to remove
+|===
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|bool
+|bool
+|returns true if it was able to remove the new filesystem
+|===

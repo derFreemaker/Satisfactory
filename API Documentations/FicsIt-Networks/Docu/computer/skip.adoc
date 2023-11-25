@@ -1,0 +1,4 @@
+=== `skip()`
+
+This function is mainly used to allow switching to a higher tick runtime state.
+Usually you use this when you want to make your code run faster when using functions that can run in asynchronous environment.

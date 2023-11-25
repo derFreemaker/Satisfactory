@@ -1,10 +1,10 @@
-local Reference = require("Core.References.Reference")
+local ProxyReference = require("Core.References.ProxyReference")
 
 local PipeValves = setmetatable({}, { __mode = 'v' })
 
 ---@class Adapter.Pipeline.Valve : object
 ---@field private m_iPAddress Net.Core.IPAddress
----@field private m_valve Core.IReference<Satisfactory.Components.Factory.Build_Valve_C>
+---@field private m_valve Core.IReference<Satisfactory.Components.Build_Valve_C>
 ---@overload fun(id: FIN.UUID) : Adapter.Pipeline.Valve
 local Valve = {}
 
@@ -13,7 +13,7 @@ local Valve = {}
 function Valve.Static__FindAllValveIdsInNetwork(nickName)
 	local valveIds = {}
 	if nickName == nil then
-		valveIds = component.findComponent(findClass('Build_Valve_C'))
+		valveIds = component.findComponent(classes.Build_Valve_C)
 	else
 		valveIds = component.findComponent(nickName)
 	end
@@ -38,8 +38,10 @@ function Valve:__init(id)
 		return PipeValves[id]
 	end
 
-	local valve = Reference(id)
-	valve:Check()
+	local valve = ProxyReference(id)
+	if not valve:Fetch() then
+		error("was not found")
+	end
 
 	self.m_valve = valve
 	PipeValves[id] = self

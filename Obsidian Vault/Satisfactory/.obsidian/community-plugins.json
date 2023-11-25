@@ -1,4 +1,6 @@
 [
   "make-md",
-  "obsidian-icons-plugin"
+  "obsidian-icons-plugin",
+  "dbfolder",
+  "dataview"
 ]

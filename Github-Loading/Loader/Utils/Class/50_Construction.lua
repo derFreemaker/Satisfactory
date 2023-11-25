@@ -3,6 +3,8 @@ local LoadedLoaderFiles = ({ ... })[1]
 local Configs = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/Config'][1]
 ---@type Utils.Table
 local Table = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Table'][1]
+---@type Utils.Value
+local Value = LoadedLoaderFiles["/Github-Loading/Loader/Utils/Value"][1]
 ---@type Utils.Class.MetatableHandler
 local MetatableHandler = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class/Metatable'][1]
 ---@type Utils.Class.InstanceHandler
@@ -28,6 +30,18 @@ local function construct(obj, ...)
     InstanceHandler.Add(typeInfo, classInstance)
 
     return classInstance
+end
+
+---@param typeInfo Utils.Class.Type
+---@param class object
+local function invokeDeconstructor(typeInfo, class)
+    if typeInfo.HasClose then
+        typeInfo.MetaMethods.__close(class, "Class Deconstruct")
+    end
+    if typeInfo.HasDeconstructor then
+        typeInfo.MetaMethods.__gc(class)
+        invokeDeconstructor(typeInfo.Base, class)
+    end
 end
 
 ---@param typeInfo Utils.Class.Type
@@ -61,11 +75,13 @@ function ConstructionHandler.ConstructClass(typeInfo, class, classMetatable, ...
         for key, value in pairs(typeInfo.Members) do
             if type(value) == "table" then
                 rawset(class, key, Table.Copy(value))
-                goto continue
+            else
+                rawset(class, key, Value.Copy(value))
             end
+        end
 
-            rawset(class, key, value)
-            ::continue::
+        classMetatable.__gc = function(deClass)
+            invokeDeconstructor(typeof(deClass), deClass)
         end
 
         setmetatable(class, classMetatable)
@@ -96,23 +112,11 @@ function ConstructionHandler.ConstructClass(typeInfo, class, classMetatable, ...
 end
 
 ---@param typeInfo Utils.Class.Type
----@param class table
-local function invokeDeconstructor(typeInfo, class)
-    if typeInfo.HasClose then
-        typeInfo.MetaMethods.__close(class, "Class Deconstruct")
-    end
-    if typeInfo.HasDeconstructor then
-        typeInfo.MetaMethods.__gc(class)
-        invokeDeconstructor(typeInfo.Base, class)
-    end
-end
-
----@param typeInfo Utils.Class.Type
----@param class table
+---@param class object
 ---@param metatable Utils.Class.Metatable
 function ConstructionHandler.Deconstruct(typeInfo, class, metatable)
     InstanceHandler.Remove(typeInfo, class)
-    invokeDeconstructor(typeInfo, class)
+    metatable.__gc(class)
 
     Table.Clear(class)
     Table.Clear(metatable)

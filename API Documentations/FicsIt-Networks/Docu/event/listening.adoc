@@ -1,0 +1,14 @@
+=== `Object[] listening()`
+
+Returns all signal senders this computer is listening to.
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|Object[]
+|Object[]
+|An array containing instances to all sginal senders this computer is listening too.
+|===

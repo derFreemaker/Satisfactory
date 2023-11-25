@@ -1,0 +1,29 @@
+=== `bool rename(string path, string name)`
+
+Renames the filesystem object at the given path to the given name.
+
+Parameters::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|path
+|string
+|path to the filesystem object you want to rename
+
+|name
+|string
+|the new name for your filesystem object
+|===
+
+Return Values::
++
+[cols="1,1,4a"]
+|===
+|Name |Type |Description
+
+|bool
+|bool
+|returns true if it was able to rename the node
+|===

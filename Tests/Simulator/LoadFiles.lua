@@ -21,6 +21,7 @@ local LoaderFiles = {
 			{ '10_Function.lua' },
 			{ '10_String.lua' },
 			{ '10_Table.lua' },
+			{ '20_Value.lua' },
 			{ '100_Index.lua' }
 		},
 		{ "10_ComputerLogger.lua" },

@@ -1,6 +1,20 @@
 ---@meta
 local PackageData = {}
 
+PackageData["CoreConfig"] = {
+    Location = "Core.Config",
+    Namespace = "Core.Config",
+    IsRunnable = true,
+    Data = [[
+---@class Core.Config
+local Config = {
+    REFERENCE_REFRESH_DELAY = 60000
+}
+
+return Config
+]]
+}
+
 PackageData["CoreCommonLazyEventHandler"] = {
     Location = "Core.Common.LazyEventHandler",
     Namespace = "Core.Common.LazyEventHandler",
@@ -414,269 +428,54 @@ function Task:GetTraceback()
     return self:Traceback()
 end
 
+---@param length integer
+---@return fun(func: function, tbl: table, ...: any) : ... : any
+local function createInvokeFunc(length)
+    local funcStart = "return function(func, tbl, ...)\n    return func(\n"
+    local parameter = "        tbl[%d],\n"
+    local funcEnd = "        ...)\nend"
+
+    local newFunc = funcStart
+
+    for i = 1, length, 1 do
+        newFunc = newFunc .. string.format(parameter, i)
+    end
+
+    newFunc = newFunc .. funcEnd
+
+    ---@type (fun() : (fun(func: function, tbl: table, ...: any) : ... : any))?
+    local createFunc = load(newFunc)
+    if not createFunc then
+        error("unable to create func")
+    end
+
+    return createFunc()
+end
+
 ---@param ... any parameters
 ---@return any ... results
 function Task:Execute(...)
     ---@param ... any parameters
-    local function invokeFunc(...)
-        if self.m_passthrough ~= nil then
-            -- //TODO: this has to change
+    local function invokeFunc(func, passthrough, ...)
+        if passthrough ~= nil then
+            -- //TODO
             -- Having to do this is a bit annoying, but it's the only way to get the correct number of arguments
             -- example code that doesn't work for some reason:
             --
-            -- local args = { "hi1", "hi2" }
+            -- local args1 = { "hi1", "hi2" }
             -- local args2 = { "hi3", "hi4" }
-            -- function foo2(...)
+            -- local function foo(...)
             --     print(...)
             -- end
-            -- foo2(table.unpack(args, 1, #args), table.unpack(args2, 1, #args2))
+            -- foo(table.unpack(args1), table.unpack(args2))
             --
             -- Output:
             -- hi1 hi3 hi4
-            local count = #self.m_passthrough
-            if count < 5 then
-                if count == 1 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            ...
-                        )
-                    }
-                elseif count == 2 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            ...
-                        )
-                    }
-                elseif count == 3 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            ...
-                        )
-                    }
-                elseif count == 4 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            ...
-                        )
-                    }
-                end
-            elseif count < 9 then
-                if count == 5 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            ...
-                        )
-                    }
-                elseif count == 6 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            ...
-                        )
-                    }
-                elseif count == 7 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            ...
-                        )
-                    }
-                elseif count == 8 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            self.m_passthrough[8],
-                            ...
-                        )
-                    }
-                end
-            elseif count < 13 then
-                if count == 9 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            self.m_passthrough[8],
-                            self.m_passthrough[9],
-                            ...
-                        )
-                    }
-                elseif count == 10 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            self.m_passthrough[8],
-                            self.m_passthrough[9],
-                            self.m_passthrough[10],
-                            ...
-                        )
-                    }
-                elseif count == 11 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            self.m_passthrough[8],
-                            self.m_passthrough[9],
-                            self.m_passthrough[10],
-                            self.m_passthrough[11],
-                            ...
-                        )
-                    }
-                elseif count == 12 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            self.m_passthrough[8],
-                            self.m_passthrough[9],
-                            self.m_passthrough[10],
-                            self.m_passthrough[11],
-                            self.m_passthrough[12],
-                            ...
-                        )
-                    }
-                end
-            else
-                if count == 13 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            self.m_passthrough[8],
-                            self.m_passthrough[9],
-                            self.m_passthrough[10],
-                            self.m_passthrough[11],
-                            self.m_passthrough[12],
-                            self.m_passthrough[13],
-                            ...
-                        )
-                    }
-                elseif count == 14 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            self.m_passthrough[8],
-                            self.m_passthrough[9],
-                            self.m_passthrough[10],
-                            self.m_passthrough[11],
-                            self.m_passthrough[12],
-                            self.m_passthrough[13],
-                            self.m_passthrough[14],
-                            ...
-                        )
-                    }
-                elseif count == 15 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            self.m_passthrough[8],
-                            self.m_passthrough[9],
-                            self.m_passthrough[10],
-                            self.m_passthrough[11],
-                            self.m_passthrough[12],
-                            self.m_passthrough[13],
-                            self.m_passthrough[14],
-                            self.m_passthrough[15],
-                            ...
-                        )
-                    }
-                elseif count == 16 then
-                    self.m_results = {
-                        self.m_func(
-                            self.m_passthrough[1],
-                            self.m_passthrough[2],
-                            self.m_passthrough[3],
-                            self.m_passthrough[4],
-                            self.m_passthrough[5],
-                            self.m_passthrough[6],
-                            self.m_passthrough[7],
-                            self.m_passthrough[8],
-                            self.m_passthrough[9],
-                            self.m_passthrough[10],
-                            self.m_passthrough[11],
-                            self.m_passthrough[12],
-                            self.m_passthrough[13],
-                            self.m_passthrough[14],
-                            self.m_passthrough[15],
-                            self.m_passthrough[16],
-                            ...
-                        )
-                    }
-                end
-            end
+
+            local invoke = createInvokeFunc(#passthrough)
+            return { invoke(func, passthrough, ...) }
         else
-            self.m_results = { self.m_func(...) }
+            return { self.m_func(...) }
         end
     end
 
@@ -684,7 +483,14 @@ function Task:Execute(...)
     self.m_closed = false
     self.m_traceback = nil
 
-    self.m_success, self.m_error = coroutine.resume(self.m_thread, ...)
+    local success, results = coroutine.resume(self.m_thread, self.m_func, self.m_passthrough, ...)
+    self.m_success = success
+    if success then
+        self.m_results = results
+    else
+        self.m_error = results
+    end
+
     return table.unpack(self.m_results)
 end
 
@@ -806,13 +612,13 @@ function UUID.Static__New()
     math.randomseed(math.floor(computer.time()) + UUID.Static__GeneratedCount)
     local head = generateRandomChars(6)
     local body = generateRandomChars(4)
-    local tail = generateRandomChars(6)
+    local tail = generateRandomChars(8)
     return UUID(head, body, tail)
 end
 
 local emptyHead = { 48, 48, 48, 48, 48, 48 }
 local emptyBody = { 48, 48, 48, 48 }
-local emptyTail = { 48, 48, 48, 48, 48, 48 }
+local emptyTail = { 48, 48, 48, 48, 48, 48, 48, 48 }
 
 ---@return number[] head, number[] body, number[] tail
 local function getEmptyData()
@@ -2233,49 +2039,36 @@ PackageData["CoreReferencesIReference"] = {
     Namespace = "Core.References.IReference",
     IsRunnable = true,
     Data = [[
+local Config = require("Core.Config")
+
 ---@class Core.IReference<T> : object, { Get: fun() : T }
 ---@field protected m_obj Satisfactory.Components.Object?
+---@field m_expires number
 local IReference = {}
 
----@private
-function IReference:__gc()
-    log("__gc called on reference")
-    self.m_obj = nil
-end
+IReference.m_expires = 0
 
----@return Satisfactory.Components.Object
+---@return any
 function IReference:Get()
-    self:Check()
+    if self.m_expires < computer.millis() then
+        if not self:Fetch() then
+            return nil
+        end
+
+        self.m_expires = computer.millis() + Config.REFERENCE_REFRESH_DELAY
+    end
 
     return self.m_obj
 end
 
----@return boolean isValid
-function IReference:IsValid()
-    if not self.m_obj then
-        return false
-    end
-
-    log("trying to see if reference is valid")
-    local success = Utils.Function.InvokeProtected(function(obj) local _ = obj.hash end, self.m_obj)
-    log("reference is valid: " .. tostring(success))
-
-    return success
-end
-
 ---@return boolean found
-function IReference:Refresh()
-    error("cannot call abstract method IReference:Refresh")
+function IReference:Fetch()
+    error("cannot call abstract method IReference:Fetch")
 end
 
+---@return boolean isValid
 function IReference:Check()
-    if not self:IsValid() then
-        if not self:Refresh() then
-            error("could not be refreshed", 2)
-        elseif not self:IsValid() then
-            error("not valid after refresh", 2)
-        end
-    end
+    return self:Get() == nil
 end
 
 return Utils.Class.CreateClass(IReference, "Core.IReference")
@@ -2301,10 +2094,11 @@ function PCIDeviceReference:__init(class, index)
     self.m_index = index
 end
 
----@return boolean notFound
-function PCIDeviceReference:Refresh()
-    self.m_obj = computer.getPCIDevices(self.m_class)[self.m_index]
-    return self.m_obj ~= nil
+---@return boolean found
+function PCIDeviceReference:Fetch()
+    local obj = computer.getPCIDevices(self.m_class)[self.m_index]
+    self.m_obj = obj
+    return obj ~= nil
 end
 
 return Utils.Class.CreateClass(PCIDeviceReference, "Core.PCIDeviceReference",
@@ -2312,29 +2106,29 @@ return Utils.Class.CreateClass(PCIDeviceReference, "Core.PCIDeviceReference",
 ]]
 }
 
-PackageData["CoreReferencesReference"] = {
-    Location = "Core.References.Reference",
-    Namespace = "Core.References.Reference",
+PackageData["CoreReferencesProxyReference"] = {
+    Location = "Core.References.ProxyReference",
+    Namespace = "Core.References.ProxyReference",
     IsRunnable = true,
     Data = [[
----@class Core.Reference<T> : Core.IReference<T>
+---@class Core.ProxyReference<T> : Core.IReference<T>
 ---@field m_id FIN.UUID
----@overload fun(id: FIN.UUID) : Core.Reference
-local Reference = {}
+---@overload fun(id: FIN.UUID) : Core.ProxyReference
+local ProxyReference = {}
 
 ---@private
 ---@param id FIN.UUID
-function Reference:__init(id)
+function ProxyReference:__init(id)
     self.m_id = id
 end
 
----@return boolean found
-function Reference:Refresh()
-    self.m_obj = component.proxy(self.m_id)
-    return component ~= nil
+function ProxyReference:Fetch()
+    local obj = component.proxy(self.m_id)
+    self.m_obj = obj
+    return obj ~= nil
 end
 
-return Utils.Class.CreateClass(Reference, "Core.Reference",
+return Utils.Class.CreateClass(ProxyReference, "Core.ProxyReference",
     require("Core.References.IReference"))
 ]]
 }

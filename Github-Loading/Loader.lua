@@ -20,6 +20,7 @@ local LoaderFiles = {
 			{ '10_Function.lua' },
 			{ '10_String.lua' },
 			{ '10_Table.lua' },
+			{ '20_Value.lua' },
 			{ '100_Index.lua' }
 		},
 		{ "10_ComputerLogger.lua" },
@@ -40,7 +41,7 @@ local LoaderFiles = {
 ---@param url string
 ---@param path string
 ---@param forceDownload boolean
----@param internetCard FIN.Components.FINComputerMod.InternetCard_C
+---@param internetCard FIN.Components.InternetCard_C
 ---@return boolean
 local function internalDownload(url, path, forceDownload, internetCard)
 	if forceDownload == nil then
@@ -123,7 +124,7 @@ end
 ---@param loaderBaseUrl string
 ---@param loaderBasePath string
 ---@param forceDownload boolean
----@param internetCard FIN.Components.FINComputerMod.InternetCard_C
+---@param internetCard FIN.Components.InternetCard_C
 ---@return boolean
 local function downloadFiles(loaderBaseUrl, loaderBasePath, forceDownload, internetCard)
 	---@param path string
@@ -227,7 +228,7 @@ end
 ---@field private m_loaderBaseUrl string
 ---@field private m_loaderBasePath string
 ---@field private m_forceDownload boolean
----@field private m_internetCard FIN.Components.FINComputerMod.InternetCard_C
+---@field private m_internetCard FIN.Components.InternetCard_C
 ---@field private m_loadedLoaderFiles table<string, table>
 ---@field Logger Github_Loading.Logger
 local Loader = {}
@@ -235,7 +236,7 @@ local Loader = {}
 ---@param loaderBaseUrl string
 ---@param loaderBasePath string
 ---@param forceDownload boolean
----@param internetCard FIN.Components.FINComputerMod.InternetCard_C
+---@param internetCard FIN.Components.InternetCard_C
 ---@return Github_Loading.Loader
 function Loader.new(loaderBaseUrl, loaderBasePath, forceDownload, internetCard)
 	-- //TODO: computer.promote used
@@ -344,10 +345,11 @@ function Loader:LoadOption(option, extendOptionDetails)
 
 	self.Logger:LogDebug('loaded Options')
 	if option == nil then
-		print('\nOptions:')
+		local output = 'Options:'
 		for _, optionObj in ipairs(mappedOptions) do
-			optionObj:Print(extendOptionDetails)
+			output = output .. "\n" .. optionObj:Get(extendOptionDetails)
 		end
+		print(output)
 		computer.stop()
 		return {}
 	end
