@@ -28,7 +28,7 @@ function NetworkCard:__init(idOrIndex)
 		networkCard = ProxyReference(idOrIndex)
 	else
 		---@cast idOrIndex integer
-		networkCard = PCIDeviceReference(findClass('NetworkCard_C'), idOrIndex)
+		networkCard = PCIDeviceReference(classes.NetworkCard_C, idOrIndex)
 	end
 	if not networkCard:Fetch() then
 		error("no network card found")

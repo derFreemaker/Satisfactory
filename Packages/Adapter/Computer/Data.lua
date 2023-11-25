@@ -24,7 +24,7 @@ function InternetCard:__init(index)
         return InternetCards[index]
     end
 
-    local internetCard = ComputerPartReference(findClass('InternetCard_C'), index)
+    local internetCard = ComputerPartReference(classes.InternetCard_C, index)
     if not internetCard:Fetch() then
         error("no internet card found")
     end
@@ -96,7 +96,7 @@ function NetworkCard:__init(idOrIndex)
 		networkCard = ProxyReference(idOrIndex)
 	else
 		---@cast idOrIndex integer
-		networkCard = PCIDeviceReference(findClass('NetworkCard_C'), idOrIndex)
+		networkCard = PCIDeviceReference(classes.NetworkCard_C, idOrIndex)
 	end
 	if not networkCard:Fetch() then
 		error("no network card found")

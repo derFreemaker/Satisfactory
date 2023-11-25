@@ -21,7 +21,7 @@ local Valve = {}
 function Valve.Static__FindAllValveIdsInNetwork(nickName)
 	local valveIds = {}
 	if nickName == nil then
-		valveIds = component.findComponent(findClass('Build_Valve_C'))
+		valveIds = component.findComponent(classes.Build_Valve_C)
 	else
 		valveIds = component.findComponent(nickName)
 	end

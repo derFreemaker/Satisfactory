@@ -1,6 +1,5 @@
 {
-	"Lua.diagnostics.globals": ["event", "findClass", "Config", "component", "filesystem", "computer", "findStruct", "findItem", "log"],
-	"Lua.completion.autoRequire": true,
+	"Lua.diagnostics.globals": ["event", "Config", "component", "filesystem", "computer", "findItem", "log"],
 	"Lua.workspace.ignoreDir": [".git", ".stfolder", ".vscode", "Code-Server", "Lua-Bundler", "Obsidian Vault", "Packages", "PackageTemplate"],
 	"triggerTaskOnSave.tasks": {
 		"check all": ["*"]
