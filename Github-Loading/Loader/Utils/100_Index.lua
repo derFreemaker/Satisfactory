@@ -17,7 +17,7 @@ end
 
 --- ### Use InternetCard Adapter if possible.
 ---@param url string
----@param internetCard FIN.Components.FINComputerMod.InternetCard_C
+---@param internetCard FIN.Components.InternetCard_C
 ---@param logger (Github_Loading.Logger | Core.Logger)?
 ---@return boolean success, string? data
 function Utils.Download(url, internetCard, logger)
@@ -42,7 +42,7 @@ end
 ---@param url string
 ---@param path string
 ---@param forceDownload boolean
----@param internetCard FIN.Components.FINComputerMod.InternetCard_C
+---@param internetCard FIN.Components.InternetCard_C
 ---@param logger (Github_Loading.Logger | Core.Logger)?
 ---@return boolean
 function Utils.DownloadToFile(url, path, forceDownload, internetCard, logger)

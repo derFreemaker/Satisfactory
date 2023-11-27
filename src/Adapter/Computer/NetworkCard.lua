@@ -2,6 +2,8 @@ local Cache = require("Adapter.Core.Cache")
 local ProxyReference = require("Core.References.ProxyReference")
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
+local NETWORKCARD = "NetworkCard"
+
 ---@class Adapter.Computer.NetworkCard : Adapter.IAdapter
 ---@field private m_refNetworkCard Core.IReference<FIN.Components.NetworkCard_C>
 ---@field private m_openPorts table<integer, true>
@@ -18,7 +20,7 @@ function NetworkCard:__init(idOrIndex)
 
 	---@type Out<Adapter.Computer.NetworkCard>
 	local networkCardAdapater = {}
-	if Cache:TryGet(idOrIndex, networkCardAdapater) then
+	if Cache:TryGet(NETWORKCARD, idOrIndex, networkCardAdapater) then
 		return networkCardAdapater.Value
 	end
 
@@ -28,14 +30,14 @@ function NetworkCard:__init(idOrIndex)
 		networkCard = ProxyReference(idOrIndex)
 	else
 		---@cast idOrIndex integer
-		networkCard = PCIDeviceReference(findClass('NetworkCard_C'), idOrIndex)
+		networkCard = PCIDeviceReference(classes.NetworkCard_C, idOrIndex)
 	end
 	if not networkCard:Fetch() then
 		error("no network card found")
 	end
 
 	self.m_refNetworkCard = networkCard
-	Cache:Add(idOrIndex, self)
+	Cache:Add(NETWORKCARD, idOrIndex, self)
 
 	self:CloseAllPorts()
 end
