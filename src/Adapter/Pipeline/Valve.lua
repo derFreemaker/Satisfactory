@@ -1,10 +1,9 @@
+local Cache = require("Adapter.Core.Cache")
 local ProxyReference = require("Core.References.ProxyReference")
 
-local PipeValves = setmetatable({}, { __mode = 'v' })
-
----@class Adapter.Pipeline.Valve : object
+---@class Adapter.Pipeline.Valve : Adapter.IAdapter
 ---@field private m_iPAddress Net.Core.IPAddress
----@field private m_valve Core.IReference<Satisfactory.Components.Build_Valve_C>
+---@field private m_valve Core.IReference<Satisfactory.Components.Factory.Build_Valve_C>
 ---@overload fun(id: FIN.UUID) : Adapter.Pipeline.Valve
 local Valve = {}
 
@@ -13,7 +12,7 @@ local Valve = {}
 function Valve.Static__FindAllValveIdsInNetwork(nickName)
 	local valveIds = {}
 	if nickName == nil then
-		valveIds = component.findComponent(classes.Build_Valve_C)
+		valveIds = component.findComponent(findClass('Build_Valve_C'))
 	else
 		valveIds = component.findComponent(nickName)
 	end
@@ -34,8 +33,10 @@ end
 ---@private
 ---@param id FIN.UUID
 function Valve:__init(id)
-	if Utils.Table.ContainsKey(PipeValves, id) then
-		return PipeValves[id]
+	---@type Out<Adapter.Pipeline.Valve>
+	local valveAdapater = {}
+	if Cache:TryGet(id, valveAdapater) then
+		return valveAdapater.Value
 	end
 
 	local valve = ProxyReference(id)
@@ -44,7 +45,7 @@ function Valve:__init(id)
 	end
 
 	self.m_valve = valve
-	PipeValves[id] = self
+	Cache:Add(id, self)
 end
 
 ---@return FIN.UUID

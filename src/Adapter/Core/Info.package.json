@@ -1,0 +1,7 @@
+{
+  "Name": "Adapter.Core",
+  "Namespace": "Adapter.Core",
+  "Version": "0.1.0-1",
+  "RequiredPackages": [],
+  "PackageType": "Library"
+}

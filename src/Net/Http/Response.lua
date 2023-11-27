@@ -14,7 +14,7 @@ end
 
 ---@return boolean
 function HttpResponse:IsSuccess()
-	return self.ApiResponse.WasSuccessful
+	return self.ApiResponse.WasSuccessfull
 end
 
 function HttpResponse:IsFaulted()

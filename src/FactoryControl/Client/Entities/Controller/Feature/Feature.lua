@@ -1,11 +1,11 @@
 local Task = require("Core.Common.Task")
-local LazyEventHandler = require("Core.Common.LazyEventHandler")
+local Watchable = require("Core.Common.Watchable")
 
 ---@class FactoryControl.Client.Entities.Controller.Feature : FactoryControl.Client.Entities.Entity
 ---@field Name string
 ---@field ControllerId Core.UUID
 ---@field Type FactoryControl.Core.Entities.Controller.Feature.Type
----@field OnChanged Core.LazyEventHandler
+---@field OnChanged Core.Watchable
 ---@overload fun(id: Core.UUID, name: string, controllerId: Core.UUID, type: FactoryControl.Core.Entities.Controller.Feature.Type, client: FactoryControl.Client) : FactoryControl.Client.Entities.Controller.Feature
 local Feature = {}
 
@@ -22,17 +22,17 @@ function Feature:__init(super, dto, client)
     self.ControllerId = dto.ControllerId
     self.Type = dto.Type
 
-    ---@param lazyEventHandler Core.LazyEventHandler
-    local function onSetup(lazyEventHandler)
+    ---@param Watchable Core.Watchable
+    local function onSetup(Watchable)
         self.m_client:WatchFeature(self)
     end
 
-    ---@param lazyEventHandler Core.LazyEventHandler
-    local function onClose(lazyEventHandler)
+    ---@param Watchable Core.Watchable
+    local function onClose(Watchable)
         self.m_client:UnwatchFeature(self.Id)
     end
 
-    self.OnChanged = LazyEventHandler(onSetup, onClose)
+    self.OnChanged = Watchable(onSetup, onClose)
 end
 
 ---@param update FactoryControl.Core.Entities.Controller.Feature.Update

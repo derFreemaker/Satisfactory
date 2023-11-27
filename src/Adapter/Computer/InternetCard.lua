@@ -1,9 +1,8 @@
-local ComputerPartReference = require("Core.References.PCIDeviceReference")
+local Cache = require("Adapter.Core.Cache")
+local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
-local InternetCards = setmetatable({}, { __mode = 'v' })
-
----@class Adapter.Computer.InternetCard : object
----@field m_refInternetCard Core.IReference<FIN.Components.InternetCard_C>
+---@class Adapter.Computer.InternetCard : Adapter.IAdapter
+---@field m_refInternetCard Core.IReference<FIN.Components.FINComputerMod.InternetCard_C>
 local InternetCard = {}
 
 ---@param index number
@@ -12,17 +11,19 @@ function InternetCard:__init(index)
         index = 1
     end
 
-    if Utils.Table.ContainsKey(InternetCards, index) then
-        return InternetCards[index]
+    ---@type Out<Adapter.Computer.InternetCard>
+    local internetCardAdapater = {}
+    if Cache:TryGet(index, internetCardAdapater) then
+        return internetCardAdapater.Value
     end
 
-    local internetCard = ComputerPartReference(classes.InternetCard_C, index)
+    local internetCard = PCIDeviceReference(classes.InternetCard_C, index)
     if not internetCard:Fetch() then
         error("no internet card found")
     end
 
     self.m_refInternetCard = internetCard
-    InternetCards[index] = self
+    Cache:Add(index, self)
 end
 
 ---@param url string

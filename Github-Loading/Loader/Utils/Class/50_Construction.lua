@@ -33,7 +33,7 @@ local function construct(obj, ...)
 end
 
 ---@param typeInfo Utils.Class.Type
----@param class object
+---@param class table
 local function invokeDeconstructor(typeInfo, class)
     if typeInfo.HasClose then
         typeInfo.MetaMethods.__close(class, "Class Deconstruct")
@@ -112,11 +112,11 @@ function ConstructionHandler.ConstructClass(typeInfo, class, classMetatable, ...
 end
 
 ---@param typeInfo Utils.Class.Type
----@param class object
+---@param class table
 ---@param metatable Utils.Class.Metatable
 function ConstructionHandler.Deconstruct(typeInfo, class, metatable)
     InstanceHandler.Remove(typeInfo, class)
-    metatable.__gc(class)
+    invokeDeconstructor(typeInfo, class)
 
     Table.Clear(class)
     Table.Clear(metatable)

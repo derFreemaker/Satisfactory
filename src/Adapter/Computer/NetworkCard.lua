@@ -1,10 +1,8 @@
+local Cache = require("Adapter.Core.Cache")
 local ProxyReference = require("Core.References.ProxyReference")
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
----@type { [integer | string]: Adapter.Computer.NetworkCard }
-local NetworkCards = setmetatable({}, { __mode = 'v' })
-
----@class Adapter.Computer.NetworkCard : object
+---@class Adapter.Computer.NetworkCard : Adapter.IAdapter
 ---@field private m_refNetworkCard Core.IReference<FIN.Components.NetworkCard_C>
 ---@field private m_openPorts table<integer, true>
 ---@overload fun(idOrIndexOrNetworkCard: (FIN.UUID | integer)?) : Adapter.Computer.NetworkCard
@@ -18,8 +16,10 @@ function NetworkCard:__init(idOrIndex)
 		idOrIndex = 1
 	end
 
-	if Utils.Table.ContainsKey(NetworkCards, idOrIndex) then
-		return NetworkCards[idOrIndex]
+	---@type Out<Adapter.Computer.NetworkCard>
+	local networkCardAdapater = {}
+	if Cache:TryGet(idOrIndex, networkCardAdapater) then
+		return networkCardAdapater.Value
 	end
 
 	local networkCard
@@ -28,14 +28,14 @@ function NetworkCard:__init(idOrIndex)
 		networkCard = ProxyReference(idOrIndex)
 	else
 		---@cast idOrIndex integer
-		networkCard = PCIDeviceReference(classes.NetworkCard_C, idOrIndex)
+		networkCard = PCIDeviceReference(findClass('NetworkCard_C'), idOrIndex)
 	end
 	if not networkCard:Fetch() then
 		error("no network card found")
 	end
 
 	self.m_refNetworkCard = networkCard
-	NetworkCards[idOrIndex] = self
+	Cache:Add(idOrIndex, self)
 
 	self:CloseAllPorts()
 end

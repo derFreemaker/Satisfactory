@@ -85,7 +85,7 @@ function Client:CreateAddress(url, ipAddress)
 
 	local response = self:InternalRequest('CREATE', '/Address/Create/', createAddress)
 
-	if not response.WasSuccessful then
+	if not response.WasSuccessfull then
 		return false
 	end
 	return response.Body
@@ -96,7 +96,7 @@ end
 function Client:DeleteAddress(id)
 	local response = self:InternalRequest('DELETE', "/Address/" .. tostring(id) .. "/Delete/")
 
-	if not response.WasSuccessful then
+	if not response.WasSuccessfull then
 		return false
 	end
 	return response.Body
@@ -107,7 +107,7 @@ end
 function Client:GetWithId(id)
 	local response = self:InternalRequest('GET', "/Address/Id/" .. tostring(id) .. "/")
 
-	if not response.WasSuccessful then
+	if not response.WasSuccessfull then
 		return nil
 	end
 	return response.Body
@@ -118,7 +118,7 @@ end
 function Client:GetWithDomain(domain)
 	local response = self:InternalRequest('GET', "/Address/Domain/" .. domain .. "/")
 
-	if not response.WasSuccessful then
+	if not response.WasSuccessfull then
 		return nil
 	end
 	return response.Body
