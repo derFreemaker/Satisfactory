@@ -151,9 +151,9 @@
 			"problemMatcher": []
 		},
 		{
-			"label": "create documentation",
+			"label": "create classes and structs documentation",
 			"command": "lua",
-			"args": ["${workspaceFolder}/Tools/CreateDocumentation.lua", "${workspaceFolder}"],
+			"args": ["${workspaceFolder}/Tools/CreateClassesAndStructsDocu.lua", "${workspaceFolder}"],
 			"problemMatcher": [],
 			"presentation": {
 				"echo": true,

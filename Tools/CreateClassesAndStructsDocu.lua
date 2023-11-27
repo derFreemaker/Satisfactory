@@ -1,7 +1,12 @@
-local args = { ... }
-local WorkspaceFolder = args[1]
-
 local FileSystem = require("Tools.FileSystem")
+
+local args = { ... }
+
+if #args < 1 then
+    error("not all args given")
+end
+
+local WorkspaceFolder = args[1]
 
 local ApiDocumentations = FileSystem.Path(WorkspaceFolder, "/API Documentations")
 

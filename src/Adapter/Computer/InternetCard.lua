@@ -1,8 +1,6 @@
 local Cache = require("Adapter.Core.Cache")
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
-local INTERNETCARD = "InternetCard"
-
 ---@class Adapter.Computer.InternetCard : Adapter.IAdapter
 ---@field m_refInternetCard Core.IReference<FIN.Components.InternetCard_C>
 local InternetCard = {}
@@ -15,7 +13,7 @@ function InternetCard:__init(index)
 
     ---@type Out<Adapter.Computer.InternetCard>
     local internetCardAdapater = {}
-    if Cache:TryGet(INTERNETCARD, index, internetCardAdapater) then
+    if Cache:TryGet(index, internetCardAdapater) then
         return internetCardAdapater.Value
     end
 
@@ -25,7 +23,7 @@ function InternetCard:__init(index)
     end
 
     self.m_refInternetCard = internetCard
-    Cache:Add(INTERNETCARD, index, self)
+    Cache:Add(index, self)
 end
 
 ---@param url string

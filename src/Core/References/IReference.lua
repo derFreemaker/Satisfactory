@@ -1,6 +1,7 @@
 local Config = require("Core.Config")
 
----@class Core.IReference<T> : object, { Get: fun() : T }
+---@generic TReference : Satisfactory.Components.Object
+---@class Core.IReference<TReference> : object, { Get: fun() : TReference }
 ---@field protected m_obj Satisfactory.Components.Object?
 ---@field m_expires number
 local IReference = {}

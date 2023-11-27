@@ -1,7 +1,5 @@
-local Cache = require("Adapter.Core.Cache")
+local Cache = require("Adapter.Core.Cache")()
 local ProxyReference = require("Core.References.ProxyReference")
-
-local VALVE = "Valve"
 
 ---@class Adapter.Pipeline.Valve : Adapter.IAdapter
 ---@field private m_iPAddress Net.Core.IPAddress
@@ -37,7 +35,7 @@ end
 function Valve:__init(id)
 	---@type Out<Adapter.Pipeline.Valve>
 	local valveAdapater = {}
-	if Cache:TryGet(VALVE, id, valveAdapater) then
+	if Cache:TryGet(id, valveAdapater) then
 		return valveAdapater.Value
 	end
 
@@ -47,7 +45,7 @@ function Valve:__init(id)
 	end
 
 	self.m_valve = valve
-	Cache:Add(VALVE, id, self)
+	Cache:Add(id, self)
 end
 
 ---@return FIN.UUID

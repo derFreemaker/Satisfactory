@@ -1,8 +1,6 @@
-local Cache = require("Adapter.Core.Cache")
+local Cache = require("Adapter.Core.Cache")()
 local ProxyReference = require("Core.References.ProxyReference")
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
-
-local NETWORKCARD = "NetworkCard"
 
 ---@class Adapter.Computer.NetworkCard : Adapter.IAdapter
 ---@field private m_refNetworkCard Core.IReference<FIN.Components.NetworkCard_C>
@@ -20,7 +18,7 @@ function NetworkCard:__init(idOrIndex)
 
 	---@type Out<Adapter.Computer.NetworkCard>
 	local networkCardAdapater = {}
-	if Cache:TryGet(NETWORKCARD, idOrIndex, networkCardAdapater) then
+	if Cache:TryGet(idOrIndex, networkCardAdapater) then
 		return networkCardAdapater.Value
 	end
 
@@ -37,16 +35,10 @@ function NetworkCard:__init(idOrIndex)
 	end
 
 	self.m_refNetworkCard = networkCard
-	Cache:Add(NETWORKCARD, idOrIndex, self)
+	Cache:Add(idOrIndex, self)
 
 	self:CloseAllPorts()
 end
-
--- //TODO: find new of closing all ports on computer.stop
--- ---@private
--- function NetworkCard:__gc()
--- 	self:CloseAllPorts()
--- end
 
 ---@return FIN.UUID
 function NetworkCard:GetIPAddress()
