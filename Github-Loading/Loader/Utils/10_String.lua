@@ -1,19 +1,49 @@
 ---@class Utils.String
 local String = {}
 
----@param str string?
----@param seperator string?
----@return string[]
-function String.Split(str, seperator)
-    if str == nil then
-        return {} end
-    if seperator == nil then
-        seperator = "%s" end
-    local tbl = {}
-    for splittedStr in string.gmatch(str, "([^" .. seperator .. "]+)") do
-        tbl[#tbl + 1] = splittedStr
+---@param str string
+---@param pattern string
+---@return string?, integer
+local function findNext(str, pattern)
+    local found = str:find(pattern, 0, true)
+    if found == nil then
+        return nil, 0
     end
-    return tbl
+    return str:sub(0, found - 1), found - 1
+end
+
+---@param str string?
+---@param sep string?
+---@return string[]
+function String.Split(str, sep)
+    if str == nil then
+        return {}
+    end
+
+    local strLen = str:len()
+    local sepLen
+
+    if sep == nil then
+        sep = "%s"
+        sepLen = 2
+    else
+        sepLen = sep:len()
+    end
+
+    local tbl = {}
+    local i = 0
+    while true do
+        i = i + 1
+        local foundStr, foundPos = findNext(str, sep)
+
+        if foundStr == nil then
+            tbl[i] = str
+            return tbl
+        end
+
+        tbl[i] = foundStr
+        str = str:sub(foundPos + sepLen + 1, strLen)
+    end
 end
 
 ---@param str string?

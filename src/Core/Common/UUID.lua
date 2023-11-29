@@ -152,7 +152,7 @@ end
 Utils.Class.CreateClass(UUID, 'Core.UUID', require("Core.Json.Serializable"))
 
 local empty = {}
-local splitedTemplate = Utils.String.Split(UUID.Static__TemplateRegex, "%%%-")
+local splitedTemplate = Utils.String.Split(UUID.Static__TemplateRegex, "%-")
 for index, splitedTemplatePart in pairs(splitedTemplate) do
     empty[index] = {}
     for _ in string.gmatch(splitedTemplatePart, ".") do

@@ -35,8 +35,8 @@ function Path:__init(pathOrNodes)
 
     local lenght = #pathOrNodes
     local node = pathOrNodes[lenght]
-    if node ~= "" and not node:find("^.+%..*$") and node:find(".+") then
-        pathOrNodes[lenght] = ""
+    if node ~= "" and not node:find("^.+%..+$") then
+        pathOrNodes[lenght + 1] = ""
     end
 
     self.m_nodes = pathOrNodes
