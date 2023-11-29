@@ -6,16 +6,14 @@ local String = {}
 ---@return string[]
 function String.Split(str, seperator)
     if str == nil then
-        return {}
-    end
+        return {} end
     if seperator == nil then
-        seperator = "%s"
+        seperator = "%s" end
+    local tbl = {}
+    for splittedStr in string.gmatch(str, "([^" .. seperator .. "]+)") do
+        tbl[#tbl + 1] = splittedStr
     end
-    local t = {}
-    for splittedStr in string.gmatch(str, "([^" .. seperator .. "]*)") do
-        t[#t + 1] = splittedStr
-    end
-    return t
+    return tbl
 end
 
 ---@param str string?

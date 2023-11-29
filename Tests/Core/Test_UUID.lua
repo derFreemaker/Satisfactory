@@ -10,13 +10,13 @@ function TestNewUUID()
 end
 
 function TestEmptyUUID()
-	local test = UUID.Static__Empty()
+	local test = UUID.Static__Empty
 
-	luaunit.assertEquals(tostring(test), "000000-0000-000000")
+	luaunit.assertEquals(tostring(test), "000000-0000-00000000")
 end
 
 function TestParseUUID()
-	local uuidStr = "000000-0000-000000"
+	local uuidStr = "000000-0000-00000000"
 
 	local test = UUID.Static__Parse(uuidStr)
 	local testStr = tostring(test)

@@ -7,12 +7,11 @@ local JsonSerializer = require("Core.Json.JsonSerializer")
 function TestOverall()
     local serializer = JsonSerializer()
     serializer:AddTypesFromStatic()
-    local test = UUID.Static__Empty()
 
-    local json = serializer:Serialize({ Id = test })
+    local json = serializer:Serialize({ Id = UUID.Static__Empty })
     local testObj = serializer:Deserialize(json)
 
-    luaunit.assertEquals(tostring(testObj.Id), "000000-0000-000000")
+    luaunit.assertEquals(tostring(testObj.Id), "000000-0000-00000000")
 end
 
 os.exit(luaunit.LuaUnit.run())

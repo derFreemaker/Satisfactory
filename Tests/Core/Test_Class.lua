@@ -53,4 +53,51 @@ function TestDeconstructClass()
 		throwErrorBecauseOfDeconstructedClass)
 end
 
+function TestStaticAccess()
+	local testClass = Utils.Class.CreateClass({ Static__Test = "hi" }, "StaticTestClass")
+	local testClassInstance = testClass()
+
+	luaunit.assertEquals(testClassInstance.Static__Test, "hi")
+
+	testClass.Static__Test = "hello"
+
+	luaunit.assertEquals(testClass.Static__Test, "hello")
+	luaunit.assertEquals(testClassInstance.Static__Test, "hello")
+
+	Utils.Class.Deconstruct(testClassInstance)
+	local function throwErrorBecauseOfDeconstructedClass()
+		_ = testClassInstance.Static__Test
+	end
+
+	luaunit.assertErrorMsgContains("cannot get values from deconstruct class: StaticTestClass",
+		throwErrorBecauseOfDeconstructedClass)
+end
+
+function TestRawAccess()
+	local testClass = Utils.Class.CreateClass({
+		Raw__Test = "hi",
+		__index = function()
+			error("can not use index")
+		end
+	}, 'CreateEmpty')
+	local testClassInstance1 = testClass()
+	local testClassInstance2 = testClass()
+
+	testClassInstance1.Raw__Test = "hello"
+
+	luaunit.assertEquals(testClassInstance1.Raw__Test, "hello")
+	luaunit.assertEquals(testClassInstance2.Raw__Test, "hi")
+
+	local function throwErrorBecauseOfNotContstructedClass()
+		_ = testClass.Raw__Test
+	end
+
+	local function throwErrorBecauseOfIndexError()
+		_ = testClassInstance1.Test
+	end
+
+	luaunit.assertErrorMsgContains("can only use static members in template", throwErrorBecauseOfNotContstructedClass)
+	luaunit.assertErrorMsgContains("can not use index", throwErrorBecauseOfIndexError)
+end
+
 os.exit(luaunit.LuaUnit.run())

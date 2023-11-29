@@ -1,5 +1,6 @@
-local Cache = require("Adapter.Core.Cache")
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
+
+local Cache = require("Adapter.Core.Cache")()
 
 ---@class Adapter.Computer.InternetCard : Adapter.IAdapter
 ---@field m_refInternetCard Core.IReference<FIN.Components.InternetCard_C>

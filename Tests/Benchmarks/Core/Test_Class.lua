@@ -99,4 +99,13 @@ function TestDeconstructClassBenchmark()
     end, amount)
 end
 
+function TestAccessModifier()
+    local test = Utils.Class.CreateClass({ Static__Test = "hi" }, "TestAccessModifierClass")
+    local amount = 100000
+
+    functions.benchmarkFunction(function()
+        _ = test.Static__Test
+    end, amount)
+end
+
 os.exit(luaunit.LuaUnit.run())

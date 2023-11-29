@@ -5,11 +5,15 @@ require('Tests.Simulator.Simulator'):Initialize(1)
 local UUID = require('Core.Common.UUID')
 
 function TestNewUUIDBenchmark()
-    functions.benchmarkFunction(UUID.Static__New, 100000)
+    local test = UUID.Static__New
+    functions.benchmarkFunction(test, 100000)
 end
 
 function TestEmptyUUIDBenchmark()
-    functions.benchmarkFunction(UUID.Static__Empty, 10000000)
+    local function getEmpty()
+        _ = UUID.Static__Empty
+    end
+    functions.benchmarkFunction(getEmpty, 1000000)
 end
 
 function TestParseUUIDBenchmark()

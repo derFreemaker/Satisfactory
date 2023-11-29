@@ -11,7 +11,7 @@ local UUID = {}
 ---@type integer
 UUID.Static__GeneratedCount = 1
 
-UUID.Static__TemplateRegex = ".+-.+-.+"
+UUID.Static__TemplateRegex = "......%-....%-........"
 
 --- Replaces 'x' in template with random character.
 ---@param amount integer
@@ -42,26 +42,8 @@ function UUID.Static__New()
     return UUID(head, body, tail)
 end
 
-local emptyHead = { 48, 48, 48, 48, 48, 48 }
-local emptyBody = { 48, 48, 48, 48 }
-local emptyTail = { 48, 48, 48, 48, 48, 48, 48, 48 }
-
----@return number[] head, number[] body, number[] tail
-local function getEmptyData()
-    return emptyHead, emptyBody, emptyTail
-end
-
-local emptyUUID = nil
----@return Core.UUID
-function UUID.Static__Empty()
-    if emptyUUID then
-        return emptyUUID
-    end
-
-    emptyUUID = UUID(getEmptyData())
-
-    return UUID.Static__Empty()
-end
+---@type Core.UUID
+UUID.Static__Empty = Utils.Class.Placeholder
 
 ---@param str string
 ---@return integer[]
@@ -167,4 +149,17 @@ function UUID:__tostring()
     return self:ToString()
 end
 
-return Utils.Class.CreateClass(UUID, 'Core.UUID', require("Core.Json.Serializable"))
+Utils.Class.CreateClass(UUID, 'Core.UUID', require("Core.Json.Serializable"))
+
+local empty = {}
+local splitedTemplate = Utils.String.Split(UUID.Static__TemplateRegex, "%%%-")
+for index, splitedTemplatePart in pairs(splitedTemplate) do
+    empty[index] = {}
+    for _ in string.gmatch(splitedTemplatePart, ".") do
+        table.insert(empty[index], 48)
+    end
+end
+
+UUID.Static__Empty = UUID(table.unpack(empty))
+
+return UUID
