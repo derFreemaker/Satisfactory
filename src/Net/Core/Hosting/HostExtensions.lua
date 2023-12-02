@@ -58,7 +58,7 @@ function HostExtensions:GetNetworkPort(port)
     return self:CreateNetworkPort(port)
 end
 
----@param eventName string | "all"
+---@param eventName Net.Core.EventName
 ---@param port Net.Core.Port
 ---@param task Core.Task
 ---@return Hosting.Host host
@@ -69,7 +69,7 @@ function HostExtensions:AddCallableEventTask(eventName, port, task)
     return self
 end
 
----@param eventName string | "all"
+---@param eventName Net.Core.EventName
 ---@param port Net.Core.Port
 ---@param listener fun(context: Net.Core.IPAddress)
 ---@param ... any

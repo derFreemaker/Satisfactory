@@ -13,10 +13,20 @@ local EventPullAdapter = {}
 ---@param eventPullData any[]
 function EventPullAdapter:onEventPull(eventPullData)
 	local eventName = eventPullData[1]
+
+	local allEvent = self.m_events["*"]
+	if allEvent then
+		allEvent:Trigger(self.m_logger, eventPullData)
+		if allEvent:Count() == 0 then
+			self.m_events["*"] = nil
+		end
+	end
+
 	local event = self.m_events[eventName]
 	if not event then
 		return
 	end
+
 	event:Trigger(self.m_logger, eventPullData)
 	if event:Count() == 0 then
 		self.m_events[eventName] = nil
@@ -33,51 +43,60 @@ function EventPullAdapter:Initialize(logger)
 	return self
 end
 
----@param signalName string
+---@param signalName string | "*"
 ---@return Core.Event
 function EventPullAdapter:GetEvent(signalName)
-	for name, event in pairs(self.m_events) do
-		if name == signalName then
-			return event
-		end
+	local event = self.m_events[signalName]
+	if event then
+		return event
 	end
-	local event = Event()
+
+	event = Event()
 	self.m_events[signalName] = event
 	return event
 end
 
----@param signalName string
+---@param signalName string | "*"
 ---@param task Core.Task
----@return Core.EventPullAdapter
+---@return integer index
 function EventPullAdapter:AddTask(signalName, task)
 	local event = self:GetEvent(signalName)
-	event:AddTask(task)
-	return self
+	return event:AddTask(task)
 end
 
----@param signalName string
+---@param signalName string | "*"
 ---@param task Core.Task
----@return Core.EventPullAdapter
+---@return integer index
 function EventPullAdapter:AddTaskOnce(signalName, task)
 	local event = self:GetEvent(signalName)
-	event:AddTaskOnce(task)
-	return self
+	return event:AddTaskOnce(task)
 end
 
----@param signalName string
+---@param signalName string | "*"
 ---@param listener function
 ---@param ... any
----@return Core.EventPullAdapter
+---@return integer index
 function EventPullAdapter:AddListener(signalName, listener, ...)
 	return self:AddTask(signalName, Task(listener, ...))
 end
 
----@param signalName string
+---@param signalName string | "*"
 ---@param listener function
 ---@param ... any
----@return Core.EventPullAdapter
+---@return integer index
 function EventPullAdapter:AddListenerOnce(signalName, listener, ...)
 	return self:AddTaskOnce(signalName, Task(listener, ...))
+end
+
+---@param signalName string | "*"
+---@param index integer
+function EventPullAdapter:Remove(signalName, index)
+	local event = self.m_events[signalName]
+	if not event then
+		return
+	end
+
+	event:Remove(index)
 end
 
 --- Waits for an event to be handled or timeout
@@ -100,7 +119,7 @@ function EventPullAdapter:Wait(timeoutSeconds)
 	end
 
 	self.m_logger:LogDebug("event with signalName: '"
-		.. eventPullData[1] .. "' was recieved from component: "
+		.. eventPullData[1] .. "' was received from component: "
 		.. tostring(eventPullData[2]))
 
 	self.OnEventPull:Trigger(self.m_logger, eventPullData)
