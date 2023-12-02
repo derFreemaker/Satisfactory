@@ -4,7 +4,7 @@
 ---@class Utils.Class.ObjectMetaMethods
 ---@field protected __init (fun(self: object, ...))? self(...) before construction
 ---@field protected __call (fun(self: object, ...) : ...)? self(...) after construction
----@field protected __close (fun(self: object, errobj: any) : any)? invoked when the object gets out of scope
+---@field protected __close (fun(self: object, errObj: any) : any)? invoked when the object gets out of scope
 ---@field protected __gc fun(self: object)? Utils.Class.Deconstruct(self) or garbageCollection
 ---@field protected __add (fun(self: object, other: any) : any)? (self) + (value)
 ---@field protected __sub (fun(self: object, other: any) : any)? (self) - (value)
@@ -34,7 +34,7 @@
 ---@class Utils.Class.MetaMethods
 ---@field __init (fun(self: object, ...))? self(...) before construction
 ---@field __gc fun(self: object)? Class.Deconstruct(self) or garbageCollection
----@field __close (fun(self: object, errobj: any) : any)? invoked when the object gets out of scope
+---@field __close (fun(self: object, errObj: any) : any)? invoked when the object gets out of scope
 ---@field __call (fun(self: object, ...) : ...)? self(...) after construction
 ---@field __index (fun(class: object, key: any) : any)? xxx = self.xxx | self[xxx]
 ---@field __newindex fun(class: object, key: any, value: any)? self.xxx | self[xxx] = xxx

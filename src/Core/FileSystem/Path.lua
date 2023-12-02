@@ -33,10 +33,10 @@ function Path:__init(pathOrNodes)
         pathOrNodes = Utils.String.Split(pathOrNodes, "/")
     end
 
-    local lenght = #pathOrNodes
-    local node = pathOrNodes[lenght]
+    local length = #pathOrNodes
+    local node = pathOrNodes[length]
     if node ~= "" and not node:find("^.+%..+$") then
-        pathOrNodes[lenght + 1] = ""
+        pathOrNodes[length + 1] = ""
     end
 
     self.m_nodes = pathOrNodes
@@ -70,14 +70,14 @@ end
 ---@return string
 function Path:GetParentFolder()
     local copy = Utils.Table.Copy(self.m_nodes)
-    local lenght = #copy
+    local length = #copy
 
-    if lenght > 0 then
-        if lenght > 1 and copy[lenght] == "" then
-            copy[lenght] = nil
-            copy[lenght - 1] = ""
+    if length > 0 then
+        if length > 1 and copy[length] == "" then
+            copy[length] = nil
+            copy[length - 1] = ""
         else
-            copy[lenght] = nil
+            copy[length] = nil
         end
     end
 
@@ -87,14 +87,14 @@ end
 ---@return Core.FileSystem.Path
 function Path:GetParentFolderPath()
     local copy = self:Copy()
-    local lenght = #copy.m_nodes
+    local length = #copy.m_nodes
 
-    if lenght > 0 then
-        if lenght > 1 and copy.m_nodes[lenght] == "" then
-            copy.m_nodes[lenght] = nil
-            copy.m_nodes[lenght - 1] = ""
+    if length > 0 then
+        if length > 1 and copy.m_nodes[length] == "" then
+            copy.m_nodes[length] = nil
+            copy.m_nodes[length - 1] = ""
         else
-            copy.m_nodes[lenght] = nil
+            copy.m_nodes[length] = nil
         end
     end
 

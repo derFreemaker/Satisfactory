@@ -53,11 +53,11 @@ end
 
 ---@return number[] head, number[] body, number[] tail
 local function parse(str)
-    local splitedStr = Utils.String.Split(str, "-")
+    local splittedStr = Utils.String.Split(str, "-")
 
-    local head = convertStringToCharArray(splitedStr[1])
-    local body = convertStringToCharArray(splitedStr[2])
-    local tail = convertStringToCharArray(splitedStr[3])
+    local head = convertStringToCharArray(splittedStr[1])
+    local body = convertStringToCharArray(splittedStr[2])
+    local tail = convertStringToCharArray(splittedStr[3])
 
     return head, body, tail
 end
@@ -73,16 +73,16 @@ function UUID.Static__Parse(str)
 end
 
 ---@private
----@param headOrSring number[]
+---@param headOrString number[]
 ---@param body number[]
 ---@param tail number[]
-function UUID:__init(headOrSring, body, tail)
-    if type(headOrSring) == "string" then
-        headOrSring, body, tail = parse(headOrSring)
+function UUID:__init(headOrString, body, tail)
+    if type(headOrString) == "string" then
+        headOrString, body, tail = parse(headOrString)
     end
 
     self:Raw__ModifyBehavior({ DisableCustomIndexing = true })
-    self.m_head = headOrSring
+    self.m_head = headOrString
     self.m_body = body
     self.m_tail = tail
     self:Raw__ModifyBehavior({ DisableCustomIndexing = false })
@@ -152,10 +152,10 @@ end
 Utils.Class.CreateClass(UUID, 'Core.UUID', require("Core.Json.Serializable"))
 
 local empty = {}
-local splitedTemplate = Utils.String.Split(UUID.Static__TemplateRegex, "%-")
-for index, splitedTemplatePart in pairs(splitedTemplate) do
+local splittedTemplate = Utils.String.Split(UUID.Static__TemplateRegex, "%-")
+for index, splittedTemplatePart in pairs(splittedTemplate) do
     empty[index] = {}
-    for _ in string.gmatch(splitedTemplatePart, ".") do
+    for _ in string.gmatch(splittedTemplatePart, ".") do
         table.insert(empty[index], 48)
     end
 end
