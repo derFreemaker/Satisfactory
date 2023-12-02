@@ -99,7 +99,7 @@ PackageData["ServicesCallbackClientCallbackService"] = {
     Namespace = "Services.Callback.Client.CallbackService",
     IsRunnable = true,
     Data = [[
-local Usage = require("Core.Usage")
+local Usage = require("Core.Usage.init")
 
 local Task = require("Core.Common.Task")
 local NetworkClient = require("Net.Core.NetworkClient")

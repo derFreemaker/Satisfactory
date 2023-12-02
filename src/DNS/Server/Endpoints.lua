@@ -15,9 +15,9 @@ function Endpoints:__init(super, logger, controller)
     self.m_addressDatabase = AddressDatabase(logger:subLogger("AddressDatabase"))
 
     self:AddEndpoint("CREATE", "/Address/Create/", self.CreateAddress)
-    self:AddEndpoint("DELETE", "/Address/{id:Core.UUID}/Delete/", self.DeletetAddress)
+    self:AddEndpoint("DELETE", "/Address/{id:Core.UUID}/Delete/", self.DeleteAddress)
     self:AddEndpoint("GET", "/Address/Id/{id:Core.UUID}/", self.GetAddressWithId)
-    self:AddEndpoint("GET", "/Address/Domain/{domian:string}/", self.GetAddressWithDomain)
+    self:AddEndpoint("GET", "/Address/Domain/{domain:string}/", self.GetAddressWithDomain)
 end
 
 ---@param createAddress DNS.Core.Entities.Address.Create
@@ -30,7 +30,7 @@ end
 
 ---@param id Core.UUID
 ---@return Net.Rest.Api.Response response
-function Endpoints:DeletetAddress(id)
+function Endpoints:DeleteAddress(id)
     local success = self.m_addressDatabase:DeleteById(id)
     if not success then
         return self.Templates:NotFound("Unable to find address with given id")

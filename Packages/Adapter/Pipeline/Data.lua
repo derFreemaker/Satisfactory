@@ -8,9 +8,9 @@ PackageData["AdapterPipelineValve"] = {
     Data = [[
 local ProxyReference = require("Core.References.ProxyReference")
 
-local PipeValves = setmetatable({}, { __mode = 'v' })
+local Cache = require("Core.Adapter.Cache")()
 
----@class Adapter.Pipeline.Valve : object
+---@class Adapter.Pipeline.Valve : Adapter.IAdapter
 ---@field private m_iPAddress Net.Core.IPAddress
 ---@field private m_valve Core.IReference<Satisfactory.Components.Build_Valve_C>
 ---@overload fun(id: FIN.UUID) : Adapter.Pipeline.Valve
@@ -42,8 +42,10 @@ end
 ---@private
 ---@param id FIN.UUID
 function Valve:__init(id)
-	if Utils.Table.ContainsKey(PipeValves, id) then
-		return PipeValves[id]
+	---@type Out<Adapter.Pipeline.Valve>
+	local valveAdapater = {}
+	if Cache:TryGet(id, valveAdapater) then
+		return valveAdapater.Value
 	end
 
 	local valve = ProxyReference(id)
@@ -52,7 +54,7 @@ function Valve:__init(id)
 	end
 
 	self.m_valve = valve
-	PipeValves[id] = self
+	Cache:Add(id, self)
 end
 
 ---@return FIN.UUID

@@ -6,11 +6,11 @@ PackageData["AdapterComputerInternetCard"] = {
     Namespace = "Adapter.Computer.InternetCard",
     IsRunnable = true,
     Data = [[
-local ComputerPartReference = require("Core.References.PCIDeviceReference")
+local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
-local InternetCards = setmetatable({}, { __mode = 'v' })
+local Cache = require("Core.Adapter.Cache")()
 
----@class Adapter.Computer.InternetCard : object
+---@class Adapter.Computer.InternetCard : Adapter.IAdapter
 ---@field m_refInternetCard Core.IReference<FIN.Components.InternetCard_C>
 local InternetCard = {}
 
@@ -20,17 +20,19 @@ function InternetCard:__init(index)
         index = 1
     end
 
-    if Utils.Table.ContainsKey(InternetCards, index) then
-        return InternetCards[index]
+    ---@type Out<Adapter.Computer.InternetCard>
+    local internetCardAdapater = {}
+    if Cache:TryGet(index, internetCardAdapater) then
+        return internetCardAdapater.Value
     end
 
-    local internetCard = ComputerPartReference(classes.InternetCard_C, index)
+    local internetCard = PCIDeviceReference(classes.InternetCard_C, index)
     if not internetCard:Fetch() then
         error("no internet card found")
     end
 
     self.m_refInternetCard = internetCard
-    InternetCards[index] = self
+    Cache:Add(index, self)
 end
 
 ---@param url string
@@ -69,10 +71,9 @@ PackageData["AdapterComputerNetworkCard"] = {
 local ProxyReference = require("Core.References.ProxyReference")
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
----@type { [integer | string]: Adapter.Computer.NetworkCard }
-local NetworkCards = setmetatable({}, { __mode = 'v' })
+local Cache = require("Core.Adapter.Cache")()
 
----@class Adapter.Computer.NetworkCard : object
+---@class Adapter.Computer.NetworkCard : Adapter.IAdapter
 ---@field private m_refNetworkCard Core.IReference<FIN.Components.NetworkCard_C>
 ---@field private m_openPorts table<integer, true>
 ---@overload fun(idOrIndexOrNetworkCard: (FIN.UUID | integer)?) : Adapter.Computer.NetworkCard
@@ -86,8 +87,10 @@ function NetworkCard:__init(idOrIndex)
 		idOrIndex = 1
 	end
 
-	if Utils.Table.ContainsKey(NetworkCards, idOrIndex) then
-		return NetworkCards[idOrIndex]
+	---@type Out<Adapter.Computer.NetworkCard>
+	local networkCardAdapater = {}
+	if Cache:TryGet(idOrIndex, networkCardAdapater) then
+		return networkCardAdapater.Value
 	end
 
 	local networkCard
@@ -103,16 +106,10 @@ function NetworkCard:__init(idOrIndex)
 	end
 
 	self.m_refNetworkCard = networkCard
-	NetworkCards[idOrIndex] = self
+	Cache:Add(idOrIndex, self)
 
 	self:CloseAllPorts()
 end
-
--- //TODO: find new of closing all ports on computer.stop
--- ---@private
--- function NetworkCard:__gc()
--- 	self:CloseAllPorts()
--- end
 
 ---@return FIN.UUID
 function NetworkCard:GetIPAddress()

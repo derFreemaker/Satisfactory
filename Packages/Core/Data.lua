@@ -15,102 +15,56 @@ return Config
 ]]
 }
 
-PackageData["CoreCommonLazyEventHandler"] = {
-    Location = "Core.Common.LazyEventHandler",
-    Namespace = "Core.Common.LazyEventHandler",
+PackageData["CoreAdapterCache"] = {
+    Location = "Core.Adapter.Cache",
+    Namespace = "Core.Adapter.Cache",
     IsRunnable = true,
     Data = [[
-local Event = require("Core.Event.Event")
+---@class Adapter.IAdapter : object
 
----@alias Core.LazyEventHandler.OnSetup fun(lazyEventHandler: Core.LazyEventHandler)
----@alias Core.LazyEventHandler.OnClose fun(lazyEventHandler: Core.LazyEventHandler)
+---@generic TAdapter : Adapter.IAdapter
+---@class Adapter.Cache<TAdapter> : { m_cache: { [string|integer]: TAdapter } }
+---@field m_cache table<string|integer, Adapter.IAdapter>
+---@overload fun(): Adapter.Cache
+local Cache = {}
 
----@class Core.LazyEventHandler : object
----@field private m_Event Core.Event
----@field private m_IsSetup boolean
----@field private m_OnSetup Core.LazyEventHandler.OnSetup?
----@field private m_OnClose Core.LazyEventHandler.OnClose?
----@overload fun(onSetup: Core.LazyEventHandler.OnSetup?, onClose: Core.LazyEventHandler.OnClose?) : Core.LazyEventHandler
-local LazyEventHandler = {}
-
----@alias Core.LazyEventHandler.Constructor fun(onSetup: Core.LazyEventHandler.OnSetup?, onClose: Core.LazyEventHandler.OnClose?)
-
----@private
----@param onSetup Core.LazyEventHandler.OnSetup?
----@param onClose Core.LazyEventHandler.OnClose?
-function LazyEventHandler:__init(onSetup, onClose)
-    self.m_Event = Event()
-
-    self.m_IsSetup = false
-    self.m_OnSetup = onSetup
-    self.m_OnClose = onClose
+function Cache:__init()
+    self.m_cache = setmetatable({}, { __mode = "v" })
 end
 
----@return integer count
-function LazyEventHandler:Count()
-    return self.m_Event:Count()
+---@param indexOrId string | integer
+---@param adapter Adapter.IAdapter
+function Cache:Add(indexOrId, adapter)
+    self.m_cache[indexOrId] = adapter
 end
 
----@private
----@param onlyClose boolean?
-function LazyEventHandler:Check(onlyClose)
-    local count = self.m_Event:Count()
-
-    if count > 0 and not self.m_IsSetup and self.m_OnSetup and not onlyClose then
-        self.m_OnSetup(self)
-        self.m_IsSetup = true
-        return
+---@generic TAdapter : Adapter.IAdapter
+---@param idOrIndex string | integer
+---@return TAdapter
+function Cache:Get(idOrIndex)
+    local adapter = self.m_cache[idOrIndex]
+    if not adapter then
+        error("no adapter found with idOrIndex: " .. idOrIndex)
     end
 
-    if count == 0 and self.m_IsSetup and self.m_OnClose then
-        self.m_OnClose(self)
-        self.m_IsSetup = false
-        return
+    return adapter
+end
+
+---@generic TAdapter : Adapter.IAdapter
+---@param idOrIndex string | integer
+---@param outAdapter Out<TAdapter>
+---@return boolean
+function Cache:TryGet(idOrIndex, outAdapter)
+    local adapter = self.m_cache[idOrIndex]
+    if not adapter then
+        return false
     end
+
+    outAdapter.Value = adapter
+    return true
 end
 
----@param task Core.Task
----@return Core.LazyEventHandler
-function LazyEventHandler:AddTask(task)
-    self.m_Event:AddTask(task)
-    self:Check()
-    return self
-end
-
----@param task Core.Task
----@return Core.LazyEventHandler
-function LazyEventHandler:AddTaskOnce(task)
-    self.m_Event:AddTaskOnce(task)
-    self:Check()
-    return self
-end
-
----@param func function
----@param ... any
----@return Core.LazyEventHandler
-function LazyEventHandler:AddListener(func, ...)
-    self.m_Event:AddListener(func, ...)
-    self:Check()
-    return self
-end
-
----@param func function
----@param ... any
----@return Core.LazyEventHandler
-function LazyEventHandler:AddListenerOnce(func, ...)
-    self.m_Event:AddListenerOnce(func, ...)
-    self:Check()
-    return self
-end
-
----@param logger Core.Logger?
----@param ... any
-function LazyEventHandler:Trigger(logger, ...)
-    self.m_Event:Trigger(logger, ...)
-    self:Check(true)
-end
-
-return Utils.Class.CreateClass(LazyEventHandler, "Core.LazyEventHandler")
+return Utils.Class.CreateClass(Cache, "Adapter.Cache")
 ]]
 }
 
@@ -585,7 +539,7 @@ local UUID = {}
 ---@type integer
 UUID.Static__GeneratedCount = 1
 
-UUID.Static__TemplateRegex = ".+-.+-.+"
+UUID.Static__TemplateRegex = "......%-....%-........"
 
 --- Replaces 'x' in template with random character.
 ---@param amount integer
@@ -616,26 +570,8 @@ function UUID.Static__New()
     return UUID(head, body, tail)
 end
 
-local emptyHead = { 48, 48, 48, 48, 48, 48 }
-local emptyBody = { 48, 48, 48, 48 }
-local emptyTail = { 48, 48, 48, 48, 48, 48, 48, 48 }
-
----@return number[] head, number[] body, number[] tail
-local function getEmptyData()
-    return emptyHead, emptyBody, emptyTail
-end
-
-local emptyUUID = nil
----@return Core.UUID
-function UUID.Static__Empty()
-    if emptyUUID then
-        return emptyUUID
-    end
-
-    emptyUUID = UUID(getEmptyData())
-
-    return UUID.Static__Empty()
-end
+---@type Core.UUID
+UUID.Static__Empty = Utils.Class.Placeholder
 
 ---@param str string
 ---@return integer[]
@@ -645,11 +581,11 @@ end
 
 ---@return number[] head, number[] body, number[] tail
 local function parse(str)
-    local splitedStr = Utils.String.Split(str, "-")
+    local splittedStr = Utils.String.Split(str, "-")
 
-    local head = convertStringToCharArray(splitedStr[1])
-    local body = convertStringToCharArray(splitedStr[2])
-    local tail = convertStringToCharArray(splitedStr[3])
+    local head = convertStringToCharArray(splittedStr[1])
+    local body = convertStringToCharArray(splittedStr[2])
+    local tail = convertStringToCharArray(splittedStr[3])
 
     return head, body, tail
 end
@@ -665,16 +601,16 @@ function UUID.Static__Parse(str)
 end
 
 ---@private
----@param headOrSring number[]
+---@param headOrString number[]
 ---@param body number[]
 ---@param tail number[]
-function UUID:__init(headOrSring, body, tail)
-    if type(headOrSring) == "string" then
-        headOrSring, body, tail = parse(headOrSring)
+function UUID:__init(headOrString, body, tail)
+    if type(headOrString) == "string" then
+        headOrString, body, tail = parse(headOrString)
     end
 
     self:Raw__ModifyBehavior({ DisableCustomIndexing = true })
-    self.m_head = headOrSring
+    self.m_head = headOrString
     self.m_body = body
     self.m_tail = tail
     self:Raw__ModifyBehavior({ DisableCustomIndexing = false })
@@ -741,7 +677,119 @@ function UUID:__tostring()
     return self:ToString()
 end
 
-return Utils.Class.CreateClass(UUID, 'Core.UUID', require("Core.Json.Serializable"))
+Utils.Class.CreateClass(UUID, 'Core.UUID', require("Core.Json.Serializable"))
+
+local empty = {}
+local splittedTemplate = Utils.String.Split(UUID.Static__TemplateRegex, "%-")
+for index, splittedTemplatePart in pairs(splittedTemplate) do
+    empty[index] = {}
+    for _ in string.gmatch(splittedTemplatePart, ".") do
+        table.insert(empty[index], 48)
+    end
+end
+
+UUID.Static__Empty = UUID(table.unpack(empty))
+
+return UUID
+]]
+}
+
+PackageData["CoreCommonWatchable"] = {
+    Location = "Core.Common.Watchable",
+    Namespace = "Core.Common.Watchable",
+    IsRunnable = true,
+    Data = [[
+local Event = require("Core.Event.Event")
+
+---@alias Core.Watchable.OnSetup fun(Watchable: Core.Watchable)
+---@alias Core.Watchable.OnClose fun(Watchable: Core.Watchable)
+
+---@class Core.Watchable : object
+---@field private m_Event Core.Event
+---@field private m_IsSetup boolean
+---@field private m_OnSetup Core.Watchable.OnSetup?
+---@field private m_OnClose Core.Watchable.OnClose?
+---@overload fun(onSetup: Core.Watchable.OnSetup?, onClose: Core.Watchable.OnClose?) : Core.Watchable
+local Watchable = {}
+
+---@alias Core.Watchable.Constructor fun(onSetup: Core.Watchable.OnSetup?, onClose: Core.Watchable.OnClose?)
+
+---@private
+---@param onSetup Core.Watchable.OnSetup?
+---@param onClose Core.Watchable.OnClose?
+function Watchable:__init(onSetup, onClose)
+    self.m_Event = Event()
+
+    self.m_IsSetup = false
+    self.m_OnSetup = onSetup
+    self.m_OnClose = onClose
+end
+
+---@return integer count
+function Watchable:Count()
+    return self.m_Event:Count()
+end
+
+---@private
+---@param onlyClose boolean?
+function Watchable:Check(onlyClose)
+    local count = self.m_Event:Count()
+
+    if count > 0 and not self.m_IsSetup and self.m_OnSetup and not onlyClose then
+        self.m_OnSetup(self)
+        self.m_IsSetup = true
+        return
+    end
+
+    if count == 0 and self.m_IsSetup and self.m_OnClose then
+        self.m_OnClose(self)
+        self.m_IsSetup = false
+        return
+    end
+end
+
+---@param task Core.Task
+---@return Core.Watchable
+function Watchable:AddTask(task)
+    self.m_Event:AddTask(task)
+    self:Check()
+    return self
+end
+
+---@param task Core.Task
+---@return Core.Watchable
+function Watchable:AddTaskOnce(task)
+    self.m_Event:AddTaskOnce(task)
+    self:Check()
+    return self
+end
+
+---@param func function
+---@param ... any
+---@return Core.Watchable
+function Watchable:AddListener(func, ...)
+    self.m_Event:AddListener(func, ...)
+    self:Check()
+    return self
+end
+
+---@param func function
+---@param ... any
+---@return Core.Watchable
+function Watchable:AddListenerOnce(func, ...)
+    self.m_Event:AddListenerOnce(func, ...)
+    self:Check()
+    return self
+end
+
+---@param logger Core.Logger?
+---@param ... any
+function Watchable:Trigger(logger, ...)
+    self.m_Event:Trigger(logger, ...)
+    self:Check(true)
+end
+
+return Utils.Class.CreateClass(Watchable, "Core.Watchable")
 ]]
 }
 
@@ -884,18 +932,24 @@ local EventPullAdapter = {}
 ---@private
 ---@param eventPullData any[]
 function EventPullAdapter:onEventPull(eventPullData)
-	---@type string[]
-	local removeEvent = {}
-	for name, event in pairs(self.m_events) do
-		if name == eventPullData[1] then
-			event:Trigger(self.m_logger, eventPullData)
-		end
-		if event:Count() == 0 then
-			table.insert(removeEvent, name)
+	local eventName = eventPullData[1]
+
+	local allEvent = self.m_events["*"]
+	if allEvent then
+		allEvent:Trigger(self.m_logger, eventPullData)
+		if allEvent:Count() == 0 then
+			self.m_events["*"] = nil
 		end
 	end
-	for _, name in ipairs(removeEvent) do
-		self.m_events[name] = nil
+
+	local event = self.m_events[eventName]
+	if not event then
+		return
+	end
+
+	event:Trigger(self.m_logger, eventPullData)
+	if event:Count() == 0 then
+		self.m_events[eventName] = nil
 	end
 end
 
@@ -909,55 +963,64 @@ function EventPullAdapter:Initialize(logger)
 	return self
 end
 
----@param signalName string
+---@param signalName string | "*"
 ---@return Core.Event
 function EventPullAdapter:GetEvent(signalName)
-	for name, event in pairs(self.m_events) do
-		if name == signalName then
-			return event
-		end
+	local event = self.m_events[signalName]
+	if event then
+		return event
 	end
-	local event = Event()
+
+	event = Event()
 	self.m_events[signalName] = event
 	return event
 end
 
----@param signalName string
+---@param signalName string | "*"
 ---@param task Core.Task
----@return Core.EventPullAdapter
+---@return integer index
 function EventPullAdapter:AddTask(signalName, task)
 	local event = self:GetEvent(signalName)
-	event:AddTask(task)
-	return self
+	return event:AddTask(task)
 end
 
----@param signalName string
+---@param signalName string | "*"
 ---@param task Core.Task
----@return Core.EventPullAdapter
+---@return integer index
 function EventPullAdapter:AddTaskOnce(signalName, task)
 	local event = self:GetEvent(signalName)
-	event:AddTaskOnce(task)
-	return self
+	return event:AddTaskOnce(task)
 end
 
----@param signalName string
+---@param signalName string | "*"
 ---@param listener function
 ---@param ... any
----@return Core.EventPullAdapter
+---@return integer index
 function EventPullAdapter:AddListener(signalName, listener, ...)
 	return self:AddTask(signalName, Task(listener, ...))
 end
 
----@param signalName string
+---@param signalName string | "*"
 ---@param listener function
 ---@param ... any
----@return Core.EventPullAdapter
+---@return integer index
 function EventPullAdapter:AddListenerOnce(signalName, listener, ...)
 	return self:AddTaskOnce(signalName, Task(listener, ...))
 end
 
---- Waits for an event to be handled or timeout to run out
---- Returns true if event was handled and false if timeout ran out
+---@param signalName string | "*"
+---@param index integer
+function EventPullAdapter:Remove(signalName, index)
+	local event = self.m_events[signalName]
+	if not event then
+		return
+	end
+
+	event:Remove(index)
+end
+
+--- Waits for an event to be handled or timeout
+--- Returns true if event was handled and false if it timeout
 ---
 ---@async
 ---@param timeoutSeconds number?
@@ -976,7 +1039,7 @@ function EventPullAdapter:Wait(timeoutSeconds)
 	end
 
 	self.m_logger:LogDebug("event with signalName: '"
-		.. eventPullData[1] .. "' was recieved from component: "
+		.. eventPullData[1] .. "' was received from component: "
 		.. tostring(eventPullData[2]))
 
 	self.OnEventPull:Trigger(self.m_logger, eventPullData)
@@ -984,7 +1047,7 @@ function EventPullAdapter:Wait(timeoutSeconds)
 	return true
 end
 
---- Waits for all events in the event queue to be handled or timeout to run out
+--- Waits for all events in the event queue to be handled or timeout
 ---
 ---@async
 ---@param timeoutSeconds number?
@@ -995,6 +1058,7 @@ end
 
 --- Starts event pull loop
 --- ## will never return
+---@async
 function EventPullAdapter:Run()
 	self.m_logger:LogDebug('## started event pull loop ##')
 	while true do
@@ -1226,10 +1290,10 @@ function Path:__init(pathOrNodes)
         pathOrNodes = Utils.String.Split(pathOrNodes, "/")
     end
 
-    local lenght = #pathOrNodes
-    local node = pathOrNodes[lenght]
-    if node ~= "" and not node:find("^.+%..*$") and node:find(".+") then
-        pathOrNodes[lenght] = ""
+    local length = #pathOrNodes
+    local node = pathOrNodes[length]
+    if node ~= "" and not node:find("^.+%..+$") then
+        pathOrNodes[length + 1] = ""
     end
 
     self.m_nodes = pathOrNodes
@@ -1263,14 +1327,14 @@ end
 ---@return string
 function Path:GetParentFolder()
     local copy = Utils.Table.Copy(self.m_nodes)
-    local lenght = #copy
+    local length = #copy
 
-    if lenght > 0 then
-        if lenght > 1 and copy[lenght] == "" then
-            copy[lenght] = nil
-            copy[lenght - 1] = ""
+    if length > 0 then
+        if length > 1 and copy[length] == "" then
+            copy[length] = nil
+            copy[length - 1] = ""
         else
-            copy[lenght] = nil
+            copy[length] = nil
         end
     end
 
@@ -1280,14 +1344,14 @@ end
 ---@return Core.FileSystem.Path
 function Path:GetParentFolderPath()
     local copy = self:Copy()
-    local lenght = #copy.m_nodes
+    local length = #copy.m_nodes
 
-    if lenght > 0 then
-        if lenght > 1 and copy.m_nodes[lenght] == "" then
-            copy.m_nodes[lenght] = nil
-            copy.m_nodes[lenght - 1] = ""
+    if length > 0 then
+        if length > 1 and copy.m_nodes[length] == "" then
+            copy.m_nodes[length] = nil
+            copy.m_nodes[length - 1] = ""
         else
-            copy.m_nodes[lenght] = nil
+            copy.m_nodes[length] = nil
         end
     end
 
@@ -2041,7 +2105,8 @@ PackageData["CoreReferencesIReference"] = {
     Data = [[
 local Config = require("Core.Config")
 
----@class Core.IReference<T> : object, { Get: fun() : T }
+---@generic TReference : Satisfactory.Components.Object
+---@class Core.IReference<TReference> : object, { Get: fun() : TReference }
 ---@field protected m_obj Satisfactory.Components.Object?
 ---@field m_expires number
 local IReference = {}

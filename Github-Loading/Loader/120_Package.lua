@@ -70,11 +70,11 @@ end
 function Package:Load()
     if self.RequiredPackages and #self.RequiredPackages ~= 0 then
         self.m_packageLoader.Logger:LogDebug("loading required packages: " .. #self.RequiredPackages .. "...")
+
         for _, packageName in ipairs(self.RequiredPackages) do
-            if not Utils.String.IsNilOrEmpty(packageName) then
-                self.m_packageLoader:LoadPackage(packageName)
-            end
+            self.m_packageLoader:LoadPackage(packageName)
         end
+
         self.m_packageLoader.Logger:LogDebug("loaded required packages")
     end
 end

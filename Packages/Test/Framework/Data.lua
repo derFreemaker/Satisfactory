@@ -39,12 +39,12 @@ end
 function Framework:Run(logger)
     logger:LogInfo("Running tests...")
 
-    local successful = 0
+    local successfull = 0
     local failed = 0
     for _, test in ipairs(self.m_tests) do
         test:Run(logger)
-        if test:WasSuccessful() then
-            successful = successful + 1
+        if test:WasSuccessfull() then
+            successfull = successfull + 1
         else
             failed = failed + 1
         end
@@ -52,7 +52,7 @@ function Framework:Run(logger)
 
     logger:LogInfo(
         "Tests finished with "
-        .. successful .. " successful tests and "
+        .. successfull .. " successfull tests and "
         .. failed .. " failed tests"
     )
 end
@@ -115,7 +115,7 @@ function Wrapper:Run(logger)
 end
 
 ---@return boolean
-function Wrapper:WasSuccessful()
+function Wrapper:WasSuccessfull()
     return self.m_task:IsSuccess()
 end
 

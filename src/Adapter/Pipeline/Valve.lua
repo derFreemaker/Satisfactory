@@ -1,6 +1,6 @@
 local ProxyReference = require("Core.References.ProxyReference")
 
-local Cache = require("Adapter.Core.Cache")()
+local Cache = require("Core.Adapter.Cache")()
 
 ---@class Adapter.Pipeline.Valve : Adapter.IAdapter
 ---@field private m_iPAddress Net.Core.IPAddress

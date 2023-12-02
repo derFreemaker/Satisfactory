@@ -1,7 +1,7 @@
 local ProxyReference = require("Core.References.ProxyReference")
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
-local Cache = require("Adapter.Core.Cache")()
+local Cache = require("Core.Adapter.Cache")()
 
 ---@class Adapter.Computer.NetworkCard : Adapter.IAdapter
 ---@field private m_refNetworkCard Core.IReference<FIN.Components.NetworkCard_C>
@@ -18,9 +18,9 @@ function NetworkCard:__init(idOrIndex)
 	end
 
 	---@type Out<Adapter.Computer.NetworkCard>
-	local networkCardAdapater = {}
-	if Cache:TryGet(idOrIndex, networkCardAdapater) then
-		return networkCardAdapater.Value
+	local networkCardAdapter = {}
+	if Cache:TryGet(idOrIndex, networkCardAdapter) then
+		return networkCardAdapter.Value
 	end
 
 	local networkCard

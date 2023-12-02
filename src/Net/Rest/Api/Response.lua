@@ -5,7 +5,7 @@
 ---@class Net.Rest.Api.Response : Core.Json.Serializable
 ---@field Headers Net.Rest.Api.Response.Header
 ---@field Body any
----@field WasSuccessfull boolean
+---@field WasSuccessful boolean
 ---@overload fun(body: any, header: (Net.Rest.Api.Response.Header)?) : Net.Rest.Api.Response
 local Response = {}
 
@@ -16,9 +16,9 @@ function Response:__init(body, header)
     self.Body = body
     self.Headers = header or {}
     if type(self.Headers.Code) == 'number' then
-        self.WasSuccessfull = self.Headers.Code < 300
+        self.WasSuccessful = self.Headers.Code < 300
     else
-        self.WasSuccessfull = false
+        self.WasSuccessful = false
     end
 end
 
