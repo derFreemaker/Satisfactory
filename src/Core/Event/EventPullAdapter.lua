@@ -12,18 +12,14 @@ local EventPullAdapter = {}
 ---@private
 ---@param eventPullData any[]
 function EventPullAdapter:onEventPull(eventPullData)
-	---@type string[]
-	local removeEvent = {}
-	for name, event in pairs(self.m_events) do
-		if name == eventPullData[1] then
-			event:Trigger(self.m_logger, eventPullData)
-		end
-		if event:Count() == 0 then
-			table.insert(removeEvent, name)
-		end
+	local eventName = eventPullData[1]
+	local event = self.m_events[eventName]
+	if not event then
+		return
 	end
-	for _, name in ipairs(removeEvent) do
-		self.m_events[name] = nil
+	event:Trigger(self.m_logger, eventPullData)
+	if event:Count() == 0 then
+		self.m_events[eventName] = nil
 	end
 end
 
@@ -84,8 +80,8 @@ function EventPullAdapter:AddListenerOnce(signalName, listener, ...)
 	return self:AddTaskOnce(signalName, Task(listener, ...))
 end
 
---- Waits for an event to be handled or timeout to run out
---- Returns true if event was handled and false if timeout ran out
+--- Waits for an event to be handled or timeout
+--- Returns true if event was handled and false if it timeout
 ---
 ---@async
 ---@param timeoutSeconds number?
@@ -112,7 +108,7 @@ function EventPullAdapter:Wait(timeoutSeconds)
 	return true
 end
 
---- Waits for all events in the event queue to be handled or timeout to run out
+--- Waits for all events in the event queue to be handled or timeout
 ---
 ---@async
 ---@param timeoutSeconds number?
@@ -123,6 +119,7 @@ end
 
 --- Starts event pull loop
 --- ## will never return
+---@async
 function EventPullAdapter:Run()
 	self.m_logger:LogDebug('## started event pull loop ##')
 	while true do
