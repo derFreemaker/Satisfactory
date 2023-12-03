@@ -1,0 +1,11 @@
+[[navbar]]
+    identifier = "setup"
+    name = "Setup"
+    url = "/setup/"
+    weight = 1
+    [[navbar]]
+        identifier = "changelog"
+        name = "Changelog"
+        url = "/changelog/"
+        parent = "setup"
+        weight = 2
