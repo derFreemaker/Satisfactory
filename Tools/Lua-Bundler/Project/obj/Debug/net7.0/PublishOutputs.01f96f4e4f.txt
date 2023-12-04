@@ -1,0 +1,7 @@
+C:\Coding\Lua\Lua-Bundler\bin\Debug\net7.0\publish\Lua-Bundler.exe
+C:\Coding\Lua\Lua-Bundler\bin\Debug\net7.0\publish\Lua-Bundler.dll
+C:\Coding\Lua\Lua-Bundler\bin\Debug\net7.0\publish\Lua-Bundler.deps.json
+C:\Coding\Lua\Lua-Bundler\bin\Debug\net7.0\publish\Lua-Bundler.runtimeconfig.json
+C:\Coding\Lua\Lua-Bundler\bin\Debug\net7.0\publish\Lua-Bundler.pdb
+C:\Coding\Lua\Lua-Bundler\bin\Debug\net7.0\publish\CommandLine.dll
+C:\Coding\Lua\Lua-Bundler\bin\Debug\net7.0\publish\Newtonsoft.Json.dll

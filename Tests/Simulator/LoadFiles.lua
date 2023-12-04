@@ -42,10 +42,10 @@ local LoaderFiles = {
 local FileTreeTools = {}
 
 ---@private
----@param parentPath string
+---@param parentPath Tools.FileSystem.Path
 ---@param entry table | string
----@param fileFunc fun(path: string) : boolean
----@param folderFunc fun(path: string) : boolean
+---@param fileFunc fun(path: Tools.FileSystem.Path) : boolean
+---@param folderFunc fun(path: Tools.FileSystem.Path) : boolean
 ---@return boolean
 function FileTreeTools:doEntry(parentPath, entry, fileFunc, folderFunc)
 	if #entry == 1 then
@@ -58,22 +58,22 @@ function FileTreeTools:doEntry(parentPath, entry, fileFunc, folderFunc)
 end
 
 ---@private
----@param parentPath string
+---@param parentPath Tools.FileSystem.Path
 ---@param file string
----@param func fun(path: string) : boolean
+---@param func fun(path: Tools.FileSystem.Path) : boolean
 ---@return boolean
 function FileTreeTools:doFile(parentPath, file, func)
-	local path = FileSystem.Path(parentPath, file[1])
+	local path = parentPath:Extend(file[1])
 	return func(path)
 end
 
----@param parentPath string
+---@param parentPath Tools.FileSystem.Path
 ---@param folder table
----@param fileFunc fun(path: string) : boolean
----@param folderFunc fun(path: string) : boolean
+---@param fileFunc fun(path: Tools.FileSystem.Path) : boolean
+---@param folderFunc fun(path: Tools.FileSystem.Path) : boolean
 ---@return boolean
 function FileTreeTools:doFolder(parentPath, folder, fileFunc, folderFunc)
-	local path = FileSystem.Path(parentPath, folder[1])
+	local path = parentPath:Extend(folder[1])
 	if not folderFunc(path) then
 		return false
 	end
@@ -98,10 +98,11 @@ local function loadFiles(loaderBasePath)
 	---@type table<string, any[]>
 	local loadedLoaderFiles = {}
 
-	---@param path string
+	---@param path Tools.FileSystem.Path
 	---@return boolean success
-	local function retrivePath(path)
-		local fileName = FileSystem.GetFileName(path)
+	local function retrievePath(path)
+		local pathStr = path:GetPath()
+		local fileName = path:GetFileName()
 		local num = fileName:match('^(%d+)_.+$')
 		if num then
 			num = tonumber(num)
@@ -112,9 +113,9 @@ local function loadFiles(loaderBasePath)
 				loadEntries[num] = entries
 				table.insert(loadOrder, num)
 			end
-			table.insert(entries, path)
+			table.insert(entries, pathStr)
 		else
-			local file = FileSystem.OpenFile(loaderBasePath .. path, 'r')
+			local file = FileSystem.OpenFile(loaderBasePath .. pathStr, 'r')
 			local str = ''
 			while true do
 				local buf = file:read(8192)
@@ -123,18 +124,19 @@ local function loadFiles(loaderBasePath)
 				end
 				str = str .. buf
 			end
-			path = path:match('^(.+/.+)%..+$')
-			loadedLoaderFiles[path] = { str }
+			local foundPath = pathStr:match('^(.+/.+)%..+$')
+			loadedLoaderFiles[foundPath] = { str }
 			file:close()
 		end
+
 		return true
 	end
 
 	assert(
 		FileTreeTools:doFolder(
-			'',
+			FileSystem.Path(),
 			LoaderFiles,
-			retrivePath,
+			retrievePath,
 			function()
 				return true
 			end

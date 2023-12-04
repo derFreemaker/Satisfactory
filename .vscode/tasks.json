@@ -1,15 +1,13 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
-    "version": "2.0.0",
-    "tasks": [
+	// See https://go.microsoft.com/fwlink/?LinkId=733558
+	// for the documentation about the tasks.json format
+	"version": "2.0.0",
+	"tasks": [
 		{
 			"label": "Start Code Server",
 			"type": "shell",
 			"command": "${workspaceFolder}/Tools/start_Code_Server.bat",
-			"args": [
-				"\"${workspaceFolder}/Code-Server\""
-			],
+			"args": ["\"${workspaceFolder}/Code-Server\""],
 			"presentation": {
 				"echo": true,
 				"reveal": "never",
@@ -49,8 +47,15 @@
 		},
 		{
 			"label": "check all",
-			"command": "${workspaceFolder}\\Lua-Bundler\\Lua-Bundler.exe",
-			"args": ["--SourcePath", "${workspaceFolder}\\src", "--OutputPath", "${workspaceFolder}\\Packages", "--Package", "."],
+			"command": "${workspaceFolder}\\Tools\\Lua-Bundler\\Lua-Bundler.exe",
+			"args": [
+				"--SourcePath",
+				"${workspaceFolder}\\src",
+				"--OutputPath",
+				"${workspaceFolder}\\Packages",
+				"--Package",
+				"."
+			],
 			"problemMatcher": {
 				"owner": "lua-bundler",
 				"fileLocation": ["autoDetect", "$(workspaceFolder)/src"],
@@ -61,7 +66,7 @@
 					"file": 3,
 					"line": 4,
 					"column": 5,
-					"endColumn": 6,
+					"endColumn": 6
 				}
 			},
 			"presentation": {
@@ -76,13 +81,21 @@
 			"runOptions": {
 				"runOn": "folderOpen",
 				"instanceLimit": 1,
-				"reevaluateOnRerun": true,
+				"reevaluateOnRerun": true
 			}
 		},
 		{
 			"label": "bundle All",
-			"command": "${workspaceFolder}\\Lua-Bundler\\Lua-Bundler.exe",
-			"args": ["--SourcePath", "${workspaceFolder}\\src", "--OutputPath", "${workspaceFolder}\\Packages", "--Package", ".", "-B"],
+			"command": "${workspaceFolder}\\Tools\\Lua-Bundler\\Lua-Bundler.exe",
+			"args": [
+				"--SourcePath",
+				"${workspaceFolder}\\src",
+				"--OutputPath",
+				"${workspaceFolder}\\Packages",
+				"--Package",
+				".",
+				"-B"
+			],
 			"problemMatcher": {
 				"owner": "lua-bundler",
 				"fileLocation": ["autoDetect", "$(workspaceFolder)/src"],
@@ -105,12 +118,21 @@
 				"clear": true,
 				"close": true
 			},
-			"dependsOn": [ "correct line endings" ]
+			"dependsOn": ["correct line endings"]
 		},
 		{
 			"label": "bundle All optimized",
-			"command": "${workspaceFolder}\\Lua-Bundler\\Lua-Bundler.exe",
-			"args": ["--SourcePath", "${workspaceFolder}\\src", "--OutputPath", "${workspaceFolder}\\Packages", "--Package", ".", "-B", "-O"],
+			"command": "${workspaceFolder}\\Tools\\Lua-Bundler\\Lua-Bundler.exe",
+			"args": [
+				"--SourcePath",
+				"${workspaceFolder}\\src",
+				"--OutputPath",
+				"${workspaceFolder}\\Packages",
+				"--Package",
+				".",
+				"-B",
+				"-O"
+			],
 			"problemMatcher": {
 				"owner": "lua-bundler",
 				"fileLocation": ["autoDetect", "$(workspaceFolder)/src"],
@@ -133,7 +155,7 @@
 				"clear": true,
 				"close": true
 			},
-			"dependsOn": [ "correct line endings" ]
+			"dependsOn": ["correct line endings"]
 		},
 		{
 			"label": "open FicsIt files",
@@ -151,9 +173,12 @@
 			"problemMatcher": []
 		},
 		{
-			"label": "create classes and structs documentation",
+			"label": "create classes and structs intellisense",
 			"command": "lua",
-			"args": ["${workspaceFolder}/Tools/CreateClassesAndStructsDocu.lua", "${workspaceFolder}"],
+			"args": [
+				"${workspaceFolder}/Tools/CreateClassesAndStructsIntellisense.lua",
+				"${workspaceFolder}/API Documentations"
+			],
 			"problemMatcher": [],
 			"presentation": {
 				"echo": true,
@@ -161,8 +186,8 @@
 				"focus": false,
 				"panel": "shared",
 				"showReuseMessage": true,
-				"clear": true,
-				"close": true
+				"clear": true
+				// "close": true
 			}
 		}
 	]

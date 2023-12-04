@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "JTEAZwutDQle6bylsmEXR/TdtVcivECcF5wyMzKje/BvVXO4UrLjm1c1Nsct5ibCuqYBIYQW1cr/aLhoO9KTbQ==",
+  "success": true,
+  "projectFilePath": "C:\\Coding\\Lua\\Lua-Bundler\\Lua-Bundler.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\oskar\\.nuget\\packages\\commandlineparser\\2.9.1\\commandlineparser.2.9.1.nupkg.sha512",
+    "C:\\Users\\oskar\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
