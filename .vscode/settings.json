@@ -30,7 +30,6 @@
 		"**/Thumbs.db": true,
 		".stfolder/**": true,
 		"Code-Server/**": true,
-		"Lua-Bundler/**": false,
 		"Obsidian Vault/**": true,
 		"Packages/**": true
 	},
