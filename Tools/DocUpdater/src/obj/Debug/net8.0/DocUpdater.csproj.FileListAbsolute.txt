@@ -1,0 +1,16 @@
+C:\Coding\Games\Satisfactory\Tools\DocUpdater\Project\bin\Debug\net8.0\DocUpdater.exe
+C:\Coding\Games\Satisfactory\Tools\DocUpdater\Project\bin\Debug\net8.0\DocUpdater.deps.json
+C:\Coding\Games\Satisfactory\Tools\DocUpdater\Project\bin\Debug\net8.0\DocUpdater.runtimeconfig.json
+C:\Coding\Games\Satisfactory\Tools\DocUpdater\Project\bin\Debug\net8.0\DocUpdater.dll
+C:\Coding\Games\Satisfactory\Tools\DocUpdater\Project\obj\Debug\net8.0\DocUpdater.GeneratedMSBuildEditorConfig.editorconfig
+C:\Coding\Games\Satisfactory\Tools\DocUpdater\Project\obj\Debug\net8.0\DocUpdater.AssemblyInfoInputs.cache
+C:\Coding\Games\Satisfactory\Tools\DocUpdater\Project\obj\Debug\net8.0\DocUpdater.AssemblyInfo.cs
+C:\Coding\Games\Satisfactory\Tools\DocUpdater\Project\obj\Debug\net8.0\DocUpdater.csproj.CoreCompileInputs.cache
+C:\Coding\Games\Satisfactory\Tools\DocUpdater\Project\obj\Debug\net8.0\DocUpdater.sourcelink.json
+C:\Coding\Games\Satisfactory\Tools\DocUpdater\Project\obj\Debug\net8.0\DocUpdater.dll
+C:\Coding\Games\Satisfactory\Tools\DocUpdater\Project\obj\Debug\net8.0\refint\DocUpdater.dll
+C:\Coding\Games\Satisfactory\Tools\DocUpdater\Project\obj\Debug\net8.0\DocUpdater.genruntimeconfig.cache
+C:\Coding\Games\Satisfactory\Tools\DocUpdater\Project\obj\Debug\net8.0\ref\DocUpdater.dll
+C:\Coding\Games\Satisfactory\Tools\DocUpdater\Project\bin\Debug\net8.0\CommandLine.dll
+C:\Coding\Games\Satisfactory\Tools\DocUpdater\Project\obj\Debug\net8.0\DocUpdater.csproj.AssemblyReference.cache
+C:\Coding\Games\Satisfactory\Tools\DocUpdater\Project\obj\Debug\net8.0\DocUpdater.csproj.CopyComplete

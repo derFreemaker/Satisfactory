@@ -36,6 +36,7 @@
 	"explorerExclude.backup": {},
 	"asciidoc.antora.enableAntoraSupport": true,
 	"cSpell.ignoreWords": [
+		"TPCI",
 		"attnamelist",
 		"canbe",
 		"commentstr",

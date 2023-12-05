@@ -6,3 +6,5 @@ if #args < 1 then
 end
 
 local ApiDocumentations = FileSystem.Path(args[1])
+
+-- create documentation

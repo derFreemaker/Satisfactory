@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DocUpdater": {
+      "commandName": "Project",
+      "commandLineArgs": "-s \"C:\\Coding\\Games\\Satisfactory\\Tests\\ToMarkdownExample.lua\" -o \"C:\\Coding\\Games\\Satisfactory\\Tests\\FromLua.md\""
+    }
+  }
+}
