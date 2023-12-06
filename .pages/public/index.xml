@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Index on Freemaker Docs</title>
+    <link>https://example.com/</link>
+    <description>Recent content in Index on Freemaker Docs</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language><atom:link href="https://example.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>FIN.Component.Api</title>
+      <link>https://example.com/docs/ficsit-networks/component/</link>
+      <pubDate>Wed, 06 Dec 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/docs/ficsit-networks/component/</guid>
+      <description>FIN.Component.Api Lua Lib: component
+The Component API provides structures, functions and signals for interacting with the network itself like returning network components.
+component.proxy(id: FIN.UUID) -&amp;gt; component: FIN.Component? Generates and returns instances of the network component with the given UUID. If a network component cannot be found for a given UUID, nil will be used for the return. Otherwise, an instance of the network component will be returned.
+Params
+Name Type Description id FIN.</description>
+    </item>
+    
+    <item>
+      <title>FIN.Computer.Api</title>
+      <link>https://example.com/docs/ficsit-networks/computer/</link>
+      <pubDate>Wed, 06 Dec 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/docs/ficsit-networks/computer/</guid>
+      <description>FIN.Computer.Api Lua Lib: computer
+The Computer API provides a interface to the computer owns functionalities.
+computer.getMemory() -&amp;gt; usage: integer, capacity: integer Returns the current memory usage
+Returns
+Name Type Description usage integer capacity integer computer.getInstance() -&amp;gt; FIN.Components.ComputerCase_C Returns the current computer case instance
+Returns
+Name Type Description FIN.Components.ComputerCase_C computer.reset() Stops the current code execution immediately and queues the system to restart in the next tick.
+computer.stop() Stops the current code execution.</description>
+    </item>
+    
+    <item>
+      <title>FIN.Event.Api</title>
+      <link>https://example.com/docs/ficsit-networks/event/</link>
+      <pubDate>Wed, 06 Dec 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/docs/ficsit-networks/event/</guid>
+      <description>FIN.Event.Api Lua Lib: event
+The Event API provides classes, functions and variables for interacting with the component network.
+event.listen(component: FIN.Component) Adds the running lua context to the listen queue of the given component.
+Params
+Name Type Description component FIN.Component The network component lua representation the computer should now listen to. event.listening() -&amp;gt; components: FIN.Component[] Returns all signal senders this computer is listening to.
+Returns
+Name Type Description components FIN.Component[] An array containing instances to all sginal senders this computer is listening too.</description>
+    </item>
+    
+    <item>
+      <title>FIN.Filesystem.Api</title>
+      <link>https://example.com/docs/ficsit-networks/filesystem/</link>
+      <pubDate>Wed, 06 Dec 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/docs/ficsit-networks/filesystem/</guid>
+      <description>FIN.Filesystem.Api Lua Lib: filesystem
+The filesystem api provides structures, functions and variables for interacting with the virtual file systems.
+You can’t access files outside the virtual filesystem. If you try to do so, the Lua runtime crashes.
+filesystem.makeFileSystem(type: FIN.Filesystem.Type, name: string) -&amp;gt; success: boolean Trys to create a new file system of the given type with the given name. The created filesystem will be added to the system DevDevice.
+Params</description>
+    </item>
+    
+    <item>
+      <title>FIN.Global.Api</title>
+      <link>https://example.com/docs/ficsit-networks/global/</link>
+      <pubDate>Wed, 06 Dec 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://example.com/docs/ficsit-networks/global/</guid>
+      <description>FIN.Global.Api getItems(&amp;hellip;string name) -&amp;gt; &amp;hellip;FIN.ItemType Tries to find the items or item provided via name.
+Params
+Name Type Description &amp;hellip; string name Returns
+Name Type Description &amp;hellip; FIN.ItemType </description>
+    </item>
+    
+  </channel>
+</rss>
