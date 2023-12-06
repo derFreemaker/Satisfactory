@@ -67,6 +67,11 @@ function Path:IsDir()
     return self.m_nodes[#self.m_nodes] == ""
 end
 
+function Path:Exists()
+    local path = self:GetPath()
+    return filesystem.exists(path)
+end
+
 ---@return string
 function Path:GetParentFolder()
     local copy = Utils.Table.Copy(self.m_nodes)

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DocUpdater")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8c01b520531573d925d4a74a91ad1d5605108db8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c9b837c25fc6ce53328939396a5ce6a9428873d6")]
 [assembly: System.Reflection.AssemblyProductAttribute("DocUpdater")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DocUpdater")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

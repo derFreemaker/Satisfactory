@@ -132,11 +132,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Coding\\Games\\Satisfactory\\Tools\\DocUpdater\\Project\\DocUpdater.csproj",
+      "projectUniqueName": "C:\\Coding\\Games\\Satisfactory\\Tools\\DocUpdater\\src\\DocUpdater.csproj",
       "projectName": "DocUpdater",
-      "projectPath": "C:\\Coding\\Games\\Satisfactory\\Tools\\DocUpdater\\Project\\DocUpdater.csproj",
+      "projectPath": "C:\\Coding\\Games\\Satisfactory\\Tools\\DocUpdater\\src\\DocUpdater.csproj",
       "packagesPath": "C:\\Users\\oskar\\.nuget\\packages\\",
-      "outputPath": "C:\\Coding\\Games\\Satisfactory\\Tools\\DocUpdater\\Project\\obj\\publish\\win-x64\\",
+      "outputPath": "C:\\Coding\\Games\\Satisfactory\\Tools\\DocUpdater\\src\\obj\\publish\\win-x64\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

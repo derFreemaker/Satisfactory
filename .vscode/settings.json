@@ -1,22 +1,16 @@
 {
-	"Lua.diagnostics.globals": [
-		"event",
-		"Config",
-		"component",
-		"filesystem",
-		"computer",
-		"findItem",
-		"log"
-	],
+	"Lua.diagnostics.globals": ["Config"],
 	"Lua.workspace.ignoreDir": [
 		".git",
 		".stfolder",
 		".vscode",
+		".pages",
 		"Code-Server",
-		"Lua-Bundler",
 		"Obsidian Vault",
 		"Packages",
-		"PackageTemplate"
+		"PackageTemplate",
+		"Tools/DocUpdater",
+		"Tools/Lua-Bundler"
 	],
 	"triggerTaskOnSave.tasks": {
 		"check all": ["*"]

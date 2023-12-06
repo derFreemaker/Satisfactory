@@ -21,7 +21,10 @@ namespace DocUpdater
                 for (int i = 0; i < paramArray.Length; i++)
                 {
                     var parameter = paramArray[i];
-                    argWithTypes[i] = $"{parameter.Name}: {parameter.Type}";
+                    if (parameter.Name == "...")
+                        argWithTypes[i] = parameter.Name + parameter.Type;
+                    else
+                        argWithTypes[i] = $"{parameter.Name}: {parameter.Type}";
                 }
                 builder.Append(string.Join(", ", argWithTypes));
             }
@@ -34,9 +37,9 @@ namespace DocUpdater
         private string BuildReturns()
         {
             if (Returns.Count == 0)
-                return "void";
+                return string.Empty;
 
-            var builder = new StringBuilder();
+            var builder = new StringBuilder(" -> ");
 
             var paramArray = Returns.ToArray();
             var paramWithTypes = new string[paramArray.Length];
@@ -44,7 +47,10 @@ namespace DocUpdater
             {
                 var parameter = paramArray[i];
                 if (parameter.Name != string.Empty)
-                    paramWithTypes[i] = $"{parameter.Name}: {parameter.Type}";
+                    if (parameter.Name == "...")
+                        paramWithTypes[i] = parameter.Name + parameter.Type;
+                    else
+                        paramWithTypes[i] = $"{parameter.Name}: {parameter.Type}";
                 else
                     paramWithTypes[i] = parameter.Type;
             }
@@ -55,14 +61,14 @@ namespace DocUpdater
 
         public void ToMarkdown(StreamWriter writer)
         {
-            writer.WriteLine($"## function {Name}{BuildParameter()} -> {BuildReturns()}");
+            writer.WriteLine($"## {Name}{BuildParameter()}{BuildReturns()}");
             writer.WriteLine();
             writer.WriteLine(string.Join("\n", Comments));
             writer.WriteLine();
 
             if (Parameters.Count > 0)
             { 
-                writer.WriteLine("#### **Params**");
+                writer.WriteLine("**Params**");
                 writer.WriteLine();
                 writer.WriteLine("| Name | Type | Description |");
                 writer.WriteLine("| ---- | ---- | ----------- |");
@@ -75,7 +81,8 @@ namespace DocUpdater
 
             if (Returns.Count > 0)
             {
-                writer.WriteLine("#### **Returns**");
+                writer.WriteLine();
+                writer.WriteLine("**Returns**");
                 writer.WriteLine();
                 writer.WriteLine("| Name | Type | Description |");
                 writer.WriteLine("| ---- | ---- | ----------- |");

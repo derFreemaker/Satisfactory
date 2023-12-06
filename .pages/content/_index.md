@@ -1,5 +1,4 @@
 ---
-title: "Hi"
+title: "Index"
+type: "blank"
 ---
-
-# Hi

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "u9ObOhwnieRUMaXnr8Jz32u6L5wwQa2tl6WpgbrKJz9Tn/F0V4moFj626ebTzIPx29IbeO+BU2aCD9Db2mBAsw==",
+  "dgSpecHash": "Z/YnbhMrAsON3OCSgMfaf5BijwWONG9AbLOwHQVjAt5+IAui/3KtpECYr0JsK6dkmU52bCjVbNVe25GOXTy97A==",
   "success": true,
-  "projectFilePath": "C:\\Coding\\Games\\Satisfactory\\Tools\\DocUpdater\\Project\\DocUpdater.csproj",
+  "projectFilePath": "C:\\Coding\\Games\\Satisfactory\\Tools\\DocUpdater\\src\\DocUpdater.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\oskar\\.nuget\\packages\\commandlineparser\\2.9.1\\commandlineparser.2.9.1.nupkg.sha512"
   ],

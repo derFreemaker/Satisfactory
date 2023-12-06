@@ -107,7 +107,8 @@ using var fileStream = File.OpenWrite(config.OutputFilePath);
 using var writer = new StreamWriter(fileStream);
 
 writer.WriteLine("---");
-writer.WriteLine("type: \"blank\"");
+writer.WriteLine($"title: {@class.Name}");
+writer.WriteLine($"date: \"{DateTime.UtcNow:yyyy-MM-dd}\"");
 writer.WriteLine("---");
 writer.WriteLine();
 writer.WriteLine($"# {@class.Name}");
@@ -119,5 +120,3 @@ foreach (var func in functions)
     writer.WriteLine();
     func.ToMarkdown(writer);
 }
-
-Console.WriteLine("finished");

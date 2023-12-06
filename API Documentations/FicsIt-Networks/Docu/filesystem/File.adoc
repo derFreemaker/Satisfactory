@@ -1,5 +1,0 @@
-== File
-
-Represents a filestream for reading and writing from and to a file in the virtual filesystem.
-
-Reimplemented from the Lua standard library. https://www.lua.org/pil/21.1.html[Here you can find more].
