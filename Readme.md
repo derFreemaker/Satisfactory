@@ -4,9 +4,9 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
 
 ## Supported Module Modifiers
 
-- **---@namespace {moduleNamespace}** -> overrides the namespace of the module its in
-- **---@isRunnable {true|false}** -> overrides the IsRunnable mark of the module its in
-- **---@using {Package}** -> adds the package to the required Packges if not already in
+-   **---@namespace {moduleNamespace}** -> overrides the namespace of the module its in
+-   **---@isRunnable {true|false}** -> overrides the IsRunnable mark of the module its in
+-   **---@using {Package}** -> adds the package to the required Packges if not already in
 
 ## Push Pipeline
 
@@ -21,10 +21,10 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
 
 1. loads [Loader](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/Loader.lua)
 
-   - loads all files in [LoaderFiles](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/Loader/)
-   - checks version in [VersionFile](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/Version.latest.txt)
-   - loads [Options](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/00_Options.lua)
-   - sets up [PackageLoader](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/Loader/100_PackageLoader.lua)
+    - loads all files in [LoaderFiles](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/Loader/)
+    - checks version in [VersionFile](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/Version.latest.txt)
+    - loads [Options](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/00_Options.lua)
+    - sets up [PackageLoader](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/Loader/100_PackageLoader.lua)
 
 2. loads [Core Package](https://github.com/derFreemaker/Satisfactory/blob/main/src/Core)
 3. loads selected [Option](https://github.com/derFreemaker/Satisfactory/blob/main/Github-Loading/GithubLoaderInGame.lua#L2)
@@ -52,13 +52,12 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
 
 ```json
 {
-    "Name": "PackageName",
-    "Version": "0.1.0-0",
-    "Namespace": "PackageNamespace",
-    "RequiredPackages": [ "Package1", "Package2" ],
-    "ApplicationType": "Library"
+	"Name": "PackageName",
+	"Version": "0.1.0-0",
+	"Namespace": "PackageNamespace",
+	"RequiredPackages": ["Package1", "Package2"],
+	"ApplicationType": "Library"
 }
-
 ```
 
 "Version": "[Version]-[BuildNumber]" the BuildNumber will be increased by one erverytime the bundler bundles this package.
@@ -69,8 +68,8 @@ The BuildNumber can only be an integer.
 ## Package Load Sequence
 
 1. download of the Package from [Packages](https://github.com/derFreemaker/Satisfactory/blob/main/Packages/)
-2. running events in module [__events.lua](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/__events.lua) of the Package
-   - [OnLoaded](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/__events.lua#L4) function gets executed if it exists
+2. running events in module [\_\_events.lua](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/__events.lua) of the Package
+    - [OnLoaded](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/__events.lua#L4) function gets executed if it exists
 
 ## Package Run Sequence
 
@@ -81,3 +80,7 @@ The BuildNumber can only be an integer.
 ### More Information in the Obsidian Vault
 
 Download: [Obsidian](https://obsidian.md)
+
+### New
+
+[Github Pages](https://derfreemaker.github.io/Satisfactory/)

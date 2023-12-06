@@ -1,6 +1,6 @@
 navbar_title = 'Freemaker Docs'
 author = "Freemaker"
-color_scheme = "light"
+color_scheme = "dark"
 
 enable_zooming_js = true
 enable_toc = true
