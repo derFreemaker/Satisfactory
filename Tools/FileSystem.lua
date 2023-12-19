@@ -1,5 +1,8 @@
 local Utils = require("Tools.Utils")
 
+---@class Tools.FileSystem
+local FileSystem = {}
+
 ---@param str string
 ---@return string str
 local function formatStr(str)
@@ -72,6 +75,25 @@ end
 function Path:Exists()
 	local path = self:GetPath()
 	return os.rename(path, path) and true or false
+end
+
+---@return boolean
+function Path:Create()
+	if self:Exists() then
+		return true
+	end
+
+	if self:IsDir() then
+		return FileSystem.createFolder(self:GetPath())
+	end
+
+	if self:IsFile() then
+		local file = FileSystem.OpenFile(self:GetPath(), "w")
+		file:write("")
+		file:close()
+	end
+
+	return false
 end
 
 ---@return string
@@ -193,8 +215,9 @@ function Path:Copy()
 	return Path.new(copyNodes)
 end
 
----@class Tools.FileSystem
-local FileSystem = {}
+------------------------------------------
+--- FileSystem
+------------------------------------------
 
 ---@param str string?
 ---@return Tools.FileSystem.Path
@@ -255,6 +278,13 @@ function FileSystem.GetFiles(path)
 		table.insert(children, line)
 	end
 	return children
+end
+
+---@param path string
+---@return boolean
+function FileSystem.createFolder(path)
+	local success = os.execute("mkdir \"" .. path .. "\"")
+	return success or false
 end
 
 return FileSystem

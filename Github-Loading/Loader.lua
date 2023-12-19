@@ -165,7 +165,7 @@ local function loadFiles(loaderBasePath)
 
 	---@param path string
 	---@return boolean success
-	local function retrivePath(path)
+	local function retrievePath(path)
 		local fileName = filesystem.path(4, path)
 		local num = fileName:match('^(%d+)_.+$')
 		if num then
@@ -199,7 +199,7 @@ local function loadFiles(loaderBasePath)
 		FileTreeTools:doFolder(
 			'/',
 			LoaderFiles,
-			retrivePath,
+			retrievePath,
 			function()
 				return true
 			end
@@ -310,7 +310,7 @@ function Loader:Load(logLevel)
 end
 
 ---@nodiscard
----@return boolean diffrentVersionFound
+---@return boolean differentVersionFound
 function Loader:CheckVersion()
 	self.Logger:LogTrace('checking Version...')
 	local versionFilePath = self.m_loaderBasePath .. '/Github-Loading/Version.current.txt'
@@ -318,14 +318,14 @@ function Loader:CheckVersion()
 	local NewVersionString = self:Get('/Github-Loading/Version.latest')
 	Utils.File.Write(versionFilePath, 'w', NewVersionString, true)
 
-	local diffrentVersionFound = OldVersionString ~= NewVersionString
-	if diffrentVersionFound then
+	local differentVersionFound = OldVersionString ~= NewVersionString
+	if differentVersionFound then
 		self.Logger:LogInfo('found new Github Loader version: ' .. NewVersionString)
 	else
 		self.Logger:LogDebug('Github Loader Version: ' .. NewVersionString)
 	end
 
-	return diffrentVersionFound
+	return differentVersionFound
 end
 
 ---@param option string?
@@ -446,14 +446,14 @@ function Loader:Run(program)
 	local success, errorMsg, returns = Utils.Function.InvokeProtected(program.Run, program)
 	if not success then
 		self.Logger:LogError(errorMsg)
-		error("program stoped")
+		error("program stopped")
 	end
 	___logger:revert()
 
 	if returns[1] == '$%not found%$' then
 		error('no main run function found')
 	end
-	self.Logger:LogInfo('program stoped running: ' .. tostring(returns[1]))
+	self.Logger:LogInfo('program stopped running: ' .. tostring(returns[1]))
 end
 
 function Loader:Cleanup()

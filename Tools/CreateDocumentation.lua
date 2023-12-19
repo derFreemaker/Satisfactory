@@ -2,7 +2,7 @@ local FileSystem = require("Tools.FileSystem")
 
 local args = { ... }
 if #args < 3 then
-    error("not all args given")
+    error("not all args given: {DocUpdater} {ApiDocumentationSource} {ApiDocumentationOutput}")
 end
 
 local DocUpdater = args[1]
@@ -17,10 +17,18 @@ for _, sourceFolder in pairs(docSourceFolders) do
     end
 
     local docSourceFiles = FileSystem.GetFiles(folderPath:GetPath())
+    if #docSourceFiles == 0 then
+        goto continue
+    end
+
+    local outputSourceFolder = ApiDocumentationOutput:Extend(sourceFolder)
+    if not outputSourceFolder:Create() then
+        error("unable to create folder: " .. outputSourceFolder:GetPath())
+    end
+
     for _, file in pairs(docSourceFiles) do
         local filePath = folderPath:Extend(file)
-        local outputFilePath = ApiDocumentationOutput
-            :Extend(sourceFolder)
+        local outputFilePath = outputSourceFolder
             :Extend(FileSystem.Path(file):GetFileStem() .. ".md")
 
         local command = DocUpdater .. " -s \"" .. filePath:GetPath() .. "\" -o \"" .. outputFilePath:GetPath() .. "\""
@@ -29,3 +37,7 @@ for _, sourceFolder in pairs(docSourceFolders) do
 
     ::continue::
 end
+
+---@alias FIN.ALIASTEST integer
+---| "Hi"
+---| "Hello"

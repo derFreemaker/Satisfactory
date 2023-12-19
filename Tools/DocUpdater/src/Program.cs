@@ -1,6 +1,5 @@
 ﻿using CommandLine;
 using DocUpdater;
-using System.Data;
 
 ParserResult<Config> parseResult = Parser.Default.ParseArguments<Config>(args);
 if (parseResult.Tag == ParserResultType.NotParsed)
@@ -21,8 +20,6 @@ if (parseResult.Tag == ParserResultType.NotParsed)
 }
 var config = parseResult.Value;
 
-var lines = File.ReadAllLines(config.SourceFilePath);
-
 // #-------------------------# //
 // #   I am sorry for this   # //
 // #-------------------------# //
@@ -34,6 +31,7 @@ var comments = new List<string>();
 var parameters = new List<FuncParameter>();
 var returns = new List<FuncParameter>();
 
+var lines = File.ReadAllLines(config.SourceFilePath);
 foreach (var line in lines)
 {
     if (ParseFunctions.IsComment(line, out var comment))
