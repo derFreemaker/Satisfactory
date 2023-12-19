@@ -5,9 +5,9 @@ local File = {}
 local OpenFiles = {}
 
 ---@return string key
-local function getUniqeKey(key)
+local function getUniqueKey(key)
     if OpenFiles[key] then
-        return getUniqeKey(key .. "$")
+        return getUniqueKey(key .. "$")
     end
 
     return key
@@ -25,7 +25,7 @@ local WrappedFile = {}
 ---@param mode FIN.Filesystem.openmode
 ---@return FIN.Filesystem.File
 function WrappedFile.new(path, mode)
-    local key = getUniqeKey(path)
+    local key = getUniqueKey(path)
 
     local instance = setmetatable({
         m_file = OpenFileFunc(path, mode),

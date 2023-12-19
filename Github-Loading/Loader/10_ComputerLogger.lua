@@ -4,15 +4,15 @@
 ___logger = { m_loggerHistory = {} }
 
 function ___logger:initialize()
-    local function wrapFunc(func)
-        local function invoke(...)
-            func(self, ...)
-        end
-        return invoke
+    ---@diagnostic disable-next-line
+    log = function(...)
+        self:log(...)
     end
 
-    log = wrapFunc(self.log)
-    computer.panic = wrapFunc(self.panic)
+    ---@diagnostic disable-next-line
+    computer.panic = function(errorMsg)
+        self:panic(errorMsg)
+    end
 end
 
 ---@param logger Github_Loading.Logger | Core.Logger

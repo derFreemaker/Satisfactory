@@ -32,7 +32,10 @@ function Simulator:loadComputer()
 		return math.floor(os.clock())
 	end
 
-	computer.time = os.time
+	---@diagnostic disable-next-line
+	computer.time = function()
+		return os.time()
+	end
 
 	---@diagnostic disable-next-line
 	computer.magicTime = function()
