@@ -141,18 +141,18 @@ end
 ---@param moduleToGet string
 ---@return Github_Loading.Module
 function PackageLoader:GetModule(moduleToGet)
-	self.Logger:LogTrace("geting module: '" .. moduleToGet .. "'")
+	self.Logger:LogTrace("getting module: '" .. moduleToGet .. "'")
 
 	local module = self.m_moduleCache[moduleToGet]
 	if module then
-		self.Logger:LogDebug("geted module: '" .. moduleToGet .. "' from cache")
+		self.Logger:LogDebug("got module: '" .. moduleToGet .. "' from cache")
 		return module
 	end
 
 	for _, package in ipairs(self.Packages) do
 		module = package:GetModule(moduleToGet)
 		if module then
-			self.Logger:LogDebug("geted module: '" .. moduleToGet .. "'")
+			self.Logger:LogDebug("got module: '" .. moduleToGet .. "'")
 			self.m_moduleCache[moduleToGet] = module
 			return module
 		end
@@ -163,7 +163,7 @@ function PackageLoader:GetModule(moduleToGet)
 	for _, package in ipairs(self.Packages) do
 		module = package:GetModule(moduleToGet)
 		if module then
-			self.Logger:LogDebug("geted module: '" .. moduleToGet .. "'")
+			self.Logger:LogDebug("got module: '" .. moduleToGet .. "'")
 			self.m_moduleCache[moduleToGet] = module
 			return module
 		end
@@ -175,12 +175,12 @@ end
 ---@param moduleToGet string
 ---@param outModule Out<Github_Loading.Module>
 function PackageLoader:TryGetModule(moduleToGet, outModule)
-	self.Logger:LogTrace("try geting module: '" .. moduleToGet .. "'")
+	self.Logger:LogTrace("try got module: '" .. moduleToGet .. "'")
 
 	for _, package in ipairs(self.Packages) do
 		local module = package:GetModule(moduleToGet)
 		if module then
-			self.Logger:LogDebug("try geted module: '" .. moduleToGet .. "'")
+			self.Logger:LogDebug("try got module: '" .. moduleToGet .. "'")
 			outModule.Value = module
 			return true
 		end

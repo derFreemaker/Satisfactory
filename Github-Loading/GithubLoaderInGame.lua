@@ -16,7 +16,7 @@ local loaderForceDownload = false
 local programForceDownload = false
 
 local BaseUrl = "http://localhost"
--- local BaseUrl = 'https://raw.githubusercontent.com/derFreemaker/Satisfactory/dev'
+-- local BaseUrl = 'https://raw.githubusercontent.com/derFreemaker/Satisfactory/main'
 
 local showDriveUUID = false
 
@@ -66,11 +66,10 @@ local function Run()
 		local req = internetCard:request(LoaderUrl, 'GET', '')
 		repeat
 		until req:canGet()
-		local _, libdata = req:get()
-		---@cast libdata string
+		local _, libData = req:get()
 		local file = filesystem.open(LoaderPath, 'w')
 		assert(file, "Unable to open file: '" .. LoaderPath .. "'")
-		file:write(libdata)
+		file:write(libData)
 		file:close()
 		print('[Computer] INFO downloaded Github Loader')
 	end

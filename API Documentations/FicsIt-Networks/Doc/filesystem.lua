@@ -46,20 +46,20 @@ function filesystem.open(path, mode) end
 --- Creates the folder path.
 ---@param path string - folder path the function should create
 ---@param all boolean? - if true creates all sub folders from the path
----@return boolean success - returns if it was able to create the directory
+---@return boolean success - returns `true` if it was able to create the directory
 function filesystem.createDir(path, all) end
 
 --- Removes the filesystem object at the given path.
 ---@param path string - path to the filesystem object
 ---@param all boolean? - if true deletes everything
----@return boolean success - returns if it was able to remove the node
+---@return boolean success - returns `true` if it was able to remove the node
 function filesystem.remove(path, all) end
 
 --- Moves the filesystem object from the given path to the other given path.
 --- Function fails if it is not able to move the object.
 ---@param from string - path to the filesystem object you want to move
 ---@param to string - path to the filesystem object the target should get moved to
----@return boolean success - returns true if it was able to move the node
+---@return boolean success - returns `true` if it was able to move the node
 function filesystem.move(from, to) end
 
 --- Renames the filesystem object at the given path to the given name.

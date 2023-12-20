@@ -15,7 +15,7 @@ end
 
 local OpenFileFunc = filesystem.open
 
----@class Uitls.File.WrappedFile : FIN.Filesystem.File
+---@class Utils.File.WrappedFile : FIN.Filesystem.File
 ---@field private m_file FIN.Filesystem.File
 ---@field private m_openFilesKey string
 local WrappedFile = {}

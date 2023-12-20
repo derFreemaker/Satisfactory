@@ -11,15 +11,17 @@ function Simulator:LoadLoaderFiles()
 	self.m_loadedLoaderFiles = require("Tests.Simulator.LoadFiles")(CurrentPath)
 end
 
-local requireFunc = require
+local requireFunc = require --[[@as fun(moduleName: string)]]
 ---@private
 function Simulator:OverrideRequire()
 	---@param moduleToGet string
 	function require(moduleToGet)
-		if requireFunc == nil then
-			error('require Func was nil')
+		local success, result = pcall(requireFunc, 'src.' .. moduleToGet)
+		if success then
+			return result
 		end
-		return requireFunc('src.' .. moduleToGet)
+
+		return requireFunc("src." .. moduleToGet .. ".init")
 	end
 end
 

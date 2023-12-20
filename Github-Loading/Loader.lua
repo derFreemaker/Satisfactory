@@ -460,7 +460,8 @@ function Loader:Cleanup()
 	---@type FIN.Filesystem.File[]
 	local openFiles = self.m_loadedLoaderFiles["/Github-Loading/Loader/Utils/File"][2]
 
-	for _, file in pairs(openFiles) do
+	for id, file in pairs(openFiles) do
+		print("file still open: " .. id)
 		file:close()
 	end
 end

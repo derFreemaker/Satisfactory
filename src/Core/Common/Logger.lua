@@ -1,4 +1,4 @@
-local Event = require('Core.Event.Event')
+local Event = require('Core.Event')
 
 ---@alias Core.Logger.LogLevel
 ---|1 Trace

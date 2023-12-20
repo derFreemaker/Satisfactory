@@ -1,5 +1,5 @@
 local Task = require("Core.Common.Task")
-local Event = require('Core.Event.Event')
+local Event = require('Core.Event')
 
 ---@class Net.Core.NetworkPort : object
 ---@field Port Net.Core.Port
