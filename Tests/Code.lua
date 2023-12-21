@@ -1,14 +1,12 @@
 print(collectgarbage("count"))
 
-local _, logger = require('Tests.Simulator.Simulator'):Initialize(1)
+local _, logger = require("Tests.Simulator.Simulator"):Initialize(1)
 
 print(collectgarbage("count"))
 
 local Event = require("Core.Event")
 
 local EventTest = Event()
-
-print(collectgarbage("count"))
 
 ---@class EmptyClass
 ---@overload fun() : EmptyClass
@@ -29,12 +27,8 @@ local instance = EmptyClass()
 
 EventTest:Trigger(logger, "Test")
 
-print(collectgarbage("count"))
-
 Utils.Class.Deconstruct(instance)
 
-print(collectgarbage("count"))
-collectgarbage()
 print(collectgarbage("count"))
 collectgarbage()
 print(collectgarbage("count"))

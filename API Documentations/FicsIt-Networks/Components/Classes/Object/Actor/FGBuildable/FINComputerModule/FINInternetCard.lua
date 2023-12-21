@@ -1,6 +1,6 @@
 ---@meta
 
----@class FIN.Components.FINInternetCard : FIN.Components.FINComputerModule
+---@class FIN.Components.FINInternetCard : FIN.Components.FINComputerModule, FIN.PCIDevice
 local InternetCard = {}
 
 ---@alias FIN.Components.FINComputerMod.FINInternetCard.HttpMethods

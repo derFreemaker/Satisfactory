@@ -27,22 +27,15 @@ local LoaderUrl = LoaderFilesUrl .. '/Loader.lua'
 local LoaderFilesPath = ''
 local LoaderPath = LoaderFilesPath .. '/Loader.lua'
 
----@type FIN.Components.InternetCard_C
-local internetCard = computer.getPCIDevices(classes.FINInternetCard)[1]
+local internetCard = computer.getPCIDevices(classes.InternetCard_C)[1]
 if not internetCard then
 	computer.beep(0.2)
 	error('No internet-card found!')
 	return
 end
 filesystem.initFileSystem('/dev')
-local drive = ''
-for _, child in pairs(filesystem.childs('/dev')) do
-	if not (child == 'serial') then
-		drive = child
-		break
-	end
-end
-if drive:len() < 1 then
+local drive = filesystem.childs('/dev')[1]
+if not drive or drive:len() < 1 then
 	computer.beep(0.2)
 	error('Unable to find filesystem to load on! Insert a drive or floppy.')
 	return
@@ -81,8 +74,8 @@ local function Run()
 
 	Loader = Loader.new(BaseUrl, LoaderFilesPath, loaderForceDownload, internetCard)
 	Loader:Load(loaderLogLevel)
-	local diffrentVersionFound = Loader:CheckVersion()
-	if diffrentVersionFound then
+	local differentVersionFound = Loader:CheckVersion()
+	if differentVersionFound then
 		loaderForceDownload = true
 		return true
 	end

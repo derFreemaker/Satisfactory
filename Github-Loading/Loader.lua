@@ -96,7 +96,7 @@ end
 ---@param func fun(path: string) : boolean
 ---@return boolean
 function FileTreeTools:doFile(parentPath, file, func)
-	local path = filesystem.path(parentPath, file[1])
+	local path = parentPath .. file[1]
 	return func(path)
 end
 
@@ -106,7 +106,7 @@ end
 ---@param folderFunc fun(path: string) : boolean
 ---@return boolean
 function FileTreeTools:doFolder(parentPath, folder, fileFunc, folderFunc)
-	local path = filesystem.path(parentPath, folder[1])
+	local path = parentPath .. folder[1] .. "/"
 	if not folderFunc(path) then
 		return false
 	end

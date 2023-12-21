@@ -75,8 +75,8 @@ function computer.magicTime() end
 function computer.log(verbosity, format, ...) end
 
 --- This function allows you to get all installed PCI-Devices in a computer of a given type.
----@generic TPCIDevice
----@param type FIN.Class
+---@generic TPCIDevice : FIN.PCIDevice
+---@param type TPCIDevice
 ---@return TPCIDevice[]
 function computer.getPCIDevices(type) end
 

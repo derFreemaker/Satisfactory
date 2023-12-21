@@ -81,6 +81,6 @@ The BuildNumber can only be an integer.
 
 Download: [Obsidian](https://obsidian.md)
 
-### New
+### New (WIP)
 
 [Github Pages](https://derfreemaker.github.io/Satisfactory/)

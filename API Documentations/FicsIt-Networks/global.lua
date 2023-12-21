@@ -53,3 +53,6 @@ Component.id = nil
 --- * Read Only - The value of this property can not be changed by code
 ---@type string
 Component.nick = nil
+
+---@class FIN.PCIDevice
+local PCIDevice = {}

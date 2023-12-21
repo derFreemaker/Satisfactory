@@ -1,6 +1,6 @@
 ---@meta
 
----@class FIN.Components.NetworkCard : FIN.Components.FINComputerModule
+---@class FIN.Components.NetworkCard : FIN.Components.FINComputerModule, FIN.PCIDevice
 local NetworkCard = {}
 
 --- Sends a network message to the receiver with the given port. The data you want to add can be passed as additional parameters.

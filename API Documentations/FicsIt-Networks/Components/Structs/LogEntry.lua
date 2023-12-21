@@ -12,7 +12,7 @@
 ---@class FIN.Components.LogEntry
 local LogEntry = {}
 
---- The Message-Content contained withhin the log entry.
+--- The Message-Content contained within the log entry.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick
@@ -42,5 +42,4 @@ LogEntry.verbosity = nil
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
 ---@return string result The resulting formatted string
-function LogEntry:format()
-end
+function LogEntry:format() end
