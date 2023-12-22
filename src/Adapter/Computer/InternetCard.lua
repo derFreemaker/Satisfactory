@@ -13,9 +13,9 @@ function InternetCard:__init(index)
     end
 
     ---@type Out<Adapter.Computer.InternetCard>
-    local internetCardAdapater = {}
-    if Cache:TryGet(index, internetCardAdapater) then
-        return internetCardAdapater.Value
+    local internetCardAdapter = {}
+    if Cache:TryGet(index, internetCardAdapter) then
+        return internetCardAdapter.Value
     end
 
     local internetCard = PCIDeviceReference(classes.InternetCard_C, index)

@@ -1,7 +1,7 @@
 return {
     Name = "Adapter.Computer",
     Namespace = "Adapter.Computer",
-    Version = "0.1.0-37",
+    Version = "0.1.0-38",
     PackageType = "Library",
     RequiredPackages = {
         "Core"
@@ -12,15 +12,15 @@ return {
             Namespace = "Adapter.Computer.InternetCard",
             IsRunnable = true,
             StartPos = 81,
-            EndPos = 1538,
+            EndPos = 1535,
         },
 
         ["AdapterComputerNetworkCard"] = {
             Location = "Adapter.Computer.NetworkCard",
             Namespace = "Adapter.Computer.NetworkCard",
             IsRunnable = true,
-            StartPos = 1618,
-            EndPos = 3977,
+            StartPos = 1615,
+            EndPos = 3974,
         },
 
     },
