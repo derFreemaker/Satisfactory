@@ -109,7 +109,8 @@ function NetworkClient:RemoveNetworkPort(port)
 	end
 
 	port:ClosePort()
-	self.m_ports[port] = nil
+	self.m_ports[port.Port] = nil
+	Utils.Class.Deconstruct(port)
 end
 
 ---@private
@@ -148,34 +149,32 @@ end
 ---@param onReceivedEventName Net.Core.EventName?
 ---@param onReceivedPort Net.Core.Port?
 ---@param listener Core.Task
----@return Net.Core.NetworkPort
+---@return Net.Core.NetworkPort, number taskIndex
 function NetworkClient:AddTask(onReceivedEventName, onReceivedPort, listener)
 	onReceivedEventName = onReceivedEventName or "*"
 	onReceivedPort = onReceivedPort or "*"
 
 	local networkPort = self:GetOrCreateNetworkPort(onReceivedPort)
-	networkPort:AddTask(onReceivedEventName, listener)
-	return networkPort
+	return networkPort, networkPort:AddTask(onReceivedEventName, listener)
 end
 
 ---@param onReceivedEventName Net.Core.EventName
 ---@param onReceivedPort Net.Core.Port
 ---@param listener Core.Task
----@return Net.Core.NetworkPort
+---@return Net.Core.NetworkPort, number taskIndex
 function NetworkClient:AddTaskOnce(onReceivedEventName, onReceivedPort, listener)
 	onReceivedEventName = onReceivedEventName or '*'
 	onReceivedPort = onReceivedPort or "*"
 
 	local networkPort = self:GetOrCreateNetworkPort(onReceivedPort)
-	networkPort:AddTaskOnce(onReceivedEventName, listener)
-	return networkPort
+	return networkPort, networkPort:AddTaskOnce(onReceivedEventName, listener)
 end
 
 ---@param onReceivedEventName Net.Core.EventName?
 ---@param onReceivedPort Net.Core.Port?
 ---@param listener fun(context: Net.Core.NetworkClient)
 ---@param ... any
----@return Net.Core.NetworkPort
+---@return Net.Core.NetworkPort, number taskIndex
 function NetworkClient:AddListener(onReceivedEventName, onReceivedPort, listener, ...)
 	return self:AddTask(onReceivedEventName, onReceivedPort, Task(listener, ...))
 end
@@ -184,7 +183,7 @@ end
 ---@param onReceivedPort Net.Core.Port
 ---@param listener fun(context: Net.Core.NetworkContext)
 ---@param ... any
----@return Net.Core.NetworkPort
+---@return Net.Core.NetworkPort, number taskIndex
 function NetworkClient:AddListenerOnce(onReceivedEventName, onReceivedPort, listener, ...)
 	return self:AddTaskOnce(onReceivedEventName, onReceivedPort, Task(listener, ...))
 end

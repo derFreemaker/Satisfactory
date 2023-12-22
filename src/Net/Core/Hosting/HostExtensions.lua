@@ -61,19 +61,19 @@ end
 ---@param eventName Net.Core.EventName
 ---@param port Net.Core.Port
 ---@param task Core.Task
----@return Hosting.Host host
+---@return Net.Core.NetworkPort netPort,  number eventTaskIndex
 function HostExtensions:AddCallableEventTask(eventName, port, task)
     local netPort = self:CreateNetworkPort(port)
-    netPort:AddTask(eventName, task)
+    local taskIndex = netPort:AddTask(eventName, task)
     netPort:OpenPort()
-    return self
+    return netPort, taskIndex
 end
 
 ---@param eventName Net.Core.EventName
 ---@param port Net.Core.Port
 ---@param listener fun(context: Net.Core.IPAddress)
 ---@param ... any
----@return Hosting.Host host
+---@return Net.Core.NetworkPort netPort,  number eventTaskIndex
 function HostExtensions:AddCallableEventListener(eventName, port, listener, ...)
     return self:AddCallableEventTask(eventName, port, Task(listener, ...))
 end
@@ -82,7 +82,7 @@ end
 ---@param port Net.Core.Port
 function HostExtensions:RemoveCallableEvent(eventName, port)
     local netPort = self:GetNetworkPort(port)
-    netPort:RemoveListener(eventName)
+    netPort:RemoveEvent(eventName)
 end
 
 return Utils.Class.ExtendClass(HostExtensions, Host)

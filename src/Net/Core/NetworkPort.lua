@@ -43,7 +43,7 @@ function NetworkPort:Execute(context)
 			event:Trigger(self.m_logger, context)
 		end
 		if event:Count() == 0 then
-			self:RemoveListener(name)
+			self:RemoveEvent(name)
 		end
 	end
 end
@@ -73,43 +73,63 @@ function NetworkPort:CreateOrGetEvent(eventName)
 	return event
 end
 
----@param onRecivedEventName Net.Core.EventName
+---@param onReceivedEventName Net.Core.EventName
 ---@param listener Core.Task
----@return Net.Core.NetworkPort
-function NetworkPort:AddTask(onRecivedEventName, listener)
-	local event = self:CreateOrGetEvent(onRecivedEventName)
-	event:AddTask(listener)
-	return self
+---@return number taskIndex
+function NetworkPort:AddTask(onReceivedEventName, listener)
+	local event = self:CreateOrGetEvent(onReceivedEventName)
+	return event:AddTask(listener)
 end
 
----@param onRecivedEventName Net.Core.EventName
+---@param onReceivedEventName Net.Core.EventName
 ---@param listener Core.Task
----@return Net.Core.NetworkPort
-function NetworkPort:AddTaskOnce(onRecivedEventName, listener)
-	local event = self:CreateOrGetEvent(onRecivedEventName)
-	event:AddTaskOnce(listener)
-	return self
+---@return number taskIndex
+function NetworkPort:AddTaskOnce(onReceivedEventName, listener)
+	local event = self:CreateOrGetEvent(onReceivedEventName)
+	return event:AddTaskOnce(listener)
 end
 
----@param onRecivedEventName Net.Core.EventName
+---@param onReceivedEventName Net.Core.EventName
 ---@param listener fun(context: Net.Core.NetworkContext)
 ---@param ... any
----@return Net.Core.NetworkPort
-function NetworkPort:AddListener(onRecivedEventName, listener, ...)
-	return self:AddTask(onRecivedEventName, Task(listener, ...))
+---@return number taskIndex
+function NetworkPort:AddListener(onReceivedEventName, listener, ...)
+	return self:AddTask(onReceivedEventName, Task(listener, ...))
 end
 
----@param onRecivedEventName Net.Core.EventName
+---@param onReceivedEventName Net.Core.EventName
 ---@param listener fun(context: Net.Core.NetworkContext)
 ---@param ... any
----@return Net.Core.NetworkPort
-function NetworkPort:AddListenerOnce(onRecivedEventName, listener, ...)
-	return self:AddTaskOnce(onRecivedEventName, Task(listener, ...))
+---@return number taskIndex
+function NetworkPort:AddListenerOnce(onReceivedEventName, listener, ...)
+	return self:AddTaskOnce(onReceivedEventName, Task(listener, ...))
 end
 
 ---@param eventName Net.Core.EventName
-function NetworkPort:RemoveListener(eventName)
+function NetworkPort:RemoveEvent(eventName)
 	self.m_events[eventName] = nil
+end
+
+---@param eventName string
+---@param taskIndex number
+function NetworkPort:RemoveTask(eventName, taskIndex)
+	local event = self:GetEvent(eventName)
+	if not event then
+		return
+	end
+
+	event:Remove(taskIndex)
+end
+
+---@param eventName string
+---@param taskIndex number
+function NetworkPort:RemoveTaskOnce(eventName, taskIndex)
+	local event = self:GetEvent(eventName)
+	if not event then
+		return
+	end
+
+	event:RemoveOnce(taskIndex)
 end
 
 ---@param eventName string

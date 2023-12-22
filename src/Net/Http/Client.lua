@@ -50,13 +50,13 @@ function HttpClient:GetAddress(address)
 		end
 	end
 
-	local getedAddress = self.m_dnsClient:GetWithDomain(address)
-	if not getedAddress then
+	local gotAddress = self.m_dnsClient:GetWithDomain(address)
+	if not gotAddress then
 		self.m_cache[address] = nil
 		return nil
 	end
 
-	local ipAddress = getedAddress.IPAddress
+	local ipAddress = gotAddress.IPAddress
 	self.m_cache[address] = {
 		ExpireTime = computer.time() + 7200,
 		IPAddress = ipAddress
