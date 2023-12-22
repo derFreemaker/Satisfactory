@@ -1,7 +1,7 @@
 {
   "Name": "DNS.Core",
   "Namespace": "DNS.Core",
-  "Version": "0.1-59",
+  "Version": "0.1-60",
   "RequiredPackages": [
     "Core"
   ],

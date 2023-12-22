@@ -21,6 +21,6 @@
         public void UpdateBuildNumber();
         public void Save();
         public void Check(PackageMap map);
-        public void Bundle(BundleOptions options);
+        public void Bundle(BundleOptions options, IPackage package);
     }
 }

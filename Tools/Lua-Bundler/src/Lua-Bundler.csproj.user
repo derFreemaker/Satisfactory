@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <_LastSelectedProfileId>C:\Coding\Lua\Lua-Bundler\Properties\PublishProfiles\PushToSatisFolder.pubxml</_LastSelectedProfileId>
+    <_LastSelectedProfileId>C:\Coding\Games\Satisfactory\Tools\Lua-Bundler\src\Properties\PublishProfiles\PushToSatisFolder.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
 </Project>

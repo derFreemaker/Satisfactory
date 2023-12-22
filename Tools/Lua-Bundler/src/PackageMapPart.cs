@@ -4,21 +4,18 @@ namespace Lua_Bundler
 {
     internal class PackageMapPart
     {
-        private readonly string _Namespace;
         private readonly int _Depth;
 
         private readonly Dictionary<string, IPackageModule> _Modules = new();
         private readonly Dictionary<string, PackageMapPart> _Childs = new();
 
-        public PackageMapPart(string @namespace = "", int depth = 0)
+        public PackageMapPart(int depth = 0)
         {
-            _Namespace = @namespace;
             _Depth = depth;
         }
 
         internal bool TryAddModule(IPackageModule module, string[] splitedNamespace, int depth = 0)
         {
-            var moduleNamespaceAtCurrentDepth = string.Join(".", splitedNamespace[..depth]);
             var moduleNamespaceNextPart = splitedNamespace[depth];
             if (_Depth == splitedNamespace.Length - 1)
             {
@@ -27,13 +24,7 @@ namespace Lua_Bundler
 
             if (!_Childs.TryGetValue(moduleNamespaceNextPart, out var child))
             {
-                var childNamespace = moduleNamespaceAtCurrentDepth;
-                if (depth > 0)
-                    childNamespace += "." + moduleNamespaceNextPart;
-                else
-                    childNamespace += moduleNamespaceNextPart;
-
-                child = new PackageMapPart(childNamespace, _Depth + 1);
+                child = new PackageMapPart(_Depth + 1);
                 _Childs[splitedNamespace[depth]] = child;
             }
             return child.TryAddModule(module, splitedNamespace, depth + 1);

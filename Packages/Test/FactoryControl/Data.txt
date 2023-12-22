@@ -1,11 +1,5 @@
----@meta
-local PackageData = {}
+-- Module: Test.FactoryControl.__main From: Test.FactoryControl.__main --
 
-PackageData["TestFactoryControl__main"] = {
-    Location = "Test.FactoryControl.__main",
-    Namespace = "Test.FactoryControl.__main",
-    IsRunnable = true,
-    Data = [[
 local Host = require("Hosting.Host")
 
 ---@class FactoryControl.Test.Main : Github_Loading.Entities.Main
@@ -24,14 +18,9 @@ function Main:Run()
 end
 
 return Main
-]]
-}
 
-PackageData["TestFactoryControlHelper"] = {
-    Location = "Test.FactoryControl.Helper",
-    Namespace = "Test.FactoryControl.Helper",
-    IsRunnable = true,
-    Data = [[
+-- Module: Test.FactoryControl.Helper From: Test.FactoryControl.Helper --
+
 local NetworkClient = require("Net.Core.NetworkClient")
 
 local FacotryControlClient = require("FactoryControl.Client.Client")
@@ -54,14 +43,9 @@ function Helper.CreateController(logger, name)
 end
 
 return Helper
-]]
-}
 
-PackageData["TestFactoryControlTestsConnection"] = {
-    Location = "Test.FactoryControl.Tests.Connection",
-    Namespace = "Test.FactoryControl.Tests.Connection",
-    IsRunnable = true,
-    Data = [[
+-- Module: Test.FactoryControl.Tests.Connection From: Test.FactoryControl.Tests.Connection --
+
 local TestFramework = require("Test.Framework.Framework")
 local Helper = require("Test.FactoryControl.Helper")
 
@@ -75,14 +59,9 @@ local function connection(logger)
     assert(controller.IPAddress:Equals(client.NetClient:GetIPAddress()), "IP Address mismatch")
 end
 TestFramework:AddTest("Connection", connection)
-]]
-}
 
-PackageData["TestFactoryControlTestsControlling"] = {
-    Location = "Test.FactoryControl.Tests.Controlling",
-    Namespace = "Test.FactoryControl.Tests.Controlling",
-    IsRunnable = true,
-    Data = [[
+-- Module: Test.FactoryControl.Tests.Controlling From: Test.FactoryControl.Tests.Controlling --
+
 local TestFramework = require("Test.Framework.Framework")
 local Helper = require("Test.FactoryControl.Helper")
 
@@ -126,14 +105,9 @@ local function controlling(logger)
     end
 end
 TestFramework:AddTest("Controlling", controlling)
-]]
-}
 
-PackageData["TestFactoryControlTestsFeaturesButton"] = {
-    Location = "Test.FactoryControl.Tests.Features.Button",
-    Namespace = "Test.FactoryControl.Tests.Features.Button",
-    IsRunnable = true,
-    Data = [[
+-- Module: Test.FactoryControl.Tests.Features.Button From: Test.FactoryControl.Tests.Features.Button --
+
 local TestFramework = require("Test.Framework.Framework")
 local Helper = require("Test.FactoryControl.Helper")
 
@@ -160,14 +134,9 @@ local function overall(logger)
     end
 end
 TestFramework:AddTest("Button Overall", overall)
-]]
-}
 
-PackageData["TestFactoryControlTestsFeaturesChart"] = {
-    Location = "Test.FactoryControl.Tests.Features.Chart",
-    Namespace = "Test.FactoryControl.Tests.Features.Chart",
-    IsRunnable = true,
-    Data = [[
+-- Module: Test.FactoryControl.Tests.Features.Chart From: Test.FactoryControl.Tests.Features.Chart --
+
 local TestFramework = require("Test.Framework.Framework")
 local Helper = require("Test.FactoryControl.Helper")
 
@@ -205,14 +174,9 @@ local function overall(logger)
     assert(dataCount == 1, "dataCount is not 1")
 end
 TestFramework:AddTest("Chart Overall", overall)
-]]
-}
 
-PackageData["TestFactoryControlTestsFeaturesRadial"] = {
-    Location = "Test.FactoryControl.Tests.Features.Radial",
-    Namespace = "Test.FactoryControl.Tests.Features.Radial",
-    IsRunnable = true,
-    Data = [[
+-- Module: Test.FactoryControl.Tests.Features.Radial From: Test.FactoryControl.Tests.Features.Radial --
+
 local TestFramework = require("Test.Framework.Framework")
 local Helper = require("Test.FactoryControl.Helper")
 
@@ -245,14 +209,9 @@ local function overall(logger)
     assert(setting == 1, "setting is not 1")
 end
 TestFramework:AddTest("Radial Overall", overall)
-]]
-}
 
-PackageData["TestFactoryControlTestsFeaturesSwitch"] = {
-    Location = "Test.FactoryControl.Tests.Features.Switch",
-    Namespace = "Test.FactoryControl.Tests.Features.Switch",
-    IsRunnable = true,
-    Data = [[
+-- Module: Test.FactoryControl.Tests.Features.Switch From: Test.FactoryControl.Tests.Features.Switch --
+
 local TestFramework = require("Test.Framework.Framework")
 local Helper = require("Test.FactoryControl.Helper")
 
@@ -284,7 +243,4 @@ local function overall(logger)
     assert(switched, "switched is false")
 end
 TestFramework:AddTest("Switch Overall", overall)
-]]
-}
 
-return PackageData

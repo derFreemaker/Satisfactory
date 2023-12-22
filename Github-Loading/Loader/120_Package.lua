@@ -10,11 +10,13 @@ local Utils = LoadedLoaderFiles["/Github-Loading/Loader/Utils"][1]
 ---@field Version string
 ---@field PackageType "Library" | "Application"
 ---@field RequiredPackages string[]?
+---@field ModuleIndex table<string, Github_Loading.Module.Info>
 
 ---@class Github_Loading.Package : Github_Loading.Package.InfoFile
 ---@field private m_forceDownload boolean
 ---@field private m_packageLoader Github_Loading.PackageLoader
 ---@field Modules table<string, Github_Loading.Module>
+---@field m_dataFilePath string?
 local Package = {}
 
 ---@param info Github_Loading.Package.InfoFile
@@ -29,7 +31,8 @@ function Package.new(info, forceDownload, packageLoader)
         PackageType = info.PackageType,
         RequiredPackages = info.RequiredPackages,
         m_forceDownload = forceDownload,
-        m_packageLoader = packageLoader
+        m_packageLoader = packageLoader,
+        Modules = {}
     }, { __index = Package })
 end
 
@@ -43,27 +46,37 @@ function Package:GetModule(moduleToGet)
     end
 end
 
+---@param startPos integer
+---@param endPos integer
+---@return string
+function Package:ReadModuleChunk(startPos, endPos)
+    if not self.DataFilePath then
+        error("Package is not downloaded")
+    end
+
+    local chunk = Utils.File.ReadChunk(self.DataFilePath, startPos, endPos)
+
+    if not chunk then
+        return ""
+    end
+
+    return chunk
+end
+
 ---@param url string
 ---@param path string
 ---@return boolean success
 function Package:Download(url, path)
-    local dataFileUrl = url .. "/Data.lua"
-    local dataFilePath = filesystem.path(path, "Data.lua")
+    local dataFileUrl = url .. "/Data.txt"
+    local dataFilePath = filesystem.path(path, "Data.txt")
     if not self.m_packageLoader:internalDownload(dataFileUrl, dataFilePath, self.m_forceDownload) then return false end
 
-    ---@type table<string, Github_Loading.Module.Data>
-    local dataContent = filesystem.doFile(dataFilePath)
+    self.DataFilePath = dataFilePath
 
-    ---@type table<string, Github_Loading.Module>
-    local modules = {}
-    for id, module in pairs(dataContent) do
-        modules[id] = Module.new(module)
+    for id, moduleInfo in pairs(self.ModuleIndex) do
+        self.Modules[id] = Module.new(moduleInfo, self)
     end
 
-    ---@diagnostic disable-next-line
-    dataContent = nil
-
-    self.Modules = modules
     return true
 end
 

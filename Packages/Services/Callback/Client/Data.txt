@@ -1,20 +1,9 @@
----@meta
-local PackageData = {}
+-- Module: Services.Callback.Client.__events From: Services.Callback.Client.__events --
 
-PackageData["ServicesCallbackClient__events"] = {
-    Location = "Services.Callback.Client.__events",
-    Namespace = "Services.Callback.Client.__events",
-    IsRunnable = true,
-    Data = [[
 require("Services.Callback.Core.Entities.CallbackInfo")
-]]
-}
 
-PackageData["ServicesCallbackClientCallback"] = {
-    Location = "Services.Callback.Client.Callback",
-    Namespace = "Services.Callback.Client.Callback",
-    IsRunnable = true,
-    Data = [[
+-- Module: Services.Callback.Client.Callback From: Services.Callback.Client.Callback --
+
 ---@class Services.Callback.Client.Callback : object
 ---@field protected Id Core.UUID
 ---@field protected CallbackMethod string
@@ -91,14 +80,9 @@ function Callback:Invoke(logger, args)
 end
 
 return Utils.Class.CreateClass(Callback, "Services.Callback.Client.Callback")
-]]
-}
 
-PackageData["ServicesCallbackClientCallbackService"] = {
-    Location = "Services.Callback.Client.CallbackService",
-    Namespace = "Services.Callback.Client.CallbackService",
-    IsRunnable = true,
-    Data = [[
+-- Module: Services.Callback.Client.CallbackService From: Services.Callback.Client.CallbackService --
+
 local Usage = require("Core.Usage.init")
 
 local Task = require("Core.Common.Task")
@@ -197,15 +181,10 @@ function CallbackService:onCallbackRecieved(context)
 end
 
 return Utils.Class.CreateClass(CallbackService, "Services.Callback.Client.CallbackService")
-]]
-}
 
-PackageData["ServicesCallbackClientEventCallback"] = {
-    Location = "Services.Callback.Client.EventCallback",
-    Namespace = "Services.Callback.Client.EventCallback",
-    IsRunnable = true,
-    Data = [[
-local Event = require("Core.Event.Event")
+-- Module: Services.Callback.Client.EventCallback From: Services.Callback.Client.EventCallback --
+
+local Event = require("Core.Event")
 
 ---@class Services.Callback.Client.EventCallback : Services.Callback.Client.Callback
 ---@field m_onCalled Core.Event
@@ -259,7 +238,4 @@ end
 
 return Utils.Class.CreateClass(EventCallback, "Services.Callback.Client.EventCallback",
     require("Services.Callback.Client.Callback"))
-]]
-}
 
-return PackageData

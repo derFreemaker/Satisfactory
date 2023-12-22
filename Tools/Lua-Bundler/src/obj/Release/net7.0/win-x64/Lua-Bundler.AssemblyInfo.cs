@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Lua-Bundler")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4fabbd4024d0e14663aa6e23bbeeac8bc9e0d654")]
 [assembly: System.Reflection.AssemblyProductAttribute("Lua-Bundler")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Lua-Bundler")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

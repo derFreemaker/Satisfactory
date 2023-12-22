@@ -1,11 +1,5 @@
----@meta
-local PackageData = {}
+-- Module: Adapter.Pipeline.Valve From: Adapter.Pipeline.Valve --
 
-PackageData["AdapterPipelineValve"] = {
-    Location = "Adapter.Pipeline.Valve",
-    Namespace = "Adapter.Pipeline.Valve",
-    IsRunnable = true,
-    Data = [[
 local ProxyReference = require("Core.References.ProxyReference")
 
 local Cache = require("Core.Adapter.Cache")()
@@ -98,7 +92,4 @@ function Valve:GetFlowLimit()
 end
 
 return Utils.Class.CreateClass(Valve, 'Adapter.Pipeline.Valve')
-]]
-}
 
-return PackageData

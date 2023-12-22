@@ -1,11 +1,5 @@
----@meta
-local PackageData = {}
+-- Module: DNS.Core.__events From: DNS.Core.__events --
 
-PackageData["DNSCore__events"] = {
-    Location = "DNS.Core.__events",
-    Namespace = "DNS.Core.__events",
-    IsRunnable = true,
-    Data = [[
 local JsonSerializer = require("Core.Json.JsonSerializer")
 
 ---@class DNS.Core.Events : Github_Loading.Entities.Events
@@ -19,14 +13,9 @@ function Events:OnLoaded()
 end
 
 return Events
-]]
-}
 
-PackageData["DNSCoreEntitiesAddressAddress"] = {
-    Location = "DNS.Core.Entities.Address.Address",
-    Namespace = "DNS.Core.Entities.Address.Address",
-    IsRunnable = true,
-    Data = [[
+-- Module: DNS.Core.Entities.Address.Address From: DNS.Core.Entities.Address.Address --
+
 ---@class DNS.Core.Entities.Address : Core.Json.Serializable
 ---@field Id Core.UUID
 ---@field Domain string
@@ -51,14 +40,9 @@ end
 
 return Utils.Class.CreateClass(Address, "DNS.Entities.Address",
     require("Core.Json.Serializable"))
-]]
-}
 
-PackageData["DNSCoreEntitiesAddressCreate"] = {
-    Location = "DNS.Core.Entities.Address.Create",
-    Namespace = "DNS.Core.Entities.Address.Create",
-    IsRunnable = true,
-    Data = [[
+-- Module: DNS.Core.Entities.Address.Create From: DNS.Core.Entities.Address.Create --
+
 ---@class DNS.Core.Entities.Address.Create : Core.Json.Serializable
 ---@field Domain string
 ---@field IPAddress Net.Core.IPAddress
@@ -80,7 +64,4 @@ end
 
 return Utils.Class.CreateClass(Create, "DNS.Entities.Address.Create",
     require("Core.Json.Serializable"))
-]]
-}
 
-return PackageData

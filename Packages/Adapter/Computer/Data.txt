@@ -1,11 +1,5 @@
----@meta
-local PackageData = {}
+-- Module: Adapter.Computer.InternetCard From: Adapter.Computer.InternetCard --
 
-PackageData["AdapterComputerInternetCard"] = {
-    Location = "Adapter.Computer.InternetCard",
-    Namespace = "Adapter.Computer.InternetCard",
-    IsRunnable = true,
-    Data = [[
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
 local Cache = require("Core.Adapter.Cache")()
@@ -60,14 +54,9 @@ function InternetCard:Download(url, logger)
 end
 
 return Utils.Class.CreateClass(InternetCard, "Adapter.Computer.InternetCard")
-]]
-}
 
-PackageData["AdapterComputerNetworkCard"] = {
-    Location = "Adapter.Computer.NetworkCard",
-    Namespace = "Adapter.Computer.NetworkCard",
-    IsRunnable = true,
-    Data = [[
+-- Module: Adapter.Computer.NetworkCard From: Adapter.Computer.NetworkCard --
+
 local ProxyReference = require("Core.References.ProxyReference")
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
@@ -88,9 +77,9 @@ function NetworkCard:__init(idOrIndex)
 	end
 
 	---@type Out<Adapter.Computer.NetworkCard>
-	local networkCardAdapater = {}
-	if Cache:TryGet(idOrIndex, networkCardAdapater) then
-		return networkCardAdapater.Value
+	local networkCardAdapter = {}
+	if Cache:TryGet(idOrIndex, networkCardAdapter) then
+		return networkCardAdapter.Value
 	end
 
 	local networkCard
@@ -164,7 +153,4 @@ function NetworkCard:BroadCast(port, ...)
 end
 
 return Utils.Class.CreateClass(NetworkCard, 'Adapter.Computer.NetworkCard')
-]]
-}
 
-return PackageData

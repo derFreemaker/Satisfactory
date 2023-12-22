@@ -1,11 +1,5 @@
----@meta
-local PackageData = {}
+-- Module: Services.Callback.Server.CallbackService From: Services.Callback.Server.CallbackService --
 
-PackageData["ServicesCallbackServerCallbackService"] = {
-    Location = "Services.Callback.Server.CallbackService",
-    Namespace = "Services.Callback.Server.CallbackService",
-    IsRunnable = true,
-    Data = [[
 local Usage = require("Core.Usage.init")
 
 local NetworkClient = require("Net.Core.NetworkClient")
@@ -76,7 +70,4 @@ function CallbackService:Invoke(id, callbackMethod, callbackServiceName, ipAddre
 end
 
 return Utils.Class.CreateClass(CallbackService, "Services.Callback.Server.CallbackService")
-]]
-}
 
-return PackageData

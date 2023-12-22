@@ -1,7 +1,7 @@
 {
   "Name": "Services.Callback.Client",
   "Namespace": "Services.Callback.Client",
-  "Version": "0.1.0-12",
+  "Version": "0.1.0-13",
   "RequiredPackages": [
     "Core",
     "Net.Core",

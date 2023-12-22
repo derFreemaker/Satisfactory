@@ -1,11 +1,5 @@
----@meta
-local PackageData = {}
+-- Module: Net.Http.Client From: Net.Http.Client --
 
-PackageData["NetHttpClient"] = {
-    Location = "Net.Http.Client",
-    Namespace = "Net.Http.Client",
-    IsRunnable = true,
-    Data = [[
 local PortUsage = require('Core.Usage.Usage_Port')
 
 local IPAddress = require("Net.Core.IPAddress")
@@ -58,13 +52,13 @@ function HttpClient:GetAddress(address)
 		end
 	end
 
-	local getedAddress = self.m_dnsClient:GetWithDomain(address)
-	if not getedAddress then
+	local gotAddress = self.m_dnsClient:GetWithDomain(address)
+	if not gotAddress then
 		self.m_cache[address] = nil
 		return nil
 	end
 
-	local ipAddress = getedAddress.IPAddress
+	local ipAddress = gotAddress.IPAddress
 	self.m_cache[address] = {
 		ExpireTime = computer.time() + 7200,
 		IPAddress = ipAddress
@@ -91,14 +85,9 @@ function HttpClient:Send(request)
 end
 
 return Utils.Class.CreateClass(HttpClient, 'Http.HttpClient')
-]]
-}
 
-PackageData["NetHttpRequest"] = {
-    Location = "Net.Http.Request",
-    Namespace = "Net.Http.Request",
-    IsRunnable = true,
-    Data = [[
+-- Module: Net.Http.Request From: Net.Http.Request --
+
 local Options = require('Net.Http.RequestOptions')
 
 ---@class Net.Http.Request : object
@@ -125,14 +114,9 @@ function HttpRequest:__init(method, serverUrl, uri, body, options)
 end
 
 return Utils.Class.CreateClass(HttpRequest, "Net.Http.HttpRequest")
-]]
-}
 
-PackageData["NetHttpRequestOptions"] = {
-    Location = "Net.Http.RequestOptions",
-    Namespace = "Net.Http.RequestOptions",
-    IsRunnable = true,
-    Data = [[
+-- Module: Net.Http.RequestOptions From: Net.Http.RequestOptions --
+
 ---@class Net.Http.Request.Options : object
 ---@field Headers table<string, any>
 ---@field Timeout integer in seconds
@@ -146,14 +130,9 @@ function HttpRequestOptions:__init()
 end
 
 return Utils.Class.CreateClass(HttpRequestOptions, 'Http.HttpRequestOptions')
-]]
-}
 
-PackageData["NetHttpResponse"] = {
-    Location = "Net.Http.Response",
-    Namespace = "Net.Http.Response",
-    IsRunnable = true,
-    Data = [[
+-- Module: Net.Http.Response From: Net.Http.Response --
+
 ---@class Net.Http.Response : object
 ---@field ApiResponse Net.Rest.Api.Response
 ---@field Request Net.Http.Request
@@ -188,7 +167,4 @@ function HttpResponse:GetStatusCode()
 end
 
 return Utils.Class.CreateClass(HttpResponse, 'Http.HttpResponse')
-]]
-}
 
-return PackageData

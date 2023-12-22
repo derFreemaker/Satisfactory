@@ -1,11 +1,5 @@
----@meta
-local PackageData = {}
+-- Module: Test.Core.__main From: Test.Core.__main --
 
-PackageData["TestCore__main"] = {
-    Location = "Test.Core.__main",
-    Namespace = "Test.Core.__main",
-    IsRunnable = true,
-    Data = [[
 ---@using Test.Framework
 
 local Host = require("Hosting.Host")
@@ -30,14 +24,9 @@ function Main:Run()
 end
 
 return Main
-]]
-}
 
-PackageData["TestCoreTestsNetworkCard"] = {
-    Location = "Test.Core.Tests.NetworkCard",
-    Namespace = "Test.Core.Tests.NetworkCard",
-    IsRunnable = true,
-    Data = [[
+-- Module: Test.Core.Tests.NetworkCard From: Test.Core.Tests.NetworkCard --
+
 local Framework = require("Test.Framework.Framework")
 
 local NetworkCard = require("Adapter.Computer.NetworkCard")
@@ -64,7 +53,4 @@ local function test()
     assert(gotEvent, "did not get networkCard message")
 end
 Framework:AddTest("NetworkCard", test)
-]]
-}
 
-return PackageData

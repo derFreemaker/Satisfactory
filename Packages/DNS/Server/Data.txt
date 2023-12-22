@@ -1,11 +1,5 @@
----@meta
-local PackageData = {}
+Module: DNS.Server.__main From: DNS.Server.__main
 
-PackageData["DNSServer__main"] = {
-    Location = "DNS.Server.__main",
-    Namespace = "DNS.Server.__main",
-    IsRunnable = true,
-    Data = [[
 local Usage = require("Core.Usage.init")
 
 local Task = require('Core.Common.Task')
@@ -48,14 +42,9 @@ function Main:Run()
 end
 
 return Main
-]]
-}
 
-PackageData["DNSServerAddressDatabase"] = {
-    Location = "DNS.Server.AddressDatabase",
-    Namespace = "DNS.Server.AddressDatabase",
-    IsRunnable = true,
-    Data = [[
+Module: DNS.Server.AddressDatabase From: DNS.Server.AddressDatabase
+
 local DbTable = require("Database.DbTable")
 local Path = require("Core.FileSystem.Path")
 local Address = require("DNS.Core.Entities.Address.Address")
@@ -132,14 +121,9 @@ function AddressDatabase:GetWithDomain(addressAddress)
 end
 
 return Utils.Class.CreateClass(AddressDatabase, "DNS.Server.AddressDatabase")
-]]
-}
 
-PackageData["DNSServerEndpoints"] = {
-    Location = "DNS.Server.Endpoints",
-    Namespace = "DNS.Server.Endpoints",
-    IsRunnable = true,
-    Data = [[
+Module: DNS.Server.Endpoints From: DNS.Server.Endpoints
+
 local AddressDatabase = require("DNS.Server.AddressDatabase")
 
 ---@class DNS.Endpoints : Net.Rest.Api.Server.EndpointBase
@@ -205,7 +189,4 @@ end
 
 return Utils.Class.CreateClass(Endpoints, "DNS.Server.Endpoints",
     require("Net.Rest.Api.Server.EndpointBase"))
-]]
-}
 
-return PackageData

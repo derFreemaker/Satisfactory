@@ -1,11 +1,5 @@
----@meta
-local PackageData = {}
+Module: PowerPlant.Coal.__main From: PowerPlant.Coal.__main
 
-PackageData["PowerPlantCoal__main"] = {
-    Location = "PowerPlant.Coal.__main",
-    Namespace = "PowerPlant.Coal.__main",
-    IsRunnable = true,
-    Data = [[
 local ValveAdapter = require('Adapter.Pipeline.Valve')
 
 ---@class PowerPlant.Coal.Main : Github_Loading.Entities.Main
@@ -23,7 +17,4 @@ function Main:Run()
 end
 
 return Main
-]]
-}
 
-return PackageData

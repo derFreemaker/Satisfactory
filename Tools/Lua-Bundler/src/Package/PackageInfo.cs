@@ -10,7 +10,7 @@ namespace Lua_Bundler.Package
         public string Namespace { get; }
         public List<string> RequiredPackages { get; }
         public PackageType Type { get; }
-
+        
         public string Location { get; }
         public string LocationSourcePath { get; }
         public string LocationOutputPath { get; }
@@ -65,7 +65,7 @@ namespace Lua_Bundler.Package
             RequiredPackages.Sort();
         }
 
-        public void Bundle(BundleOptions options)
+        public void Bundle(BundleOptions options, IPackage package)
         {
             using StreamWriter writer = File.CreateText(InfoFileOutputPath);
 
@@ -80,24 +80,38 @@ namespace Lua_Bundler.Package
                 if (RequiredPackages.Count > 0)
                     writer.Write("RequiredPackages={\"" + string.Join("\",\"", RequiredPackages) + "\"},");
 
+                writer.Write("ModuleIndex={");
+                foreach (var module in package.Modules)
+                {
+                    writer.Write(module.BundleInfo(options));
+                }
+                writer.Write("},");
+
                 writer.Write("}");
                 return;
             }
 
-            writer.Write("return {\n");
-            writer.Write($"    Name = \"{Name}\",\n");
-            writer.Write($"    Namespace = \"{Namespace}\",\n");
-            writer.Write($"    Version = \"{Version}\",\n");
-            writer.Write($"    PackageType = \"{Type}\",\n");
+            writer.WriteLine("return {");
+            writer.WriteLine($"    Name = \"{Name}\",");
+            writer.WriteLine($"    Namespace = \"{Namespace}\",");
+            writer.WriteLine($"    Version = \"{Version}\",");
+            writer.WriteLine($"    PackageType = \"{Type}\",");
 
             if (RequiredPackages.Count > 0)
             {
-                writer.Write("    RequiredPackages = {\n");
-                writer.Write(new string(' ', 8) + "\"" + string.Join($"\",\n{new string(' ', 8)}\"", RequiredPackages) + "\"\n");
-                writer.Write("    },\n");
+                writer.WriteLine("    RequiredPackages = {");
+                writer.WriteLine(new string(' ', 8) + "\"" + string.Join($"\",\n{new string(' ', 8)}\"", RequiredPackages) + "\"");
+                writer.WriteLine("    },");
             }
 
-            writer.Write("}\n");
+            writer.WriteLine("    ModuleIndex={");
+            foreach (var module in package.Modules)
+            {
+                writer.WriteLine(module.BundleInfo(options));
+            }
+            writer.WriteLine("    },");
+
+            writer.WriteLine("}");
         }
     }
 

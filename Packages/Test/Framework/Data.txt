@@ -1,20 +1,9 @@
----@meta
-local PackageData = {}
+-- Module: Test.Framework.__events From: Test.Framework.__events --
 
-PackageData["TestFramework__events"] = {
-    Location = "Test.Framework.__events",
-    Namespace = "Test.Framework.__events",
-    IsRunnable = true,
-    Data = [[
 require("Test.Framework.Extensions.HostExtensions")
-]]
-}
 
-PackageData["TestFrameworkFramework"] = {
-    Location = "Test.Framework.Framework",
-    Namespace = "Test.Framework.Framework",
-    IsRunnable = true,
-    Data = [[
+-- Module: Test.Framework.Framework From: Test.Framework.Framework --
+
 local Task = require("Core.Common.Task")
 
 local Test = require("Test.Framework.Wrapper")
@@ -58,14 +47,9 @@ function Framework:Run(logger)
 end
 
 return Utils.Class.CreateClass(Framework, "Test.Framework")()
-]]
-}
 
-PackageData["TestFrameworkWrapper"] = {
-    Location = "Test.Framework.Wrapper",
-    Namespace = "Test.Framework.Wrapper",
-    IsRunnable = true,
-    Data = [[
+-- Module: Test.Framework.Wrapper From: Test.Framework.Wrapper --
+
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
 ---@class Test.Framework.Wrapper : object
@@ -120,14 +104,9 @@ function Wrapper:WasSuccessfull()
 end
 
 return Utils.Class.CreateClass(Wrapper, "Test.Framework.Wrapper")
-]]
-}
 
-PackageData["TestFrameworkExtensionsHostExtensions"] = {
-    Location = "Test.Framework.Extensions.HostExtensions",
-    Namespace = "Test.Framework.Extensions.HostExtensions",
-    IsRunnable = true,
-    Data = [[
+-- Module: Test.Framework.Extensions.HostExtensions From: Test.Framework.Extensions.HostExtensions --
+
 ---@class Hosting.Host
 local HostExtensions = {}
 
@@ -141,7 +120,4 @@ function HostExtensions:AddTesting()
 end
 
 Utils.Class.ExtendClass(HostExtensions, require("Hosting.Host"))
-]]
-}
 
-return PackageData

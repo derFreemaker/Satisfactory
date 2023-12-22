@@ -120,13 +120,7 @@ namespace Lua_Bundler
 
         internal bool TryGetClassFileLineInfo(string className, [MaybeNullWhen(false)] out FileLineInfo info)
         {
-            info = null;
-
-            if (!_Classes.ContainsKey(className))
-                return false;
-
-            info = _Classes[className];
-            return true;
+            return _Classes.TryGetValue(className, out info);
         }
 
         #endregion

@@ -1,11 +1,5 @@
----@meta
-local PackageData = {}
+-- Module: DNS.Client.__events From: DNS.Client.__events --
 
-PackageData["DNSClient__events"] = {
-    Location = "DNS.Client.__events",
-    Namespace = "DNS.Client.__events",
-    IsRunnable = true,
-    Data = [[
 ---@class DNS.Client.Events : Github_Loading.Entities.Events
 local Events = {}
 
@@ -14,14 +8,9 @@ function Events:OnLoaded()
 end
 
 return Events
-]]
-}
 
-PackageData["DNSClientClient"] = {
-    Location = "DNS.Client.Client",
-    Namespace = "DNS.Client.Client",
-    IsRunnable = true,
-    Data = [[
+-- Module: DNS.Client.Client From: DNS.Client.Client --
+
 local Usage = require("Core.Usage.init")
 
 local IPAddress = require("Net.Core.IPAddress")
@@ -149,14 +138,9 @@ function Client:GetWithDomain(domain)
 end
 
 return Utils.Class.CreateClass(Client, 'DNS.Client')
-]]
-}
 
-PackageData["DNSClientHostingHostExtensions"] = {
-    Location = "DNS.Client.Hosting.HostExtensions",
-    Namespace = "DNS.Client.Hosting.HostExtensions",
-    IsRunnable = true,
-    Data = [[
+-- Module: DNS.Client.Hosting.HostExtensions From: DNS.Client.Hosting.HostExtensions --
+
 ---@type Out<Github_Loading.Module>
 local Host = {}
 if not PackageLoader:TryGetModule("Hosting.Host", Host) then
@@ -205,7 +189,4 @@ function HostExtensions:RegisterAddress(url, ipAddress)
 end
 
 Utils.Class.ExtendClass(HostExtensions, Host)
-]]
-}
 
-return PackageData

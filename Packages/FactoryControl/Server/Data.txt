@@ -1,25 +1,14 @@
----@meta
-local PackageData = {}
+Module: FactoryControl.Server.__events From: FactoryControl.Server.__events
 
-PackageData["FactoryControlServer__events"] = {
-    Location = "FactoryControl.Server.__events",
-    Namespace = "FactoryControl.Server.__events",
-    IsRunnable = true,
-    Data = [[
 local DNSClient = require('DNS.Client.Client')
 
 ---@class FactoryControl.Server.Events : Github_Loading.Entities.Events
 local Events = {}
 
 return Events
-]]
-}
 
-PackageData["FactoryControlServer__main"] = {
-    Location = "FactoryControl.Server.__main",
-    Namespace = "FactoryControl.Server.__main",
-    IsRunnable = true,
-    Data = [[
+Module: FactoryControl.Server.__main From: FactoryControl.Server.__main
+
 local Config = require('FactoryControl.Core.Config')
 local Usage = require('Core.Usage.init')
 
@@ -88,14 +77,9 @@ function Main:Run()
 end
 
 return Main
-]]
-}
 
-PackageData["FactoryControlServerDatabaseAccessLayer"] = {
-    Location = "FactoryControl.Server.DatabaseAccessLayer",
-    Namespace = "FactoryControl.Server.DatabaseAccessLayer",
-    IsRunnable = true,
-    Data = [[
+Module: FactoryControl.Server.DatabaseAccessLayer From: FactoryControl.Server.DatabaseAccessLayer
+
 local DbTable = require("Database.DbTable")
 local Path = require("Core.FileSystem.Path")
 local UUID = require("Core.Common.UUID")
@@ -212,14 +196,9 @@ function DatabaseAccessLayer:GetFeatureByIds(featureIds)
 end
 
 return Utils.Class.CreateClass(DatabaseAccessLayer, "FactoryControl.Server.Database")
-]]
-}
 
-PackageData["FactoryControlServerEndpointsController"] = {
-    Location = "FactoryControl.Server.Endpoints.Controller",
-    Namespace = "FactoryControl.Server.Endpoints.Controller",
-    IsRunnable = true,
-    Data = [[
+Module: FactoryControl.Server.Endpoints.Controller From: FactoryControl.Server.Endpoints.Controller
+
 local ControllerUrlTemplates = require("FactoryControl.Core.EndpointUrls")[1].Controller
 
 ---@class FactoryControl.Server.Endpoints.Controller : Net.Rest.Api.Server.EndpointBase
@@ -323,14 +302,9 @@ end
 
 return Utils.Class.CreateClass(ControllerEndpoints, 'FactoryControl.Server.Endpoints.Controller',
 	require('Net.Rest.Api.Server.EndpointBase'))
-]]
-}
 
-PackageData["FactoryControlServerEndpointsFeature"] = {
-    Location = "FactoryControl.Server.Endpoints.Feature",
-    Namespace = "FactoryControl.Server.Endpoints.Feature",
-    IsRunnable = true,
-    Data = [[
+Module: FactoryControl.Server.Endpoints.Feature From: FactoryControl.Server.Endpoints.Feature
+
 local FeatureUrlTemplates = require("FactoryControl.Core.EndpointUrls")[1].Feature
 
 ---@class FactoryControl.Server.Endpoints.Feature : Net.Rest.Api.Server.EndpointBase
@@ -398,14 +372,9 @@ end
 
 return Utils.Class.CreateClass(FeatureEndpoints, "FactoryControl.Server.Endpoints.Feature",
     require("Net.Rest.Api.Server.EndpointBase"))
-]]
-}
 
-PackageData["FactoryControlServerServicesFeatureService"] = {
-    Location = "FactoryControl.Server.Services.FeatureService",
-    Namespace = "FactoryControl.Server.Services.FeatureService",
-    IsRunnable = true,
-    Data = [[
+Module: FactoryControl.Server.Services.FeatureService From: FactoryControl.Server.Services.FeatureService
+
 local Usage = require("Core.Usage.init")
 local Config = require("FactoryControl.Core.Config")
 
@@ -513,7 +482,4 @@ function FeatureService:SendToWachters(featureUpdate)
 end
 
 return Utils.Class.CreateClass(FeatureService, "FactoryControl.Server.Services.FeatureService")
-]]
-}
 
-return PackageData

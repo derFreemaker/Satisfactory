@@ -97,11 +97,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Coding\\Lua\\Lua-Bundler\\Lua-Bundler.csproj",
+      "projectUniqueName": "C:\\Coding\\Games\\Satisfactory\\Tools\\Lua-Bundler\\src\\Lua-Bundler.csproj",
       "projectName": "Lua-Bundler",
-      "projectPath": "C:\\Coding\\Lua\\Lua-Bundler\\Lua-Bundler.csproj",
+      "projectPath": "C:\\Coding\\Games\\Satisfactory\\Tools\\Lua-Bundler\\src\\Lua-Bundler.csproj",
       "packagesPath": "C:\\Users\\oskar\\.nuget\\packages\\",
-      "outputPath": "C:\\Coding\\Lua\\Lua-Bundler\\obj\\",
+      "outputPath": "C:\\Coding\\Games\\Satisfactory\\Tools\\Lua-Bundler\\src\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

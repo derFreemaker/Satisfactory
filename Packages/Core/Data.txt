@@ -1,25 +1,14 @@
----@meta
-local PackageData = {}
+-- Module: Core.Config From: Core.Config --
 
-PackageData["CoreConfig"] = {
-    Location = "Core.Config",
-    Namespace = "Core.Config",
-    IsRunnable = true,
-    Data = [[
 ---@class Core.Config
 local Config = {
     REFERENCE_REFRESH_DELAY = 60000
 }
 
 return Config
-]]
-}
 
-PackageData["CoreAdapterCache"] = {
-    Location = "Core.Adapter.Cache",
-    Namespace = "Core.Adapter.Cache",
-    IsRunnable = true,
-    Data = [[
+-- Module: Core.Adapter.Cache From: Core.Adapter.Cache --
+
 ---@class Adapter.IAdapter : object
 
 ---@generic TAdapter : Adapter.IAdapter
@@ -65,15 +54,10 @@ function Cache:TryGet(idOrIndex, outAdapter)
 end
 
 return Utils.Class.CreateClass(Cache, "Adapter.Cache")
-]]
-}
 
-PackageData["CoreCommonLogger"] = {
-    Location = "Core.Common.Logger",
-    Namespace = "Core.Common.Logger",
-    IsRunnable = true,
-    Data = [[
-local Event = require('Core.Event.Event')
+-- Module: Core.Common.Logger From: Core.Common.Logger --
+
+local Event = require('Core.Event')
 
 ---@alias Core.Logger.LogLevel
 ---|1 Trace
@@ -82,7 +66,7 @@ local Event = require('Core.Event.Event')
 ---|4 Warning
 ---|5 Error
 ---|6 Fatal
----|10 Write (like normal log, but with source of log call)
+---|10 Write (like normal log, but with the source of log call)
 
 ---@enum Core.Logger.LogLevel.ToName
 local LogLevelToName = {
@@ -321,14 +305,9 @@ function Logger:LogWrite(...)
 end
 
 return Utils.Class.CreateClass(Logger, 'Core.Logger')
-]]
-}
 
-PackageData["CoreCommonTask"] = {
-    Location = "Core.Common.Task",
-    Namespace = "Core.Common.Task",
-    IsRunnable = true,
-    Data = [[
+-- Module: Core.Common.Task From: Core.Common.Task --
+
 ---@class Core.Task : object
 ---@field private m_func function
 ---@field private m_passthrough any[]
@@ -518,14 +497,9 @@ function Task:LogError(logger, all)
 end
 
 return Utils.Class.CreateClass(Task, "Core.Task")
-]]
-}
 
-PackageData["CoreCommonUUID"] = {
-    Location = "Core.Common.UUID",
-    Namespace = "Core.Common.UUID",
-    IsRunnable = true,
-    Data = [[
+-- Module: Core.Common.UUID From: Core.Common.UUID --
+
 local math = math
 local string = string
 
@@ -691,15 +665,10 @@ end
 UUID.Static__Empty = UUID(table.unpack(empty))
 
 return UUID
-]]
-}
 
-PackageData["CoreCommonWatchable"] = {
-    Location = "Core.Common.Watchable",
-    Namespace = "Core.Common.Watchable",
-    IsRunnable = true,
-    Data = [[
-local Event = require("Core.Event.Event")
+-- Module: Core.Common.Watchable From: Core.Common.Watchable --
+
+local Event = require("Core.Event")
 
 ---@alias Core.Watchable.OnSetup fun(Watchable: Core.Watchable)
 ---@alias Core.Watchable.OnClose fun(Watchable: Core.Watchable)
@@ -790,136 +759,11 @@ function Watchable:Trigger(logger, ...)
 end
 
 return Utils.Class.CreateClass(Watchable, "Core.Watchable")
-]]
-}
 
-PackageData["CoreEventEvent"] = {
-    Location = "Core.Event.Event",
-    Namespace = "Core.Event.Event",
-    IsRunnable = true,
-    Data = [[
+-- Module: Core.Event.EventPullAdapter From: Core.Event.EventPullAdapter --
+
 local Task = require("Core.Common.Task")
-
----@class Core.Event : object
----@field private m_funcs Core.Task[]
----@field private m_onceFuncs Core.Task[]
----@overload fun() : Core.Event
-local Event = {}
-
----@alias Core.Event.Constructor fun()
-
----@private
-function Event:__init()
-    self.m_funcs = {}
-    self.m_onceFuncs = {}
-end
-
----@return integer count
-function Event:Count()
-    return #self.m_funcs + #self.m_onceFuncs
-end
-
----@param task Core.Task
----@return integer index
-function Event:AddTask(task)
-    table.insert(self.m_funcs, task)
-    return #self.m_funcs
-end
-
----@param task Core.Task
----@return integer index
-function Event:AddTaskOnce(task)
-    table.insert(self.m_onceFuncs, task)
-    return #self.m_onceFuncs
-end
-
----@param func function
----@param ... any
----@return integer index
-function Event:AddListener(func, ...)
-    return self:AddTask(Task(func, ...))
-end
-
----@param func function
----@param ... any
----@return integer index
-function Event:AddListenerOnce(func, ...)
-    return self:AddTaskOnce(Task(func, ...))
-end
-
----@param index integer
-function Event:Remove(index)
-    table.remove(self.m_funcs, index)
-end
-
----@param index integer
-function Event:RemoveOnce(index)
-    table.remove(self.m_onceFuncs, index)
-end
-
----@param logger Core.Logger?
----@param ... any
-function Event:Trigger(logger, ...)
-    for _, task in ipairs(self.m_funcs) do
-        task:Execute(...)
-        task:Close()
-        task:LogError(logger)
-    end
-
-    for _, task in ipairs(self.m_onceFuncs) do
-        task:Execute(...)
-        task:Close()
-        task:LogError(logger)
-    end
-    self.m_onceFuncs = {}
-end
-
----@alias Core.Event.Mode
----|"Permanent"
----|"Once"
-
----@return table<Core.Event.Mode, Core.Task[]>
-function Event:Listeners()
-    ---@type Core.Task[]
-    local permanentTask = {}
-    for _, task in ipairs(self.m_funcs) do
-        table.insert(permanentTask, task)
-    end
-
-    ---@type Core.Task[]
-    local onceTask = {}
-    for _, task in ipairs(self.m_onceFuncs) do
-        table.insert(onceTask, task)
-    end
-    return {
-        Permanent = permanentTask,
-        Once = onceTask
-    }
-end
-
----@param event Core.Event
----@return Core.Event event
-function Event:CopyTo(event)
-    for _, listener in ipairs(self.m_funcs) do
-        event:AddTask(listener)
-    end
-    for _, listener in ipairs(self.m_onceFuncs) do
-        event:AddTaskOnce(listener)
-    end
-    return event
-end
-
-return Utils.Class.CreateClass(Event, "Core.Event")
-]]
-}
-
-PackageData["CoreEventEventPullAdapter"] = {
-    Location = "Core.Event.EventPullAdapter",
-    Namespace = "Core.Event.EventPullAdapter",
-    IsRunnable = true,
-    Data = [[
-local Task = require("Core.Common.Task")
-local Event = require('Core.Event.Event')
+local Event = require('Core.Event')
 
 --- Assists in handling events from `event.pull()`
 ---
@@ -1067,14 +911,124 @@ function EventPullAdapter:Run()
 end
 
 return EventPullAdapter
-]]
-}
 
-PackageData["CoreFileSystemFile"] = {
-    Location = "Core.FileSystem.File",
-    Namespace = "Core.FileSystem.File",
-    IsRunnable = true,
-    Data = [[
+-- Module: Core.Event.init From: Core.Event.init --
+
+local Task = require("Core.Common.Task")
+
+---@class Core.Event : object
+---@field private m_funcs Core.Task[]
+---@field private m_onceFuncs Core.Task[]
+---@overload fun() : Core.Event
+local Event = {}
+
+---@alias Core.Event.Constructor fun()
+
+---@private
+function Event:__init()
+    self.m_funcs = {}
+    self.m_onceFuncs = {}
+end
+
+---@return integer count
+function Event:Count()
+    return #self.m_funcs + #self.m_onceFuncs
+end
+
+---@param task Core.Task
+---@return integer index
+function Event:AddTask(task)
+    table.insert(self.m_funcs, task)
+    return #self.m_funcs
+end
+
+---@param task Core.Task
+---@return integer index
+function Event:AddTaskOnce(task)
+    table.insert(self.m_onceFuncs, task)
+    return #self.m_onceFuncs
+end
+
+---@param func function
+---@param ... any
+---@return integer index
+function Event:AddListener(func, ...)
+    return self:AddTask(Task(func, ...))
+end
+
+---@param func function
+---@param ... any
+---@return integer index
+function Event:AddListenerOnce(func, ...)
+    return self:AddTaskOnce(Task(func, ...))
+end
+
+---@param index integer
+function Event:Remove(index)
+    table.remove(self.m_funcs, index)
+end
+
+---@param index integer
+function Event:RemoveOnce(index)
+    table.remove(self.m_onceFuncs, index)
+end
+
+---@param logger Core.Logger?
+---@param ... any
+function Event:Trigger(logger, ...)
+    for _, task in ipairs(self.m_funcs) do
+        task:Execute(...)
+        task:Close()
+        task:LogError(logger)
+    end
+
+    for _, task in ipairs(self.m_onceFuncs) do
+        task:Execute(...)
+        task:Close()
+        task:LogError(logger)
+    end
+    self.m_onceFuncs = {}
+end
+
+---@alias Core.Event.Mode
+---|"Permanent"
+---|"Once"
+
+---@return table<Core.Event.Mode, Core.Task[]>
+function Event:Listeners()
+    ---@type Core.Task[]
+    local permanentTask = {}
+    for _, task in ipairs(self.m_funcs) do
+        table.insert(permanentTask, task)
+    end
+
+    ---@type Core.Task[]
+    local onceTask = {}
+    for _, task in ipairs(self.m_onceFuncs) do
+        table.insert(onceTask, task)
+    end
+    return {
+        Permanent = permanentTask,
+        Once = onceTask
+    }
+end
+
+---@param event Core.Event
+---@return Core.Event event
+function Event:CopyTo(event)
+    for _, listener in ipairs(self.m_funcs) do
+        event:AddTask(listener)
+    end
+    for _, listener in ipairs(self.m_onceFuncs) do
+        event:AddTaskOnce(listener)
+    end
+    return event
+end
+
+return Utils.Class.CreateClass(Event, "Core.Event")
+
+-- Module: Core.FileSystem.File From: Core.FileSystem.File --
+
 local Path = require("Core.FileSystem.Path")
 
 ---@alias Core.FileSystem.File.OpenModes
@@ -1247,14 +1201,9 @@ function File:Clear()
 end
 
 return Utils.Class.CreateClass(File, "Core.FileSystem.File")
-]]
-}
 
-PackageData["CoreFileSystemPath"] = {
-    Location = "Core.FileSystem.Path",
-    Namespace = "Core.FileSystem.Path",
-    IsRunnable = true,
-    Data = [[
+-- Module: Core.FileSystem.Path From: Core.FileSystem.Path --
+
 ---@param str string
 ---@return string str
 local function formatStr(str)
@@ -1322,6 +1271,11 @@ end
 ---@return boolean
 function Path:IsDir()
     return self.m_nodes[#self.m_nodes] == ""
+end
+
+function Path:Exists()
+    local path = self:GetPath()
+    return filesystem.exists(path)
 end
 
 ---@return string
@@ -1444,14 +1398,9 @@ function Path:Copy()
 end
 
 return Utils.Class.CreateClass(Path, "Core.Path")
-]]
-}
 
-PackageData["CoreJsonJson"] = {
-    Location = "Core.Json.Json",
-    Namespace = "Core.Json.Json",
-    IsRunnable = true,
-    Data = [[
+-- Module: Core.Json.Json From: Core.Json.Json --
+
 --
 -- json.lua
 --
@@ -1840,14 +1789,9 @@ function json.decode(str)
 end
 
 return json
-]]
-}
 
-PackageData["CoreJsonJsonSerializer"] = {
-    Location = "Core.Json.JsonSerializer",
-    Namespace = "Core.Json.JsonSerializer",
-    IsRunnable = true,
-    Data = [[
+-- Module: Core.Json.JsonSerializer From: Core.Json.JsonSerializer --
+
 local Json = require("Core.Json.Json")
 
 ---@class Core.Json.Serializer
@@ -2064,14 +2008,9 @@ JsonSerializer.Static__Serializer = JsonSerializer()
 JsonSerializer.Static__Serializer:AddClass(require("Core.Common.UUID"))
 
 return JsonSerializer
-]]
-}
 
-PackageData["CoreJsonSerializable"] = {
-    Location = "Core.Json.Serializable",
-    Namespace = "Core.Json.Serializable",
-    IsRunnable = true,
-    Data = [[
+-- Module: Core.Json.Serializable From: Core.Json.Serializable --
+
 ---@alias Core.Json.Serializable.Types
 ---| string
 ---| number
@@ -2095,14 +2034,9 @@ function Serializable:Static__Deserialize(...)
 end
 
 return Utils.Class.CreateClass(Serializable, "Core.Json.Serializable")
-]]
-}
 
-PackageData["CoreReferencesIReference"] = {
-    Location = "Core.References.IReference",
-    Namespace = "Core.References.IReference",
-    IsRunnable = true,
-    Data = [[
+-- Module: Core.References.IReference From: Core.References.IReference --
+
 local Config = require("Core.Config")
 
 ---@generic TReference : Satisfactory.Components.Object
@@ -2137,14 +2071,9 @@ function IReference:Check()
 end
 
 return Utils.Class.CreateClass(IReference, "Core.IReference")
-]]
-}
 
-PackageData["CoreReferencesPCIDeviceReference"] = {
-    Location = "Core.References.PCIDeviceReference",
-    Namespace = "Core.References.PCIDeviceReference",
-    IsRunnable = true,
-    Data = [[
+-- Module: Core.References.PCIDeviceReference From: Core.References.PCIDeviceReference --
+
 ---@class Core.PCIDeviceReference<T> : Core.IReference<T>
 ---@field m_class FIN.Class
 ---@field m_index integer
@@ -2168,14 +2097,9 @@ end
 
 return Utils.Class.CreateClass(PCIDeviceReference, "Core.PCIDeviceReference",
     require("Core.References.IReference"))
-]]
-}
 
-PackageData["CoreReferencesProxyReference"] = {
-    Location = "Core.References.ProxyReference",
-    Namespace = "Core.References.ProxyReference",
-    IsRunnable = true,
-    Data = [[
+-- Module: Core.References.ProxyReference From: Core.References.ProxyReference --
+
 ---@class Core.ProxyReference<T> : Core.IReference<T>
 ---@field m_id FIN.UUID
 ---@overload fun(id: FIN.UUID) : Core.ProxyReference
@@ -2195,26 +2119,16 @@ end
 
 return Utils.Class.CreateClass(ProxyReference, "Core.ProxyReference",
     require("Core.References.IReference"))
-]]
-}
 
-PackageData["CoreUsageinit"] = {
-    Location = "Core.Usage.init",
-    Namespace = "Core.Usage.init",
-    IsRunnable = true,
-    Data = [[
+-- Module: Core.Usage.init From: Core.Usage.init --
+
 return {
     Ports = require("Core.Usage.Usage_Port"),
     Events = require("Core.Usage.Usage_EventName")
 }
-]]
-}
 
-PackageData["CoreUsageUsage_EventName"] = {
-    Location = "Core.Usage.Usage_EventName",
-    Namespace = "Core.Usage.Usage_EventName",
-    IsRunnable = true,
-    Data = [[
+-- Module: Core.Usage.Usage_EventName From: Core.Usage.Usage_EventName --
+
 ---@enum Core.EventNameUsage
 local EventNameUsage = {
     -- DNS
@@ -2236,14 +2150,9 @@ local EventNameUsage = {
 }
 
 return EventNameUsage
-]]
-}
 
-PackageData["CoreUsageUsage_Port"] = {
-    Location = "Core.Usage.Usage_Port",
-    Namespace = "Core.Usage.Usage_Port",
-    IsRunnable = true,
-    Data = [[
+-- Module: Core.Usage.Usage_Port From: Core.Usage.Usage_Port --
+
 -- 0 .. 10000
 
 ---@enum Core.PortUsage
@@ -2264,7 +2173,4 @@ local PortUsage = {
 }
 
 return PortUsage
-]]
-}
 
-return PackageData

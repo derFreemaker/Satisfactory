@@ -1,11 +1,5 @@
----@meta
-local PackageData = {}
+-- Module: Net.Core.__events From: Net.Core.__events --
 
-PackageData["NetCore__events"] = {
-    Location = "Net.Core.__events",
-    Namespace = "Net.Core.__events",
-    IsRunnable = true,
-    Data = [[
 local JsonSerializer = require("Core.Json.JsonSerializer")
 
 ---@class Net.Core.Events : Github_Loading.Entities.Events
@@ -22,14 +16,9 @@ function Events:OnLoaded()
 end
 
 return Events
-]]
-}
 
-PackageData["NetCoreIPAddress"] = {
-    Location = "Net.Core.IPAddress",
-    Namespace = "Net.Core.IPAddress",
-    IsRunnable = true,
-    Data = [[
+-- Module: Net.Core.IPAddress From: Net.Core.IPAddress --
+
 ---@class Net.Core.IPAddress : Core.Json.Serializable
 ---@field private m_address FIN.UUID
 ---@overload fun(address: string) : Net.Core.IPAddress
@@ -73,14 +62,9 @@ end
 --#endregion
 
 return Utils.Class.CreateClass(IPAddress, "Net.Core.IPAddress", require("Core.Json.Serializable"))
-]]
-}
 
-PackageData["NetCoreMethod"] = {
-    Location = "Net.Core.Method",
-    Namespace = "Net.Core.Method",
-    IsRunnable = true,
-    Data = [[
+-- Module: Net.Core.Method From: Net.Core.Method --
+
 ---@enum Net.Core.Method
 local Methods = {
 	GET = 'GET',
@@ -96,14 +80,9 @@ local Methods = {
 }
 
 return Methods
-]]
-}
 
-PackageData["NetCoreNetworkClient"] = {
-    Location = "Net.Core.NetworkClient",
-    Namespace = "Net.Core.NetworkClient",
-    IsRunnable = true,
-    Data = [[
+-- Module: Net.Core.NetworkClient From: Net.Core.NetworkClient --
+
 local NetworkCardAdapter = require('Adapter.Computer.NetworkCard')
 local JsonSerializer = require('Core.Json.JsonSerializer')
 local EventPullAdapter = require('Core.Event.EventPullAdapter')
@@ -215,7 +194,8 @@ function NetworkClient:RemoveNetworkPort(port)
 	end
 
 	port:ClosePort()
-	self.m_ports[port] = nil
+	self.m_ports[port.Port] = nil
+	Utils.Class.Deconstruct(port)
 end
 
 ---@private
@@ -254,34 +234,32 @@ end
 ---@param onReceivedEventName Net.Core.EventName?
 ---@param onReceivedPort Net.Core.Port?
 ---@param listener Core.Task
----@return Net.Core.NetworkPort
+---@return Net.Core.NetworkPort, number taskIndex
 function NetworkClient:AddTask(onReceivedEventName, onReceivedPort, listener)
 	onReceivedEventName = onReceivedEventName or "*"
 	onReceivedPort = onReceivedPort or "*"
 
 	local networkPort = self:GetOrCreateNetworkPort(onReceivedPort)
-	networkPort:AddTask(onReceivedEventName, listener)
-	return networkPort
+	return networkPort, networkPort:AddTask(onReceivedEventName, listener)
 end
 
 ---@param onReceivedEventName Net.Core.EventName
 ---@param onReceivedPort Net.Core.Port
 ---@param listener Core.Task
----@return Net.Core.NetworkPort
+---@return Net.Core.NetworkPort, number taskIndex
 function NetworkClient:AddTaskOnce(onReceivedEventName, onReceivedPort, listener)
 	onReceivedEventName = onReceivedEventName or '*'
 	onReceivedPort = onReceivedPort or "*"
 
 	local networkPort = self:GetOrCreateNetworkPort(onReceivedPort)
-	networkPort:AddTaskOnce(onReceivedEventName, listener)
-	return networkPort
+	return networkPort, networkPort:AddTaskOnce(onReceivedEventName, listener)
 end
 
 ---@param onReceivedEventName Net.Core.EventName?
 ---@param onReceivedPort Net.Core.Port?
 ---@param listener fun(context: Net.Core.NetworkClient)
 ---@param ... any
----@return Net.Core.NetworkPort
+---@return Net.Core.NetworkPort, number taskIndex
 function NetworkClient:AddListener(onReceivedEventName, onReceivedPort, listener, ...)
 	return self:AddTask(onReceivedEventName, onReceivedPort, Task(listener, ...))
 end
@@ -290,7 +268,7 @@ end
 ---@param onReceivedPort Net.Core.Port
 ---@param listener fun(context: Net.Core.NetworkContext)
 ---@param ... any
----@return Net.Core.NetworkPort
+---@return Net.Core.NetworkPort, number taskIndex
 function NetworkClient:AddListenerOnce(onReceivedEventName, onReceivedPort, listener, ...)
 	return self:AddTaskOnce(onReceivedEventName, onReceivedPort, Task(listener, ...))
 end
@@ -376,14 +354,9 @@ function NetworkClient:BroadCast(port, eventName, body, header)
 end
 
 return Utils.Class.CreateClass(NetworkClient, 'Core.Net.NetworkClient')
-]]
-}
 
-PackageData["NetCoreNetworkContext"] = {
-    Location = "Net.Core.NetworkContext",
-    Namespace = "Net.Core.NetworkContext",
-    IsRunnable = true,
-    Data = [[
+-- Module: Net.Core.NetworkContext From: Net.Core.NetworkContext --
+
 local JsonSerializer = require('Core.Json.JsonSerializer')
 local IPaddress = require("Net.Core.IPAddress")
 
@@ -424,14 +397,9 @@ function NetworkContext:__init(data, serializer)
 end
 
 return Utils.Class.CreateClass(NetworkContext, 'Core.Net.NetworkContext')
-]]
-}
 
-PackageData["NetCoreNetworkFuture"] = {
-    Location = "Net.Core.NetworkFuture",
-    Namespace = "Net.Core.NetworkFuture",
-    IsRunnable = true,
-    Data = [[
+-- Module: Net.Core.NetworkFuture From: Net.Core.NetworkFuture --
+
 ---@class Net.Core.NetworkFuture : object
 ---@field private m_eventName string
 ---@field private m_port Net.Core.Port
@@ -463,16 +431,11 @@ function NetworkFuture:Wait()
 end
 
 return Utils.Class.CreateClass(NetworkFuture, 'Core.Net.NetworkFuture')
-]]
-}
 
-PackageData["NetCoreNetworkPort"] = {
-    Location = "Net.Core.NetworkPort",
-    Namespace = "Net.Core.NetworkPort",
-    IsRunnable = true,
-    Data = [[
+-- Module: Net.Core.NetworkPort From: Net.Core.NetworkPort --
+
 local Task = require("Core.Common.Task")
-local Event = require('Core.Event.Event')
+local Event = require('Core.Event')
 
 ---@class Net.Core.NetworkPort : object
 ---@field Port Net.Core.Port
@@ -516,7 +479,7 @@ function NetworkPort:Execute(context)
 			event:Trigger(self.m_logger, context)
 		end
 		if event:Count() == 0 then
-			self:RemoveListener(name)
+			self:RemoveEvent(name)
 		end
 	end
 end
@@ -546,43 +509,63 @@ function NetworkPort:CreateOrGetEvent(eventName)
 	return event
 end
 
----@param onRecivedEventName Net.Core.EventName
+---@param onReceivedEventName Net.Core.EventName
 ---@param listener Core.Task
----@return Net.Core.NetworkPort
-function NetworkPort:AddTask(onRecivedEventName, listener)
-	local event = self:CreateOrGetEvent(onRecivedEventName)
-	event:AddTask(listener)
-	return self
+---@return number taskIndex
+function NetworkPort:AddTask(onReceivedEventName, listener)
+	local event = self:CreateOrGetEvent(onReceivedEventName)
+	return event:AddTask(listener)
 end
 
----@param onRecivedEventName Net.Core.EventName
+---@param onReceivedEventName Net.Core.EventName
 ---@param listener Core.Task
----@return Net.Core.NetworkPort
-function NetworkPort:AddTaskOnce(onRecivedEventName, listener)
-	local event = self:CreateOrGetEvent(onRecivedEventName)
-	event:AddTaskOnce(listener)
-	return self
+---@return number taskIndex
+function NetworkPort:AddTaskOnce(onReceivedEventName, listener)
+	local event = self:CreateOrGetEvent(onReceivedEventName)
+	return event:AddTaskOnce(listener)
 end
 
----@param onRecivedEventName Net.Core.EventName
+---@param onReceivedEventName Net.Core.EventName
 ---@param listener fun(context: Net.Core.NetworkContext)
 ---@param ... any
----@return Net.Core.NetworkPort
-function NetworkPort:AddListener(onRecivedEventName, listener, ...)
-	return self:AddTask(onRecivedEventName, Task(listener, ...))
+---@return number taskIndex
+function NetworkPort:AddListener(onReceivedEventName, listener, ...)
+	return self:AddTask(onReceivedEventName, Task(listener, ...))
 end
 
----@param onRecivedEventName Net.Core.EventName
+---@param onReceivedEventName Net.Core.EventName
 ---@param listener fun(context: Net.Core.NetworkContext)
 ---@param ... any
----@return Net.Core.NetworkPort
-function NetworkPort:AddListenerOnce(onRecivedEventName, listener, ...)
-	return self:AddTaskOnce(onRecivedEventName, Task(listener, ...))
+---@return number taskIndex
+function NetworkPort:AddListenerOnce(onReceivedEventName, listener, ...)
+	return self:AddTaskOnce(onReceivedEventName, Task(listener, ...))
 end
 
 ---@param eventName Net.Core.EventName
-function NetworkPort:RemoveListener(eventName)
+function NetworkPort:RemoveEvent(eventName)
 	self.m_events[eventName] = nil
+end
+
+---@param eventName string
+---@param taskIndex number
+function NetworkPort:RemoveTask(eventName, taskIndex)
+	local event = self:GetEvent(eventName)
+	if not event then
+		return
+	end
+
+	event:Remove(taskIndex)
+end
+
+---@param eventName string
+---@param taskIndex number
+function NetworkPort:RemoveTaskOnce(eventName, taskIndex)
+	local event = self:GetEvent(eventName)
+	if not event then
+		return
+	end
+
+	event:RemoveOnce(taskIndex)
 end
 
 ---@param eventName string
@@ -632,14 +615,9 @@ function NetworkPort:BroadCastMessage(eventName, body, header)
 end
 
 return Utils.Class.CreateClass(NetworkPort, 'Core.Net.NetworkPort')
-]]
-}
 
-PackageData["NetCoreStatusCodes"] = {
-    Location = "Net.Core.StatusCodes",
-    Namespace = "Net.Core.StatusCodes",
-    IsRunnable = true,
-    Data = [[
+-- Module: Net.Core.StatusCodes From: Net.Core.StatusCodes --
+
 ---@enum Net.Core.StatusCodes
 local StatusCodes = {
 	Status100Continue = 100,
@@ -718,14 +696,9 @@ local StatusCodes = {
 }
 
 return StatusCodes
-]]
-}
 
-PackageData["NetCoreHostingHostExtensions"] = {
-    Location = "Net.Core.Hosting.HostExtensions",
-    Namespace = "Net.Core.Hosting.HostExtensions",
-    IsRunnable = true,
-    Data = [[
+-- Module: Net.Core.Hosting.HostExtensions From: Net.Core.Hosting.HostExtensions --
+
 ---@type Out<Github_Loading.Module>
 local Host = {}
 if not PackageLoader:TryGetModule("Hosting.Host", Host) then
@@ -789,19 +762,19 @@ end
 ---@param eventName Net.Core.EventName
 ---@param port Net.Core.Port
 ---@param task Core.Task
----@return Hosting.Host host
+---@return Net.Core.NetworkPort netPort,  number eventTaskIndex
 function HostExtensions:AddCallableEventTask(eventName, port, task)
     local netPort = self:CreateNetworkPort(port)
-    netPort:AddTask(eventName, task)
+    local taskIndex = netPort:AddTask(eventName, task)
     netPort:OpenPort()
-    return self
+    return netPort, taskIndex
 end
 
 ---@param eventName Net.Core.EventName
 ---@param port Net.Core.Port
 ---@param listener fun(context: Net.Core.IPAddress)
 ---@param ... any
----@return Hosting.Host host
+---@return Net.Core.NetworkPort netPort,  number eventTaskIndex
 function HostExtensions:AddCallableEventListener(eventName, port, listener, ...)
     return self:AddCallableEventTask(eventName, port, Task(listener, ...))
 end
@@ -810,11 +783,8 @@ end
 ---@param port Net.Core.Port
 function HostExtensions:RemoveCallableEvent(eventName, port)
     local netPort = self:GetNetworkPort(port)
-    netPort:RemoveListener(eventName)
+    netPort:RemoveEvent(eventName)
 end
 
 return Utils.Class.ExtendClass(HostExtensions, Host)
-]]
-}
 
-return PackageData

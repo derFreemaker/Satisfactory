@@ -19,6 +19,9 @@ namespace Lua_Bundler.Package
 
         public List<string> RequiringModules { get; } = new();
 
+        private int BundleDataStartPos = 0;
+        private int BundleDataEndPos = 0;
+
         public PackageModule(string directoryLocation, FileInfo info, IPackage parent)
         {
             var fileName = Path.GetFileNameWithoutExtension(info.Name);
@@ -187,48 +190,55 @@ namespace Lua_Bundler.Package
         }
         #endregion
 
-        public string Bundle(BundleOptions options)
+        public string BundleInfo(BundleOptions options)
         {
-            var content = File.ReadAllLines(LocationPath).AsSpan();
-            content = ModifyContent(content, options);
             var builder = new StringBuilder();
 
             if (options.Optimize)
             {
-                builder.Append($"PackageData[\"{Id}\"]={{");
+                builder.Append($"[\"{Id}\"]={{");
                 builder.Append($"Location=\"{Location}\",");
                 builder.Append($"Namespace=\"{Namespace}\",");
                 builder.Append($"IsRunnable={IsRunnable.ToString().ToLower()},");
-
-                builder.Append($"Data=[[");
-                foreach (string? line in content)
-                {
-                    if (line is null)
-                        continue;
-
-                    builder.Append(line + " ");
-                }
-                builder.Append($"]]}}");
+                builder.Append($"StartPos={BundleDataStartPos},");
+                builder.Append($"EndPos={BundleDataEndPos},");
+                builder.Append($"}},");
 
                 return builder.ToString();
             }
 
-            builder.Append('\n');
-            builder.Append($"PackageData[\"{Id}\"] = {{\n");
-            builder.Append($"    Location = \"{Location}\",\n");
-            builder.Append($"    Namespace = \"{Namespace}\",\n");
-            builder.Append($"    IsRunnable = {IsRunnable.ToString().ToLower()},\n");
+            builder.AppendLine($"        [\"{Id}\"] = {{");
+            builder.AppendLine($"            Location = \"{Location}\",");
+            builder.AppendLine($"            Namespace = \"{Namespace}\",");
+            builder.AppendLine($"            IsRunnable = {IsRunnable.ToString().ToLower()},");
+            builder.AppendLine($"            StartPos = {BundleDataStartPos},");
+            builder.AppendLine($"            EndPos = {BundleDataEndPos},");
+            builder.AppendLine($"        }},");
 
-            builder.Append($"    Data = [[\n");
+            return builder.ToString();
+        }
+
+        public string BundleData(BundleOptions options, ref int currentPosition)
+        {
+            BundleDataStartPos = currentPosition;
+
+            var content = File.ReadAllLines(LocationPath).AsSpan();
+            content = ModifyContent(content, options);
+            var builder = new StringBuilder();
+
+            char lineSep = options.Optimize ? ';' : '\n';
+
             foreach (string? line in content)
             {
                 if (line is null)
                     continue;
 
-                builder.Append(line);
-                builder.Append('\n');
+                currentPosition += line.Length + 1;
+
+                builder.Append(line + lineSep);
             }
-            builder.Append($"]]\n}}\n");
+
+            BundleDataEndPos = currentPosition;
 
             return builder.ToString();
         }

@@ -1,11 +1,5 @@
----@meta
-local PackageData = {}
+-- Module: FactoryControl.Core.__events From: FactoryControl.Core.__events --
 
-PackageData["FactoryControlCore__events"] = {
-    Location = "FactoryControl.Core.__events",
-    Namespace = "FactoryControl.Core.__events",
-    IsRunnable = true,
-    Data = [[
 local JsonSerializer = require("Core.Json.JsonSerializer")
 
 ---@class FactoryControl.Core.Events : Github_Loading.Entities.Events
@@ -36,26 +30,16 @@ function Events:OnLoaded()
 end
 
 return Events
-]]
-}
 
-PackageData["FactoryControlCoreConfig"] = {
-    Location = "FactoryControl.Core.Config",
-    Namespace = "FactoryControl.Core.Config",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Core.Config From: FactoryControl.Core.Config --
+
 return {
 	DOMAIN = 'FactoryControl.com',
 	CallbackServiceNameForFeatures = 'Features',
 }
-]]
-}
 
-PackageData["FactoryControlCoreEndpointUrls"] = {
-    Location = "FactoryControl.Core.EndpointUrls",
-    Namespace = "FactoryControl.Core.EndpointUrls",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Core.EndpointUrls From: FactoryControl.Core.EndpointUrls --
+
 ---@class FactoryControl.Core.EndpointUrlTemplates
 local EndpointUrlTemplates = {}
 
@@ -151,14 +135,9 @@ EndpointUrlTemplates.Feature = FeatureTemplates
 EndpointUrlConstructors.Feature = FeatureConstructors
 
 return { EndpointUrlTemplates, EndpointUrlConstructors }
-]]
-}
 
-PackageData["FactoryControlCoreEntitiesControllerConnectDto"] = {
-    Location = "FactoryControl.Core.Entities.Controller.ConnectDto",
-    Namespace = "FactoryControl.Core.Entities.Controller.ConnectDto",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Core.Entities.Controller.ConnectDto From: FactoryControl.Core.Entities.Controller.ConnectDto --
+
 ---@class FactoryControl.Core.Entities.Controller.ConnectDto : Core.Json.Serializable
 ---@field Name string
 ---@field IPAddress Net.Core.IPAddress
@@ -180,14 +159,9 @@ end
 
 return Utils.Class.CreateClass(ConnectDto, "FactoryControl.Core.Entities.Controller.ConnectDto",
     require("Core.Json.Serializable"))
-]]
-}
 
-PackageData["FactoryControlCoreEntitiesControllerControllerDto"] = {
-    Location = "FactoryControl.Core.Entities.Controller.ControllerDto",
-    Namespace = "FactoryControl.Core.Entities.Controller.ControllerDto",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Core.Entities.Controller.ControllerDto From: FactoryControl.Core.Entities.Controller.ControllerDto --
+
 ---@class FactoryControl.Core.Entities.ControllerDto : Core.Json.Serializable
 ---@field Id Core.UUID
 ---@field Name string
@@ -217,14 +191,9 @@ end
 
 return Utils.Class.CreateClass(ControllerDto, "FactoryControl.Core.Entities.ControllerDto",
     require("Core.Json.Serializable"))
-]]
-}
 
-PackageData["FactoryControlCoreEntitiesControllerCreateDto"] = {
-    Location = "FactoryControl.Core.Entities.Controller.CreateDto",
-    Namespace = "FactoryControl.Core.Entities.Controller.CreateDto",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Core.Entities.Controller.CreateDto From: FactoryControl.Core.Entities.Controller.CreateDto --
+
 ---@class FactoryControl.Core.Entities.Controller.CreateDto : Core.Json.Serializable
 ---@field Name string
 ---@field IPAddress Net.Core.IPAddress
@@ -249,14 +218,9 @@ end
 
 return Utils.Class.CreateClass(ControllerDto, "FactoryControl.Core.Entities.Controller.CreateDto",
     require("Core.Json.Serializable"))
-]]
-}
 
-PackageData["FactoryControlCoreEntitiesControllerModifyDto"] = {
-    Location = "FactoryControl.Core.Entities.Controller.ModifyDto",
-    Namespace = "FactoryControl.Core.Entities.Controller.ModifyDto",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Core.Entities.Controller.ModifyDto From: FactoryControl.Core.Entities.Controller.ModifyDto --
+
 ---@class FactoryControl.Core.Entities.Controller.ModifyDto : Core.Json.Serializable
 ---@field Name string
 ---@field IPAddress Net.Core.IPAddress
@@ -281,14 +245,9 @@ end
 
 return Utils.Class.CreateClass(ModifyDto, "FactoryControl.Core.Entities.Controller.ModifyDto",
     require("Core.Json.Serializable"))
-]]
-}
 
-PackageData["FactoryControlCoreEntitiesControllerFeatureFeatureDto"] = {
-    Location = "FactoryControl.Core.Entities.Controller.Feature.FeatureDto",
-    Namespace = "FactoryControl.Core.Entities.Controller.Feature.FeatureDto",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Core.Entities.Controller.Feature.FeatureDto From: FactoryControl.Core.Entities.Controller.Feature.FeatureDto --
+
 ---@alias FactoryControl.Core.Entities.Controller.Feature.Type
 ---|"Switch"
 ---|"Button"
@@ -326,14 +285,9 @@ end
 
 return Utils.Class.CreateClass(FeatureDto, "FactoryControl.Core.Entities.Controller.FeatureDto",
     require("Core.Json.Serializable"))
-]]
-}
 
-PackageData["FactoryControlCoreEntitiesControllerFeatureUpdate"] = {
-    Location = "FactoryControl.Core.Entities.Controller.Feature.Update",
-    Namespace = "FactoryControl.Core.Entities.Controller.Feature.Update",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Core.Entities.Controller.Feature.Update From: FactoryControl.Core.Entities.Controller.Feature.Update --
+
 ---@class FactoryControl.Core.Entities.Controller.Feature.Update : Core.Json.Serializable
 ---@field FeatureId Core.UUID
 local Update = {}
@@ -348,14 +302,9 @@ end
 
 return Utils.Class.CreateClass(Update, "FactoryControl.Core.Entities.Controller.Feature.Update",
     require("Core.Json.Serializable"))
-]]
-}
 
-PackageData["FactoryControlCoreEntitiesControllerFeatureButtonButtonDto"] = {
-    Location = "FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto",
-    Namespace = "FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto From: FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto --
+
 ---@class FactoryControl.Core.Entities.Controller.Feature.ButtonDto : FactoryControl.Core.Entities.Controller.FeatureDto
 ---@overload fun(id: Core.UUID, name: string, controllerId: Core.UUID) : FactoryControl.Core.Entities.Controller.Feature.ButtonDto
 local ButtonDto = {}
@@ -380,14 +329,9 @@ end
 
 return Utils.Class.CreateClass(ButtonDto, "FactoryControl.Core.Entities.Controller.Feature.ButtonDto",
     require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))
-]]
-}
 
-PackageData["FactoryControlCoreEntitiesControllerFeatureButtonUpdate"] = {
-    Location = "FactoryControl.Core.Entities.Controller.Feature.Button.Update",
-    Namespace = "FactoryControl.Core.Entities.Controller.Feature.Button.Update",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Core.Entities.Controller.Feature.Button.Update From: FactoryControl.Core.Entities.Controller.Feature.Button.Update --
+
 ---@class FactoryControl.Core.Entities.Controller.Feature.Button.Update : FactoryControl.Core.Entities.Controller.Feature.Update
 ---@overload fun(id: Core.UUID) : FactoryControl.Core.Entities.Controller.Feature.Button.Update
 local Update = {}
@@ -406,14 +350,9 @@ end
 
 return Utils.Class.CreateClass(Update, "FactoryControl.Core.Entities.Controller.Feature.Button.Update",
     require("FactoryControl.Core.Entities.Controller.Feature.Update"))
-]]
-}
 
-PackageData["FactoryControlCoreEntitiesControllerFeatureChartChartDto"] = {
-    Location = "FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto",
-    Namespace = "FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto From: FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto --
+
 ---@class FactoryControl.Core.Entities.Controller.Feature.ChartDto : FactoryControl.Core.Entities.Controller.FeatureDto
 ---@field XAxisName string
 ---@field YAxisName string
@@ -449,14 +388,9 @@ end
 
 return Utils.Class.CreateClass(ChartDto, "FactoryControl.Core.Entities.Controller.Feature.ChartDto",
     require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))
-]]
-}
 
-PackageData["FactoryControlCoreEntitiesControllerFeatureChartUpdate"] = {
-    Location = "FactoryControl.Core.Entities.Controller.Feature.Chart.Update",
-    Namespace = "FactoryControl.Core.Entities.Controller.Feature.Chart.Update",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Core.Entities.Controller.Feature.Chart.Update From: FactoryControl.Core.Entities.Controller.Feature.Chart.Update --
+
 ---@class FactoryControl.Core.Entities.Controller.Feature.Chart.Update : FactoryControl.Core.Entities.Controller.Feature.Update
 ---@field Data table<number, any>
 ---@overload fun(id: Core.UUID, data: table<number, any>) : FactoryControl.Core.Entities.Controller.Feature.Chart.Update
@@ -478,14 +412,9 @@ end
 
 return Utils.Class.CreateClass(Update, "FactoryControl.Core.Entities.Controller.Feature.Chart.Update",
     require("FactoryControl.Core.Entities.Controller.Feature.Update"))
-]]
-}
 
-PackageData["FactoryControlCoreEntitiesControllerFeatureRadialRadialDto"] = {
-    Location = "FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto",
-    Namespace = "FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto From: FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto --
+
 ---@class FactoryControl.Core.Entities.Controller.Feature.RadialDto : FactoryControl.Core.Entities.Controller.FeatureDto
 ---@field Min number
 ---@field Max number
@@ -539,14 +468,9 @@ end
 
 return Utils.Class.CreateClass(RadialDto, "FactoryControl.Core.Entities.Controller.Feature.RadialDto",
     require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))
-]]
-}
 
-PackageData["FactoryControlCoreEntitiesControllerFeatureRadialUpdate"] = {
-    Location = "FactoryControl.Core.Entities.Controller.Feature.Radial.Update",
-    Namespace = "FactoryControl.Core.Entities.Controller.Feature.Radial.Update",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Core.Entities.Controller.Feature.Radial.Update From: FactoryControl.Core.Entities.Controller.Feature.Radial.Update --
+
 ---@class FactoryControl.Core.Entities.Controller.Feature.Radial.Update : FactoryControl.Core.Entities.Controller.Feature.Update
 ---@field Min number
 ---@field Max number
@@ -575,14 +499,9 @@ end
 
 return Utils.Class.CreateClass(Update, "FactoryControl.Core.Entities.Controller.Feature.Radial.Update",
     require("FactoryControl.Core.Entities.Controller.Feature.Update"))
-]]
-}
 
-PackageData["FactoryControlCoreEntitiesControllerFeatureSwitchSwitchDto"] = {
-    Location = "FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto",
-    Namespace = "FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto From: FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto --
+
 ---@class FactoryControl.Core.Entities.Controller.Feature.SwitchDto : FactoryControl.Core.Entities.Controller.FeatureDto
 ---@field IsEnabled boolean
 ---@overload fun(id: Core.UUID, name: string, controllerId: Core.UUID, isEnabled: boolean) : FactoryControl.Core.Entities.Controller.Feature.SwitchDto
@@ -616,14 +535,9 @@ end
 
 return Utils.Class.CreateClass(SwitchDto, "FactoryControl.Core.Entities.Controller.Feature.SwitchDto",
     require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))
-]]
-}
 
-PackageData["FactoryControlCoreEntitiesControllerFeatureSwitchUpdate"] = {
-    Location = "FactoryControl.Core.Entities.Controller.Feature.Switch.Update",
-    Namespace = "FactoryControl.Core.Entities.Controller.Feature.Switch.Update",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Core.Entities.Controller.Feature.Switch.Update From: FactoryControl.Core.Entities.Controller.Feature.Switch.Update --
+
 ---@class FactoryControl.Core.Entities.Controller.Feature.Switch.Update : FactoryControl.Core.Entities.Controller.Feature.Update
 ---@field IsEnabled boolean
 ---@overload fun(id: Core.UUID, isEnabled: boolean) : FactoryControl.Core.Entities.Controller.Feature.Switch.Update
@@ -645,14 +559,9 @@ end
 
 return Utils.Class.CreateClass(Update, "FactoryControl.Core.Entities.Controller.Feature.Switch.Update",
     require("FactoryControl.Core.Entities.Controller.Feature.Update"))
-]]
-}
 
-PackageData["FactoryControlCoreExtensionsNetworkContextExtensions"] = {
-    Location = "FactoryControl.Core.Extensions.NetworkContextExtensions",
-    Namespace = "FactoryControl.Core.Extensions.NetworkContextExtensions",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Core.Extensions.NetworkContextExtensions From: FactoryControl.Core.Extensions.NetworkContextExtensions --
+
 ---@class Net.Core.NetworkContext
 local NetworkContextExtensions = {}
 
@@ -663,7 +572,4 @@ end
 
 Utils.Class.ExtendClass(NetworkContextExtensions,
     require("Net.Core.NetworkContext"))
-]]
-}
 
-return PackageData

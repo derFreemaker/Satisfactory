@@ -25,7 +25,7 @@
 		".stfolder/**": true,
 		"Code-Server/**": true,
 		"Obsidian Vault/**": true,
-		"Packages/**": true
+		"Packages/**": false
 	},
 	"explorerExclude.backup": {},
 	"asciidoc.antora.enableAntoraSupport": true,

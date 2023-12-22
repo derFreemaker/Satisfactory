@@ -112,4 +112,22 @@ function File.Clear(path)
     file:close()
 end
 
+---@param path string
+---@param startPos integer
+---@param endPos integer?
+---@return string?
+function File.ReadChunk(path, startPos, endPos)
+    if not filesystem.exists(path) then
+        return
+    end
+
+    local file = filesystem.open(path, "r")
+
+    file:seek(startPos)
+    local str = file:read(endPos - startPos)
+    file:close()
+
+    return str
+end
+
 return File, OpenFiles

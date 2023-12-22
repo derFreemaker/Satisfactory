@@ -1,11 +1,5 @@
----@meta
-local PackageData = {}
+-- Module: FactoryControl.Client.Client From: FactoryControl.Client.Client --
 
-PackageData["FactoryControlClientClient"] = {
-    Location = "FactoryControl.Client.Client",
-    Namespace = "FactoryControl.Client.Client",
-    IsRunnable = true,
-    Data = [[
 local Usage = require("Core.Usage.init")
 local Config = require("FactoryControl.Core.Config")
 
@@ -221,14 +215,9 @@ function Client:UpdateFeature(featureUpdate)
 end
 
 return Utils.Class.CreateClass(Client, "FactoryControl.Client")
-]]
-}
 
-PackageData["FactoryControlClientDataClient"] = {
-    Location = "FactoryControl.Client.DataClient",
-    Namespace = "FactoryControl.Client.DataClient",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Client.DataClient From: FactoryControl.Client.DataClient --
+
 local Usage = require("Core.Usage.init")
 local EndpointUrlConstructors = require("FactoryControl.Core.EndpointUrls")[2]
 local ControllerUrlConstructors = EndpointUrlConstructors.Controller
@@ -434,28 +423,18 @@ function DataClient:UpdateFeature(featureUpdate)
 end
 
 return Utils.Class.CreateClass(DataClient, "FactoryControl.Client.DataClient")
-]]
-}
 
-PackageData["FactoryControlClientEventNames"] = {
-    Location = "FactoryControl.Client.EventNames",
-    Namespace = "FactoryControl.Client.EventNames",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Client.EventNames From: FactoryControl.Client.EventNames --
+
 ---@enum FactoryControl.Client.EventNames
 local EventNames = {
     ButtonPressed = "FactoryControl__Feature__ButtonPressed"
 }
 
 return EventNames
-]]
-}
 
-PackageData["FactoryControlClientEntitiesEntity"] = {
-    Location = "FactoryControl.Client.Entities.Entity",
-    Namespace = "FactoryControl.Client.Entities.Entity",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Client.Entities.Entity From: FactoryControl.Client.Entities.Entity --
+
 ---@class FactoryControl.Client.Entities.Entity : object
 ---@field Id Core.UUID
 ---@field protected m_client FactoryControl.Client
@@ -473,14 +452,9 @@ function Entity:__init(id, client)
 end
 
 return Utils.Class.CreateClass(Entity, "FactoryControl.Client.Entities.Entity")
-]]
-}
 
-PackageData["FactoryControlClientEntitiesControllerController"] = {
-    Location = "FactoryControl.Client.Entities.Controller.Controller",
-    Namespace = "FactoryControl.Client.Entities.Controller.Controller",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Client.Entities.Controller.Controller From: FactoryControl.Client.Entities.Controller.Controller --
+
 local UUID = require("Core.Common.UUID")
 
 local Modify = require("FactoryControl.Client.Entities.Controller.Modify")
@@ -621,14 +595,9 @@ return Utils.Class.CreateClass(Controller, "FactoryControl.Client.Entities.Contr
     require("FactoryControl.Client.Entities.Entity"))
 
 -- //TODO: implement some kind of status like online and offline
-]]
-}
 
-PackageData["FactoryControlClientEntitiesControllerModify"] = {
-    Location = "FactoryControl.Client.Entities.Controller.Modify",
-    Namespace = "FactoryControl.Client.Entities.Controller.Modify",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Client.Entities.Controller.Modify From: FactoryControl.Client.Entities.Controller.Modify --
+
 local FeatureDto = require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto")
 
 local ModfiyDto = require("FactoryControl.Core.Entities.Controller.ModifyDto")
@@ -661,14 +630,9 @@ function Modify:ToDto()
 end
 
 return Utils.Class.CreateClass(Modify, "FactoryControl.Client.Entities.Controller.Modify")
-]]
-}
 
-PackageData["FactoryControlClientEntitiesControllerFeatureFactory"] = {
-    Location = "FactoryControl.Client.Entities.Controller.Feature.Factory",
-    Namespace = "FactoryControl.Client.Entities.Controller.Feature.Factory",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Client.Entities.Controller.Feature.Factory From: FactoryControl.Client.Entities.Controller.Feature.Factory --
+
 local ButtonFeature = require("FactoryControl.Client.Entities.Controller.Feature.Button.Button")
 local ChartFeature = require("FactoryControl.Client.Entities.Controller.Feature.Chart.Chart")
 local RadialFeature = require("FactoryControl.Client.Entities.Controller.Feature.Radial.Radial")
@@ -699,14 +663,9 @@ function Factory.Create(featureDto, client)
 end
 
 return Factory
-]]
-}
 
-PackageData["FactoryControlClientEntitiesControllerFeatureFeature"] = {
-    Location = "FactoryControl.Client.Entities.Controller.Feature.Feature",
-    Namespace = "FactoryControl.Client.Entities.Controller.Feature.Feature",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Client.Entities.Controller.Feature.Feature From: FactoryControl.Client.Entities.Controller.Feature.Feature --
+
 local Task = require("Core.Common.Task")
 local Watchable = require("Core.Common.Watchable")
 
@@ -756,14 +715,9 @@ end
 
 return Utils.Class.CreateClass(Feature, "FactoryControl.Client.Entities.Controller.Feature",
     require("FactoryControl.Client.Entities.Entity"))
-]]
-}
 
-PackageData["FactoryControlClientEntitiesControllerFeatureButtonButton"] = {
-    Location = "FactoryControl.Client.Entities.Controller.Feature.Button.Button",
-    Namespace = "FactoryControl.Client.Entities.Controller.Feature.Button.Button",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Client.Entities.Controller.Feature.Button.Button From: FactoryControl.Client.Entities.Controller.Feature.Button.Button --
+
 local ButtonDto = require("FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto")
 
 local Update = require("FactoryControl.Core.Entities.Controller.Feature.Button.Update")
@@ -796,14 +750,9 @@ end
 
 return Utils.Class.CreateClass(Button, "FactoryControl.Client.Entities.Controller.Feature.Button",
     require("FactoryControl.Client.Entities.Controller.Feature.Feature"))
-]]
-}
 
-PackageData["FactoryControlClientEntitiesControllerFeatureChartChart"] = {
-    Location = "FactoryControl.Client.Entities.Controller.Feature.Chart.Chart",
-    Namespace = "FactoryControl.Client.Entities.Controller.Feature.Chart.Chart",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Client.Entities.Controller.Feature.Chart.Chart From: FactoryControl.Client.Entities.Controller.Feature.Chart.Chart --
+
 local ChartDto = require("FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto")
 local Update = require("FactoryControl.Core.Entities.Controller.Feature.Chart.Update")
 
@@ -870,14 +819,9 @@ end
 
 return Utils.Class.CreateClass(Chart, "FactoryControl.Client.Entities.Controller.Feature.Chart",
     require("FactoryControl.Client.Entities.Controller.Feature.Feature"))
-]]
-}
 
-PackageData["FactoryControlClientEntitiesControllerFeatureRadialRadial"] = {
-    Location = "FactoryControl.Client.Entities.Controller.Feature.Radial.Radial",
-    Namespace = "FactoryControl.Client.Entities.Controller.Feature.Radial.Radial",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Client.Entities.Controller.Feature.Radial.Radial From: FactoryControl.Client.Entities.Controller.Feature.Radial.Radial --
+
 local RadialDto = require("FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto")
 
 local Update = require("FactoryControl.Core.Entities.Controller.Feature.Radial.Update")
@@ -953,14 +897,9 @@ end
 
 return Utils.Class.CreateClass(Radial, "FactoryControl.Client.Entities.Controller.Feature.Radial",
     require("FactoryControl.Client.Entities.Controller.Feature.Feature"))
-]]
-}
 
-PackageData["FactoryControlClientEntitiesControllerFeatureSwitchSwitch"] = {
-    Location = "FactoryControl.Client.Entities.Controller.Feature.Switch.Switch",
-    Namespace = "FactoryControl.Client.Entities.Controller.Feature.Switch.Switch",
-    IsRunnable = true,
-    Data = [[
+-- Module: FactoryControl.Client.Entities.Controller.Feature.Switch.Switch From: FactoryControl.Client.Entities.Controller.Feature.Switch.Switch --
+
 local SwitchDto = require("FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto")
 
 local Update = require("FactoryControl.Core.Entities.Controller.Feature.Switch.Update")
@@ -1029,7 +968,4 @@ end
 
 return Utils.Class.CreateClass(Switch, "FactoryControl.Client.Entities.Controller.Feature.Switch",
     require("FactoryControl.Client.Entities.Controller.Feature.Feature"))
-]]
-}
 
-return PackageData

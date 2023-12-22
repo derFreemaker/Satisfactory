@@ -57,13 +57,13 @@ namespace Lua_Bundler.Package
                 Info.Save();
             }
 
-            Info.Bundle(options);
+            Info.Bundle(options, this);
         }
 
         /// <inheritdoc/>
         public bool BundleData(BundleOptions options)
         {
-            var dataFilePath = Path.Combine(Info.LocationOutputPath, "Data.lua");
+            var dataFilePath = Path.Combine(Info.LocationOutputPath, "Data.txt");
             var copyDataFilePath = dataFilePath + ".copy";
             if (File.Exists(dataFilePath))
             {
@@ -74,26 +74,27 @@ namespace Lua_Bundler.Package
             }
 
             var writer = File.CreateText(dataFilePath);
+            writer.NewLine = "\n";
+            int count = 0;
 
             if (options.Optimize)
             {
-                writer.Write("---@meta\n");
-                writer.Write("local PackageData = {}");
-
                 foreach (var module in Modules)
-                    writer.Write(module.Bundle(options));
-
-                writer.Write(" return PackageData");
+                {
+                    writer.Write(module.BundleData(options, ref count));
+                }
             }
             else
             {
-                writer.Write("---@meta\n");
-                writer.Write("local PackageData = {}\n");
-
                 foreach (var module in Modules)
-                    writer.Write(module.Bundle(options));
+                {
+                    var text = $"Module: {module.Namespace} From: {module.Location}\n";
+                    writer.WriteLine(text);
+                    count += text.Length + 1;
 
-                writer.Write("\nreturn PackageData\n");
+                    writer.WriteLine(module.BundleData(options, ref count));
+                    count++;
+                }
             }
 
             writer.Dispose();

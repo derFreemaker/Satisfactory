@@ -1,11 +1,5 @@
----@meta
-local PackageData = {}
+-- Module: Database.DbTable From: Database.DbTable --
 
-PackageData["DatabaseDbTable"] = {
-    Location = "Database.DbTable",
-    Namespace = "Database.DbTable",
-    IsRunnable = true,
-    Data = [[
 local JsonSerializer = require("Core.Json.JsonSerializer")
 local File = require("Core.FileSystem.File")
 
@@ -142,7 +136,4 @@ function DbTable:__pairs()
 end
 
 return Utils.Class.CreateClass(DbTable, "Database.DbTable")
-]]
-}
 
-return PackageData

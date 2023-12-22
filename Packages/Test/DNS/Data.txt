@@ -1,11 +1,5 @@
----@meta
-local PackageData = {}
+Module: Test.DNS.__main From: Test.DNS.__main
 
-PackageData["TestDNS__main"] = {
-    Location = "Test.DNS.__main",
-    Namespace = "Test.DNS.__main",
-    IsRunnable = true,
-    Data = [[
 local EventPullAdapter = require('Core.Event.EventPullAdapter')
 local NetworkClient = require('Net.Core.NetworkClient')
 local DNSClient = require('DNS.Client.Client')
@@ -56,7 +50,4 @@ function Main:Run()
 end
 
 return Main
-]]
-}
 
-return PackageData
