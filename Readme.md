@@ -11,9 +11,9 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
 ## Push Pipeline
 
 1. write source code
-2. bundle the code with task: "bundle all" or "bundle all optimized" for smaller files
+2. bundle the code with task: "bundle all"
 3. push the code to repo
-4. can download in game (github has a 300sec raw data cache or run task: "Start Code Server" and use "localhost" as url)
+4. can download in game (github has a 300sec raw data cache or run task: "Start Code Server" and use "http://localhost" as url)
 
 ## Run Sequence Overview
 
@@ -39,7 +39,7 @@ This Repository contains all my code for the [FicsIt-Networks Mod](https://githu
 |   ├── Info.package.json -> marks the folder as package
 │   ├── __main.lua -> has main functions
 │   ├── __events.lua -> has event functions
-|   └── */*.lua -> will be marked as runnable from bundler
+|   └── *.lua -> will be marked as runnable from bundler
 └── bundled Package
     ├── Data.lua -> all modules of the package
     └── Info.lua -> contains information about the package
