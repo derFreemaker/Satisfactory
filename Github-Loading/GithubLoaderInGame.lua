@@ -87,6 +87,11 @@ local function Run()
 	end
 
 	-- ######## load option ######## --
+	if option == nil then
+		Loader:ShowOptions(showExtendOptionDetails)
+		return false
+	end
+
 	local chosenOption = Loader:LoadOption(option, showExtendOptionDetails)
 	local program, package = Loader:LoadProgram(chosenOption, programForceDownload)
 

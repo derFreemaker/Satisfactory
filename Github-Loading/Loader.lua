@@ -330,7 +330,30 @@ function Loader:CheckVersion()
 	return differentVersionFound
 end
 
----@param option string?
+---@param extendOptionDetails boolean
+function Loader:ShowOptions(extendOptionDetails)
+	---@type Github_Loading.Option
+	local Option = self:Get('/Github-Loading/Loader/Option')
+	local options = self:Get('/Github-Loading/Options')
+
+	---@type Github_Loading.Option[]
+	local mappedOptions = {}
+	for name, url in pairs(options) do
+		local optionObj = Option.new(name, url)
+		table.insert(mappedOptions, optionObj)
+	end
+
+	self.Logger:LogDebug('loaded Options')
+
+	local output = 'Options:'
+	for _, optionObj in ipairs(mappedOptions) do
+		output = output .. "\n" .. optionObj:Get(extendOptionDetails)
+	end
+	print(output)
+	return {}
+end
+
+---@param option string
 ---@param extendOptionDetails boolean
 ---@return Github_Loading.Option chosenOption
 function Loader:LoadOption(option, extendOptionDetails)
@@ -346,15 +369,6 @@ function Loader:LoadOption(option, extendOptionDetails)
 	end
 
 	self.Logger:LogDebug('loaded Options')
-	if option == nil then
-		local output = 'Options:'
-		for _, optionObj in ipairs(mappedOptions) do
-			output = output .. "\n" .. optionObj:Get(extendOptionDetails)
-		end
-		print(output)
-		computer.stop()
-		return {}
-	end
 
 	---@param optionName string
 	---@return Github_Loading.Option?

@@ -80,7 +80,12 @@ end
 
 function Package:Load()
     if self.RequiredPackages and #self.RequiredPackages ~= 0 then
-        self.m_packageLoader.Logger:LogDebug("loading required packages: " .. #self.RequiredPackages .. "...")
+        local log = "loading required packages:"
+            .. " (" .. #self.RequiredPackages .. ") "
+            .. Utils.String.Join(self.RequiredPackages, ";")
+            .. " ..."
+
+        self.m_packageLoader.Logger:LogDebug(log)
 
         for _, packageName in ipairs(self.RequiredPackages) do
             self.m_packageLoader:LoadPackage(packageName)
