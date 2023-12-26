@@ -11,7 +11,7 @@
 		"PackageTemplate",
 		"Tools/DocUpdater",
 		"Tools/Lua-Bundler",
-		"*/Files"
+		"**/Sim-Files"
 	],
 	"triggerTaskOnSave.tasks": {
 		"check all": ["*"]

@@ -85,7 +85,7 @@ function Simulator:Initialize(logLevel, fileSystemPath)
 		local info = debug.getinfo(2)
 		fileSystemPath = FileSystem.Path(info.source)
 			:GetParentFolderPath()
-			:Append("Files")
+			:Append("Sim-Files")
 			:ToString()
 	end
 
