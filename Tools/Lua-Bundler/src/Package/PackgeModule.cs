@@ -1,5 +1,5 @@
 ﻿using Lua_Bundler.Interfaces;
-using Newtonsoft.Json;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -19,9 +19,6 @@ namespace Lua_Bundler.Package
 
         public List<string> RequiringModules { get; } = new();
 
-        private int BundleDataStartPos = 0;
-        private int BundleDataEndPos = 0;
-
         public PackageModule(string directoryLocation, FileInfo info, IPackage parent)
         {
             var fileName = Path.GetFileNameWithoutExtension(info.Name);
@@ -32,16 +29,7 @@ namespace Lua_Bundler.Package
             LocationPath = info.FullName;
             Parent = parent;
 
-            Id = Location.Replace(".", "");
-        }
-
-        public void Map(PackageMap map)
-        {
-            if (!map.TryAddModule(this))
-                ErrorWriter.ModuleExistsMoreThanOnce(this);
-
-            var content = File.ReadAllText(LocationPath);
-            AnalyseContent(content, map);
+            Id = Location;
         }
 
         #region - Analyse -
@@ -90,14 +78,17 @@ namespace Lua_Bundler.Package
 
         #endregion
 
-        public void Check(PackageMap map)
+        public void Map(PackageMap map)
         {
+            if (!map.TryAddModule(this))
+                ErrorWriter.ModuleExistsMoreThanOnce(this);
+
             var content = File.ReadAllText(LocationPath);
-            CheckContent(content, map);
+            AnalyseContent(content, map);
         }
 
         #region - Check -
-        
+
         [GeneratedRegex("require\\(\"(.+)\"\\)")]
         private static partial Regex GetRegexRequireFunction();
         private void CheckRequireFunctions(string content, PackageMap map)
@@ -190,57 +181,10 @@ namespace Lua_Bundler.Package
         }
         #endregion
 
-        public string BundleInfo(BundleOptions options)
+        public void Check(PackageMap map)
         {
-            var builder = new StringBuilder();
-
-            if (options.Optimize)
-            {
-                builder.Append($"[\"{Id}\"]={{");
-                builder.Append($"Location=\"{Location}\",");
-                builder.Append($"Namespace=\"{Namespace}\",");
-                builder.Append($"IsRunnable={IsRunnable.ToString().ToLower()},");
-                builder.Append($"StartPos={BundleDataStartPos},");
-                builder.Append($"EndPos={BundleDataEndPos},");
-                builder.Append($"}},");
-
-                return builder.ToString();
-            }
-
-            builder.AppendLine($"        [\"{Id}\"] = {{");
-            builder.AppendLine($"            Location = \"{Location}\",");
-            builder.AppendLine($"            Namespace = \"{Namespace}\",");
-            builder.AppendLine($"            IsRunnable = {IsRunnable.ToString().ToLower()},");
-            builder.AppendLine($"            StartPos = {BundleDataStartPos},");
-            builder.AppendLine($"            EndPos = {BundleDataEndPos},");
-            builder.AppendLine($"        }},");
-
-            return builder.ToString();
-        }
-
-        public string BundleData(BundleOptions options, ref int currentPosition)
-        {
-            BundleDataStartPos = currentPosition;
-
-            var content = File.ReadAllLines(LocationPath).AsSpan();
-            content = ModifyContent(content, options);
-            var builder = new StringBuilder();
-
-            char lineSep = options.Optimize ? ';' : '\n';
-
-            foreach (string? line in content)
-            {
-                if (line is null)
-                    continue;
-
-                currentPosition += line.Length + 1;
-
-                builder.Append(line + lineSep);
-            }
-
-            BundleDataEndPos = currentPosition;
-
-            return builder.ToString();
+            var content = File.ReadAllText(LocationPath);
+            CheckContent(content, map);
         }
 
         #region - Modify -
@@ -284,19 +228,60 @@ namespace Lua_Bundler.Package
             return CollectionsMarshal.AsSpan(newLines);
         }
 
-        private static Span<string> ModifyContent(Span<string> content, BundleOptions options)
+        private static Span<string> ModifyContent(Span<string> content, BundleOptions options, IPackageModule module)
         {
-            ConvertLines(content);
+            if (module.IsRunnable)
+            {
+                ConvertLines(content);
+            }
 
-            if (options.Optimize)
+            if (options.RemoveComments)
             {
                 RemoveComments(content);
+            }
+
+            if (options.RemoveIndents)
+            {
                 RemoveIndents(content);
+            }
+
+            if (options.RemoveEmptyLines)
+            {
                 content = RemoveEmptyLines(content);
             }
 
             return content;
         }
         #endregion
+
+        public string BundleInfo(BundleOptions options)
+        {
+            var builder = new StringBuilder();
+
+            builder.AppendLine($"        [\"{Id}\"] = {{");
+            builder.AppendLine($"            Location = \"{Location}\",");
+            builder.AppendLine($"            Namespace = \"{Namespace}\",");
+            builder.AppendLine($"            IsRunnable = {IsRunnable.ToString().ToLower()},");
+            builder.AppendLine($"        }},");
+
+            return builder.ToString().ReplaceLineEndings("\n");
+        }
+
+        public string BundleData(BundleOptions options)
+        {
+            var content = File.ReadAllLines(LocationPath).AsSpan();
+            content = ModifyContent(content, options, this);
+            var builder = new StringBuilder();
+
+            foreach (var line in content)
+            {
+                if (line is null)
+                    continue;
+
+                builder.AppendLine(line);
+            }
+
+            return builder.ToString();
+        }
     }
 }

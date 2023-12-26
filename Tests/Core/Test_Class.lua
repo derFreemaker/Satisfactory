@@ -1,5 +1,5 @@
-local luaunit = require('Tests.Luaunit')
-require('Tests.Simulator.Simulator'):Initialize(1)
+local luaunit = require('Tools.Testing.Luaunit')
+require('Tools.Testing.Simulator'):Initialize(1)
 
 function TestCreateClass()
 	local test = Utils.Class.CreateClass({}, 'CreateEmpty')
@@ -27,7 +27,7 @@ function TestExtendClass()
 	local testBaseClass = Utils.Class.CreateClass({}, "CreateEmptyWithBaseClass", test)
 	local testBaseClassInstance = testBaseClass()
 
-	local extended = Utils.Class.ExtendClass({ Test = "hi" }, test)
+	local extended = Utils.Class.ExtendClass(test, { Test = "hi" })
 
 	local extendedTestClassInstance = test()
 	local extendedTestBaseClass = testBaseClass()

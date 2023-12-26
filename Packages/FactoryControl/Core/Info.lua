@@ -1,156 +1,119 @@
 return {
     Name = "FactoryControl.Core",
     Namespace = "FactoryControl.Core",
-    Version = "0.1-68",
+    Version = "0.1-81",
     PackageType = "Library",
     RequiredPackages = {
         "Core",
         "Net.Core"
     },
     ModuleIndex={
-        ["FactoryControlCore__events"] = {
+        ["FactoryControl.Core.__events"] = {
             Location = "FactoryControl.Core.__events",
             Namespace = "FactoryControl.Core.__events",
             IsRunnable = true,
-            StartPos = 79,
-            EndPos = 1434,
         },
 
-        ["FactoryControlCoreConfig"] = {
+        ["FactoryControl.Core.Config"] = {
             Location = "FactoryControl.Core.Config",
             Namespace = "FactoryControl.Core.Config",
             IsRunnable = true,
-            StartPos = 1510,
-            EndPos = 1599,
         },
 
-        ["FactoryControlCoreEndpointUrls"] = {
+        ["FactoryControl.Core.EndpointUrls"] = {
             Location = "FactoryControl.Core.EndpointUrls",
             Namespace = "FactoryControl.Core.EndpointUrls",
             IsRunnable = true,
-            StartPos = 1687,
-            EndPos = 4624,
         },
 
-        ["FactoryControlCoreEntitiesControllerConnectDto"] = {
+        ["FactoryControl.Core.Entities.Controller.ConnectDto"] = {
             Location = "FactoryControl.Core.Entities.Controller.ConnectDto",
             Namespace = "FactoryControl.Core.Entities.Controller.ConnectDto",
             IsRunnable = true,
-            StartPos = 4748,
-            EndPos = 5470,
         },
 
-        ["FactoryControlCoreEntitiesControllerControllerDto"] = {
+        ["FactoryControl.Core.Entities.Controller.ControllerDto"] = {
             Location = "FactoryControl.Core.Entities.Controller.ControllerDto",
             Namespace = "FactoryControl.Core.Entities.Controller.ControllerDto",
             IsRunnable = true,
-            StartPos = 5600,
-            EndPos = 6783,
         },
 
-        ["FactoryControlCoreEntitiesControllerCreateDto"] = {
+        ["FactoryControl.Core.Entities.Controller.CreateDto"] = {
             Location = "FactoryControl.Core.Entities.Controller.CreateDto",
             Namespace = "FactoryControl.Core.Entities.Controller.CreateDto",
             IsRunnable = true,
-            StartPos = 6905,
-            EndPos = 8021,
         },
 
-        ["FactoryControlCoreEntitiesControllerModifyDto"] = {
+        ["FactoryControl.Core.Entities.Controller.ModifyDto"] = {
             Location = "FactoryControl.Core.Entities.Controller.ModifyDto",
             Namespace = "FactoryControl.Core.Entities.Controller.ModifyDto",
             IsRunnable = true,
-            StartPos = 8143,
-            EndPos = 9076,
         },
 
-        ["FactoryControlCoreEntitiesControllerFeatureFeatureDto"] = {
+        ["FactoryControl.Core.Entities.Controller.Feature.FeatureDto"] = {
             Location = "FactoryControl.Core.Entities.Controller.Feature.FeatureDto",
             Namespace = "FactoryControl.Core.Entities.Controller.Feature.FeatureDto",
             IsRunnable = true,
-            StartPos = 9216,
-            EndPos = 10646,
         },
 
-        ["FactoryControlCoreEntitiesControllerFeatureUpdate"] = {
+        ["FactoryControl.Core.Entities.Controller.Feature.Update"] = {
             Location = "FactoryControl.Core.Entities.Controller.Feature.Update",
             Namespace = "FactoryControl.Core.Entities.Controller.Feature.Update",
             IsRunnable = true,
-            StartPos = 10778,
-            EndPos = 11326,
         },
 
-        ["FactoryControlCoreEntitiesControllerFeatureButtonButtonDto"] = {
+        ["FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto"] = {
             Location = "FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto",
             Namespace = "FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto",
             IsRunnable = true,
-            StartPos = 11478,
-            EndPos = 12485,
         },
 
-        ["FactoryControlCoreEntitiesControllerFeatureButtonUpdate"] = {
+        ["FactoryControl.Core.Entities.Controller.Feature.Button.Update"] = {
             Location = "FactoryControl.Core.Entities.Controller.Feature.Button.Update",
             Namespace = "FactoryControl.Core.Entities.Controller.Feature.Button.Update",
             IsRunnable = true,
-            StartPos = 12631,
-            EndPos = 13304,
         },
 
-        ["FactoryControlCoreEntitiesControllerFeatureChartChartDto"] = {
+        ["FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto"] = {
             Location = "FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto",
             Namespace = "FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto",
             IsRunnable = true,
-            StartPos = 13452,
-            EndPos = 14948,
         },
 
-        ["FactoryControlCoreEntitiesControllerFeatureChartUpdate"] = {
+        ["FactoryControl.Core.Entities.Controller.Feature.Chart.Update"] = {
             Location = "FactoryControl.Core.Entities.Controller.Feature.Chart.Update",
             Namespace = "FactoryControl.Core.Entities.Controller.Feature.Chart.Update",
             IsRunnable = true,
-            StartPos = 15092,
-            EndPos = 15919,
         },
 
-        ["FactoryControlCoreEntitiesControllerFeatureRadialRadialDto"] = {
+        ["FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto"] = {
             Location = "FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto",
             Namespace = "FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto",
             IsRunnable = true,
-            StartPos = 16071,
-            EndPos = 18002,
         },
 
-        ["FactoryControlCoreEntitiesControllerFeatureRadialUpdate"] = {
+        ["FactoryControl.Core.Entities.Controller.Feature.Radial.Update"] = {
             Location = "FactoryControl.Core.Entities.Controller.Feature.Radial.Update",
             Namespace = "FactoryControl.Core.Entities.Controller.Feature.Radial.Update",
             IsRunnable = true,
-            StartPos = 18148,
-            EndPos = 19157,
         },
 
-        ["FactoryControlCoreEntitiesControllerFeatureSwitchSwitchDto"] = {
+        ["FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto"] = {
             Location = "FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto",
             Namespace = "FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto",
             IsRunnable = true,
-            StartPos = 19309,
-            EndPos = 20599,
         },
 
-        ["FactoryControlCoreEntitiesControllerFeatureSwitchUpdate"] = {
+        ["FactoryControl.Core.Entities.Controller.Feature.Switch.Update"] = {
             Location = "FactoryControl.Core.Entities.Controller.Feature.Switch.Update",
             Namespace = "FactoryControl.Core.Entities.Controller.Feature.Switch.Update",
             IsRunnable = true,
-            StartPos = 20745,
-            EndPos = 21592,
         },
 
-        ["FactoryControlCoreExtensionsNetworkContextExtensions"] = {
+        ["FactoryControl.Core.Extensions.NetworkContextExtensions"] = {
             Location = "FactoryControl.Core.Extensions.NetworkContextExtensions",
             Namespace = "FactoryControl.Core.Extensions.NetworkContextExtensions",
             IsRunnable = true,
-            StartPos = 21726,
-            EndPos = 22032,
         },
-
     },
 }

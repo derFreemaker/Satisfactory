@@ -1,5 +1,5 @@
-Module: Test.DNS.__main From: Test.DNS.__main
-
+Data={
+["Test.DNS.__main"] = [[
 local EventPullAdapter = require('Core.Event.EventPullAdapter')
 local NetworkClient = require('Net.Core.NetworkClient')
 local DNSClient = require('DNS.Client.Client')
@@ -51,3 +51,7 @@ end
 
 return Main
 
+]],
+}
+
+return Data

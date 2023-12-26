@@ -34,8 +34,14 @@ if not internetCard then
 	return
 end
 filesystem.initFileSystem('/dev')
-local drive = filesystem.childs('/dev')[1]
-if not drive or drive:len() < 1 then
+local drive = ""
+for _, child in pairs(filesystem.childs('/dev')) do
+	if child ~= "serial" then
+		drive = child
+		break
+	end
+end
+if drive:len() < 1 then
 	computer.beep(0.2)
 	error('Unable to find filesystem to load on! Insert a drive or floppy.')
 	return
@@ -59,9 +65,9 @@ local function Run()
 		local req = internetCard:request(LoaderUrl, 'GET', '')
 		repeat
 		until req:canGet()
+		---@type integer, string
 		local _, libData = req:get()
 		local file = filesystem.open(LoaderPath, 'w')
-		assert(file, "Unable to open file: '" .. LoaderPath .. "'")
 		file:write(libData)
 		file:close()
 		print('[Computer] INFO downloaded Github Loader')
@@ -82,7 +88,7 @@ local function Run()
 
 	-- ######## load option ######## --
 	local chosenOption = Loader:LoadOption(option, showExtendOptionDetails)
-	local program, package = Loader:LoadProgram(chosenOption, BaseUrl, programForceDownload)
+	local program, package = Loader:LoadProgram(chosenOption, programForceDownload)
 
 	-- ######## start Program ######## --
 	Loader:Configure(program, package, programLogLevel)

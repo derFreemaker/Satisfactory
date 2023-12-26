@@ -1,4 +1,4 @@
-local TestFramework = require("Test.Framework.Framework")
+local TestFramework = require("Test.Framework.init")
 local Helper = require("Test.FactoryControl.Helper")
 
 local EventPullAdapter = require("Core.Event.EventPullAdapter")

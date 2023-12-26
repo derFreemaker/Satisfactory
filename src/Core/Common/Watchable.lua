@@ -88,4 +88,4 @@ function Watchable:Trigger(logger, ...)
     self:Check(true)
 end
 
-return Utils.Class.CreateClass(Watchable, "Core.Watchable")
+return Utils.Class.CreateClass(Watchable, "Core.Common.Watchable")

@@ -1,7 +1,7 @@
 return {
     Name = "Services.Callback.Server",
     Namespace = "Services.Callback.Server",
-    Version = "0.1.0-5",
+    Version = "0.1.0-18",
     PackageType = "Library",
     RequiredPackages = {
         "Core",
@@ -9,13 +9,10 @@ return {
         "Services.Callback.Core"
     },
     ModuleIndex={
-        ["ServicesCallbackServerCallbackService"] = {
+        ["Services.Callback.Server.CallbackService"] = {
             Location = "Services.Callback.Server.CallbackService",
             Namespace = "Services.Callback.Server.CallbackService",
             IsRunnable = true,
-            StartPos = 103,
-            EndPos = 2361,
         },
-
     },
 }

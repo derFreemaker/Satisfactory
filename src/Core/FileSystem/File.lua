@@ -136,11 +136,12 @@ function File:Read(length)
     return self.m_file:read(length)
 end
 
+---@param mode FIN.Filesystem.File.SeekMode
 ---@param offset integer
-function File:Seek(offset)
+function File:Seek(mode, offset)
     self:CheckState()
 
-    self.m_file:seek(offset)
+    self.m_file:seek(mode, offset)
 end
 
 function File:Close()

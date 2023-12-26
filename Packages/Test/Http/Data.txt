@@ -1,5 +1,5 @@
-Module: Test.Http.__main From: Test.Http.__main
-
+Data={
+["Test.Http.__main"] = [[
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
 local Config = require("FactoryControl.Core.Config")
@@ -31,3 +31,7 @@ end
 
 return Main
 
+]],
+}
+
+return Data

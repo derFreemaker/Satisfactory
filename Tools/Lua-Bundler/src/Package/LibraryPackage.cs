@@ -1,5 +1,9 @@
 ﻿using Lua_Bundler.Interfaces;
 using System.Collections.Specialized;
+using System.Diagnostics;
+using System.Linq;
+using System.Security.Principal;
+using System.Text;
 
 namespace Lua_Bundler.Package
 {
@@ -64,7 +68,7 @@ namespace Lua_Bundler.Package
         /// <inheritdoc/>
         public bool BundleData(BundleOptions options)
         {
-            var dataFilePath = Path.Combine(Info.LocationOutputPath, "Data.txt");
+            var dataFilePath = Path.Combine(Info.LocationOutputPath, "Data.lua");
             var copyDataFilePath = dataFilePath + ".copy";
             if (File.Exists(dataFilePath))
             {
@@ -74,30 +78,23 @@ namespace Lua_Bundler.Package
                 File.Copy(dataFilePath, copyDataFilePath);
             }
 
-            var writer = File.CreateText(dataFilePath);
-            writer.NewLine = "\n";
-            int count = 0;
+            StreamWriter writer = new(File.OpenWrite(dataFilePath));
 
-            if (options.Optimize)
-            {
-                foreach (var module in Modules)
-                {
-                    writer.Write(module.BundleData(options, ref count));
-                }
-            }
-            else
-            {
-                foreach (var module in Modules)
-                {
-                    var text = $"-- Module: {module.Namespace} From: {module.Location} --\n";
-                    writer.WriteLine(text);
-                    count += text.Length + 1;
+            writer.WriteLine("Data={");
 
-                    writer.WriteLine(module.BundleData(options, ref count));
-                    count++;
-                }
+            foreach (var module in Modules)
+            {
+                writer.WriteLine($"[\"{module.Id}\"] = [[");
+                writer.WriteLine(module.BundleData(options));
+                writer.WriteLine("]],");
+                writer.Flush();
             }
 
+            writer.WriteLine("}");
+            writer.WriteLine();
+            writer.WriteLine("return Data");
+
+            writer.Close();
             writer.Dispose();
 
             if (File.Exists(copyDataFilePath))

@@ -1,6 +1,6 @@
-local luaunit = require('Tests.Luaunit')
-local functions = require("Tests.Functions")
-require('Tests.Simulator.Simulator'):Initialize(1)
+local luaunit = require('Tools.Testing.Luaunit')
+local functions = require("Tools.Testing.Functions")
+require('Tools.Testing.Simulator'):Initialize(1)
 
 function TestCreateClassBenchmark()
     functions.benchmarkFunction(
@@ -40,7 +40,7 @@ function TestExtendClassBenchmark()
     extensions.Test = "hi"
 
     functions.benchmarkFunction(function(num)
-        Utils.Class.ExtendClass(extensions, testClasses[num])
+        Utils.Class.ExtendClass(testClasses[num], extensions)
     end, amount)
 end
 
@@ -67,7 +67,7 @@ function TestExtendClassInstancesBenchmark()
     }
 
     functions.captureFunction(function()
-        Utils.Class.ExtendClass(extensions, testClass)
+        Utils.Class.ExtendClass(testClass, extensions)
     end, amount)
 
     for _, instance in ipairs(testClassInstances) do

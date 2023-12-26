@@ -10,7 +10,8 @@
 		"Packages",
 		"PackageTemplate",
 		"Tools/DocUpdater",
-		"Tools/Lua-Bundler"
+		"Tools/Lua-Bundler",
+		"*/Files"
 	],
 	"triggerTaskOnSave.tasks": {
 		"check all": ["*"]

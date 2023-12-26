@@ -22,30 +22,6 @@
 			"problemMatcher": []
 		},
 		{
-			"label": "correct line endings",
-			"type": "shell",
-			"command": "lua",
-			"args": [
-				"${workspaceFolder}/Tools/correctLineEndings.lua",
-				"${workspaceFolder}",
-				"${workspaceFolder}/Tools/dos2unix.exe",
-				"Tools.FileSystem"
-			],
-			"presentation": {
-				"echo": true,
-				"reveal": "never",
-				"focus": false,
-				"panel": "shared",
-				"showReuseMessage": true,
-				"clear": true,
-				"close": true
-			},
-			"runOptions": {
-				"instanceLimit": 1
-			},
-			"problemMatcher": []
-		},
-		{
 			"label": "check all",
 			"command": "${workspaceFolder}\\Tools\\Lua-Bundler\\Lua-Bundler.exe",
 			"args": [
@@ -117,46 +93,44 @@
 				"showReuseMessage": true,
 				"clear": true,
 				"close": true
-			},
-			"dependsOn": ["correct line endings"]
+			}
 		},
-		{
-			"label": "bundle All optimized",
-			"command": "${workspaceFolder}\\Tools\\Lua-Bundler\\Lua-Bundler.exe",
-			"args": [
-				"--SourcePath",
-				"${workspaceFolder}\\src",
-				"--OutputPath",
-				"${workspaceFolder}\\Packages",
-				"--Package",
-				".",
-				"-B",
-				"-O"
-			],
-			"problemMatcher": {
-				"owner": "lua-bundler",
-				"fileLocation": ["autoDetect", "$(workspaceFolder)/src"],
-				"pattern": {
-					"regexp": "^(.*)'-'(.*)'-'(.*)'-([0-9]*):([0-9]*):([0-9]*)$",
-					"message": 1,
-					"code": 2,
-					"file": 3,
-					"line": 4,
-					"column": 5,
-					"endColumn": 6
-				}
-			},
-			"presentation": {
-				"echo": true,
-				"reveal": "never",
-				"focus": false,
-				"panel": "shared",
-				"showReuseMessage": true,
-				"clear": true,
-				"close": true
-			},
-			"dependsOn": ["correct line endings"]
-		},
+		// {
+		// 	"label": "bundle All optimized",
+		// 	"command": "${workspaceFolder}\\Tools\\Lua-Bundler\\Lua-Bundler.exe",
+		// 	"args": [
+		// 		"--SourcePath",
+		// 		"${workspaceFolder}\\src",
+		// 		"--OutputPath",
+		// 		"${workspaceFolder}\\Packages",
+		// 		"--Package",
+		// 		".",
+		// 		"-B",
+		// 		"-O"
+		// 	],
+		// 	"problemMatcher": {
+		// 		"owner": "lua-bundler",
+		// 		"fileLocation": ["autoDetect", "$(workspaceFolder)/src"],
+		// 		"pattern": {
+		// 			"regexp": "^(.*)'-'(.*)'-'(.*)'-([0-9]*):([0-9]*):([0-9]*)$",
+		// 			"message": 1,
+		// 			"code": 2,
+		// 			"file": 3,
+		// 			"line": 4,
+		// 			"column": 5,
+		// 			"endColumn": 6
+		// 		}
+		// 	},
+		// 	"presentation": {
+		// 		"echo": true,
+		// 		"reveal": "never",
+		// 		"focus": false,
+		// 		"panel": "shared",
+		// 		"showReuseMessage": true,
+		// 		"clear": true,
+		// 		"close": true
+		// 	}
+		// },
 		{
 			"label": "open FicsIt files",
 			"type": "shell",

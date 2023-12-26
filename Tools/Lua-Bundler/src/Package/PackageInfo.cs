@@ -67,29 +67,7 @@ namespace Lua_Bundler.Package
 
         public void Bundle(BundleOptions options, IPackage package)
         {
-            using StreamWriter writer = File.CreateText(InfoFileOutputPath);
-
-            if (options.Optimize)
-            {
-                writer.Write("return{");
-                writer.Write($"Name=\"{Name}\",");
-                writer.Write($"Version=\"{Version}\",");
-                writer.Write($"Namespace=\"{Namespace}\",");
-                writer.Write($"PackageType=\"{Type}\",");
-
-                if (RequiredPackages.Count > 0)
-                    writer.Write("RequiredPackages={\"" + string.Join("\",\"", RequiredPackages) + "\"},");
-
-                writer.Write("ModuleIndex={");
-                foreach (var module in package.Modules)
-                {
-                    writer.Write(module.BundleInfo(options));
-                }
-                writer.Write("},");
-
-                writer.Write("}");
-                return;
-            }
+            StreamWriter writer = new(File.OpenWrite(InfoFileOutputPath));
 
             writer.WriteLine("return {");
             writer.WriteLine($"    Name = \"{Name}\",");
@@ -100,64 +78,24 @@ namespace Lua_Bundler.Package
             if (RequiredPackages.Count > 0)
             {
                 writer.WriteLine("    RequiredPackages = {");
-                writer.WriteLine(new string(' ', 8) + "\"" + string.Join($"\",\n{new string(' ', 8)}\"", RequiredPackages) + "\"");
+                writer.WriteLine(new string(' ', 8) + "\"" + string.Join($"\",\r\n{new string(' ', 8)}\"", RequiredPackages) + "\"");
                 writer.WriteLine("    },");
             }
 
             writer.WriteLine("    ModuleIndex={");
-            foreach (var module in package.Modules)
+            var moduleIndexStr = new string[package.Modules.Count];
+            for (int i = 0; i < moduleIndexStr.Length; i++)
             {
-                writer.WriteLine(module.BundleInfo(options));
+                moduleIndexStr[i] = package.Modules[i].BundleInfo(options);
             }
+            writer.Write(string.Join("\r\n", moduleIndexStr));
             writer.WriteLine("    },");
 
             writer.WriteLine("}");
-        }
-    }
 
-    internal class PackageInfoConfig
-    {
-        private const string DEFAULT_VERSION = "0.1.0";
-        private const string DEFAULT_BUILD_NUMBER = "-1";
-
-        [JsonProperty]
-        public string? Name { get; set; }
-
-        [JsonProperty]
-        public string? Namespace { get; set; }
-
-        [JsonProperty]
-        public string Version { get; set; }
-
-        [JsonProperty]
-        public string[] RequiredPackages { get; set; }
-
-        [JsonProperty]
-        public string? PackageType { get; set; }
-
-        [JsonConstructor]
-        public PackageInfoConfig(string? Name = null, string? Version = null, string? Namespace = null, string[]? RequiredPackages = null, string? packageType = null)
-        {
-            this.Name = Name;
-            this.Namespace = Namespace;
-            this.Version = Version ?? DEFAULT_VERSION;
-            this.RequiredPackages = RequiredPackages ?? Array.Empty<string>();
-
-            // Check if Version has BuildNumber
-            string[] splitedVersionString = this.Version.Split("-");
-            if (splitedVersionString.Length < 2)
-                this.Version += DEFAULT_BUILD_NUMBER;
-
-            PackageType = packageType;
-        }
-
-        public PackageInfoConfig(PackageInfo info)
-        {
-            Name = info.Name;
-            Namespace = info.Namespace;
-            Version = info.Version;
-            RequiredPackages = info.RequiredPackages.ToArray();
-            PackageType = info.Type.ToString();
+            writer.Flush();
+            writer.Close();
+            writer.Dispose();
         }
     }
 }

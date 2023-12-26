@@ -15,4 +15,4 @@ function NetworkContextExtensions:GetApiResponse()
 	return self.Body
 end
 
-Utils.Class.ExtendClass(NetworkContextExtensions, NetworkContext)
+Utils.Class.ExtendClass(NetworkContext, NetworkContextExtensions)

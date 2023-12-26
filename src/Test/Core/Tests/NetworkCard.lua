@@ -1,4 +1,4 @@
-local Framework = require("Test.Framework.Framework")
+local Framework = require("Test.Framework.init")
 
 local NetworkCard = require("Adapter.Computer.NetworkCard")
 

@@ -45,4 +45,4 @@ function HostExtensions:RegisterAddress(url, ipAddress)
     end
 end
 
-Utils.Class.ExtendClass(HostExtensions, Host)
+Utils.Class.ExtendClass(Host, HostExtensions)

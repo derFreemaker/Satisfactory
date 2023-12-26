@@ -1,7 +1,7 @@
 return {
     Name = "DNS.Client",
     Namespace = "DNS.Client",
-    Version = "0.1.1-77",
+    Version = "0.1.1-90",
     PackageType = "Library",
     RequiredPackages = {
         "Core",
@@ -9,29 +9,22 @@ return {
         "Net.Rest"
     },
     ModuleIndex={
-        ["DNSClient__events"] = {
+        ["DNS.Client.__events"] = {
             Location = "DNS.Client.__events",
             Namespace = "DNS.Client.__events",
             IsRunnable = true,
-            StartPos = 61,
-            EndPos = 236,
         },
 
-        ["DNSClientClient"] = {
+        ["DNS.Client.Client"] = {
             Location = "DNS.Client.Client",
             Namespace = "DNS.Client.Client",
             IsRunnable = true,
-            StartPos = 294,
-            EndPos = 4037,
         },
 
-        ["DNSClientHostingHostExtensions"] = {
+        ["DNS.Client.Hosting.HostExtensions"] = {
             Location = "DNS.Client.Hosting.HostExtensions",
             Namespace = "DNS.Client.Hosting.HostExtensions",
             IsRunnable = true,
-            StartPos = 4127,
-            EndPos = 5489,
         },
-
     },
 }

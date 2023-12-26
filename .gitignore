@@ -11,3 +11,5 @@
 # ignore .vs folder
 .vs/
 */.vs/*
+
+"*/Files"

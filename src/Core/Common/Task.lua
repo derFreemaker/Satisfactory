@@ -186,4 +186,4 @@ function Task:LogError(logger, all)
     end
 end
 
-return Utils.Class.CreateClass(Task, "Core.Task")
+return Utils.Class.CreateClass(Task, "Core.Common.Task")

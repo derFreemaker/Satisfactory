@@ -35,10 +35,16 @@ namespace Lua_Bundler
         [Option('p', longName: "Package", HelpText = "Package Path or Package Folder", Default = "*")]
         public string Package { get; set; } = "*";
 
-        [Option('O', "Optimize", HelpText = "Sets if newlines and spaces that are not required to run should be removed", Default = false)]
-        public bool Optimize { get; set; } = false;
-
         [Option('B', "Bundle", HelpText = "Sets if the packages should be bundled after checking", Default = false)]
         public bool Bundle { get; set; } = false;
+
+        [Option("removeComments", HelpText = "Sets if all comments should be removed out of the bundled data.", Default = false)]
+        public bool RemoveComments { get; set; } = false;
+
+        [Option("removeIndents", HelpText = "Sets if all indents should be removed out of the bundled data.", Default = false)]
+        public bool RemoveIndents { get; set; } = false;
+
+        [Option("removeEmptyLines", HelpText = "Sets if all empty lines should be removed out of the bundled data.", Default = false)]
+        public bool RemoveEmptyLines { get; set; } = false;
     }
 }

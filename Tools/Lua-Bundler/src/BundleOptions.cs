@@ -3,12 +3,19 @@
     internal class BundleOptions
     {
         internal bool Bundle { get; }
-        internal bool Optimize { get; }
+
+        internal bool RemoveComments { get; }
+
+        internal bool RemoveIndents { get; }
+
+        internal bool RemoveEmptyLines { get; }
 
         public BundleOptions(BundlerConfigDataObject config)
         {
             Bundle = config.Bundle;
-            Optimize = config.Optimize;
+            RemoveComments = config.RemoveComments;
+            RemoveIndents = config.RemoveIndents;
+            RemoveEmptyLines = config.RemoveEmptyLines;
         }
     }
 }

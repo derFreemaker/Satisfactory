@@ -8,9 +8,12 @@ local string = string
 ---@overload fun(head: number[], body: number[], tail: number[]) : Core.UUID
 local UUID = {}
 
+---@private
 ---@type integer
 UUID.Static__GeneratedCount = 1
 
+---@private
+---@type string
 UUID.Static__TemplateRegex = "......%-....%-........"
 
 --- Replaces 'x' in template with random character.
@@ -149,7 +152,7 @@ function UUID:__tostring()
     return self:ToString()
 end
 
-Utils.Class.CreateClass(UUID, 'Core.UUID', require("Core.Json.Serializable"))
+Utils.Class.CreateClass(UUID, 'Core.Common.UUID', require("Core.Json.Serializable"))
 
 local empty = {}
 local splittedTemplate = Utils.String.Split(UUID.Static__TemplateRegex, "%-")

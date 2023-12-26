@@ -30,7 +30,7 @@ function filesystem.removeFileSystem(name) end
 ---@return boolean success - returns if it was able to mount the DevDevice
 function filesystem.initFileSystem(path) end
 
----@alias FIN.Filesystem.openmode
+---@alias FIN.Filesystem.File.Openmode
 ---|"r" read only -> file stream can just read from file. If file doesn’t exist, will return nil
 ---|"w" write -> file stream can read and write creates the file if it doesn’t exist
 ---|"a" end of file -> file stream can read and write cursor is set to the end of file
@@ -39,7 +39,7 @@ function filesystem.initFileSystem(path) end
 
 --- Opens a file-stream and returns it as File-table.
 ---@param path string
----@param mode FIN.Filesystem.openmode
+---@param mode FIN.Filesystem.File.Openmode
 ---@return FIN.Filesystem.File File
 function filesystem.open(path, mode) end
 

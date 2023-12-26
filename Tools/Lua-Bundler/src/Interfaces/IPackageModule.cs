@@ -15,6 +15,6 @@
         public void Map(PackageMap map);
         public void Check(PackageMap map);
         public string BundleInfo(BundleOptions options);
-        public string BundleData(BundleOptions options, ref int currentPosition);
+        public string BundleData(BundleOptions options);
     }
 }

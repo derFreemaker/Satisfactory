@@ -1,7 +1,7 @@
 return {
     Name = "FactoryControl.Client",
     Namespace = "FactoryControl.Client",
-    Version = "0.1-37",
+    Version = "0.1-50",
     PackageType = "Library",
     RequiredPackages = {
         "Core",
@@ -11,101 +11,76 @@ return {
         "Services.Callback.Client"
     },
     ModuleIndex={
-        ["FactoryControlClientClient"] = {
+        ["FactoryControl.Client.Client"] = {
             Location = "FactoryControl.Client.Client",
             Namespace = "FactoryControl.Client.Client",
             IsRunnable = true,
-            StartPos = 79,
-            EndPos = 7174,
         },
 
-        ["FactoryControlClientDataClient"] = {
+        ["FactoryControl.Client.DataClient"] = {
             Location = "FactoryControl.Client.DataClient",
             Namespace = "FactoryControl.Client.DataClient",
             IsRunnable = true,
-            StartPos = 7262,
-            EndPos = 13175,
         },
 
-        ["FactoryControlClientEventNames"] = {
+        ["FactoryControl.Client.EventNames"] = {
             Location = "FactoryControl.Client.EventNames",
             Namespace = "FactoryControl.Client.EventNames",
             IsRunnable = true,
-            StartPos = 13263,
-            EndPos = 13408,
         },
 
-        ["FactoryControlClientEntitiesEntity"] = {
+        ["FactoryControl.Client.Entities.Entity"] = {
             Location = "FactoryControl.Client.Entities.Entity",
             Namespace = "FactoryControl.Client.Entities.Entity",
             IsRunnable = true,
-            StartPos = 13506,
-            EndPos = 14108,
         },
 
-        ["FactoryControlClientEntitiesControllerController"] = {
+        ["FactoryControl.Client.Entities.Controller.Controller"] = {
             Location = "FactoryControl.Client.Entities.Controller.Controller",
             Namespace = "FactoryControl.Client.Entities.Controller.Controller",
             IsRunnable = true,
-            StartPos = 14236,
-            EndPos = 19434,
         },
 
-        ["FactoryControlClientEntitiesControllerModify"] = {
+        ["FactoryControl.Client.Entities.Controller.Modify"] = {
             Location = "FactoryControl.Client.Entities.Controller.Modify",
             Namespace = "FactoryControl.Client.Entities.Controller.Modify",
             IsRunnable = true,
-            StartPos = 19554,
-            EndPos = 20837,
         },
 
-        ["FactoryControlClientEntitiesControllerFeatureFactory"] = {
+        ["FactoryControl.Client.Entities.Controller.Feature.Factory"] = {
             Location = "FactoryControl.Client.Entities.Controller.Feature.Factory",
             Namespace = "FactoryControl.Client.Entities.Controller.Feature.Factory",
             IsRunnable = true,
-            StartPos = 20975,
-            EndPos = 22452,
         },
 
-        ["FactoryControlClientEntitiesControllerFeatureFeature"] = {
+        ["FactoryControl.Client.Entities.Controller.Feature.Feature"] = {
             Location = "FactoryControl.Client.Entities.Controller.Feature.Feature",
             Namespace = "FactoryControl.Client.Entities.Controller.Feature.Feature",
             IsRunnable = true,
-            StartPos = 22590,
-            EndPos = 24421,
         },
 
-        ["FactoryControlClientEntitiesControllerFeatureButtonButton"] = {
+        ["FactoryControl.Client.Entities.Controller.Feature.Button.Button"] = {
             Location = "FactoryControl.Client.Entities.Controller.Feature.Button.Button",
             Namespace = "FactoryControl.Client.Entities.Controller.Feature.Button.Button",
             IsRunnable = true,
-            StartPos = 24571,
-            EndPos = 25839,
         },
 
-        ["FactoryControlClientEntitiesControllerFeatureChartChart"] = {
+        ["FactoryControl.Client.Entities.Controller.Feature.Chart.Chart"] = {
             Location = "FactoryControl.Client.Entities.Controller.Feature.Chart.Chart",
             Namespace = "FactoryControl.Client.Entities.Controller.Feature.Chart.Chart",
             IsRunnable = true,
-            StartPos = 25985,
-            EndPos = 28404,
         },
 
-        ["FactoryControlClientEntitiesControllerFeatureRadialRadial"] = {
+        ["FactoryControl.Client.Entities.Controller.Feature.Radial.Radial"] = {
             Location = "FactoryControl.Client.Entities.Controller.Feature.Radial.Radial",
             Namespace = "FactoryControl.Client.Entities.Controller.Feature.Radial.Radial",
             IsRunnable = true,
-            StartPos = 28554,
-            EndPos = 31328,
         },
 
-        ["FactoryControlClientEntitiesControllerFeatureSwitchSwitch"] = {
+        ["FactoryControl.Client.Entities.Controller.Feature.Switch.Switch"] = {
             Location = "FactoryControl.Client.Entities.Controller.Feature.Switch.Switch",
             Namespace = "FactoryControl.Client.Entities.Controller.Feature.Switch.Switch",
             IsRunnable = true,
-            StartPos = 31478,
-            EndPos = 33551,
         },
-
     },
 }

@@ -10,7 +10,7 @@ local ApiDocumentations = FileSystem.Path(args[1])
 ---@param path Tools.FileSystem.Path
 ---@param childs string[]
 local function scanDir(path, childs)
-    local pathStr = path:GetPath()
+    local pathStr = path:ToString()
     local childsFound = FileSystem.GetFiles(pathStr)
     for _, child in pairs(childsFound) do
         if child:find(".lua") then
@@ -59,7 +59,7 @@ local satisfactoryClasses, satisfactoryStructs = documentSatisfactory()
 local ficsItNetworksClasses, ficsItNetworksStructs = documentFicsItNetworks()
 
 local file = FileSystem.OpenFile(
-    ApiDocumentations:Extend("/FicsIt-Networks/Intellisense/classes&structs.lua"):GetPath(), "w")
+    ApiDocumentations:Extend("/FicsIt-Networks/Intellisense/classes&structs.lua"):ToString(), "w")
 file:write("---@meta\n\n")
 file:write("---@class classes\n")
 

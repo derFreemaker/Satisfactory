@@ -47,13 +47,13 @@ function Path.new(pathOrNodes)
 
 	instance.m_nodes = pathOrNodes
 	instance = setmetatable(instance, { __index = Path })
-	instance:Normalize()
 
 	return instance
 end
 
 ---@return string path
-function Path:GetPath()
+function Path:ToString()
+	self:Normalize()
 	return Utils.JoinStr(self.m_nodes, "/")
 end
 
@@ -73,7 +73,7 @@ function Path:IsDir()
 end
 
 function Path:Exists()
-	local path = self:GetPath()
+	local path = self:ToString()
 	return os.rename(path, path) and true or false
 end
 
@@ -84,16 +84,41 @@ function Path:Create()
 	end
 
 	if self:IsDir() then
-		return FileSystem.createFolder(self:GetPath())
+		return FileSystem.createFolder(self:ToString())
 	end
 
 	if self:IsFile() then
-		local file = FileSystem.OpenFile(self:GetPath(), "w")
+		local file = FileSystem.OpenFile(self:ToString(), "w")
 		file:write("")
 		file:close()
 	end
 
 	return false
+end
+
+---@return Tools.FileSystem.Path
+function Path:Absolute()
+	local copy = Utils.CopyTable(self.m_nodes)
+
+	for i = 1, #copy, 1 do
+		copy[i] = copy[i + 1]
+	end
+
+	return Path.new(copy)
+end
+
+---@return Tools.FileSystem.Path
+function Path:Relative()
+	local copy = {}
+
+	if self.m_nodes[1] ~= "" then
+		copy[1] = ""
+		for i = 1, #self.m_nodes, 1 do
+			copy[i + 1] = self.m_nodes[i]
+		end
+	end
+
+	return Path.new(copy)
 end
 
 ---@return string
@@ -133,7 +158,7 @@ end
 ---@return string fileName
 function Path:GetFileName()
 	if not self:IsFile() then
-		error("path is not a file: " .. self:GetPath())
+		error("path is not a file: " .. self:ToString())
 	end
 
 	return self.m_nodes[#self.m_nodes]
@@ -142,7 +167,7 @@ end
 ---@return string fileExtension
 function Path:GetFileExtension()
 	if not self:IsFile() then
-		error("path is not a file: " .. self:GetPath())
+		error("path is not a file: " .. self:ToString())
 	end
 
 	local fileName = self.m_nodes[#self.m_nodes]
@@ -154,7 +179,7 @@ end
 ---@return string fileStem
 function Path:GetFileStem()
 	if not self:IsFile() then
-		error("path is not a file: " .. self:GetPath())
+		error("path is not a file: " .. self:ToString())
 	end
 
 	local fileName = self.m_nodes[#self.m_nodes]
@@ -182,6 +207,8 @@ function Path:Normalize()
 			newNodes[#newNodes + 1] = value
 		end
 	end
+
+	newNodes[1] = newNodes[1]:gsub("@", "")
 
 	self.m_nodes = newNodes
 	return self

@@ -1,7 +1,7 @@
 return {
     Name = "Test.FactoryControl",
     Namespace = "Test.FactoryControl",
-    Version = "0.1.0-17",
+    Version = "0.1.0-31",
     PackageType = "Library",
     RequiredPackages = {
         "Core",
@@ -11,69 +11,52 @@ return {
         "Test.Framework"
     },
     ModuleIndex={
-        ["TestFactoryControl__main"] = {
+        ["Test.FactoryControl.__main"] = {
             Location = "Test.FactoryControl.__main",
             Namespace = "Test.FactoryControl.__main",
             IsRunnable = true,
-            StartPos = 75,
-            EndPos = 535,
         },
 
-        ["TestFactoryControlHelper"] = {
+        ["Test.FactoryControl.Helper"] = {
             Location = "Test.FactoryControl.Helper",
             Namespace = "Test.FactoryControl.Helper",
             IsRunnable = true,
-            StartPos = 611,
-            EndPos = 1299,
         },
 
-        ["TestFactoryControlTestsConnection"] = {
+        ["Test.FactoryControl.Tests.Connection"] = {
             Location = "Test.FactoryControl.Tests.Connection",
             Namespace = "Test.FactoryControl.Tests.Connection",
             IsRunnable = true,
-            StartPos = 1395,
-            EndPos = 1858,
         },
 
-        ["TestFactoryControlTestsControlling"] = {
+        ["Test.FactoryControl.Tests.Controlling"] = {
             Location = "Test.FactoryControl.Tests.Controlling",
             Namespace = "Test.FactoryControl.Tests.Controlling",
             IsRunnable = true,
-            StartPos = 1956,
-            EndPos = 3310,
         },
 
-        ["TestFactoryControlTestsFeaturesButton"] = {
+        ["Test.FactoryControl.Tests.Features.Button"] = {
             Location = "Test.FactoryControl.Tests.Features.Button",
             Namespace = "Test.FactoryControl.Tests.Features.Button",
             IsRunnable = true,
-            StartPos = 3416,
-            EndPos = 4133,
         },
 
-        ["TestFactoryControlTestsFeaturesChart"] = {
+        ["Test.FactoryControl.Tests.Features.Chart"] = {
             Location = "Test.FactoryControl.Tests.Features.Chart",
             Namespace = "Test.FactoryControl.Tests.Features.Chart",
             IsRunnable = true,
-            StartPos = 4237,
-            EndPos = 5310,
         },
 
-        ["TestFactoryControlTestsFeaturesRadial"] = {
+        ["Test.FactoryControl.Tests.Features.Radial"] = {
             Location = "Test.FactoryControl.Tests.Features.Radial",
             Namespace = "Test.FactoryControl.Tests.Features.Radial",
             IsRunnable = true,
-            StartPos = 5416,
-            EndPos = 6393,
         },
 
-        ["TestFactoryControlTestsFeaturesSwitch"] = {
+        ["Test.FactoryControl.Tests.Features.Switch"] = {
             Location = "Test.FactoryControl.Tests.Features.Switch",
             Namespace = "Test.FactoryControl.Tests.Features.Switch",
             IsRunnable = true,
-            StartPos = 6499,
-            EndPos = 7363,
         },
-
     },
 }

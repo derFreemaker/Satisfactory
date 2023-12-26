@@ -1,5 +1,5 @@
-Module: PowerPlant.Coal.__main From: PowerPlant.Coal.__main
-
+Data={
+["PowerPlant.Coal.__main"] = [[
 local ValveAdapter = require('Adapter.Pipeline.Valve')
 
 ---@class PowerPlant.Coal.Main : Github_Loading.Entities.Main
@@ -18,3 +18,7 @@ end
 
 return Main
 
+]],
+}
+
+return Data

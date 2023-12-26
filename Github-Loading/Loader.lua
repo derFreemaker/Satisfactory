@@ -53,8 +53,10 @@ local function internalDownload(url, path, forceDownload, internetCard)
 	end
 
 	local req = internetCard:request(url, 'GET', '')
-	repeat until req:canGet()
+	repeat
+	until req:canGet()
 
+	---@type integer, string
 	local code, data = req:get()
 	if code ~= 200 or data == nil then
 		return false
@@ -375,13 +377,12 @@ function Loader:LoadOption(option, extendOptionDetails)
 end
 
 ---@param option Github_Loading.Option
----@param baseUrl string
 ---@param forceDownload boolean
 ---@return Github_Loading.Entities.Main program, Github_Loading.Package package
-function Loader:LoadProgram(option, baseUrl, forceDownload)
+function Loader:LoadProgram(option, forceDownload)
 	---@type Github_Loading.PackageLoader
 	local PackageLoader = self:Get('/Github-Loading/Loader/PackageLoader')
-	PackageLoader = PackageLoader.new(baseUrl .. '/Packages', self.m_loaderBasePath .. '/Packages',
+	PackageLoader = PackageLoader.new(self.m_loaderBaseUrl .. '/Packages', self.m_loaderBasePath .. '/Packages',
 		self.Logger:subLogger('PackageLoader'), self.m_internetCard)
 	PackageLoader:SetGlobal()
 	self.Logger:LogDebug('setup PackageLoader')
