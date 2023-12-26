@@ -1,20 +1,15 @@
 local luaunit = require('Tools.Testing.Luaunit')
 
 local FileSystem = require("Tools.FileSystem")
-local FileSystemPath = FileSystem:GetCurrentDirectory() .. "/Files/Test_LoaderLoad"
-local sim, logger, Loader = require('Tools.Testing.Simulator'):InitializeWithLoader(1, FileSystemPath)
+local FileSystemPath = FileSystem:GetCurrentDirectory() .. "/Sim-Files/Test_LoaderLoad"
+local Sim, Loader = require('Tools.Testing.Simulator'):InitializeWithLoader(1, FileSystemPath)
 
 function TestCheckVersion()
     _ = Loader:CheckVersion()
 end
 
 function TestShowOptions()
-    -- //TODO add show options instead of stopping the computer
-    luaunit.assertErrorMsgContains("computer stop",
-        function()
-            Loader:LoadOption(nil, true)
-        end
-    )
+    Loader:ShowOptions(true)
 end
 
 function TestLoadOption()

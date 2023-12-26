@@ -8,6 +8,7 @@ local loadEvent = require("Tools.Testing.Simulator.event")
 local CurrentPath = ''
 
 ---@class Test.Simulator
+---@field Logger Core.Logger
 ---@field private m_loadedLoaderFiles table<string, any[]>
 local Simulator = {}
 
@@ -51,7 +52,6 @@ end
 ---@private
 ---@param logLevel Github_Loading.Logger.LogLevel
 ---@param fileSystemPath Tools.FileSystem.Path
----@return Core.Logger
 function Simulator:prepare(logLevel, fileSystemPath)
 	loadComputer()
 	loadFileSystem(fileSystemPath)
@@ -71,12 +71,12 @@ function Simulator:prepare(logLevel, fileSystemPath)
 	logger:CopyListenersToCoreLogger(require("Core.Common.Task"), newLogger)
 	___logger:setLogger(newLogger)
 
-	return newLogger
+	self.Logger = newLogger
 end
 
 ---@param logLevel Github_Loading.Logger.LogLevel?
 ---@param fileSystemPath string?
----@return Test.Simulator, Core.Logger
+---@return Test.Simulator
 function Simulator:Initialize(logLevel, fileSystemPath)
 	local simulatorPath = FileSystem.GetCurrentDirectory()
 	CurrentPath = simulatorPath:gsub("/Tools/Testing/Simulator", "")
@@ -89,23 +89,23 @@ function Simulator:Initialize(logLevel, fileSystemPath)
 			:ToString()
 	end
 
-	local logger = self:prepare(logLevel or 3, FileSystem.Path(fileSystemPath))
+	self:prepare(logLevel or 3, FileSystem.Path(fileSystemPath))
 
-	return self, logger
+	return self
 end
 
 ---@param logLevel Github_Loading.Logger.LogLevel?
 ---@param fileSystemPath string?
----@return Test.Simulator, Core.Logger, Github_Loading.Loader
+---@return Test.Simulator, Github_Loading.Loader
 function Simulator:InitializeWithLoader(logLevel, fileSystemPath)
 	local Curl = require("Tools.Curl")
 	local Loader = require("Github-Loading.Loader")
-	local _, logger = self:Initialize(logLevel, fileSystemPath)
+	self:Initialize(logLevel, fileSystemPath)
 
 	Loader = Loader.new("http://localhost", "", true, Curl)
 	Loader:Load(1)
 
-	return self, logger, Loader
+	return self, Loader
 end
 
 return Simulator
