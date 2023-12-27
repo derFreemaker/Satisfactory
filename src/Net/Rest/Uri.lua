@@ -59,5 +59,5 @@ function Uri:Serialize()
     return self.m_path, self.m_query
 end
 
-return Utils.Class.CreateClass(Uri, "Net.Rest.Uri",
+return Utils.Class.Create(Uri, "Net.Rest.Uri",
     require("Core.Json.Serializable"))

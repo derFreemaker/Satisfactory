@@ -202,4 +202,4 @@ function DataClient:UpdateFeature(featureUpdate)
 	)
 end
 
-return Utils.Class.CreateClass(DataClient, "FactoryControl.Client.DataClient")
+return Utils.Class.Create(DataClient, "FactoryControl.Client.DataClient")

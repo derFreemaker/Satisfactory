@@ -208,7 +208,7 @@ function JsonSerializer:TryDeserialize(str, outObj)
     return success
 end
 
-Utils.Class.CreateClass(JsonSerializer, "Core.Json.JsonSerializer")
+Utils.Class.Create(JsonSerializer, "Core.Json.JsonSerializer")
 
 JsonSerializer.Static__Serializer = JsonSerializer()
 JsonSerializer.Static__Serializer:AddClass(require("Core.Common.UUID"))

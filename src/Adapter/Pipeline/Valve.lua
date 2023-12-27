@@ -89,4 +89,4 @@ function Valve:GetFlowLimit()
 	return self.m_valve:Get().userFlowLimit
 end
 
-return Utils.Class.CreateClass(Valve, 'Adapter.Pipeline.Valve')
+return Utils.Class.Create(Valve, 'Adapter.Pipeline.Valve')

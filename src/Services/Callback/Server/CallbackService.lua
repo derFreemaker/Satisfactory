@@ -67,4 +67,4 @@ function CallbackService:Invoke(id, callbackMethod, callbackServiceName, ipAddre
     return context.Body
 end
 
-return Utils.Class.CreateClass(CallbackService, "Services.Callback.Server.CallbackService")
+return Utils.Class.Create(CallbackService, "Services.Callback.Server.CallbackService")

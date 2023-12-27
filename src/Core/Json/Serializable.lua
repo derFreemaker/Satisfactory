@@ -20,4 +20,4 @@ function Serializable:Static__Deserialize(...)
     return self(...)
 end
 
-return Utils.Class.CreateClass(Serializable, "Core.Json.Serializable")
+return Utils.Class.Create(Serializable, "Core.Json.Serializable")

@@ -411,13 +411,14 @@ function Loader:LoadProgram(option, forceDownload)
 	PackageLoader:OnLoaded()
 	self.Logger:LogTrace('loaded package from chosen Option: ' .. option.Name)
 
-	local mainModule = package:GetModule(package.Namespace .. '.__main')
+	local mainModuleName = package.Namespace .. ".__main"
+	local mainModule = package:GetModule(mainModuleName)
 	assert(mainModule, 'Unable to get main module from option')
 	assert(mainModule.IsRunnable, 'main module from option is not runnable')
 	self.Logger:LogTrace('got main module')
 
 	---@type Github_Loading.Entities.Main
-	local mainModuleData = mainModule:Load()
+	local mainModuleData = require(mainModuleName)
 	self.Logger:LogDebug('loaded main module')
 
 	---@type Github_Loading.Entities

@@ -124,4 +124,4 @@ function Client:GetWithDomain(domain)
 	return response.Body
 end
 
-return Utils.Class.CreateClass(Client, 'DNS.Client')
+return Utils.Class.Create(Client, 'DNS.Client')

@@ -111,4 +111,4 @@ function Controller:AddEndpoint(method, endpointUrl, task)
     methodEndpoints[endpointUrl] = endpoint
 end
 
-return Utils.Class.CreateClass(Controller, "Net.Rest.Api.Server.Controller")
+return Utils.Class.Create(Controller, "Net.Rest.Api.Server.Controller")

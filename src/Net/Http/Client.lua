@@ -82,4 +82,4 @@ function HttpClient:Send(request)
 	return HttpResponse(apiResponse, request)
 end
 
-return Utils.Class.CreateClass(HttpClient, 'Http.HttpClient')
+return Utils.Class.Create(HttpClient, 'Http.HttpClient')

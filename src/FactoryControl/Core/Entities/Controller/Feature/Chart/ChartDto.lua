@@ -31,5 +31,5 @@ function ChartDto:Serialize()
     return self.Id, self.Name, self.ControllerId, self.XAxisName, self.YAxisName, self.Data
 end
 
-return Utils.Class.CreateClass(ChartDto, "FactoryControl.Core.Entities.Controller.Feature.ChartDto",
+return Utils.Class.Create(ChartDto, "FactoryControl.Core.Entities.Controller.Feature.ChartDto",
     require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))

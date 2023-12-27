@@ -40,4 +40,4 @@ end
 
 --#endregion
 
-return Utils.Class.CreateClass(IPAddress, "Net.Core.IPAddress", require("Core.Json.Serializable"))
+return Utils.Class.Create(IPAddress, "Net.Core.IPAddress", require("Core.Json.Serializable"))

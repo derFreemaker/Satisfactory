@@ -23,4 +23,4 @@ function HttpRequest:__init(method, serverUrl, uri, body, options)
 	self.Options = options or Options()
 end
 
-return Utils.Class.CreateClass(HttpRequest, "Net.Http.HttpRequest")
+return Utils.Class.Create(HttpRequest, "Net.Http.HttpRequest")

@@ -95,4 +95,4 @@ function CallbackService:onCallbackRecieved(context)
     )
 end
 
-return Utils.Class.CreateClass(CallbackService, "Services.Callback.Client.CallbackService")
+return Utils.Class.Create(CallbackService, "Services.Callback.Client.CallbackService")

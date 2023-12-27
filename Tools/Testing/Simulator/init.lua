@@ -18,8 +18,7 @@ function Simulator:loadLoaderFiles()
 end
 
 local requireFunc = require --[[@as fun(moduleName: string)]]
----@private
-function Simulator:overrideRequire()
+function Simulator:OverrideRequire()
 	---@param moduleToGet string
 	function require(moduleToGet)
 		local success, result = pcall(requireFunc, 'src.' .. moduleToGet)
@@ -62,7 +61,7 @@ function Simulator:prepare(logLevel, fileSystemPath)
 
 	local logger = self:setupLogger(logLevel)
 
-	self:overrideRequire()
+	self:OverrideRequire()
 
 	Utils = self.m_loadedLoaderFiles['/Github-Loading/Loader/Utils'][1] --[[@as Utils]]
 
@@ -102,7 +101,7 @@ function Simulator:InitializeWithLoader(logLevel, fileSystemPath)
 	local Loader = require("Github-Loading.Loader")
 	self:Initialize(logLevel, fileSystemPath)
 
-	Loader = Loader.new("http://localhost", "", true, Curl)
+	Loader = Loader.new("http://localhost", "", false, Curl)
 	Loader:Load(1)
 
 	return self, Loader

@@ -27,5 +27,5 @@ function Response:Serialize()
     return self.Body, self.Headers
 end
 
-return Utils.Class.CreateClass(Response, "Net.Rest.Api.Response",
+return Utils.Class.Create(Response, "Net.Rest.Api.Response",
     require("Core.Json.Serializable"))

@@ -63,5 +63,5 @@ function FeatureEndpoints:GetByIds(featureIds)
     return self.Templates:Ok(features)
 end
 
-return Utils.Class.CreateClass(FeatureEndpoints, "FactoryControl.Server.Endpoints.Feature",
+return Utils.Class.Create(FeatureEndpoints, "FactoryControl.Server.Endpoints.Feature",
     require("Net.Rest.Api.Server.EndpointBase"))

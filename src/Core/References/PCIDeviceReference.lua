@@ -19,5 +19,5 @@ function PCIDeviceReference:Fetch()
     return obj ~= nil
 end
 
-return Utils.Class.CreateClass(PCIDeviceReference, "Core.PCIDeviceReference",
+return Utils.Class.Create(PCIDeviceReference, "Core.PCIDeviceReference",
     require("Core.References.IReference"))

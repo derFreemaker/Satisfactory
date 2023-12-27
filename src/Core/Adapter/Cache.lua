@@ -42,4 +42,4 @@ function Cache:TryGet(idOrIndex, outAdapter)
     return true
 end
 
-return Utils.Class.CreateClass(Cache, "Adapter.Cache")
+return Utils.Class.Create(Cache, "Adapter.Cache")

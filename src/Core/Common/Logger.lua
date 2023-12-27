@@ -245,4 +245,4 @@ function Logger:LogWrite(...)
 	self:Log(10, ...)
 end
 
-return Utils.Class.CreateClass(Logger, 'Core.Common.Logger')
+return Utils.Class.Create(Logger, 'Core.Common.Logger')

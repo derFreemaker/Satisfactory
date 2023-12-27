@@ -17,5 +17,5 @@ function Create:Serialize()
     return self.Domain, self.IPAddress
 end
 
-return Utils.Class.CreateClass(Create, "DNS.Entities.Address.Create",
+return Utils.Class.Create(Create, "DNS.Entities.Address.Create",
     require("Core.Json.Serializable"))

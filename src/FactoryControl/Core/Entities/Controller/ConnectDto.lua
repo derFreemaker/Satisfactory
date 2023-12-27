@@ -17,5 +17,5 @@ function ConnectDto:Serialize()
     return self.Name, self.IPAddress
 end
 
-return Utils.Class.CreateClass(ConnectDto, "FactoryControl.Core.Entities.Controller.ConnectDto",
+return Utils.Class.Create(ConnectDto, "FactoryControl.Core.Entities.Controller.ConnectDto",
     require("Core.Json.Serializable"))

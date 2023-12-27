@@ -152,7 +152,7 @@ function UUID:__tostring()
     return self:ToString()
 end
 
-Utils.Class.CreateClass(UUID, 'Core.Common.UUID', require("Core.Json.Serializable"))
+Utils.Class.Create(UUID, 'Core.Common.UUID', require("Core.Json.Serializable"))
 
 local empty = {}
 local splittedTemplate = Utils.String.Split(UUID.Static__TemplateRegex, "%-")

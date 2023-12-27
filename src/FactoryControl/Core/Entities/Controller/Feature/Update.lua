@@ -10,5 +10,5 @@ function Update:__init(featureId)
     self.FeatureId = featureId
 end
 
-return Utils.Class.CreateClass(Update, "FactoryControl.Core.Entities.Controller.Feature.Update",
+return Utils.Class.Create(Update, "FactoryControl.Core.Entities.Controller.Feature.Update",
     require("Core.Json.Serializable"))

@@ -61,5 +61,5 @@ function Endpoints:GetAddressWithDomain(addressStr)
     return self.Templates:Ok(address)
 end
 
-return Utils.Class.CreateClass(Endpoints, "DNS.Server.Endpoints",
+return Utils.Class.Create(Endpoints, "DNS.Server.Endpoints",
     require("Net.Rest.Api.Server.EndpointBase"))

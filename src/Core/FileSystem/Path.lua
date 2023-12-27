@@ -191,4 +191,4 @@ function Path:Copy()
     return Path(copyNodes)
 end
 
-return Utils.Class.CreateClass(Path, "Core.Path")
+return Utils.Class.Create(Path, "Core.Path")

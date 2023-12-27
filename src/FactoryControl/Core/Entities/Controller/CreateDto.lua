@@ -20,5 +20,5 @@ function ControllerDto:Serialize()
     return self.Name, self.IPAddress, self.Features
 end
 
-return Utils.Class.CreateClass(ControllerDto, "FactoryControl.Core.Entities.Controller.CreateDto",
+return Utils.Class.Create(ControllerDto, "FactoryControl.Core.Entities.Controller.CreateDto",
     require("Core.Json.Serializable"))

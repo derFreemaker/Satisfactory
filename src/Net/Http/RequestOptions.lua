@@ -10,4 +10,4 @@ function HttpRequestOptions:__init()
 	self.Timeout = 10
 end
 
-return Utils.Class.CreateClass(HttpRequestOptions, 'Http.HttpRequestOptions')
+return Utils.Class.Create(HttpRequestOptions, 'Http.HttpRequestOptions')

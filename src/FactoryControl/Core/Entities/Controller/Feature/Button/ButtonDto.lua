@@ -20,5 +20,5 @@ function ButtonDto:Serialize()
     return self.Id, self.Name, self.ControllerId
 end
 
-return Utils.Class.CreateClass(ButtonDto, "FactoryControl.Core.Entities.Controller.Feature.ButtonDto",
+return Utils.Class.Create(ButtonDto, "FactoryControl.Core.Entities.Controller.Feature.ButtonDto",
     require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))

@@ -37,4 +37,4 @@ function NetworkContext:__init(data, serializer)
 	end
 end
 
-return Utils.Class.CreateClass(NetworkContext, 'Core.Net.NetworkContext')
+return Utils.Class.Create(NetworkContext, 'Core.Net.NetworkContext')

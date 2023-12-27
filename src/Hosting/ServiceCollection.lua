@@ -19,4 +19,4 @@ function ServiceCollection:GetService(serviceTypeName)
     return self.m_services[serviceTypeName]
 end
 
-return Utils.Class.CreateClass(ServiceCollection, "Hosting.ServiceCollection")
+return Utils.Class.Create(ServiceCollection, "Hosting.ServiceCollection")

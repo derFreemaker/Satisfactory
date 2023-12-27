@@ -24,7 +24,7 @@ Class.SetNormal = Configs.SetNormal
 ---@param name string
 ---@param baseClass object?
 ---@return TClass
-function Class.CreateClass(data, name, baseClass)
+function Class.Create(data, name, baseClass)
     local typeInfo = TypeHandler.CreateType(name, baseClass)
 
     MembersHandler.SortMembers(data, typeInfo)
@@ -37,7 +37,7 @@ end
 ---@param class TClass
 ---@param extensions TClass
 ---@return TClass
-function Class.ExtendClass(class, extensions)
+function Class.Extend(class, extensions)
     ---@type Out<Utils.Class.Metatable>
     local metatable = {}
     if not Class.IsClass(class, metatable) then

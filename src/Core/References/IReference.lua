@@ -31,4 +31,4 @@ function IReference:Check()
     return self:Get() == nil
 end
 
-return Utils.Class.CreateClass(IReference, "Core.IReference")
+return Utils.Class.Create(IReference, "Core.IReference")

@@ -20,5 +20,5 @@ function ModifyDto:Serialize()
     return self.Name, self.IPAddress, self.Features
 end
 
-return Utils.Class.CreateClass(ModifyDto, "FactoryControl.Core.Entities.Controller.ModifyDto",
+return Utils.Class.Create(ModifyDto, "FactoryControl.Core.Entities.Controller.ModifyDto",
     require("Core.Json.Serializable"))

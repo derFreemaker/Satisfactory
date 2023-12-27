@@ -15,5 +15,5 @@ function ProxyReference:Fetch()
     return obj ~= nil
 end
 
-return Utils.Class.CreateClass(ProxyReference, "Core.ProxyReference",
+return Utils.Class.Create(ProxyReference, "Core.ProxyReference",
     require("Core.References.IReference"))

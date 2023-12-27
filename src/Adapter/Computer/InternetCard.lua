@@ -51,4 +51,4 @@ function InternetCard:Download(url, logger)
     return true, data, code
 end
 
-return Utils.Class.CreateClass(InternetCard, "Adapter.Computer.InternetCard")
+return Utils.Class.Create(InternetCard, "Adapter.Computer.InternetCard")

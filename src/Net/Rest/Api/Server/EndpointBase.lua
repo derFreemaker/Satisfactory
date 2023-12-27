@@ -53,4 +53,4 @@ end
 
 EndpointBase.Templates = Templates
 
-return Utils.Class.CreateClass(EndpointBase, 'Net.Rest.Api.Server.EndpointBase')
+return Utils.Class.Create(EndpointBase, 'Net.Rest.Api.Server.EndpointBase')

@@ -178,4 +178,4 @@ function NetworkPort:BroadCastMessage(eventName, body, header)
 	self.m_netClient:BroadCast(port, eventName, body, header)
 end
 
-return Utils.Class.CreateClass(NetworkPort, 'Core.Net.NetworkPort')
+return Utils.Class.Create(NetworkPort, 'Core.Net.NetworkPort')

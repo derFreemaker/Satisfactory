@@ -23,5 +23,5 @@ function Request:Serialize()
     return self.Method, self.Endpoint, self.Body, self.Headers
 end
 
-return Utils.Class.CreateClass(Request, "Net.Rest.Api.Request",
+return Utils.Class.Create(Request, "Net.Rest.Api.Request",
     require("Core.Json.Serializable"))

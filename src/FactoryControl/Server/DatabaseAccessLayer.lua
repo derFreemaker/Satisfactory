@@ -113,4 +113,4 @@ function DatabaseAccessLayer:GetFeatureByIds(featureIds)
     return features
 end
 
-return Utils.Class.CreateClass(DatabaseAccessLayer, "FactoryControl.Server.Database")
+return Utils.Class.Create(DatabaseAccessLayer, "FactoryControl.Server.Database")

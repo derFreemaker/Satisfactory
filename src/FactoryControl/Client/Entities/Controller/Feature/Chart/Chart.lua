@@ -62,5 +62,5 @@ function Chart:Modify(func)
     self.m_client:UpdateFeature(update)
 end
 
-return Utils.Class.CreateClass(Chart, "FactoryControl.Client.Entities.Controller.Feature.Chart",
+return Utils.Class.Create(Chart, "FactoryControl.Client.Entities.Controller.Feature.Chart",
     require("FactoryControl.Client.Entities.Controller.Feature.Feature"))

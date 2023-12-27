@@ -29,5 +29,5 @@ function SwitchDto:Serialize()
     return self.Id, self.Name, self.ControllerId, self.IsEnabled
 end
 
-return Utils.Class.CreateClass(SwitchDto, "FactoryControl.Core.Entities.Controller.Feature.SwitchDto",
+return Utils.Class.Create(SwitchDto, "FactoryControl.Core.Entities.Controller.Feature.SwitchDto",
     require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))

@@ -47,4 +47,4 @@ function HostExtensions:AddEndpoint(port, endpointName, endpointBase, ...)
     table.insert(self.Endpoints, endpointBase(endpointLogger, apiController, ...))
 end
 
-return Utils.Class.ExtendClass(Host, HostExtensions)
+return Utils.Class.Extend(Host, HostExtensions)

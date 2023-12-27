@@ -18,11 +18,15 @@ end
 
 function TestLoadProgram()
     local option = Loader:LoadOption("Test_Core", false)
+    Sim:OverrideRequire()
+
     local program, package = Loader:LoadProgram(option, true)
 end
 
 function TestConfigureProgram()
     local option = Loader:LoadOption("Test_Core", false)
+    Sim:OverrideRequire()
+
     local program, package = Loader:LoadProgram(option, true)
 
     Loader:Configure(program, package, 1)
@@ -30,6 +34,8 @@ end
 
 function TestRunProgram()
     local option = Loader:LoadOption("Test_Core", false)
+    Sim:OverrideRequire()
+
     local program, package = Loader:LoadProgram(option, true)
 
     Loader:Configure(program, package, 1)

@@ -12,6 +12,7 @@ License: BSD License, see LICENSE.txt
 --
 
 require("math")
+---@class LuaUnit
 local M = {}
 
 -- private exported functions (for testing)

@@ -27,5 +27,5 @@ function CallbackInfo:Serialize()
     return self.Id, self.CallbackMethod, self.CallbackServiceName, self.ExecutionMode
 end
 
-return Utils.Class.CreateClass(CallbackInfo, "Services.Callback.Core.Entities.CallbackInfo",
+return Utils.Class.Create(CallbackInfo, "Services.Callback.Core.Entities.CallbackInfo",
     require("Core.Json.Serializable"))

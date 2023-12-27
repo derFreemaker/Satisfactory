@@ -114,4 +114,4 @@ function Endpoint:Invoke(request, context)
     return response
 end
 
-return Utils.Class.CreateClass(Endpoint, "Net.Rest.Api.Server.Endpoint")
+return Utils.Class.Create(Endpoint, "Net.Rest.Api.Server.Endpoint")

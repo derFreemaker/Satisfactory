@@ -133,4 +133,4 @@ function DbTable:__pairs()
     return iterator, Utils.Table.Invert(childs), nil
 end
 
-return Utils.Class.CreateClass(DbTable, "Database.DbTable")
+return Utils.Class.Create(DbTable, "Database.DbTable")

@@ -17,5 +17,5 @@ function Update:Serialize()
     return self.FeatureId, self.Data
 end
 
-return Utils.Class.CreateClass(Update, "FactoryControl.Core.Entities.Controller.Feature.Chart.Update",
+return Utils.Class.Create(Update, "FactoryControl.Core.Entities.Controller.Feature.Chart.Update",
     require("FactoryControl.Core.Entities.Controller.Feature.Update"))

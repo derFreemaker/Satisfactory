@@ -134,7 +134,7 @@ function Controller:AddChart(name, data)
     return chart
 end
 
-return Utils.Class.CreateClass(Controller, "FactoryControl.Client.Entities.Controller",
+return Utils.Class.Create(Controller, "FactoryControl.Client.Entities.Controller",
     require("FactoryControl.Client.Entities.Entity"))
 
 -- //TODO: implement some kind of status like online and offline

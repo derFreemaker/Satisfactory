@@ -170,4 +170,4 @@ function File:Clear()
     end
 end
 
-return Utils.Class.CreateClass(File, "Core.FileSystem.File")
+return Utils.Class.Create(File, "Core.FileSystem.File")

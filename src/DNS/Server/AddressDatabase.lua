@@ -73,4 +73,4 @@ function AddressDatabase:GetWithDomain(addressAddress)
     end
 end
 
-return Utils.Class.CreateClass(AddressDatabase, "DNS.Server.AddressDatabase")
+return Utils.Class.Create(AddressDatabase, "DNS.Server.AddressDatabase")

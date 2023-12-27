@@ -85,4 +85,4 @@ function HostExtensions:RemoveCallableEvent(eventName, port)
     netPort:RemoveEvent(eventName)
 end
 
-return Utils.Class.ExtendClass(Host, HostExtensions)
+return Utils.Class.Extend(Host, HostExtensions)

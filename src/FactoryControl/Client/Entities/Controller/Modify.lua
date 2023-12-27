@@ -29,4 +29,4 @@ function Modify:ToDto()
     return ModfiyDto(self.Name, self.IPAddress, featureDtos)
 end
 
-return Utils.Class.CreateClass(Modify, "FactoryControl.Client.Entities.Controller.Modify")
+return Utils.Class.Create(Modify, "FactoryControl.Client.Entities.Controller.Modify")

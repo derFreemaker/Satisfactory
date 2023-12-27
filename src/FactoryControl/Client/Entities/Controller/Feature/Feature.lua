@@ -45,5 +45,5 @@ function Feature:ToDto()
     error("ToDto not implemented")
 end
 
-return Utils.Class.CreateClass(Feature, "FactoryControl.Client.Entities.Controller.Feature",
+return Utils.Class.Create(Feature, "FactoryControl.Client.Entities.Controller.Feature",
     require("FactoryControl.Client.Entities.Entity"))

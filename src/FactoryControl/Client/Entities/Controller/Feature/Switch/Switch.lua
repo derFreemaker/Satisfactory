@@ -64,5 +64,5 @@ function Switch:Toggle()
     self:update()
 end
 
-return Utils.Class.CreateClass(Switch, "FactoryControl.Client.Entities.Controller.Feature.Switch",
+return Utils.Class.Create(Switch, "FactoryControl.Client.Entities.Controller.Feature.Switch",
     require("FactoryControl.Client.Entities.Controller.Feature.Feature"))

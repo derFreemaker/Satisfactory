@@ -2,32 +2,32 @@ local luaunit = require('Tools.Testing.Luaunit')
 require('Tools.Testing.Simulator'):Initialize(1)
 
 function TestCreateClass()
-	local test = Utils.Class.CreateClass({}, 'CreateEmpty')
+	local test = Utils.Class.Create({}, 'CreateEmpty')
 
 	luaunit.assertNotIsNil(test)
 end
 
 function TestCreateClassWithBaseClass()
-	local testBaseClass = Utils.Class.CreateClass({}, 'EmptyBaseClass')
-	local test = Utils.Class.CreateClass({}, 'CreateEmptyWithBaseClass', testBaseClass)
+	local testBaseClass = Utils.Class.Create({}, 'EmptyBaseClass')
+	local test = Utils.Class.Create({}, 'CreateEmptyWithBaseClass', testBaseClass)
 
 	luaunit.assertNotIsNil(test)
 end
 
 function TestConstructClass()
-	local test = Utils.Class.CreateClass({}, 'CreateEmpty')
+	local test = Utils.Class.Create({}, 'CreateEmpty')
 
 	luaunit.assertNotIsNil(test())
 end
 
 function TestExtendClass()
-	local test = Utils.Class.CreateClass({}, 'CreateEmpty')
+	local test = Utils.Class.Create({}, 'CreateEmpty')
 	local testClassInstance = test()
 
-	local testBaseClass = Utils.Class.CreateClass({}, "CreateEmptyWithBaseClass", test)
+	local testBaseClass = Utils.Class.Create({}, "CreateEmptyWithBaseClass", test)
 	local testBaseClassInstance = testBaseClass()
 
-	local extended = Utils.Class.ExtendClass(test, { Test = "hi" })
+	local extended = Utils.Class.Extend(test, { Test = "hi" })
 
 	local extendedTestClassInstance = test()
 	local extendedTestBaseClass = testBaseClass()
@@ -41,7 +41,7 @@ function TestExtendClass()
 end
 
 function TestDeconstructClass()
-	local testClass = Utils.Class.CreateClass({}, 'CreateEmpty')
+	local testClass = Utils.Class.Create({}, 'CreateEmpty')
 	local test = testClass()
 	local function throwErrorBecauseOfDeconstructedClass()
 		_ = test.hi
@@ -54,7 +54,7 @@ function TestDeconstructClass()
 end
 
 function TestStaticAccess()
-	local testClass = Utils.Class.CreateClass({ Static__Test = "hi" }, "StaticTestClass")
+	local testClass = Utils.Class.Create({ Static__Test = "hi" }, "StaticTestClass")
 	local testClassInstance = testClass()
 
 	luaunit.assertEquals(testClassInstance.Static__Test, "hi")
@@ -74,7 +74,7 @@ function TestStaticAccess()
 end
 
 function TestRawAccess()
-	local testClass = Utils.Class.CreateClass({
+	local testClass = Utils.Class.Create({
 		Raw__Test = "hi",
 		__index = function()
 			error("can not use index")
@@ -98,6 +98,22 @@ function TestRawAccess()
 
 	luaunit.assertErrorMsgContains("can only use static members in template", throwErrorBecauseOfNotContstructedClass)
 	luaunit.assertErrorMsgContains("can not use index", throwErrorBecauseOfIndexError)
+end
+
+function TestMetaMethod()
+	local testClass = Utils.Class.Create({
+		__index = function()
+			return "some value"
+		end
+	}, "TestMetaMethod")
+	local instance = testClass()
+
+	local function throwErrorBecauseOfIndexReturningString()
+		_ = instance:foo()
+	end
+
+	luaunit.assertErrorMsgContains("attempt to call a string value (method 'foo')",
+		throwErrorBecauseOfIndexReturningString)
 end
 
 os.exit(luaunit.LuaUnit.run())

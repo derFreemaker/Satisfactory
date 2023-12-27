@@ -5,25 +5,25 @@ require('Tools.Testing.Simulator'):Initialize(1)
 function TestCreateClassBenchmark()
     functions.benchmarkFunction(
         function()
-            Utils.Class.CreateClass({}, 'CreateEmpty')
+            Utils.Class.Create({}, 'CreateEmpty')
         end,
         100000
     )
 end
 
 function TestCreateClassWithBaseClassBenchmark()
-    local test = Utils.Class.CreateClass({}, 'EmptyClass')
+    local test = Utils.Class.Create({}, 'EmptyClass')
 
     functions.benchmarkFunction(
         function()
-            Utils.Class.CreateClass({}, 'CreateEmptyClassWithBaseClass', test)
+            Utils.Class.Create({}, 'CreateEmptyClassWithBaseClass', test)
         end,
         100000
     )
 end
 
 function TestConstructClassBenchmark()
-    local test = Utils.Class.CreateClass({}, 'EmptyClass')
+    local test = Utils.Class.Create({}, 'EmptyClass')
 
     functions.benchmarkFunction(test --[[@as function]], 100000)
 end
@@ -33,19 +33,19 @@ function TestExtendClassBenchmark()
 
     local testClasses = {}
     for i = 1, amount, 1 do
-        testClasses[i] = Utils.Class.CreateClass({}, 'EmptyClass')
+        testClasses[i] = Utils.Class.Create({}, 'EmptyClass')
     end
 
     local extensions = {}
     extensions.Test = "hi"
 
     functions.benchmarkFunction(function(num)
-        Utils.Class.ExtendClass(testClasses[num], extensions)
+        Utils.Class.Extend(testClasses[num], extensions)
     end, amount)
 end
 
 function TestExtendClassInstancesBenchmark()
-    local testClass = Utils.Class.CreateClass({}, 'EmptyClass')
+    local testClass = Utils.Class.Create({}, 'EmptyClass')
     local amount = 100000
 
     local testClassInstances = {}
@@ -67,7 +67,7 @@ function TestExtendClassInstancesBenchmark()
     }
 
     functions.captureFunction(function()
-        Utils.Class.ExtendClass(testClass, extensions)
+        Utils.Class.Extend(testClass, extensions)
     end, amount)
 
     for _, instance in ipairs(testClassInstances) do
@@ -85,7 +85,7 @@ function TestExtendClassInstancesBenchmark()
 end
 
 function TestDeconstructClassBenchmark()
-    local test = Utils.Class.CreateClass({}, 'EmptyClass')
+    local test = Utils.Class.Create({}, 'EmptyClass')
     local amount = 100000
 
     local testClasses = {}
@@ -100,7 +100,7 @@ function TestDeconstructClassBenchmark()
 end
 
 function TestAccessModifier()
-    local test = Utils.Class.CreateClass({ Static__Test = "hi" }, "TestAccessModifierClass")
+    local test = Utils.Class.Create({ Static__Test = "hi" }, "TestAccessModifierClass")
     local amount = 100000
 
     functions.benchmarkFunction(function()

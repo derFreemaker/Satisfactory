@@ -48,4 +48,4 @@ function Client:Send(request, timeout)
     return context:GetApiResponse()
 end
 
-return Utils.Class.CreateClass(Client, 'Net.Rest.Api.Client')
+return Utils.Class.Create(Client, 'Net.Rest.Api.Client')

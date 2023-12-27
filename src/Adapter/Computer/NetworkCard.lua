@@ -93,4 +93,4 @@ function NetworkCard:BroadCast(port, ...)
 	self.m_refNetworkCard:Get():broadcast(port, ...)
 end
 
-return Utils.Class.CreateClass(NetworkCard, 'Adapter.Computer.NetworkCard')
+return Utils.Class.Create(NetworkCard, 'Adapter.Computer.NetworkCard')

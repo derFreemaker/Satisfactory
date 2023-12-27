@@ -31,4 +31,4 @@ function HttpResponse:GetStatusCode()
 	return self.ApiResponse.Headers.Code
 end
 
-return Utils.Class.CreateClass(HttpResponse, 'Http.HttpResponse')
+return Utils.Class.Create(HttpResponse, 'Http.HttpResponse')

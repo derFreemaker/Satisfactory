@@ -1,9 +1,9 @@
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
----@class Test.Framework.Wrapper : object
+---@class Test : object
 ---@field m_name string
 ---@field m_task Core.Task
----@overload fun(name: string, task: Core.Task) : Test.Framework.Wrapper
+---@overload fun(name: string, task: Core.Task) : Test
 local Wrapper = {}
 
 ---@private
@@ -47,8 +47,8 @@ function Wrapper:Run(logger)
 end
 
 ---@return boolean
-function Wrapper:WasSuccessfull()
+function Wrapper:WasSuccessful()
     return self.m_task:IsSuccess()
 end
 
-return Utils.Class.CreateClass(Wrapper, "Test.Framework.Wrapper")
+return Utils.Class.Create(Wrapper, "Test.Framework.Wrapper")
