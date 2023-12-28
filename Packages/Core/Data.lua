@@ -1,4 +1,4 @@
-Data={
+local Data={
 ["Core.Config"] = [[
 ---@class Core.Config
 local Config = {
@@ -53,7 +53,7 @@ function Cache:TryGet(idOrIndex, outAdapter)
     return true
 end
 
-return Utils.Class.CreateClass(Cache, "Adapter.Cache")
+return Utils.Class.Create(Cache, "Adapter.Cache")
 
 ]],
 ["Core.Common.Logger"] = [[
@@ -304,7 +304,7 @@ function Logger:LogWrite(...)
 	self:Log(10, ...)
 end
 
-return Utils.Class.CreateClass(Logger, 'Core.Common.Logger')
+return Utils.Class.Create(Logger, 'Core.Common.Logger')
 
 ]],
 ["Core.Common.Task"] = [[
@@ -496,7 +496,7 @@ function Task:LogError(logger, all)
     end
 end
 
-return Utils.Class.CreateClass(Task, "Core.Common.Task")
+return Utils.Class.Create(Task, "Core.Common.Task")
 
 ]],
 ["Core.Common.UUID"] = [[
@@ -654,7 +654,7 @@ function UUID:__tostring()
     return self:ToString()
 end
 
-Utils.Class.CreateClass(UUID, 'Core.Common.UUID', require("Core.Json.Serializable"))
+Utils.Class.Create(UUID, 'Core.Common.UUID', require("Core.Json.Serializable"))
 
 local empty = {}
 local splittedTemplate = Utils.String.Split(UUID.Static__TemplateRegex, "%-")
@@ -761,7 +761,7 @@ function Watchable:Trigger(logger, ...)
     self:Check(true)
 end
 
-return Utils.Class.CreateClass(Watchable, "Core.Common.Watchable")
+return Utils.Class.Create(Watchable, "Core.Common.Watchable")
 
 ]],
 ["Core.Event.EventPullAdapter"] = [[
@@ -1028,7 +1028,7 @@ function Event:CopyTo(event)
     return event
 end
 
-return Utils.Class.CreateClass(Event, "Core.Event")
+return Utils.Class.Create(Event, "Core.Event")
 
 ]],
 ["Core.FileSystem.File"] = [[
@@ -1204,7 +1204,7 @@ function File:Clear()
     end
 end
 
-return Utils.Class.CreateClass(File, "Core.FileSystem.File")
+return Utils.Class.Create(File, "Core.FileSystem.File")
 
 ]],
 ["Core.FileSystem.Path"] = [[
@@ -1401,7 +1401,7 @@ function Path:Copy()
     return Path(copyNodes)
 end
 
-return Utils.Class.CreateClass(Path, "Core.Path")
+return Utils.Class.Create(Path, "Core.Path")
 
 ]],
 ["Core.Json.Json"] = [[
@@ -2006,7 +2006,7 @@ function JsonSerializer:TryDeserialize(str, outObj)
     return success
 end
 
-Utils.Class.CreateClass(JsonSerializer, "Core.Json.JsonSerializer")
+Utils.Class.Create(JsonSerializer, "Core.Json.JsonSerializer")
 
 JsonSerializer.Static__Serializer = JsonSerializer()
 JsonSerializer.Static__Serializer:AddClass(require("Core.Common.UUID"))
@@ -2037,7 +2037,7 @@ function Serializable:Static__Deserialize(...)
     return self(...)
 end
 
-return Utils.Class.CreateClass(Serializable, "Core.Json.Serializable")
+return Utils.Class.Create(Serializable, "Core.Json.Serializable")
 
 ]],
 ["Core.References.IReference"] = [[
@@ -2074,7 +2074,7 @@ function IReference:Check()
     return self:Get() == nil
 end
 
-return Utils.Class.CreateClass(IReference, "Core.IReference")
+return Utils.Class.Create(IReference, "Core.IReference")
 
 ]],
 ["Core.References.PCIDeviceReference"] = [[
@@ -2099,7 +2099,7 @@ function PCIDeviceReference:Fetch()
     return obj ~= nil
 end
 
-return Utils.Class.CreateClass(PCIDeviceReference, "Core.PCIDeviceReference",
+return Utils.Class.Create(PCIDeviceReference, "Core.PCIDeviceReference",
     require("Core.References.IReference"))
 
 ]],
@@ -2121,7 +2121,7 @@ function ProxyReference:Fetch()
     return obj ~= nil
 end
 
-return Utils.Class.CreateClass(ProxyReference, "Core.ProxyReference",
+return Utils.Class.Create(ProxyReference, "Core.ProxyReference",
     require("Core.References.IReference"))
 
 ]],

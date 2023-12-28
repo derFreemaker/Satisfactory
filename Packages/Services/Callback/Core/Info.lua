@@ -1,7 +1,7 @@
 return {
     Name = "Services.Callback.Core",
     Namespace = "Services.Callback.Core",
-    Version = "0.1.0-16",
+    Version = "0.1.0-18",
     PackageType = "Library",
     RequiredPackages = {
         "Core",

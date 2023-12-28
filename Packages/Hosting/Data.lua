@@ -1,4 +1,4 @@
-Data={
+local Data={
 ["Hosting.Host"] = [[
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local JsonSerializer = require("Core.Json.JsonSerializer")
@@ -83,7 +83,7 @@ function Host:RunCycle(timeoutSeconds)
     EventPullAdapter:WaitForAll(timeoutSeconds)
 end
 
-return Utils.Class.CreateClass(Host, "Hosting.Host")
+return Utils.Class.Create(Host, "Hosting.Host")
 
 ]],
 ["Hosting.ServiceCollection"] = [[
@@ -108,7 +108,7 @@ function ServiceCollection:GetService(serviceTypeName)
     return self.m_services[serviceTypeName]
 end
 
-return Utils.Class.CreateClass(ServiceCollection, "Hosting.ServiceCollection")
+return Utils.Class.Create(ServiceCollection, "Hosting.ServiceCollection")
 
 ]],
 }

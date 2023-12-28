@@ -1,4 +1,4 @@
-Data={
+local Data={
 ["Test.FactoryControl.__main"] = [[
 local Host = require("Hosting.Host")
 

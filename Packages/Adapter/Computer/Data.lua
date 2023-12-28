@@ -1,5 +1,5 @@
-Data={
-["Adapter.Computer.InternetCard"] = [[
+local Data = {
+	["Adapter.Computer.InternetCard"] = [[
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
 local Cache = require("Core.Adapter.Cache")()
@@ -53,10 +53,10 @@ function InternetCard:Download(url, logger)
     return true, data, code
 end
 
-return Utils.Class.CreateClass(InternetCard, "Adapter.Computer.InternetCard")
+return Utils.Class.Create(InternetCard, "Adapter.Computer.InternetCard")
 
 ]],
-["Adapter.Computer.NetworkCard"] = [[
+	["Adapter.Computer.NetworkCard"] = [[
 local ProxyReference = require("Core.References.ProxyReference")
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
@@ -152,7 +152,7 @@ function NetworkCard:BroadCast(port, ...)
 	self.m_refNetworkCard:Get():broadcast(port, ...)
 end
 
-return Utils.Class.CreateClass(NetworkCard, 'Adapter.Computer.NetworkCard')
+return Utils.Class.Create(NetworkCard, 'Adapter.Computer.NetworkCard')
 
 ]],
 }

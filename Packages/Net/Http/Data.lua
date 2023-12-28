@@ -1,4 +1,4 @@
-Data={
+local Data={
 ["Net.Http.Client"] = [[
 local PortUsage = require('Core.Usage.Usage_Port')
 
@@ -84,7 +84,7 @@ function HttpClient:Send(request)
 	return HttpResponse(apiResponse, request)
 end
 
-return Utils.Class.CreateClass(HttpClient, 'Http.HttpClient')
+return Utils.Class.Create(HttpClient, 'Http.HttpClient')
 
 ]],
 ["Net.Http.Request"] = [[
@@ -113,7 +113,7 @@ function HttpRequest:__init(method, serverUrl, uri, body, options)
 	self.Options = options or Options()
 end
 
-return Utils.Class.CreateClass(HttpRequest, "Net.Http.HttpRequest")
+return Utils.Class.Create(HttpRequest, "Net.Http.HttpRequest")
 
 ]],
 ["Net.Http.RequestOptions"] = [[
@@ -129,7 +129,7 @@ function HttpRequestOptions:__init()
 	self.Timeout = 10
 end
 
-return Utils.Class.CreateClass(HttpRequestOptions, 'Http.HttpRequestOptions')
+return Utils.Class.Create(HttpRequestOptions, 'Http.HttpRequestOptions')
 
 ]],
 ["Net.Http.Response"] = [[
@@ -166,7 +166,7 @@ function HttpResponse:GetStatusCode()
 	return self.ApiResponse.Headers.Code
 end
 
-return Utils.Class.CreateClass(HttpResponse, 'Http.HttpResponse')
+return Utils.Class.Create(HttpResponse, 'Http.HttpResponse')
 
 ]],
 }

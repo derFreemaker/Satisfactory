@@ -1,4 +1,4 @@
-Data={
+local Data={
 ["Database.DbTable"] = [[
 local JsonSerializer = require("Core.Json.JsonSerializer")
 local File = require("Core.FileSystem.File")
@@ -135,7 +135,7 @@ function DbTable:__pairs()
     return iterator, Utils.Table.Invert(childs), nil
 end
 
-return Utils.Class.CreateClass(DbTable, "Database.DbTable")
+return Utils.Class.Create(DbTable, "Database.DbTable")
 
 ]],
 }

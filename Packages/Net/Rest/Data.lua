@@ -1,4 +1,4 @@
-Data={
+local Data={
 ["Net.Rest.__events"] = [[
 local JsonSerializer = require("Core.Json.JsonSerializer")
 
@@ -84,7 +84,7 @@ function Uri:Serialize()
     return self.m_path, self.m_query
 end
 
-return Utils.Class.CreateClass(Uri, "Net.Rest.Uri",
+return Utils.Class.Create(Uri, "Net.Rest.Uri",
     require("Core.Json.Serializable"))
 
 ]],
@@ -106,7 +106,7 @@ function NetworkContextExtensions:GetApiResponse()
 	return self.Body
 end
 
-Utils.Class.ExtendClass(NetworkContext, NetworkContextExtensions)
+Utils.Class.Extend(NetworkContext, NetworkContextExtensions)
 
 ]],
 ["Net.Rest.Api.Request"] = [[
@@ -135,7 +135,7 @@ function Request:Serialize()
     return self.Method, self.Endpoint, self.Body, self.Headers
 end
 
-return Utils.Class.CreateClass(Request, "Net.Rest.Api.Request",
+return Utils.Class.Create(Request, "Net.Rest.Api.Request",
     require("Core.Json.Serializable"))
 
 ]],
@@ -169,7 +169,7 @@ function Response:Serialize()
     return self.Body, self.Headers
 end
 
-return Utils.Class.CreateClass(Response, "Net.Rest.Api.Response",
+return Utils.Class.Create(Response, "Net.Rest.Api.Response",
     require("Core.Json.Serializable"))
 
 ]],
@@ -224,7 +224,7 @@ function Client:Send(request, timeout)
     return context:GetApiResponse()
 end
 
-return Utils.Class.CreateClass(Client, 'Net.Rest.Api.Client')
+return Utils.Class.Create(Client, 'Net.Rest.Api.Client')
 
 ]],
 ["Net.Rest.Api.Server.Controller"] = [[
@@ -341,7 +341,7 @@ function Controller:AddEndpoint(method, endpointUrl, task)
     methodEndpoints[endpointUrl] = endpoint
 end
 
-return Utils.Class.CreateClass(Controller, "Net.Rest.Api.Server.Controller")
+return Utils.Class.Create(Controller, "Net.Rest.Api.Server.Controller")
 
 ]],
 ["Net.Rest.Api.Server.Endpoint"] = [[
@@ -461,7 +461,7 @@ function Endpoint:Invoke(request, context)
     return response
 end
 
-return Utils.Class.CreateClass(Endpoint, "Net.Rest.Api.Server.Endpoint")
+return Utils.Class.Create(Endpoint, "Net.Rest.Api.Server.Endpoint")
 
 ]],
 ["Net.Rest.Api.Server.EndpointBase"] = [[
@@ -520,7 +520,7 @@ end
 
 EndpointBase.Templates = Templates
 
-return Utils.Class.CreateClass(EndpointBase, 'Net.Rest.Api.Server.EndpointBase')
+return Utils.Class.Create(EndpointBase, 'Net.Rest.Api.Server.EndpointBase')
 
 ]],
 ["Net.Rest.Api.Server.ResponseTemplates"] = [[
@@ -611,7 +611,7 @@ function HostExtensions:AddEndpoint(port, endpointName, endpointBase, ...)
     table.insert(self.Endpoints, endpointBase(endpointLogger, apiController, ...))
 end
 
-return Utils.Class.ExtendClass(Host, HostExtensions)
+return Utils.Class.Extend(Host, HostExtensions)
 
 ]],
 }

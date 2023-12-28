@@ -1,4 +1,4 @@
-Data={
+local Data={
 ["FactoryControl.Client.Client"] = [[
 local Usage = require("Core.Usage.init")
 local Config = require("FactoryControl.Core.Config")
@@ -214,7 +214,7 @@ function Client:UpdateFeature(featureUpdate)
     self.m_client:UpdateFeature(featureUpdate)
 end
 
-return Utils.Class.CreateClass(Client, "FactoryControl.Client")
+return Utils.Class.Create(Client, "FactoryControl.Client")
 
 ]],
 ["FactoryControl.Client.DataClient"] = [[
@@ -422,7 +422,7 @@ function DataClient:UpdateFeature(featureUpdate)
 	)
 end
 
-return Utils.Class.CreateClass(DataClient, "FactoryControl.Client.DataClient")
+return Utils.Class.Create(DataClient, "FactoryControl.Client.DataClient")
 
 ]],
 ["FactoryControl.Client.EventNames"] = [[
@@ -451,7 +451,7 @@ function Entity:__init(id, client)
     self.m_client = client
 end
 
-return Utils.Class.CreateClass(Entity, "FactoryControl.Client.Entities.Entity")
+return Utils.Class.Create(Entity, "FactoryControl.Client.Entities.Entity")
 
 ]],
 ["FactoryControl.Client.Entities.Controller.Controller"] = [[
@@ -591,7 +591,7 @@ function Controller:AddChart(name, data)
     return chart
 end
 
-return Utils.Class.CreateClass(Controller, "FactoryControl.Client.Entities.Controller",
+return Utils.Class.Create(Controller, "FactoryControl.Client.Entities.Controller",
     require("FactoryControl.Client.Entities.Entity"))
 
 -- //TODO: implement some kind of status like online and offline
@@ -629,7 +629,7 @@ function Modify:ToDto()
     return ModfiyDto(self.Name, self.IPAddress, featureDtos)
 end
 
-return Utils.Class.CreateClass(Modify, "FactoryControl.Client.Entities.Controller.Modify")
+return Utils.Class.Create(Modify, "FactoryControl.Client.Entities.Controller.Modify")
 
 ]],
 ["FactoryControl.Client.Entities.Controller.Feature.Factory"] = [[
@@ -713,7 +713,7 @@ function Feature:ToDto()
     error("ToDto not implemented")
 end
 
-return Utils.Class.CreateClass(Feature, "FactoryControl.Client.Entities.Controller.Feature",
+return Utils.Class.Create(Feature, "FactoryControl.Client.Entities.Controller.Feature",
     require("FactoryControl.Client.Entities.Entity"))
 
 ]],
@@ -748,7 +748,7 @@ function Button:Press()
     self.m_client:UpdateFeature(update)
 end
 
-return Utils.Class.CreateClass(Button, "FactoryControl.Client.Entities.Controller.Feature.Button",
+return Utils.Class.Create(Button, "FactoryControl.Client.Entities.Controller.Feature.Button",
     require("FactoryControl.Client.Entities.Controller.Feature.Feature"))
 
 ]],
@@ -817,7 +817,7 @@ function Chart:Modify(func)
     self.m_client:UpdateFeature(update)
 end
 
-return Utils.Class.CreateClass(Chart, "FactoryControl.Client.Entities.Controller.Feature.Chart",
+return Utils.Class.Create(Chart, "FactoryControl.Client.Entities.Controller.Feature.Chart",
     require("FactoryControl.Client.Entities.Controller.Feature.Feature"))
 
 ]],
@@ -895,7 +895,7 @@ function Radial:Modify(func)
     self.m_client:UpdateFeature(update)
 end
 
-return Utils.Class.CreateClass(Radial, "FactoryControl.Client.Entities.Controller.Feature.Radial",
+return Utils.Class.Create(Radial, "FactoryControl.Client.Entities.Controller.Feature.Radial",
     require("FactoryControl.Client.Entities.Controller.Feature.Feature"))
 
 ]],
@@ -966,7 +966,7 @@ function Switch:Toggle()
     self:update()
 end
 
-return Utils.Class.CreateClass(Switch, "FactoryControl.Client.Entities.Controller.Feature.Switch",
+return Utils.Class.Create(Switch, "FactoryControl.Client.Entities.Controller.Feature.Switch",
     require("FactoryControl.Client.Entities.Controller.Feature.Feature"))
 
 ]],

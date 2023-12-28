@@ -1,4 +1,4 @@
-Data={
+local Data={
 ["DNS.Client.__events"] = [[
 ---@class DNS.Client.Events : Github_Loading.Entities.Events
 local Events = {}
@@ -137,7 +137,7 @@ function Client:GetWithDomain(domain)
 	return response.Body
 end
 
-return Utils.Class.CreateClass(Client, 'DNS.Client')
+return Utils.Class.Create(Client, 'DNS.Client')
 
 ]],
 ["DNS.Client.Hosting.HostExtensions"] = [[
@@ -188,7 +188,7 @@ function HostExtensions:RegisterAddress(url, ipAddress)
     end
 end
 
-Utils.Class.ExtendClass(Host, HostExtensions)
+Utils.Class.Extend(Host, HostExtensions)
 
 ]],
 }

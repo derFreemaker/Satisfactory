@@ -1,7 +1,7 @@
 return {
     Name = "DNS.Core",
     Namespace = "DNS.Core",
-    Version = "0.1-73",
+    Version = "0.1-75",
     PackageType = "Library",
     RequiredPackages = {
         "Core"

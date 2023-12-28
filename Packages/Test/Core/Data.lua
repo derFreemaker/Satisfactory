@@ -1,7 +1,5 @@
-Data={
+local Data={
 ["Test.Core.__main"] = [[
----@using Test.Framework
-
 local Host = require("Hosting.Host")
 
 ---@class Test.Core.Main : Github_Loading.Entities.Main

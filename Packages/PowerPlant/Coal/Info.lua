@@ -1,7 +1,7 @@
 return {
     Name = "PowerPlant.Coal",
     Namespace = "PowerPlant.Coal",
-    Version = "0.1.0-31",
+    Version = "0.1.0-32",
     PackageType = "Application",
     ModuleIndex={
         ["PowerPlant.Coal.__main"] = {

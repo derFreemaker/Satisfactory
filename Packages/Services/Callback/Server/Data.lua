@@ -1,4 +1,4 @@
-Data={
+local Data={
 ["Services.Callback.Server.CallbackService"] = [[
 local Usage = require("Core.Usage.init")
 
@@ -69,7 +69,7 @@ function CallbackService:Invoke(id, callbackMethod, callbackServiceName, ipAddre
     return context.Body
 end
 
-return Utils.Class.CreateClass(CallbackService, "Services.Callback.Server.CallbackService")
+return Utils.Class.Create(CallbackService, "Services.Callback.Server.CallbackService")
 
 ]],
 }

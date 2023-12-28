@@ -1,7 +1,7 @@
 return {
     Name = "FactoryControlServer",
     Namespace = "FactoryControl.Server",
-    Version = "0.1-93",
+    Version = "0.1-95",
     PackageType = "Application",
     RequiredPackages = {
         "Core",

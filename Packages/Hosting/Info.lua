@@ -1,7 +1,7 @@
 return {
     Name = "Hosting",
     Namespace = "Hosting",
-    Version = "0.1.0-28",
+    Version = "0.1.0-30",
     PackageType = "Library",
     RequiredPackages = {
         "Core"

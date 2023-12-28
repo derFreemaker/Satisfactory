@@ -1,4 +1,4 @@
-Data={
+local Data={
 ["Services.Callback.Core.__events"] = [[
 local JsonSerializer = require("Core.Json.JsonSerializer")
 
@@ -46,7 +46,7 @@ function CallbackInfo:Serialize()
     return self.Id, self.CallbackMethod, self.CallbackServiceName, self.ExecutionMode
 end
 
-return Utils.Class.CreateClass(CallbackInfo, "Services.Callback.Core.Entities.CallbackInfo",
+return Utils.Class.Create(CallbackInfo, "Services.Callback.Core.Entities.CallbackInfo",
     require("Core.Json.Serializable"))
 
 ]],
@@ -59,7 +59,7 @@ function NetworkContextExtensions:GetCallback()
     return self.Body[1], self.Body[2]
 end
 
-Utils.Class.ExtendClass(require("Net.Core.NetworkContext"), NetworkContextExtensions)
+Utils.Class.Extend(require("Net.Core.NetworkContext"), NetworkContextExtensions)
 
 ]],
 }

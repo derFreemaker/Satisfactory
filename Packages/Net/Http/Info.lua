@@ -1,7 +1,7 @@
 return {
     Name = "Http",
     Namespace = "Net.Http",
-    Version = "0.1.0-78",
+    Version = "0.1.0-80",
     PackageType = "Library",
     RequiredPackages = {
         "Net.Core"

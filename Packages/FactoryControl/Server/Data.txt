@@ -1,4 +1,4 @@
-Data={
+local Data={
 ["FactoryControl.Server.__events"] = [[
 local DNSClient = require('DNS.Client.Client')
 
@@ -195,7 +195,7 @@ function DatabaseAccessLayer:GetFeatureByIds(featureIds)
     return features
 end
 
-return Utils.Class.CreateClass(DatabaseAccessLayer, "FactoryControl.Server.Database")
+return Utils.Class.Create(DatabaseAccessLayer, "FactoryControl.Server.Database")
 
 ]],
 ["FactoryControl.Server.Endpoints.Controller"] = [[
@@ -300,7 +300,7 @@ function ControllerEndpoints:GetByName(name)
 	return self.Templates:Ok(controller)
 end
 
-return Utils.Class.CreateClass(ControllerEndpoints, 'FactoryControl.Server.Endpoints.Controller',
+return Utils.Class.Create(ControllerEndpoints, 'FactoryControl.Server.Endpoints.Controller',
 	require('Net.Rest.Api.Server.EndpointBase'))
 
 ]],
@@ -370,7 +370,7 @@ function FeatureEndpoints:GetByIds(featureIds)
     return self.Templates:Ok(features)
 end
 
-return Utils.Class.CreateClass(FeatureEndpoints, "FactoryControl.Server.Endpoints.Feature",
+return Utils.Class.Create(FeatureEndpoints, "FactoryControl.Server.Endpoints.Feature",
     require("Net.Rest.Api.Server.EndpointBase"))
 
 ]],
@@ -481,7 +481,7 @@ function FeatureService:SendToWachters(featureUpdate)
     end
 end
 
-return Utils.Class.CreateClass(FeatureService, "FactoryControl.Server.Services.FeatureService")
+return Utils.Class.Create(FeatureService, "FactoryControl.Server.Services.FeatureService")
 
 ]],
 }

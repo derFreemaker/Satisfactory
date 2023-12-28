@@ -1,7 +1,7 @@
 return {
     Name = "Test.Core",
     Namespace = "Test.Core",
-    Version = "0.1.0-24",
+    Version = "0.1.0-26",
     PackageType = "Library",
     RequiredPackages = {
         "Adapter.Computer",

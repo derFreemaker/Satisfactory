@@ -78,24 +78,22 @@ namespace Lua_Bundler.Package
                 File.Copy(dataFilePath, copyDataFilePath);
             }
 
-            StreamWriter writer = new(File.OpenWrite(dataFilePath));
+            StringBuilder builder = new();
 
-            writer.WriteLine("Data={");
+            builder.AppendLine("local Data={");
 
             foreach (var module in Modules)
             {
-                writer.WriteLine($"[\"{module.Id}\"] = [[");
-                writer.WriteLine(module.BundleData(options));
-                writer.WriteLine("]],");
-                writer.Flush();
+                builder.AppendLine($"[\"{module.Id}\"] = [[");
+                builder.AppendLine(module.BundleData(options));
+                builder.AppendLine("]],");
             }
 
-            writer.WriteLine("}");
-            writer.WriteLine();
-            writer.WriteLine("return Data");
+            builder.AppendLine("}");
+            builder.AppendLine();
+            builder.AppendLine("return Data");
 
-            writer.Close();
-            writer.Dispose();
+            File.WriteAllText(dataFilePath, builder.ToString());
 
             if (File.Exists(copyDataFilePath))
             {

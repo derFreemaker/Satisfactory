@@ -1,5 +1,6 @@
 ﻿using Lua_Bundler.Interfaces;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace Lua_Bundler.Package
 {
@@ -67,35 +68,33 @@ namespace Lua_Bundler.Package
 
         public void Bundle(BundleOptions options, IPackage package)
         {
-            StreamWriter writer = new(File.OpenWrite(InfoFileOutputPath));
+            StringBuilder builder = new();
 
-            writer.WriteLine("return {");
-            writer.WriteLine($"    Name = \"{Name}\",");
-            writer.WriteLine($"    Namespace = \"{Namespace}\",");
-            writer.WriteLine($"    Version = \"{Version}\",");
-            writer.WriteLine($"    PackageType = \"{Type}\",");
+            builder.AppendLine("return {");
+            builder.AppendLine($"    Name = \"{Name}\",");
+            builder.AppendLine($"    Namespace = \"{Namespace}\",");
+            builder.AppendLine($"    Version = \"{Version}\",");
+            builder.AppendLine($"    PackageType = \"{Type}\",");
 
             if (RequiredPackages.Count > 0)
             {
-                writer.WriteLine("    RequiredPackages = {");
-                writer.WriteLine(new string(' ', 8) + "\"" + string.Join($"\",\r\n{new string(' ', 8)}\"", RequiredPackages) + "\"");
-                writer.WriteLine("    },");
+                builder.AppendLine("    RequiredPackages = {");
+                builder.AppendLine(new string(' ', 8) + "\"" + string.Join($"\",\r\n{new string(' ', 8)}\"", RequiredPackages) + "\"");
+                builder.AppendLine("    },");
             }
 
-            writer.WriteLine("    ModuleIndex={");
+            builder.AppendLine("    ModuleIndex={");
             var moduleIndexStr = new string[package.Modules.Count];
             for (int i = 0; i < moduleIndexStr.Length; i++)
             {
                 moduleIndexStr[i] = package.Modules[i].BundleInfo(options);
             }
-            writer.Write(string.Join("\r\n", moduleIndexStr));
-            writer.WriteLine("    },");
+            builder.Append(string.Join("\r\n", moduleIndexStr));
+            builder.AppendLine("    },");
 
-            writer.WriteLine("}");
+            builder.AppendLine("}");
 
-            writer.Flush();
-            writer.Close();
-            writer.Dispose();
+            File.WriteAllText(InfoFileOutputPath, builder.ToString());
         }
     }
 }

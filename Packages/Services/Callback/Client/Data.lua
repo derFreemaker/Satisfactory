@@ -1,4 +1,4 @@
-Data={
+local Data={
 ["Services.Callback.Client.__events"] = [[
 require("Services.Callback.Core.Entities.CallbackInfo")
 
@@ -79,7 +79,7 @@ function Callback:Invoke(logger, args)
     return results
 end
 
-return Utils.Class.CreateClass(Callback, "Services.Callback.Client.Callback")
+return Utils.Class.Create(Callback, "Services.Callback.Client.Callback")
 
 ]],
 ["Services.Callback.Client.CallbackService"] = [[
@@ -180,7 +180,7 @@ function CallbackService:onCallbackRecieved(context)
     )
 end
 
-return Utils.Class.CreateClass(CallbackService, "Services.Callback.Client.CallbackService")
+return Utils.Class.Create(CallbackService, "Services.Callback.Client.CallbackService")
 
 ]],
 ["Services.Callback.Client.EventCallback"] = [[
@@ -236,7 +236,7 @@ function EventCallback:Invoke(logger, args)
     return {}
 end
 
-return Utils.Class.CreateClass(EventCallback, "Services.Callback.Client.EventCallback",
+return Utils.Class.Create(EventCallback, "Services.Callback.Client.EventCallback",
     require("Services.Callback.Client.Callback"))
 
 ]],

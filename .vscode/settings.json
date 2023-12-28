@@ -28,7 +28,6 @@
 		"Obsidian Vault/**": true,
 		"Packages/**": true
 	},
-	"explorerExclude.backup": {},
 	"asciidoc.antora.enableAntoraSupport": true,
 	"cSpell.ignoreWords": [
 		"TPCI",

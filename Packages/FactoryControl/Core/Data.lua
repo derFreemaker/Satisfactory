@@ -1,4 +1,4 @@
-Data={
+local Data={
 ["FactoryControl.Core.__events"] = [[
 local JsonSerializer = require("Core.Json.JsonSerializer")
 
@@ -157,7 +157,7 @@ function ConnectDto:Serialize()
     return self.Name, self.IPAddress
 end
 
-return Utils.Class.CreateClass(ConnectDto, "FactoryControl.Core.Entities.Controller.ConnectDto",
+return Utils.Class.Create(ConnectDto, "FactoryControl.Core.Entities.Controller.ConnectDto",
     require("Core.Json.Serializable"))
 
 ]],
@@ -189,7 +189,7 @@ function ControllerDto:Serialize()
     return self.Id, self.Name, self.IPAddress, self.Features
 end
 
-return Utils.Class.CreateClass(ControllerDto, "FactoryControl.Core.Entities.ControllerDto",
+return Utils.Class.Create(ControllerDto, "FactoryControl.Core.Entities.ControllerDto",
     require("Core.Json.Serializable"))
 
 ]],
@@ -216,7 +216,7 @@ function ControllerDto:Serialize()
     return self.Name, self.IPAddress, self.Features
 end
 
-return Utils.Class.CreateClass(ControllerDto, "FactoryControl.Core.Entities.Controller.CreateDto",
+return Utils.Class.Create(ControllerDto, "FactoryControl.Core.Entities.Controller.CreateDto",
     require("Core.Json.Serializable"))
 
 ]],
@@ -243,7 +243,7 @@ function ModifyDto:Serialize()
     return self.Name, self.IPAddress, self.Features
 end
 
-return Utils.Class.CreateClass(ModifyDto, "FactoryControl.Core.Entities.Controller.ModifyDto",
+return Utils.Class.Create(ModifyDto, "FactoryControl.Core.Entities.Controller.ModifyDto",
     require("Core.Json.Serializable"))
 
 ]],
@@ -283,7 +283,7 @@ end
 
 -- No Seriliaze function because this class should only be used as base not for instances
 
-return Utils.Class.CreateClass(FeatureDto, "FactoryControl.Core.Entities.Controller.FeatureDto",
+return Utils.Class.Create(FeatureDto, "FactoryControl.Core.Entities.Controller.FeatureDto",
     require("Core.Json.Serializable"))
 
 ]],
@@ -300,7 +300,7 @@ function Update:__init(featureId)
     self.FeatureId = featureId
 end
 
-return Utils.Class.CreateClass(Update, "FactoryControl.Core.Entities.Controller.Feature.Update",
+return Utils.Class.Create(Update, "FactoryControl.Core.Entities.Controller.Feature.Update",
     require("Core.Json.Serializable"))
 
 ]],
@@ -327,7 +327,7 @@ function ButtonDto:Serialize()
     return self.Id, self.Name, self.ControllerId
 end
 
-return Utils.Class.CreateClass(ButtonDto, "FactoryControl.Core.Entities.Controller.Feature.ButtonDto",
+return Utils.Class.Create(ButtonDto, "FactoryControl.Core.Entities.Controller.Feature.ButtonDto",
     require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))
 
 ]],
@@ -348,7 +348,7 @@ function Update:Serialize()
     return self.FeatureId
 end
 
-return Utils.Class.CreateClass(Update, "FactoryControl.Core.Entities.Controller.Feature.Button.Update",
+return Utils.Class.Create(Update, "FactoryControl.Core.Entities.Controller.Feature.Button.Update",
     require("FactoryControl.Core.Entities.Controller.Feature.Update"))
 
 ]],
@@ -386,7 +386,7 @@ function ChartDto:Serialize()
     return self.Id, self.Name, self.ControllerId, self.XAxisName, self.YAxisName, self.Data
 end
 
-return Utils.Class.CreateClass(ChartDto, "FactoryControl.Core.Entities.Controller.Feature.ChartDto",
+return Utils.Class.Create(ChartDto, "FactoryControl.Core.Entities.Controller.Feature.ChartDto",
     require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))
 
 ]],
@@ -410,7 +410,7 @@ function Update:Serialize()
     return self.FeatureId, self.Data
 end
 
-return Utils.Class.CreateClass(Update, "FactoryControl.Core.Entities.Controller.Feature.Chart.Update",
+return Utils.Class.Create(Update, "FactoryControl.Core.Entities.Controller.Feature.Chart.Update",
     require("FactoryControl.Core.Entities.Controller.Feature.Update"))
 
 ]],
@@ -466,7 +466,7 @@ function RadialDto:Serialize()
     return self.Id, self.Name, self.ControllerId, self.Min, self.Max, self.Setting
 end
 
-return Utils.Class.CreateClass(RadialDto, "FactoryControl.Core.Entities.Controller.Feature.RadialDto",
+return Utils.Class.Create(RadialDto, "FactoryControl.Core.Entities.Controller.Feature.RadialDto",
     require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))
 
 ]],
@@ -497,7 +497,7 @@ function Update:Serialize()
     return self.FeatureId, self.Min, self.Max, self.Setting
 end
 
-return Utils.Class.CreateClass(Update, "FactoryControl.Core.Entities.Controller.Feature.Radial.Update",
+return Utils.Class.Create(Update, "FactoryControl.Core.Entities.Controller.Feature.Radial.Update",
     require("FactoryControl.Core.Entities.Controller.Feature.Update"))
 
 ]],
@@ -533,7 +533,7 @@ function SwitchDto:Serialize()
     return self.Id, self.Name, self.ControllerId, self.IsEnabled
 end
 
-return Utils.Class.CreateClass(SwitchDto, "FactoryControl.Core.Entities.Controller.Feature.SwitchDto",
+return Utils.Class.Create(SwitchDto, "FactoryControl.Core.Entities.Controller.Feature.SwitchDto",
     require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))
 
 ]],
@@ -557,7 +557,7 @@ function Update:Serialize()
     return self.FeatureId, self.IsEnabled
 end
 
-return Utils.Class.CreateClass(Update, "FactoryControl.Core.Entities.Controller.Feature.Switch.Update",
+return Utils.Class.Create(Update, "FactoryControl.Core.Entities.Controller.Feature.Switch.Update",
     require("FactoryControl.Core.Entities.Controller.Feature.Update"))
 
 ]],
@@ -570,7 +570,7 @@ function NetworkContextExtensions:GetFeatureUpdate()
     return self.Body
 end
 
-Utils.Class.ExtendClass(require("Net.Core.NetworkContext"), NetworkContextExtensions)
+Utils.Class.Extend(require("Net.Core.NetworkContext"), NetworkContextExtensions)
 
 ]],
 }

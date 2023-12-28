@@ -1,4 +1,4 @@
-Data={
+local Data={
 ["Test.Framework.__events"] = [[
 require("Test.Framework.Extensions.HostExtensions")
 
@@ -9,7 +9,7 @@ local Task = require("Core.Common.Task")
 local Test = require("Test.Framework.Wrapper")
 
 ---@class Test.Framework : object
----@field m_tests Test.Framework.Wrapper[]
+---@field m_tests Test[]
 ---@overload fun() : Test.Framework
 local Framework = {}
 
@@ -28,12 +28,12 @@ end
 function Framework:Run(logger)
     logger:LogInfo("Running tests...")
 
-    local successfull = 0
+    local successful = 0
     local failed = 0
     for _, test in ipairs(self.m_tests) do
         test:Run(logger)
-        if test:WasSuccessfull() then
-            successfull = successfull + 1
+        if test:WasSuccessful() then
+            successful = successful + 1
         else
             failed = failed + 1
         end
@@ -41,21 +41,21 @@ function Framework:Run(logger)
 
     logger:LogInfo(
         "Tests finished with "
-        .. successfull .. " successfull tests and "
+        .. successful .. " successful tests and "
         .. failed .. " failed tests"
     )
 end
 
-return Utils.Class.CreateClass(Framework, "Test.Framework")()
+return Utils.Class.Create(Framework, "Test.Framework")()
 
 ]],
 ["Test.Framework.Wrapper"] = [[
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
----@class Test.Framework.Wrapper : object
+---@class Test : object
 ---@field m_name string
 ---@field m_task Core.Task
----@overload fun(name: string, task: Core.Task) : Test.Framework.Wrapper
+---@overload fun(name: string, task: Core.Task) : Test
 local Wrapper = {}
 
 ---@private
@@ -99,11 +99,11 @@ function Wrapper:Run(logger)
 end
 
 ---@return boolean
-function Wrapper:WasSuccessfull()
+function Wrapper:WasSuccessful()
     return self.m_task:IsSuccess()
 end
 
-return Utils.Class.CreateClass(Wrapper, "Test.Framework.Wrapper")
+return Utils.Class.Create(Wrapper, "Test.Framework.Wrapper")
 
 ]],
 ["Test.Framework.Extensions.HostExtensions"] = [[
@@ -114,12 +114,12 @@ local HostExtensions = {}
 function HostExtensions:AddTesting()
     local testFramework = require("Test.Framework.init")
     for _, module in pairs(PackageLoader.CurrentPackage.Modules) do
-        module:Load()
+        require(module.Namespace)
     end
     return testFramework
 end
 
-Utils.Class.ExtendClass(require("Hosting.Host"), HostExtensions)
+Utils.Class.Extend(require("Hosting.Host"), HostExtensions)
 
 ]],
 }

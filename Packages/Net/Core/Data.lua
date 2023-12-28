@@ -1,4 +1,4 @@
-Data={
+local Data={
 ["Net.Core.__events"] = [[
 local JsonSerializer = require("Core.Json.JsonSerializer")
 
@@ -61,7 +61,7 @@ end
 
 --#endregion
 
-return Utils.Class.CreateClass(IPAddress, "Net.Core.IPAddress", require("Core.Json.Serializable"))
+return Utils.Class.Create(IPAddress, "Net.Core.IPAddress", require("Core.Json.Serializable"))
 
 ]],
 ["Net.Core.Method"] = [[
@@ -353,7 +353,7 @@ function NetworkClient:BroadCast(port, eventName, body, header)
 	self.m_networkCard:BroadCast(port, eventName, jsonBody, jsonHeader)
 end
 
-return Utils.Class.CreateClass(NetworkClient, 'Core.Net.NetworkClient')
+return Utils.Class.Create(NetworkClient, 'Core.Net.NetworkClient')
 
 ]],
 ["Net.Core.NetworkContext"] = [[
@@ -396,7 +396,7 @@ function NetworkContext:__init(data, serializer)
 	end
 end
 
-return Utils.Class.CreateClass(NetworkContext, 'Core.Net.NetworkContext')
+return Utils.Class.Create(NetworkContext, 'Core.Net.NetworkContext')
 
 ]],
 ["Net.Core.NetworkFuture"] = [[
@@ -430,7 +430,7 @@ function NetworkFuture:Wait()
     return self.m_networkClient:WaitForEvent(self.m_eventName, self.m_port, self.m_timeoutSeconds)
 end
 
-return Utils.Class.CreateClass(NetworkFuture, 'Core.Net.NetworkFuture')
+return Utils.Class.Create(NetworkFuture, 'Core.Net.NetworkFuture')
 
 ]],
 ["Net.Core.NetworkPort"] = [[
@@ -614,7 +614,7 @@ function NetworkPort:BroadCastMessage(eventName, body, header)
 	self.m_netClient:BroadCast(port, eventName, body, header)
 end
 
-return Utils.Class.CreateClass(NetworkPort, 'Core.Net.NetworkPort')
+return Utils.Class.Create(NetworkPort, 'Core.Net.NetworkPort')
 
 ]],
 ["Net.Core.StatusCodes"] = [[
@@ -786,7 +786,7 @@ function HostExtensions:RemoveCallableEvent(eventName, port)
     netPort:RemoveEvent(eventName)
 end
 
-return Utils.Class.ExtendClass(Host, HostExtensions)
+return Utils.Class.Extend(Host, HostExtensions)
 
 ]],
 }

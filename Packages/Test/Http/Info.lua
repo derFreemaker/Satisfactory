@@ -1,7 +1,7 @@
 return {
     Name = "Test.Http",
     Namespace = "Test.Http",
-    Version = "0.1.0-18",
+    Version = "0.1.0-19",
     PackageType = "Application",
     RequiredPackages = {
         "Core",

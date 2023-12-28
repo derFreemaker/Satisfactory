@@ -1,4 +1,4 @@
-Data={
+local Data={
 ["Test.Http.__main"] = [[
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 

@@ -1,4 +1,4 @@
-Data={
+local Data={
 ["PowerPlant.Coal.__main"] = [[
 local ValveAdapter = require('Adapter.Pipeline.Valve')
 

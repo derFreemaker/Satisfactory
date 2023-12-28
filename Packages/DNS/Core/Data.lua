@@ -1,4 +1,4 @@
-Data={
+local Data={
 ["DNS.Core.__events"] = [[
 local JsonSerializer = require("Core.Json.JsonSerializer")
 
@@ -38,7 +38,7 @@ function Address:Serialize()
     return self.Id, self.Domain, self.IPAddress
 end
 
-return Utils.Class.CreateClass(Address, "DNS.Entities.Address",
+return Utils.Class.Create(Address, "DNS.Entities.Address",
     require("Core.Json.Serializable"))
 
 ]],
@@ -62,7 +62,7 @@ function Create:Serialize()
     return self.Domain, self.IPAddress
 end
 
-return Utils.Class.CreateClass(Create, "DNS.Entities.Address.Create",
+return Utils.Class.Create(Create, "DNS.Entities.Address.Create",
     require("Core.Json.Serializable"))
 
 ]],
