@@ -64,7 +64,7 @@
 
 ---@class Utils.Class.Type
 ---@field Name string
----@field Base Utils.Class.Type
+---@field Base Utils.Class.Type?
 ---
 ---@field Static table<string, any>
 ---
