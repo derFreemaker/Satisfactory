@@ -96,6 +96,11 @@ function Path:Create()
 	return false
 end
 
+---@return boolean
+function Path:IsAbsolute()
+	return self.m_nodes[1] == ""
+end
+
 ---@return Tools.FileSystem.Path
 function Path:Absolute()
 	local copy = Utils.CopyTable(self.m_nodes)
@@ -105,6 +110,11 @@ function Path:Absolute()
 	end
 
 	return Path.new(copy)
+end
+
+---@return boolean
+function Path:IsRelative()
+	return self.m_nodes[1] ~= ""
 end
 
 ---@return Tools.FileSystem.Path

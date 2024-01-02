@@ -88,7 +88,7 @@ namespace Lua_Bundler.Package
 
         #region - Check -
 
-        [GeneratedRegex("require\\(\"(.+)\"\\)")]
+        [GeneratedRegex("require(?>\\(| )\\\"([^\"]*)\\\"(?>\\)| )")]
         private static partial Regex GetRegexRequireFunction();
         private void CheckRequireFunctions(string content, PackageMap map)
         {
