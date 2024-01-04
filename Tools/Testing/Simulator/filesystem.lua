@@ -38,7 +38,7 @@ local function newFile(file)
     return instance
 end
 
----@type Tools.FileSystem.Path
+---@type Freemaker.FileSystem.Path
 local FileSystemPath
 local Initialized = false
 
@@ -54,7 +54,7 @@ local function initializeFileSystem()
     Initialized = true
 end
 
----@param fileSystemPath Tools.FileSystem.Path
+---@param fileSystemPath Freemaker.FileSystem.Path
 return function(fileSystemPath)
     filesystem = {}
     FileSystemPath = fileSystemPath

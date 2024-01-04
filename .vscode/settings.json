@@ -13,6 +13,10 @@
 		"Tools/Lua-Bundler",
 		"**/Sim-Files"
 	],
+	"Lua.workspace.useGitIgnore": false,
+	"Lua.workspace.ignoreSubmodules": false,
+	"Lua.workspace.maxPreload": 10000,
+	"Lua.workspace.preloadFileSize": 2000,
 	"triggerTaskOnSave.tasks": {
 		"check all": ["*"]
 	},

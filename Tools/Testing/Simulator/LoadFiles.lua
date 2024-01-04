@@ -42,10 +42,10 @@ local LoaderFiles = {
 local FileTreeTools = {}
 
 ---@private
----@param parentPath Tools.FileSystem.Path
+---@param parentPath Freemaker.FileSystem.Path
 ---@param entry table | string
----@param fileFunc fun(path: Tools.FileSystem.Path) : boolean
----@param folderFunc fun(path: Tools.FileSystem.Path) : boolean
+---@param fileFunc fun(path: Freemaker.FileSystem.Path) : boolean
+---@param folderFunc fun(path: Freemaker.FileSystem.Path) : boolean
 ---@return boolean
 function FileTreeTools:doEntry(parentPath, entry, fileFunc, folderFunc)
 	if #entry == 1 then
@@ -58,19 +58,19 @@ function FileTreeTools:doEntry(parentPath, entry, fileFunc, folderFunc)
 end
 
 ---@private
----@param parentPath Tools.FileSystem.Path
+---@param parentPath Freemaker.FileSystem.Path
 ---@param file string
----@param func fun(path: Tools.FileSystem.Path) : boolean
+---@param func fun(path: Freemaker.FileSystem.Path) : boolean
 ---@return boolean
 function FileTreeTools:doFile(parentPath, file, func)
 	local path = parentPath:Extend(file[1])
 	return func(path)
 end
 
----@param parentPath Tools.FileSystem.Path
+---@param parentPath Freemaker.FileSystem.Path
 ---@param folder table
----@param fileFunc fun(path: Tools.FileSystem.Path) : boolean
----@param folderFunc fun(path: Tools.FileSystem.Path) : boolean
+---@param fileFunc fun(path: Freemaker.FileSystem.Path) : boolean
+---@param folderFunc fun(path: Freemaker.FileSystem.Path) : boolean
 ---@return boolean
 function FileTreeTools:doFolder(parentPath, folder, fileFunc, folderFunc)
 	local path = parentPath:Extend(folder[1])
@@ -98,7 +98,7 @@ local function loadFiles(loaderBasePath)
 	---@type table<string, any[]>
 	local loadedLoaderFiles = {}
 
-	---@param path Tools.FileSystem.Path
+	---@param path Freemaker.FileSystem.Path
 	---@return boolean success
 	local function retrievePath(path)
 		local pathStr = path:ToString()

@@ -7,7 +7,7 @@ end
 
 local ApiDocumentations = FileSystem.Path(args[1])
 
----@param path Tools.FileSystem.Path
+---@param path Freemaker.FileSystem.Path
 ---@param childs string[]
 local function scanDir(path, childs)
     local pathStr = path:ToString()
@@ -25,7 +25,7 @@ local function scanDir(path, childs)
     end
 end
 
----@param path Tools.FileSystem.Path
+---@param path Freemaker.FileSystem.Path
 ------@return string[]
 local function documentClasses(path)
     path = path:Extend("/Classes")
@@ -35,7 +35,7 @@ local function documentClasses(path)
     return classes
 end
 
----@param path Tools.FileSystem.Path
+---@param path Freemaker.FileSystem.Path
 ---@return string[]
 local function documentStructs(path)
     path = path:Extend("/Structs")

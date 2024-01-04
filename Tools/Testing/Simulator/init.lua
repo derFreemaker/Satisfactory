@@ -1,4 +1,5 @@
-local FileSystem = require('Tools.FileSystem')
+local FileSystem = require("Tools.Freemaker.bin.filesystem")
+local Path = require("Tools.Freemaker.bin.path")
 
 local loadFileSystem = require("Tools.Testing.Simulator.filesystem")
 local loadComputer = require("Tools.Testing.Simulator.computer")
@@ -50,7 +51,7 @@ end
 
 ---@private
 ---@param logLevel Github_Loading.Logger.LogLevel
----@param fileSystemPath Tools.FileSystem.Path
+---@param fileSystemPath Freemaker.FileSystem.Path
 function Simulator:prepare(logLevel, fileSystemPath)
 	loadComputer()
 	loadFileSystem(fileSystemPath)
@@ -82,13 +83,13 @@ function Simulator:Initialize(logLevel, fileSystemPath)
 
 	if not fileSystemPath then
 		local info = debug.getinfo(2)
-		fileSystemPath = FileSystem.Path(info.source)
+		fileSystemPath = Path.new(info.source)
 			:GetParentFolderPath()
 			:Append("Sim-Files")
 			:ToString()
 	end
 
-	self:prepare(logLevel or 3, FileSystem.Path(fileSystemPath))
+	self:prepare(logLevel or 3, Path.new(fileSystemPath))
 
 	return self
 end
