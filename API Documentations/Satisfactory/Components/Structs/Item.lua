@@ -1,7 +1,7 @@
 ---@meta
 
 --- A structure that holds item information.
----@class Satisfactory.Components.Item
+---@class Satisfactory.Components.Item : FIN.Struct
 local Item = {}
 
 --- The type of the item.

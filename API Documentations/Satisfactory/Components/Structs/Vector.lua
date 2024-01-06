@@ -1,7 +1,7 @@
 ---@meta
 
---- Contains three cordinates (X, Y, Z) to describe a postition or movement vector in 3D Space
----@class Satisfactory.Components.Vector
+--- Contains three coordinates (X, Y, Z) to describe a position or movement vector in 3D Space
+---@class Satisfactory.Components.Vector : FIN.Struct
 local Vector = {}
 
 --- The X coordinate component.

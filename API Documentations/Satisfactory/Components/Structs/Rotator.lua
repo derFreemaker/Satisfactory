@@ -1,7 +1,7 @@
 ---@meta
 
 --- Contains rotation information about the object in 3D spaces using 3 rotation axis in a gimble.
----@class Satisfactory.Components.Rotator
+---@class Satisfactory.Components.Rotator : FIN.Struct
 local Rotator = {}
 
 --- The pitch component.

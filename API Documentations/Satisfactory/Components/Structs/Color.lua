@@ -1,6 +1,6 @@
 ---@meta
 
----@class Satisfactory.Components.Color
+---@class Satisfactory.Components.Color : FIN.Struct
 local Color = {}
 
 --- The red portion of the color.

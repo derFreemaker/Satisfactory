@@ -9,7 +9,7 @@
 ---|5 Max
 
 --- An entry in the Computer Log.
----@class FIN.Components.LogEntry
+---@class FIN.Components.LogEntry : FIN.Struct
 local LogEntry = {}
 
 --- The Message-Content contained within the log entry.

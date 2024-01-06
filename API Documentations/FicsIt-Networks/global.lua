@@ -26,6 +26,8 @@ require = nil
 
 ---@class FIN.Class
 
+---@class FIN.Struct
+
 ---@class FIN.ItemType
 
 ---@class FIN.UUID : string

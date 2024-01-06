@@ -1,7 +1,7 @@
 ---@meta
 
 --- A struct that holds a pair of amount and item type.
----@class Satisfactory.Components.ItemAmount
+---@class Satisfactory.Components.ItemAmount : FIN.Struct
 local ItemAmount = {}
 
 --- The amount of items.

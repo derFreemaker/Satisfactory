@@ -1,4 +1,5 @@
-local FileSystem = require("Tools.FileSystem")
+local FileSystem = require("Tools.Freemaker.bin.filesystem")
+local Path = require("Tools.Freemaker.bin.path")
 
 local LoaderFiles = {
 	'Github-Loading',
@@ -116,9 +117,12 @@ local function loadFiles(loaderBasePath)
 			table.insert(entries, pathStr)
 		else
 			local file = FileSystem.OpenFile(loaderBasePath .. pathStr, 'r')
+			if not file then
+				error("unable to open file: " .. loaderBasePath .. pathStr)
+			end
 			local str = ''
 			while true do
-				local buf = file:read(8192)
+				local buf = file:read(4096)
 				if not buf then
 					break
 				end
@@ -134,7 +138,7 @@ local function loadFiles(loaderBasePath)
 
 	assert(
 		FileTreeTools:doFolder(
-			FileSystem.Path(),
+			Path.new(""),
 			LoaderFiles,
 			retrievePath,
 			function()

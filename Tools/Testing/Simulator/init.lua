@@ -79,7 +79,7 @@ end
 ---@return Test.Simulator
 function Simulator:Initialize(logLevel, fileSystemPath)
 	local simulatorPath = FileSystem.GetCurrentDirectory()
-	CurrentPath = simulatorPath:gsub("/Tools/Testing/Simulator", "")
+	CurrentPath = simulatorPath:gsub("Tools/Testing/Simulator", "")
 
 	if not fileSystemPath then
 		local info = debug.getinfo(2)
