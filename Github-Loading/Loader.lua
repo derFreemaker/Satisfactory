@@ -241,7 +241,7 @@ local Loader = {}
 ---@param internetCard FIN.Components.InternetCard_C
 ---@return Github_Loading.Loader
 function Loader.new(loaderBaseUrl, loaderBasePath, forceDownload, internetCard)
-	-- //TODO: computer.promote used
+	-- //WARN: computer.promote used
 	computer.promote()
 
 	return setmetatable(

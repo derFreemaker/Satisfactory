@@ -61,8 +61,8 @@ local function Run()
 		filesystem.createDir(LoaderFilesPath)
 	end
 	if not filesystem.exists(LoaderPath) or loaderForceDownload then
-		print('[Computer] INFO downloading Github Loader...')
 		local req = internetCard:request(LoaderUrl, 'GET', '')
+		print('[Computer] INFO downloading Github Loader...')
 		repeat
 		until req:canGet()
 		---@type integer, string
@@ -103,17 +103,13 @@ local function Run()
 end
 
 repeat
-	local result
-	local thread =
-		coroutine.create(
-			function()
-				result = Run()
-			end
-		)
-	local success, errorMsg = coroutine.resume(thread)
+	local thread = coroutine.create(Run)
+	local success, result = coroutine.resume(thread)
+
 	if not success then
-		print(debug.traceback(thread, errorMsg))
+		print(debug.traceback(thread, result))
 	end
+
 	coroutine.close(thread)
 until not result or type(result) ~= 'boolean'
 

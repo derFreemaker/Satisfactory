@@ -52,8 +52,9 @@ end
 ---@private
 ---@param logLevel Github_Loading.Logger.LogLevel
 ---@param fileSystemPath Freemaker.FileSystem.Path
-function Simulator:prepare(logLevel, fileSystemPath)
-	loadComputer()
+---@param eeprom string
+function Simulator:prepare(logLevel, fileSystemPath, eeprom)
+	loadComputer(eeprom)
 	loadFileSystem(fileSystemPath)
 	loadComponent()
 	loadEvent()
@@ -76,8 +77,9 @@ end
 
 ---@param logLevel Github_Loading.Logger.LogLevel?
 ---@param fileSystemPath string?
+---@param eeprom string?
 ---@return Test.Simulator
-function Simulator:Initialize(logLevel, fileSystemPath)
+function Simulator:Initialize(logLevel, fileSystemPath, eeprom)
 	local simulatorPath = FileSystem.GetCurrentDirectory()
 	CurrentPath = simulatorPath:gsub("Tools/Testing/Simulator", "")
 
@@ -89,7 +91,7 @@ function Simulator:Initialize(logLevel, fileSystemPath)
 			:ToString()
 	end
 
-	self:prepare(logLevel or 3, Path.new(fileSystemPath))
+	self:prepare(logLevel or 3, Path.new(fileSystemPath), eeprom or "")
 
 	return self
 end

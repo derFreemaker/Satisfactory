@@ -1,4 +1,5 @@
-return function()
+---@param eeprom string
+return function(eeprom)
     computer = {}
 
     ---@diagnostic disable-next-line
@@ -45,5 +46,17 @@ return function()
     ---@diagnostic disable-next-line
     function computer.getMemory()
         return math.floor(collectgarbage("count")), 0
+    end
+
+    ---@return string
+    ---@diagnostic disable-next-line
+    function computer.getEEPROM()
+        return eeprom
+    end
+
+    ---@param code string
+    ---@diagnostic disable-next-line
+    function computer.setEEPROM(code)
+        eeprom = code
     end
 end

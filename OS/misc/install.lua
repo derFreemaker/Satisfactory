@@ -1,1 +1,0 @@
---//TODO: install selected OS and run some kind of boot loader
