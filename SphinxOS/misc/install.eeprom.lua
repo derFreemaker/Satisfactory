@@ -1,5 +1,6 @@
 local BASE_URL = "http://localhost"
 -- local BASE_URL = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main"
+local BASE_PATH = ""
 
 -- Urls
 local OS_URL = BASE_URL .. "/SphinxOS"
@@ -58,7 +59,7 @@ print("### loading... ###")
 
 ---@type SphinxOS.Installer
 local installer = filesystem.doFile(INSTALLER_PATH)
-installer = installer.new(OS_URL, OS_PATH, BOOT_PATH, internetCard)
+installer = installer.new(OS_URL, BASE_PATH, BOOT_PATH, internetCard)
 
 print("### loaded ###")
 
@@ -67,7 +68,7 @@ print("### installing... ###")
 print("downloading OS files...")
 installer:Download()
 
-print("saving current eeprom to " .. INSTALL_EEPROM_PATH)
+print("saving current eeprom to " .. INSTALL_EEPROM_PATH .. " for later use...")
 local installFile = filesystem.open(INSTALL_EEPROM_PATH, "w")
 installFile:write(computer.getEEPROM())
 installFile:close()

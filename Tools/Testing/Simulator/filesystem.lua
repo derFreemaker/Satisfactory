@@ -61,9 +61,28 @@ return function(fileSystemPath)
     FileSystemPath = fileSystemPath
 
     ---@param path string
+    ---@return boolean success
+    ---@diagnostic disable-next-line
+    function filesystem.initFileSystem(path)
+        initializeFileSystem()
+        return true
+    end
+
+    ---@param device string
+    ---@param mountPoint string
+    ---@diagnostic disable-next-line
+    function filesystem.mount(device, mountPoint)
+    end
+
+    ---@param path string
+    ---@return string[] childs
     ---@diagnostic disable-next-line
     function filesystem.childs(path)
         initializeFileSystem()
+
+        if path == "/dev" then
+            return { "%FakeDrive%" }
+        end
 
         local dirs = FileSystem.GetDirectories(fileSystemPath:Extend(path):ToString())
         local files = FileSystem.GetFiles(path)

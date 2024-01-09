@@ -1,6 +1,7 @@
 local FileSystem = require("Tools.Freemaker.bin.filesystem")
 local Path = require("Tools.Freemaker.bin.path")
 
+local loadClassesAndStructs = require("Tools.Testing.Simulator.classes&structs")
 local loadFileSystem = require("Tools.Testing.Simulator.filesystem")
 local loadComputer = require("Tools.Testing.Simulator.computer")
 local loadComponent = require("Tools.Testing.Simulator.component")
@@ -54,6 +55,7 @@ end
 ---@param fileSystemPath Freemaker.FileSystem.Path
 ---@param eeprom string
 function Simulator:prepare(logLevel, fileSystemPath, eeprom)
+	loadClassesAndStructs()
 	loadComputer(eeprom)
 	loadFileSystem(fileSystemPath)
 	loadComponent()
@@ -98,11 +100,12 @@ end
 
 ---@param logLevel Github_Loading.Logger.LogLevel?
 ---@param fileSystemPath string?
+---@param eeprom string?
 ---@return Test.Simulator, Github_Loading.Loader
-function Simulator:InitializeWithLoader(logLevel, fileSystemPath)
+function Simulator:InitializeWithLoader(logLevel, fileSystemPath, eeprom)
 	local Curl = require("Tools.Curl")
 	local Loader = require("Github-Loading.Loader")
-	self:Initialize(logLevel, fileSystemPath)
+	self:Initialize(logLevel, fileSystemPath, eeprom)
 
 	Loader = Loader.new("http://localhost", "", false, Curl)
 	Loader:Load(1)

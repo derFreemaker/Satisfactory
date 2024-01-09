@@ -1,3 +1,5 @@
+local Curl = require("Tools.Curl")
+
 ---@param eeprom string
 return function(eeprom)
     computer = {}
@@ -21,8 +23,10 @@ return function(eeprom)
         return os.time, os.date(), os.date()
     end
 
+    ---@param errorMsg string
     ---@diagnostic disable-next-line
     function computer.panic(errorMsg)
+        print("[PANIC]: " .. errorMsg)
         os.exit(-1)
     end
 
@@ -58,5 +62,17 @@ return function(eeprom)
     ---@diagnostic disable-next-line
     function computer.setEEPROM(code)
         eeprom = code
+    end
+
+    ---@generic TPCIDevice : FIN.PCIDevice
+    ---@param type TPCIDevice
+    ---@return TPCIDevice[]
+    ---@diagnostic disable-next-line
+    function computer.getPCIDevices(type)
+        if type == classes.InternetCard_C then
+            return { Curl }
+        end
+
+        return {}
     end
 end

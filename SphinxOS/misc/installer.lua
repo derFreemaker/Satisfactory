@@ -3,9 +3,7 @@ local OSFiles = {
     "SphinxOS",
     {
         "boot",
-        {
-            { "boot.lua" }
-        }
+        { "boot.lua" }
     }
 }
 
@@ -25,11 +23,10 @@ end
 
 ---@private
 ---@param parentPath string
----@param entry table | string
+---@param entry table
 ---@return boolean
 function FileTreeTools:doEntry(parentPath, entry)
     if #entry == 1 then
-        ---@cast entry string
         return self:doFile(parentPath, entry)
     else
         ---@cast entry table
@@ -39,7 +36,7 @@ end
 
 ---@private
 ---@param parentPath string
----@param file string
+---@param file table
 ---@return boolean
 function FileTreeTools:doFile(parentPath, file)
     local path = parentPath .. file[1]
@@ -153,10 +150,13 @@ function Installer:LoadBootLoader()
     local file = filesystem.open(self.m_bootPath, "r")
 
     local bootStr = ""
-    repeat
+    while true do
         local buf = file:read(4096)
+        if not buf then
+            break
+        end
         bootStr = bootStr .. buf
-    until buf == nil
+    end
     file:close()
 
     computer.setEEPROM(bootStr)
