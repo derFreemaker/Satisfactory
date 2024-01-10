@@ -15,4 +15,4 @@ if drive:len() < 1 then
 end
 filesystem.mount('/dev/' .. drive, '/')
 
-print("started!")
+print("boot complete!")
