@@ -1,6 +1,7 @@
 local TestFramework = require("Test.Framework.init")
 local Helper = require("Test.FactoryControl.Helper")
 
+local Task = require("Core.Common.Task")
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
 ---@param logger Core.Logger
@@ -19,11 +20,13 @@ local function overall(logger)
     log("adding listener to chart")
     local called = false
     local dataCount = 0
+    chart.OnChanged:AddTask(
     ---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Chart.Update
-    chart.OnChanged:AddListener(function(featureUpdate)
-        called = true
-        dataCount = #chart:GetData() - #featureUpdate.Data
-    end)
+        Task(function(featureUpdate)
+            called = true
+            dataCount = #chart:GetData() - #featureUpdate.Data
+        end)
+    )
 
     log("modifying chart")
     chart:Modify(function(modify)

@@ -1,6 +1,7 @@
 local TestFramework = require("Test.Framework.init")
 local Helper = require("Test.FactoryControl.Helper")
 
+local Task = require("Core.Common.Task")
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
 ---@param logger Core.Logger
@@ -14,11 +15,13 @@ local function overall(logger)
     log("adding listener to radial")
     local called = false
     local setting = 0
+    radial.OnChanged:AddTask(
     ---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Radial.Update
-    radial.OnChanged:AddListener(function(featureUpdate)
-        called = true
-        setting = featureUpdate.Setting
-    end)
+        Task(function(featureUpdate)
+            called = true
+            setting = featureUpdate.Setting
+        end)
+    )
 
     log("modifying radial")
     radial:Modify(function(modify)

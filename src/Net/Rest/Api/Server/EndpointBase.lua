@@ -21,7 +21,9 @@ end
 ---@param endpointUrl string
 ---@param func fun(...) : Net.Rest.Api.Response
 function EndpointBase:AddEndpoint(method, endpointUrl, func)
-	self.ApiController:AddEndpoint(method, endpointUrl, Task(func, self))
+	self.ApiController:AddEndpoint(method, endpointUrl, Task(function(...)
+		func(self, ...)
+	end))
 end
 
 ---@class Core.RestNew.Api.Server.EndpointBase.ResponseTemplates

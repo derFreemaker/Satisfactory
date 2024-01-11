@@ -42,7 +42,9 @@ function NetworkClient:__init(logger, networkCard, serializer)
 	self.m_networkCard:Listen()
 	self.m_onNetworkMessageReceivedTaskIndex = EventPullAdapter:AddTask(
 		"NetworkMessage",
-		Task(self.networkMessageReceived, self)
+		Task(function(data)
+			self:networkMessageReceived(data)
+		end)
 	)
 end
 
@@ -170,24 +172,6 @@ function NetworkClient:AddTaskOnce(onReceivedEventName, onReceivedPort, listener
 	return networkPort, networkPort:AddTaskOnce(onReceivedEventName, listener)
 end
 
----@param onReceivedEventName Net.Core.EventName?
----@param onReceivedPort Net.Core.Port?
----@param listener fun(context: Net.Core.NetworkClient)
----@param ... any
----@return Net.Core.NetworkPort, number taskIndex
-function NetworkClient:AddListener(onReceivedEventName, onReceivedPort, listener, ...)
-	return self:AddTask(onReceivedEventName, onReceivedPort, Task(listener, ...))
-end
-
----@param onReceivedEventName Net.Core.EventName
----@param onReceivedPort Net.Core.Port
----@param listener fun(context: Net.Core.NetworkContext)
----@param ... any
----@return Net.Core.NetworkPort, number taskIndex
-function NetworkClient:AddListenerOnce(onReceivedEventName, onReceivedPort, listener, ...)
-	return self:AddTaskOnce(onReceivedEventName, onReceivedPort, Task(listener, ...))
-end
-
 ---@async
 ---@param eventName Net.Core.EventName
 ---@param port Net.Core.Port
@@ -195,12 +179,11 @@ end
 ---@return Net.Core.NetworkContext?
 function NetworkClient:WaitForEvent(eventName, port, timeoutSeconds)
 	local result
-	---@param context Net.Core.NetworkContext
-	local function set(context)
-		result = context
-	end
 
-	local netPort = self:AddListenerOnce(eventName, port, set)
+	---@param context Net.Core.NetworkContext
+	local netPort = self:AddTaskOnce(eventName, port, Task(function(context)
+		result = context
+	end))
 	netPort:OpenPort()
 
 	self.m_logger:LogDebug("waiting for event: '" .. eventName .. "' on port: " .. port)

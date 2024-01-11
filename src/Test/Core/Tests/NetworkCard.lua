@@ -2,6 +2,7 @@ local Framework = require("Test.Framework.init")
 
 local NetworkCard = require("Adapter.Computer.NetworkCard")
 
+local Task = require("Core.Common.Task")
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
 local TEST_MESSAGE = "TEST_MESSAGE"
@@ -14,12 +15,15 @@ local function test()
     networkCard:Send(networkCard:GetIPAddress(), 1, TEST_MESSAGE)
 
     local gotEvent = false
-    EventPullAdapter:AddListener("NetworkMessage", function(data)
-        log(data)
-        if data[5] == TEST_MESSAGE then
-            gotEvent = true
-        end
-    end)
+    EventPullAdapter:AddTask(
+        "NetworkMessage",
+        Task(function(data)
+            log(data)
+            if data[5] == TEST_MESSAGE then
+                gotEvent = true
+            end
+        end)
+    )
 
     EventPullAdapter:Wait(5)
 

@@ -1,30 +1,18 @@
 ---@class Core.Task : object
 ---@field private m_func function
----@field private m_passthrough any[]
 ---@field private m_thread thread
 ---@field private m_closed boolean
 ---@field private m_success boolean
 ---@field private m_results any[]
 ---@field private m_error string?
 ---@field private m_traceback string?
----@overload fun(func: function, ...: any) : Core.Task
+---@overload fun(func: fun(...)) : Core.Task
 local Task = {}
 
 ---@private
 ---@param func function
----@param ... any
-function Task:__init(func, ...)
+function Task:__init(func)
 	self.m_func = func
-
-	local passthrough = { ... }
-	local count = #passthrough
-	if count > 16 then
-		-- look into Execute function for more information
-		error("cannot pass more than 16 arguments")
-	end
-	if count > 0 then
-		self.m_passthrough = passthrough
-	end
 
 	self.m_closed = false
 	self.m_success = true
@@ -51,62 +39,27 @@ function Task:GetTraceback()
 	return self:Traceback()
 end
 
----@param length integer
----@return fun(func: function, tbl: table, ...: any) : ... : any
-local function createInvokeFunc(length)
-	local funcStart = "return function(func, tbl, ...)\n    return func(\n"
-	local parameter = "        tbl[%d],\n"
-	local funcEnd = "        ...)\nend"
-
-	local newFunc = funcStart
-
-	for i = 1, length, 1 do
-		newFunc = newFunc .. string.format(parameter, i)
+---@return "not created" | "dead" | "normal" | "running" | "suspended"
+function Task:State()
+	if self.m_thread == nil then
+		return "not created"
 	end
-
-	newFunc = newFunc .. funcEnd
-
-	---@type (fun() : (fun(func: function, tbl: table, ...: any) : ... : any))?
-	local createFunc = load(newFunc)
-	if not createFunc then
-		error("unable to create invoke func")
-	end
-
-	return createFunc()
+	return coroutine.status(self.m_thread)
 end
 
 ---@param ... any parameters
 ---@return any ... results
 function Task:Execute(...)
 	---@param ... any parameters
-	local function invokeFunc(func, passthrough, ...)
-		if passthrough ~= nil then
-			-- //TODO
-			-- Having to do this is a bit annoying, but it's the only way to get the correct number of arguments
-			-- example code that doesn't work for some reason:
-			--
-			-- local args1 = { "hi1", "hi2" }
-			-- local args2 = { "hi3", "hi4" }
-			-- local function foo(...)
-			--     print(...)
-			-- end
-			-- foo(table.unpack(args1), table.unpack(args2))
-			--
-			-- Output:
-			-- hi1 hi3 hi4
-
-			local invoke = createInvokeFunc(#passthrough)
-			return { invoke(func, passthrough, ...) }
-		else
-			return { self.m_func(...) }
-		end
+	local function invokeFunc(func, ...)
+		return { func(...) }
 	end
 
 	self.m_thread = coroutine.create(invokeFunc)
 	self.m_closed = false
 	self.m_traceback = nil
 
-	local success, results = coroutine.resume(self.m_thread, self.m_func, self.m_passthrough, ...)
+	local success, results = coroutine.resume(self.m_thread, self.m_func, ...)
 	self.m_success = success
 	if success then
 		self.m_results = results
@@ -169,14 +122,6 @@ function Task:Traceback(all)
 		self.m_traceback = self.m_traceback .. "\n" .. debug.traceback():sub(18)
 	end
 	return self.m_traceback
-end
-
----@return "not created" | "dead" | "normal" | "running" | "suspended"
-function Task:State()
-	if self.m_thread == nil then
-		return "not created"
-	end
-	return coroutine.status(self.m_thread)
 end
 
 ---@param logger Core.Logger?

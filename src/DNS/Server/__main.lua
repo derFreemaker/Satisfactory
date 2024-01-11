@@ -21,8 +21,13 @@ end
 function Main:Configure()
 	self.m_host = Host(self.Logger:subLogger("Host"), "DNS Server")
 
-	self.m_host:AddCallableEventListener(Usage.Events.DNS_GetServerAddress, Usage.Ports.DNS,
-		self.GetDNSServerAddress, self)
+	self.m_host:AddCallableEventListener(
+		Usage.Events.DNS_GetServerAddress,
+		Usage.Ports.DNS,
+		function(context)
+			self:GetDNSServerAddress(context)
+		end
+	)
 	self.Logger:LogDebug('setup Get DNS Server IP Address')
 
 	self.m_host:AddEndpoint(Usage.Ports.HTTP, "Endpoints", DNSEndpoints)

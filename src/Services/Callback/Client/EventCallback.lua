@@ -25,18 +25,6 @@ function EventCallback:AddTaskOnce(task)
     self.m_onCalled:AddTaskOnce(task)
 end
 
----@param func function
----@param ... any[]
-function EventCallback:AddListener(func, ...)
-    self.m_onCalled:AddListener(func, ...)
-end
-
----@param func function
----@param ... any[]
-function EventCallback:AddListenerOnce(func, ...)
-    self.m_onCalled:AddListenerOnce(func, ...)
-end
-
 ---@param logger Core.Logger
 ---@param args any[]
 function EventCallback:Send(logger, args)

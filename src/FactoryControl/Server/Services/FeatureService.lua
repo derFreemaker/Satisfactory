@@ -4,7 +4,7 @@ local Config = require("FactoryControl.Core.Config")
 local Task = require("Core.Common.Task")
 
 ---@class FactoryControl.Server.Services.FeatureService : object
----@field OnFeatureInvoked Core.Task
+---@field OnFeatureInvoked Core.Task<Net.Core.NetworkContext>
 ---@field private m_watchedFeatures table<string, Net.Core.IPAddress[]>
 ---@field private m_callbackService Services.Callback.Server.CallbackService
 ---@field private m_databaseAccessLayer FactoryControl.Server.DatabaseAccessLayer
@@ -22,7 +22,9 @@ function FeatureService:__init(callbackService, databaseAccessLayer, networkClie
     self.m_databaseAccessLayer = databaseAccessLayer
     self.m_networkClient = networkClient
 
-    self.OnFeatureInvoked = Task(self.onFeatureInvoked, self)
+    self.OnFeatureInvoked = Task(function(...)
+        self:onFeatureInvoked(...)
+    end)
 end
 
 ---@param featureId Core.UUID

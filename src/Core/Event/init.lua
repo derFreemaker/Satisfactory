@@ -19,32 +19,18 @@ function Event:Count()
     return #self.m_funcs + #self.m_onceFuncs
 end
 
----@param task Core.Task
+---@param func function
 ---@return integer index
-function Event:AddTask(task)
-    table.insert(self.m_funcs, task)
+function Event:AddTask(func)
+    table.insert(self.m_funcs, Task(func))
     return #self.m_funcs
 end
 
----@param task Core.Task
+---@param func function
 ---@return integer index
-function Event:AddTaskOnce(task)
-    table.insert(self.m_onceFuncs, task)
+function Event:AddTaskOnce(func)
+    table.insert(self.m_onceFuncs, Task(func))
     return #self.m_onceFuncs
-end
-
----@param func function
----@param ... any
----@return integer index
-function Event:AddListener(func, ...)
-    return self:AddTask(Task(func, ...))
-end
-
----@param func function
----@param ... any
----@return integer index
-function Event:AddListenerOnce(func, ...)
-    return self:AddTaskOnce(Task(func, ...))
 end
 
 ---@param index integer

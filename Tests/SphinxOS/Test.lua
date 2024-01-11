@@ -36,7 +36,7 @@ local INSTALLER_PATH = INSTALL_PATH .. "/installer.lua"
 
 local BOOT_PATH = OS_PATH .. "/boot/boot.lua"
 
-function Test()
+function TestInstall()
     if not filesystem.exists(INSTALL_PATH) and not filesystem.createDir(INSTALL_PATH) then
         error("unable to create install folder")
     end
@@ -55,6 +55,15 @@ function Test()
     installer:LoadBootLoader()
 
     print("installed!")
+
+    dofile(bootFilePath)
+end
+
+function TestRunBoot()
+    local installer = Installer.new(BASE_URL, BASE_PATH, "/SphinxOS/boot/boot.lua", Curl)
+
+    print("writing boot loader to eeprom...")
+    installer:LoadBootLoader()
 
     dofile(bootFilePath)
 end

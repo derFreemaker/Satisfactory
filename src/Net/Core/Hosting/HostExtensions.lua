@@ -71,11 +71,10 @@ end
 
 ---@param eventName Net.Core.EventName
 ---@param port Net.Core.Port
----@param listener fun(context: Net.Core.IPAddress)
----@param ... any
+---@param listener fun(context: Net.Core.NetworkContext)
 ---@return Net.Core.NetworkPort netPort,  number eventTaskIndex
-function HostExtensions:AddCallableEventListener(eventName, port, listener, ...)
-    return self:AddCallableEventTask(eventName, port, Task(listener, ...))
+function HostExtensions:AddCallableEventListener(eventName, port, listener)
+    return self:AddCallableEventTask(eventName, port, Task(listener))
 end
 
 ---@param eventName string

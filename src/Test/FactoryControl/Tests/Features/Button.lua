@@ -1,6 +1,7 @@
 local TestFramework = require("Test.Framework.init")
 local Helper = require("Test.FactoryControl.Helper")
 
+local Task = require("Core.Common.Task")
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
 ---@param logger Core.Logger
@@ -13,9 +14,11 @@ local function overall(logger)
 
     log("adding listener to button")
     local pressed = false
-    button.OnChanged:AddListener(function()
-        pressed = true
-    end)
+    button.OnChanged:AddTask(
+        Task(function()
+            pressed = true
+        end)
+    )
 
     log("pressing button")
     button:Press()

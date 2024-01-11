@@ -21,10 +21,12 @@ function CallbackService:__init(name, logger, networkClient)
     self.m_logger = logger
     self.m_networkClient = networkClient or NetworkClient(logger:subLogger("NetworkClient"))
 
-    self.m_networkClient:AddListener(
+    self.m_networkClient:AddTask(
         Usage.Events.CallbackService,
         Usage.Ports.CallbackService,
-        self.onCallbackRecieved, self
+        Task(function(...)
+            self:onCallbackReceived(...)
+        end)
     )
     self.m_networkClient:Open(Usage.Ports.CallbackService)
 end
@@ -66,7 +68,7 @@ end
 
 ---@private
 ---@param context Net.Core.NetworkContext
-function CallbackService:onCallbackRecieved(context)
+function CallbackService:onCallbackReceived(context)
     local callbackInfo, args = context:GetCallback()
     if not callbackInfo.CallbackServiceName == self.m_name then
         return

@@ -1,4 +1,3 @@
-local Task = require("Core.Common.Task")
 local Event = require('Core.Event')
 
 --- Assists in handling events from `event.pull()`
@@ -70,22 +69,6 @@ end
 function EventPullAdapter:AddTaskOnce(signalName, task)
 	local event = self:GetEvent(signalName)
 	return event:AddTaskOnce(task)
-end
-
----@param signalName string | "*"
----@param listener function
----@param ... any
----@return integer index
-function EventPullAdapter:AddListener(signalName, listener, ...)
-	return self:AddTask(signalName, Task(listener, ...))
-end
-
----@param signalName string | "*"
----@param listener function
----@param ... any
----@return integer index
-function EventPullAdapter:AddListenerOnce(signalName, listener, ...)
-	return self:AddTaskOnce(signalName, Task(listener, ...))
 end
 
 ---@param signalName string | "*"

@@ -63,24 +63,6 @@ function Watchable:AddTaskOnce(task)
     return self
 end
 
----@param func function
----@param ... any
----@return Core.Watchable
-function Watchable:AddListener(func, ...)
-    self.m_Event:AddListener(func, ...)
-    self:Check()
-    return self
-end
-
----@param func function
----@param ... any
----@return Core.Watchable
-function Watchable:AddListenerOnce(func, ...)
-    self.m_Event:AddListenerOnce(func, ...)
-    self:Check()
-    return self
-end
-
 ---@param logger Core.Logger?
 ---@param ... any
 function Watchable:Trigger(logger, ...)

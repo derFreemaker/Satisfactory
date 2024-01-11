@@ -21,12 +21,17 @@ function Controller:__init(netPort, logger)
     self.m_netPort = netPort
     self.m_logger = logger
 
-    netPort:AddListener(EventNameUsage.RestRequest, self.onMessageRecieved, self)
+    netPort:AddTask(
+        EventNameUsage.RestRequest,
+        Task(function(...)
+            self:onMessageReceived(...)
+        end)
+    )
 end
 
 ---@private
 ---@param context Net.Core.NetworkContext
-function Controller:onMessageRecieved(context)
+function Controller:onMessageReceived(context)
     local request = context:GetApiRequest()
 
     local endpoint = self:GetEndpoint(request.Method, request.Endpoint)

@@ -89,22 +89,6 @@ function NetworkPort:AddTaskOnce(onReceivedEventName, listener)
 	return event:AddTaskOnce(listener)
 end
 
----@param onReceivedEventName Net.Core.EventName
----@param listener fun(context: Net.Core.NetworkContext)
----@param ... any
----@return number taskIndex
-function NetworkPort:AddListener(onReceivedEventName, listener, ...)
-	return self:AddTask(onReceivedEventName, Task(listener, ...))
-end
-
----@param onReceivedEventName Net.Core.EventName
----@param listener fun(context: Net.Core.NetworkContext)
----@param ... any
----@return number taskIndex
-function NetworkPort:AddListenerOnce(onReceivedEventName, listener, ...)
-	return self:AddTaskOnce(onReceivedEventName, Task(listener, ...))
-end
-
 ---@param eventName Net.Core.EventName
 function NetworkPort:RemoveEvent(eventName)
 	self.m_events[eventName] = nil
