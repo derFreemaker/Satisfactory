@@ -17,7 +17,7 @@ local INSTALLER_PATH = INSTALL_PATH .. "/installer.lua"
 
 local BOOT_PATH = OS_PATH .. "/boot/boot.lua"
 
-print("### Initializing... ###")
+print("### initializing... ###")
 
 local internetCard = computer.getPCIDevices(classes.InternetCard_C)[1]
 if not internetCard then
@@ -40,7 +40,7 @@ if drive:len() < 1 then
 end
 filesystem.mount('/dev/' .. drive, '/')
 
-print("### Initialized ###")
+print("### initialized ###")
 print("### downloading Installer... ###")
 
 local req = internetCard:request(INSTALLER_URL, "GET", "")
