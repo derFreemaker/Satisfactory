@@ -1,5 +1,5 @@
 ---@class Core.Task : object
----@field private m_func function
+---@field private m_func fun(...)
 ---@field private m_thread thread
 ---@field private m_closed boolean
 ---@field private m_success boolean
@@ -9,8 +9,10 @@
 ---@overload fun(func: fun(...)) : Core.Task
 local Task = {}
 
+---@alias Core.Task.Constructor fun(func: fun(...))
+
 ---@private
----@param func function
+---@param func fun(...)
 function Task:__init(func)
 	self.m_func = func
 
@@ -50,7 +52,7 @@ end
 ---@param ... any parameters
 ---@return any ... results
 function Task:Execute(...)
-	---@param ... any parameters
+	---@param ... any
 	local function invokeFunc(func, ...)
 		return { func(...) }
 	end
