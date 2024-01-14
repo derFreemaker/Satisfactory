@@ -142,7 +142,10 @@ function Client:WatchFeature(feature)
     local callback = Callback(
         feature.Id,
         Usage.Events.FactoryControl_Feature_Update,
-        Task(self.OnFeatureUpdate, self, feature)
+        ---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Update
+        Task(function(featureUpdate)
+            self:OnFeatureUpdate(feature, featureUpdate)
+        end)
     )
     self.m_callbackService:AddCallback(callback)
 
@@ -169,6 +172,7 @@ function Client:UnwatchFeature(featureId)
 end
 
 ---@private
+---@param feature FactoryControl.Client.Entities.Controller.Feature
 ---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Update
 function Client:OnFeatureUpdate(feature, featureUpdate)
     local logger = self.m_logger:subLogger("Feature[" .. feature.Id:ToString() .. "]")

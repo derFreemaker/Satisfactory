@@ -15,23 +15,25 @@ local Utils = LoadedLoaderFiles["/Github-Loading/Loader/Utils"][1]
 ---@class Github_Loading.Package
 ---@field Name string
 ---@field Namespace string
+---@field Location string
 ---@field Version string
 ---@field PackageType "Library" | "Application"
 ---@field RequiredPackages string[]?
----@field private m_forceDownload boolean
----@field private m_packageLoader Github_Loading.PackageLoader
 ---@field Modules table<string, Github_Loading.Module>
----@field m_dataFilePath string?
+---@field m_forceDownload boolean
+---@field m_packageLoader Github_Loading.PackageLoader
 local Package = {}
 
 ---@param info Github_Loading.Package.InfoFile
+---@param location string
 ---@param forceDownload boolean
 ---@param packageLoader Github_Loading.PackageLoader
 ---@return Github_Loading.Package
-function Package.new(info, forceDownload, packageLoader)
+function Package.new(info, location, forceDownload, packageLoader)
     local instance = setmetatable({
         Name = info.Name,
         Namespace = info.Namespace,
+        Location = location,
         Version = info.Version or 0.01,
         PackageType = info.PackageType,
         RequiredPackages = info.RequiredPackages,
@@ -57,12 +59,14 @@ function Package:GetModule(moduleToGet)
     end
 end
 
----@param url string
----@param path string
+---@param packagesUrl string
+---@param packagesPath string
 ---@return boolean success
-function Package:Download(url, path)
-    local dataFileUrl = url .. "/Data.lua"
-    local dataFilePath = filesystem.path(path, "Data.lua")
+function Package:Download(packagesUrl, packagesPath)
+    local packageUrl = packagesUrl .. "/" .. self.Location
+    local packagePath = packagesPath .. "/" .. self.Location
+    local dataFileUrl = packageUrl .. "/Data.lua"
+    local dataFilePath = filesystem.path(packagePath, "__data.lua")
 
     if not self.m_packageLoader:internalDownload(dataFileUrl, dataFilePath, self.m_forceDownload) then
         return false
@@ -74,6 +78,10 @@ function Package:Download(url, path)
     for id, value in pairs(data) do
         self.Modules[id].Data = value
     end
+
+    --- clear data
+    ---@diagnostic disable-next-line
+    data = nil
 
     return true
 end
@@ -88,7 +96,7 @@ function Package:Load()
         self.m_packageLoader.Logger:LogDebug(log)
 
         for _, packageName in ipairs(self.RequiredPackages) do
-            self.m_packageLoader:LoadPackage(packageName)
+            self.m_packageLoader:DownloadPackage(packageName)
         end
 
         self.m_packageLoader.Logger:LogDebug("loaded required packages")
@@ -100,7 +108,8 @@ function Package:OnLoaded()
     if eventsModule == nil then
         return
     end
-    ---@type Github_Loading.Entities.Events
+
+    ---@type Github_Loading.Entities.Events?
     local eventsModuleLoaded = eventsModule:Load()
     if not eventsModuleLoaded then
         return

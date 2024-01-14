@@ -298,8 +298,12 @@ function Loader:setupLogger(logLevel)
 	self.Logger.OnLog:AddListener(Listener.new(logConsole))
 end
 
----@param logLevel Github_Loading.Logger.LogLevel
+---@param logLevel Github_Loading.Logger.LogLevel?
 function Loader:Load(logLevel)
+	if logLevel == nil then
+		logLevel = 1
+	end
+
 	assert(downloadFiles(self.m_loaderBaseUrl, self.m_loaderBasePath, self.m_forceDownload, self.m_internetCard),
 		'Unable to download loader Files')
 	self:LoadFiles()
@@ -309,6 +313,13 @@ function Loader:Load(logLevel)
 
 	___logger:initialize()
 	self:setupLogger(logLevel)
+
+	---@type Github_Loading.PackageLoader
+	local PackageLoader = self:Get('/Github-Loading/Loader/PackageLoader')
+	PackageLoader = PackageLoader.new(self.m_loaderBaseUrl .. '/Packages', self.m_loaderBasePath .. '/Packages',
+		self.Logger:subLogger('PackageLoader'), self.m_internetCard)
+	PackageLoader:SetGlobal()
+	self.Logger:LogDebug('setup PackageLoader')
 end
 
 ---@nodiscard
@@ -354,9 +365,8 @@ function Loader:ShowOptions(extendOptionDetails)
 end
 
 ---@param option string
----@param extendOptionDetails boolean
 ---@return Github_Loading.Option chosenOption
-function Loader:LoadOption(option, extendOptionDetails)
+function Loader:LoadOption(option)
 	---@type Github_Loading.Option
 	local Option = self:Get('/Github-Loading/Loader/Option')
 	local options = self:Get('/Github-Loading/Options')
@@ -394,19 +404,12 @@ end
 ---@param forceDownload boolean
 ---@return Github_Loading.Entities.Main program, Github_Loading.Package package
 function Loader:LoadProgram(option, forceDownload)
-	---@type Github_Loading.PackageLoader
-	local PackageLoader = self:Get('/Github-Loading/Loader/PackageLoader')
-	PackageLoader = PackageLoader.new(self.m_loaderBaseUrl .. '/Packages', self.m_loaderBasePath .. '/Packages',
-		self.Logger:subLogger('PackageLoader'), self.m_internetCard)
-	PackageLoader:SetGlobal()
-	self.Logger:LogDebug('setup PackageLoader')
-
 	self.Logger:LogTrace('loading Core package...')
-	PackageLoader:LoadPackage('Core')
+	PackageLoader:DownloadPackage('Core')
 	self.Logger:LogTrace('loaded Core package')
 
 	self.Logger:LogTrace('loading option package...')
-	local package = PackageLoader:LoadPackage(option.Url, forceDownload)
+	local package = PackageLoader:DownloadPackage(option.Url, forceDownload)
 	PackageLoader:SetCurrentPackage(package)
 	PackageLoader:OnLoaded()
 	self.Logger:LogTrace('loaded package from chosen Option: ' .. option.Name)

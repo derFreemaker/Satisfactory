@@ -24,18 +24,20 @@ end
 
 ---@param url string
 ---@param path string
+---@param packageName string
 ---@param forceDownload boolean
----@return boolean, Github_Loading.Package?
-function PackageLoader:internalDownloadPackage(url, path, forceDownload)
+---@return Github_Loading.Package?
+function PackageLoader:internalDownloadPackage(url, path, packageName, forceDownload)
 	local infoFileUrl = url .. '/Info.lua'
-	local infoFilePath = filesystem.path(path, 'Info.lua')
+	local infoFilePath = filesystem.path(path, '__info.lua')
+
 	---@type Github_Loading.Package.InfoFile?
 	local oldInfoContent = nil
 	if filesystem.exists(infoFilePath) then
 		oldInfoContent = filesystem.doFile(infoFilePath)
 	end
 	if not self:internalDownload(infoFileUrl, infoFilePath, true) then
-		return false
+		return
 	end
 
 	---@type Github_Loading.Package.InfoFile
@@ -46,7 +48,7 @@ function PackageLoader:internalDownloadPackage(url, path, forceDownload)
 	end
 
 	local forceDownloadData = differentVersionFound or forceDownload
-	return true, Package.new(infoContent, forceDownloadData, self)
+	return Package.new(infoContent, packageName, forceDownloadData, self)
 end
 
 ---@param packagesUrl string
@@ -91,9 +93,15 @@ end
 
 ---@param packageName string
 ---@param forceDownload boolean?
----@return boolean, Github_Loading.Package?
-function PackageLoader:DownloadPackage(packageName, forceDownload)
-	self.Logger:LogTrace("downloading package: '" .. packageName .. "'...")
+---@return Github_Loading.Package?, boolean fromCache
+function PackageLoader:LoadPackage(packageName, forceDownload)
+	self.Logger:LogTrace("loading package: '" .. packageName .. "'...")
+
+	local package = self:GetPackage(packageName)
+	if package then
+		self.Logger:LogTrace("found package: '" .. packageName .. "'")
+		return package, true
+	end
 
 	forceDownload = forceDownload or false
 	packageName = packageName:gsub('%.', '/')
@@ -103,38 +111,34 @@ function PackageLoader:DownloadPackage(packageName, forceDownload)
 		"Unable to create folder for package: '" .. packageName .. "'")
 
 	local packageUrl = self.m_packagesUrl .. '/' .. packageName
-	local success, package = self:internalDownloadPackage(packageUrl, packagePath, forceDownload)
-	if not success or not package or not package:Download(packageUrl, packagePath) then
-		return false
+	package = self:internalDownloadPackage(packageUrl, packagePath, packageName, forceDownload)
+	if not package then
+		return nil, false
 	end
 
-	self.Logger:LogTrace("downloaded package: '" .. packageName .. "'")
-	return true, package
+	table.insert(self.Packages, package)
+
+	self.Logger:LogTrace("loaded package: '" .. packageName .. "'")
+	return package, false
 end
 
 ---@param packageName string
+---@param forceDownload boolean?
 ---@return Github_Loading.Package
-function PackageLoader:LoadPackage(packageName, forceDownload)
-	self.Logger:LogTrace("loading package: '" .. packageName .. "'...")
+function PackageLoader:DownloadPackage(packageName, forceDownload)
+	self.Logger:LogTrace("downloading package: '" .. packageName .. "'...")
 
-	local package = self:GetPackage(packageName)
-	if package then
-		self.Logger:LogTrace("found package: '" .. packageName .. "'")
-		return package
+	local package, fromCache = self:LoadPackage(packageName, forceDownload)
+	if not package or not package:Download(self.m_packagesUrl, self.m_packagesPath) then
+		computer.panic("could not download package: '" .. packageName .. "'")
 	end
-
-	local success
-	success, package = self:DownloadPackage(packageName, forceDownload)
-	if success then
-		---@cast package Github_Loading.Package
-		table.insert(self.Packages, package)
-		package:Load()
-	else
-		computer.panic("could not find or download package: '" .. packageName .. "'")
-	end
-
 	---@cast package Github_Loading.Package
-	self.Logger:LogDebug("loaded package: '" .. package.Name .. "'")
+
+	if not fromCache then
+		package:Load()
+	end
+
+	self.Logger:LogDebug("downloaded package: '" .. package.Name .. "'")
 	return package
 end
 
@@ -157,6 +161,8 @@ function PackageLoader:GetModule(moduleToGet)
 			return module
 		end
 	end
+
+	self.Logger:LogDebug("module could not be found: '" .. moduleToGet .. "'")
 
 	moduleToGet = moduleToGet .. ".init"
 

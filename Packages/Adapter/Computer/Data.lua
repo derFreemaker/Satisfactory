@@ -1,5 +1,5 @@
-local Data = {
-	["Adapter.Computer.InternetCard"] = [[
+local Data={
+["Adapter.Computer.InternetCard"] = [[
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
 local Cache = require("Core.Adapter.Cache")()
@@ -56,7 +56,7 @@ end
 return Utils.Class.Create(InternetCard, "Adapter.Computer.InternetCard")
 
 ]],
-	["Adapter.Computer.NetworkCard"] = [[
+["Adapter.Computer.NetworkCard"] = [[
 local ProxyReference = require("Core.References.ProxyReference")
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 

@@ -1,9 +1,12 @@
 {
   "Name": "Http",
   "Namespace": "Net.Http",
-  "Version": "0.1.0-80",
+  "Version": "0.1.0-82",
   "RequiredPackages": [
-    "Net.Core"
+    "Core",
+    "DNS.Client",
+    "Net.Core",
+    "Net.Rest"
   ],
   "PackageType": "Library"
 }

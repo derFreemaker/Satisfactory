@@ -4,35 +4,27 @@ local Utils = LoadedLoaderFiles["/Github-Loading/Loader/Utils"][1]
 
 ---@class Github_Loading.Listener
 ---@field private m_func function
----@field private m_parent any
 local Listener = {}
 
 ---@param func function
----@param parent any
 ---@return Github_Loading.Listener
-function Listener.new(func, parent)
+function Listener.new(func)
     return setmetatable({
-        m_func = func,
-        m_parent = parent
+        m_func = func
     }, { __index = Listener })
 end
 
----@param Task Core.Task | fun(func: function, parent: table?) : Core.Task
+---@param Task Core.Task | fun(func: function) : Core.Task
 ---@return Core.Task task
 function Listener:convertToTask(Task)
-    return Task(self.m_func, self.m_parent)
+    return Task(self.m_func)
 end
 
 ---@param logger Github_Loading.Logger?
 ---@param ... any
 ---@return boolean success, any ...
 function Listener:Execute(logger, ...)
-    local success, results, errorMsg
-    if self.m_parent ~= nil then
-        success, errorMsg, results = Utils.Function.InvokeProtected(self.m_func, self.m_parent, ...)
-    else
-        success, errorMsg, results = Utils.Function.InvokeProtected(self.m_func, ...)
-    end
+    local success, errorMsg, results = Utils.Function.InvokeProtected(self.m_func, ...)
 
     if not success and logger then
         logger:LogError(errorMsg)

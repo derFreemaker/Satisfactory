@@ -123,7 +123,7 @@ function Class.IsClass(obj, metatableOut)
 end
 
 ---@param class object
----@return Utils.Class.Type
+---@return Utils.Class.Type?
 ---@diagnostic disable-next-line
 function typeof(class)
     ---@type Utils.Class.Metatable

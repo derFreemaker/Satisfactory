@@ -1,8 +1,9 @@
 {
   "Name": "Net.Core",
   "Namespace": "Net.Core",
-  "Version": "0.1.0-101",
+  "Version": "0.1.0-103",
   "RequiredPackages": [
+    "Adapter.Computer",
     "Core"
   ],
   "PackageType": "Library"

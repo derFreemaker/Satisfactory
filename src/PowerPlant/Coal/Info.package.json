@@ -1,7 +1,9 @@
 {
   "Name": "PowerPlant.Coal",
   "Namespace": "PowerPlant.Coal",
-  "Version": "0.1.0-32",
-  "RequiredPackages": [],
+  "Version": "0.1.0-34",
+  "RequiredPackages": [
+    "Adapter.Pipeline"
+  ],
   "PackageType": "Application"
 }

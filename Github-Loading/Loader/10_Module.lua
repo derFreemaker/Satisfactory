@@ -16,7 +16,6 @@ function Module.new(moduleInfo, package)
     ---@type Github_Loading.Module
     ---@diagnostic disable-next-line
     local instance = moduleInfo
-
     instance.Package = package
 
     return setmetatable(instance, { __index = Module })
@@ -32,16 +31,18 @@ function Module:Load()
         error("the package of this module is not downloaded")
     end
 
-    local result
     if self.IsRunnable then
-        self.Data = self.Data:gsub("{{{", "[["):gsub("}}}", "]]")
-        result = { load(self.Data, self.Location)() }
+        if InGame then
+            self.Data = self.Data:gsub("{{{", "[["):gsub("}}}", "]]")
+            self.StoredData = { load(self.Data, self.Location)() }
+        else
+            self.StoredData = { require(self.Location:gsub("/", ".")) }
+        end
     else
-        result = { self.Data }
+        self.StoredData = { self.Data }
     end
-    self.StoredData = result
 
-    return table.unpack(result)
+    return table.unpack(self.StoredData)
 end
 
 return Module

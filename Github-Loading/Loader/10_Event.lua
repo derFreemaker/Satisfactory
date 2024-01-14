@@ -66,7 +66,7 @@ function Event:CopyTo(event)
     return event
 end
 
----@param Task Core.Task | fun(func: function, parent: table?) : Core.Task
+---@param Task Core.Task | fun(func: function) : Core.Task
 ---@param event Core.Event
 ---@return Core.Event
 function Event:CopyToCoreEvent(Task, event)

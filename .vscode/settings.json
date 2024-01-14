@@ -1,5 +1,9 @@
 {
-	"Lua.diagnostics.globals": ["Config", "log"],
+	"Lua.diagnostics.globals": [
+		"Config",
+		"log",
+		"InGame"
+	],
 	"Lua.workspace.ignoreDir": [
 		".git",
 		".stfolder",
@@ -9,7 +13,6 @@
 		"Obsidian Vault",
 		"Packages",
 		"PackageTemplate",
-		"Tools/DocUpdater",
 		"Tools/Lua-Bundler",
 		"**/Sim-Files"
 	],
@@ -27,14 +30,13 @@
 		"**/CVS": true,
 		"**/.DS_Store": true,
 		"**/Thumbs.db": true,
-		".stfolder/**": true,
-		"Code-Server/**": true,
-		"Obsidian Vault/**": true,
-		"Packages/**": true
+		".stfolder": true,
+		"Code-Server": true,
+		"Obsidian Vault": true,
+		"Packages": true
 	},
 	"asciidoc.antora.enableAntoraSupport": true,
 	"cSpell.ignoreWords": [
-		"TPCI",
 		"attnamelist",
 		"canbe",
 		"commentstr",

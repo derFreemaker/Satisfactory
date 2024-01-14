@@ -50,7 +50,11 @@ end
 ---@param class object
 ---@return Core.Json.Serializer
 function JsonSerializer:AddClass(class)
-    return self:AddTypeInfo(typeof(class))
+    local typeInfo = typeof(class)
+    if not typeInfo then
+        return self
+    end
+    return self:AddTypeInfo(typeInfo)
 end
 
 ---@param classes object[]
@@ -67,6 +71,10 @@ end
 ---@return table data
 function JsonSerializer:serializeClass(class)
     local typeInfo = typeof(class)
+    if not typeInfo then
+        error("unable to get type from class")
+    end
+
     local data = { __Type = typeInfo.Name, __Data = { class:Serialize() } }
 
     local max = 0

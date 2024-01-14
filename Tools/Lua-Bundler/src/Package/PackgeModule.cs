@@ -20,15 +20,15 @@ namespace Lua_Bundler.Package
 
         public PackageModule(string directoryLocation, FileInfo info, IPackage parent)
         {
-            var fileName = Path.GetFileNameWithoutExtension(info.Name);
-            Location = $"{directoryLocation}.{fileName}";
-            Namespace = $"{directoryLocation}.{fileName}";
+            var fileStem = Path.GetFileNameWithoutExtension(info.Name);
+            Location = $"{directoryLocation.Replace("\\", "/")}/{fileStem}";
+            Namespace = $"{directoryLocation.Replace("\\", ".")}.{fileStem}";
             IsRunnable = info.Extension == ".lua";
 
             LocationPath = info.FullName;
             Parent = parent;
 
-            Id = Location;
+            Id = Namespace;
         }
 
         #region - Analyse -
@@ -88,14 +88,16 @@ namespace Lua_Bundler.Package
 
         #region - Check -
 
-        [GeneratedRegex("require(?>\\(| )\\\"([^\"]*)\\\"(?>\\)| )")]
+        [GeneratedRegex("require(?>\\(| )(?>\\\"|\\')([^\\\"]+?)(?>\\\"|\\')(?>\\)| )")]
         private static partial Regex GetRegexRequireFunction();
         private void CheckRequireFunctions(string content, PackageMap map)
         {
             var requireRegex = GetRegexRequireFunction();
             MatchCollection requireMatches = requireRegex.Matches(content);
 
-            foreach (var match in requireMatches.Cast<Match>())
+            var requireMatches2 = requireMatches.Cast<Match>();
+
+            foreach (var match in requireMatches2)
             {
                 var group = match.Groups[1];
                 var moduleNamespace = group.Value;
@@ -106,22 +108,17 @@ namespace Lua_Bundler.Package
                     continue;
                 }
 
-                CheckRequireModule(map, module);
+                if (module.RequiringModules.Contains(Namespace))
+                    ErrorWriter.ModuleCircularReference(this, module);
+
+                if (module.Parent.Location == Parent.Location)
+                    continue;
+
+                if (!Parent.RequiredPackages.Contains(module.Parent.Location))
+                    Parent.RequiredPackages.Add(module.Parent.Location);
 
                 RequiringModules.Add(moduleNamespace);
             }
-        }
-
-        private void CheckRequireModule(PackageMap map, IPackageModule requireModule)
-        {
-            if (requireModule.RequiringModules.Contains(Namespace))
-                ErrorWriter.ModuleCircularReference(this, requireModule);
-
-            if (requireModule.Parent.Location == Parent.Location)
-                return;
-
-            if (!Parent.RequiredPackages.Contains(requireModule.Parent.Location))
-                Parent.RequiredPackages.Add(requireModule.Parent.Location);
         }
 
         [GeneratedRegex("Utils\\.Class\\.CreateClass\\(.+, \"(.+)\".*?\\)")]

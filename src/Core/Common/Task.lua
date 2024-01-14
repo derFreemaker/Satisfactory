@@ -41,7 +41,7 @@ function Task:GetTraceback()
 	return self:Traceback()
 end
 
----@return "not created" | "dead" | "normal" | "running" | "suspended"
+---@return "not created" | "normal" | "running" | "suspended" | "dead"
 function Task:State()
 	if self.m_thread == nil then
 		return "not created"

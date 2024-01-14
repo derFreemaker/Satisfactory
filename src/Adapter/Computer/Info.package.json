@@ -1,7 +1,7 @@
 {
   "Name": "Adapter.Computer",
   "Namespace": "Adapter.Computer",
-  "Version": "0.1.0-53",
+  "Version": "0.1.0-55",
   "RequiredPackages": [
     "Core"
   ],

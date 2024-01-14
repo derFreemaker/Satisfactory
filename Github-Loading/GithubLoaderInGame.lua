@@ -73,6 +73,8 @@ local function Run()
 		print('[Computer] INFO downloaded Github Loader')
 	end
 
+	InGame = true
+
 	-- ######## load Loader Files and initialize ######## --
 	---@type Github_Loading.Loader
 	Loader = filesystem.doFile(LoaderPath)
@@ -92,7 +94,7 @@ local function Run()
 		return false
 	end
 
-	local chosenOption = Loader:LoadOption(option, showExtendOptionDetails)
+	local chosenOption = Loader:LoadOption(option)
 	local program, package = Loader:LoadProgram(chosenOption, programForceDownload)
 
 	-- ######## start Program ######## --

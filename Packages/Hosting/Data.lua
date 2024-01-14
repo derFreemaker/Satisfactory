@@ -15,7 +15,7 @@ local ServiceCollection = require("Hosting.ServiceCollection")
 local Host = {}
 
 ---@type Core.Task[]
-Host._Static__ReadyTasks = {}
+Host.Static__ReadyTasks = {}
 
 ---@private
 ---@param logger Core.Logger
@@ -31,7 +31,7 @@ function Host:__init(logger, name, jsonSerializer)
 
     EventPullAdapter:Initialize(logger:subLogger("EventPullAdapter"))
 
-    for _, task in pairs(self._Static__ReadyTasks) do
+    for _, task in pairs(self.Static__ReadyTasks) do
         task:Execute(self)
         task:Close()
         task:LogError(self.m_logger, false)

@@ -1,5 +1,3 @@
-local Task = require("Core.Common.Task")
-
 ---@class Core.Event : object
 ---@field private m_funcs Core.Task[]
 ---@field private m_onceFuncs Core.Task[]
@@ -19,17 +17,17 @@ function Event:Count()
     return #self.m_funcs + #self.m_onceFuncs
 end
 
----@param func function
+---@param task Core.Task
 ---@return integer index
-function Event:AddTask(func)
-    table.insert(self.m_funcs, Task(func))
+function Event:AddTask(task)
+    table.insert(self.m_funcs, task)
     return #self.m_funcs
 end
 
----@param func function
+---@param task Core.Task
 ---@return integer index
-function Event:AddTaskOnce(func)
-    table.insert(self.m_onceFuncs, Task(func))
+function Event:AddTaskOnce(task)
+    table.insert(self.m_onceFuncs, task)
     return #self.m_onceFuncs
 end
 

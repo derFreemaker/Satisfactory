@@ -64,7 +64,7 @@ namespace Lua_Bundler.Package
         /// <inheritdoc/>
         public bool BundleData(BundleOptions options)
         {
-            var dataFilePath = Path.Combine(Info.LocationOutputPath, "Data.txt");
+            var dataFilePath = Path.Combine(Info.LocationOutputPath, "Data.lua");
             var copyDataFilePath = dataFilePath + ".copy";
             if (File.Exists(dataFilePath))
             {

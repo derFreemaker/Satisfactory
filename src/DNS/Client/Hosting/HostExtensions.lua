@@ -15,7 +15,7 @@ local function readyTaskWaitForDNSServer(host)
     DNSClient.Static__WaitForHeartbeat(host:GetNetworkClient())
 end
 
-table.insert(Host._Static__ReadyTasks, Task(readyTaskWaitForDNSServer))
+table.insert(Host.Static__ReadyTasks, Task(readyTaskWaitForDNSServer))
 
 ---@class Hosting.Host
 ---@field package m_dnsClient DNS.Client

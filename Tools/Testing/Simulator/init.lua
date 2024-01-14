@@ -23,12 +23,11 @@ local requireFunc = require --[[@as fun(moduleName: string)]]
 function Simulator:OverrideRequire()
 	---@param moduleToGet string
 	function require(moduleToGet)
-		local success, result = pcall(requireFunc, 'src.' .. moduleToGet)
-		if success then
-			return result
+		local result = { requireFunc("src." .. moduleToGet) }
+		if type(result[#result]) == "string" then
+			result[#result] = nil
 		end
-
-		return requireFunc("src." .. moduleToGet .. ".init")
+		return table.unpack(result)
 	end
 end
 
@@ -101,14 +100,29 @@ end
 ---@param logLevel Github_Loading.Logger.LogLevel?
 ---@param fileSystemPath string?
 ---@param eeprom string?
+---@param forceDownload boolean?
 ---@return Test.Simulator, Github_Loading.Loader
-function Simulator:InitializeWithLoader(logLevel, fileSystemPath, eeprom)
+function Simulator:InitializeWithLoader(logLevel, fileSystemPath, eeprom, forceDownload)
 	local Curl = require("Tools.Curl")
 	local Loader = require("Github-Loading.Loader")
-	self:Initialize(logLevel, fileSystemPath, eeprom)
 
-	Loader = Loader.new("http://localhost", "", false, Curl)
-	Loader:Load(1)
+	local simulatorPath = FileSystem.GetCurrentDirectory()
+	CurrentPath = simulatorPath:gsub("Tools/Testing/Simulator", "")
+
+	if not fileSystemPath then
+		local info = debug.getinfo(2)
+		fileSystemPath = Path.new(info.source)
+			:GetParentFolderPath()
+			:Append("Sim-Files")
+			:ToString()
+	end
+
+	self:prepare(logLevel or 3, Path.new(fileSystemPath), eeprom or "")
+
+	Loader = Loader.new("http://localhost", "", forceDownload or false, Curl)
+	Loader:Load(logLevel)
+
+	PackageLoader:DownloadPackage("Core", true)
 
 	return self, Loader
 end

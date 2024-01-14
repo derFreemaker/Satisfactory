@@ -79,7 +79,7 @@ namespace Lua_Bundler
                 if (file.Name == "Info.package.json")
                     continue;
 
-                var package = new PackageModule(locationPath.Replace(_Config.SourcePath + "\\", "").Replace("\\", "."), file, parent);
+                var package = new PackageModule(locationPath.Replace(_Config.SourcePath + "\\", ""), file, parent);
                 modules.Add(package);
             }
 

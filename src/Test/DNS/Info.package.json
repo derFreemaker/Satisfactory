@@ -1,7 +1,11 @@
 {
   "Name": "Test-DNS",
   "Namespace": "Test.DNS",
-  "Version": "0.1.0-87",
-  "RequiredPackages": [],
+  "Version": "0.1.0-89",
+  "RequiredPackages": [
+    "Core",
+    "DNS.Client",
+    "Net.Core"
+  ],
   "PackageType": "Application"
 }

@@ -1,13 +1,15 @@
-local _, logger = require('Tools.Testing.Simulator'):Initialize(1)
+print("### START ###")
 
--- local FileSystem = require("Tools.FileSystem")
+-- local sim = require('Tools.Testing.Simulator'):Initialize(1)
+local sim, loader = require('Tools.Testing.Simulator'):InitializeWithLoader(1, nil, nil, true)
 
--- local path = FileSystem.Path("lol/hi/")
+local option = loader:LoadOption("FactoryControl_Server")
+sim:OverrideRequire()
 
--- print(path:Relative():GetPath())
+local program, package = loader:LoadProgram(option, true)
 
--- local UUID = require("Core.Common.UUID")
+loader:Configure(program, package, 1)
+loader:Run(program)
 
--- print(UUID.Static__New():ToString())
-
+print(computer.getMemory())
 print("### END ###")

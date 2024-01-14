@@ -1,8 +1,0 @@
-baseURL = "https://example.com"
-languageCode = "en"
-title = "Freemaker Docs"
-theme = "hugo-theme-monochrome"
-defaultContentLanguage = "en-us"
-enableEmoji = true
-paginate = 5
-enableGitInfo = true

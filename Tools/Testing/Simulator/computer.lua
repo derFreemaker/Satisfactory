@@ -26,7 +26,8 @@ return function(eeprom)
     ---@param errorMsg string
     ---@diagnostic disable-next-line
     function computer.panic(errorMsg)
-        print("[PANIC]: " .. errorMsg)
+        errorMsg = "[PANIC]: " .. errorMsg
+        print(errorMsg)
         os.exit(-1)
     end
 

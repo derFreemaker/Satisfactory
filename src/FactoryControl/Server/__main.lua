@@ -1,3 +1,5 @@
+---@using DNS.Client
+
 local Config = require('FactoryControl.Core.Config')
 local Usage = require('Core.Usage.init')
 

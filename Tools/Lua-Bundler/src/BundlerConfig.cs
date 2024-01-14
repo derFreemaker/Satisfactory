@@ -13,8 +13,8 @@ namespace Lua_Bundler
 
         public BundlerConfig(BundlerConfigDataObject config)
         {
-            SourcePath = config.SourcePath;
-            OutputPath = config.OutputPath;
+            SourcePath = Path.TrimEndingDirectorySeparator(config.SourcePath);
+            OutputPath = Path.TrimEndingDirectorySeparator(config.OutputPath);
 
 
             config.Package = config.Package == "*" ? "." : config.Package;

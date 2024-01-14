@@ -65,6 +65,7 @@ TestFramework:AddTest("Connection", connection)
 local TestFramework = require("Test.Framework.init")
 local Helper = require("Test.FactoryControl.Helper")
 
+local Task = require("Core.Common.Task")
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
 ---@param logger Core.Logger
@@ -79,20 +80,22 @@ local function controlling(logger)
     local button = controller:AddButton(featureName)
     assert(button, "could not add button")
     local pressed = false
-    button.OnChanged:AddListener(function()
-        pressed = true
-    end)
+    button.OnChanged:AddTask(
+        Task(function()
+            pressed = true
+        end)
+    )
 
     log("getting controller")
-    local getedController = client:GetControllerByName("Controlling")
-    if not getedController then
+    local gotController = client:GetControllerByName("Controlling")
+    if not gotController then
         log("could not get controller by name")
-        getedController = client:GetControllerById(controller.Id)
+        gotController = client:GetControllerById(controller.Id)
     end
-    assert(getedController, "could not get controller")
+    assert(gotController, "could not get controller")
 
     log("getting button")
-    local feature = getedController:GetFeatureByName(featureName)
+    local feature = gotController:GetFeatureByName(featureName)
     assert(feature, "could not get feature")
     ---@cast feature FactoryControl.Client.Entities.Controller.Feature.Button
 
@@ -111,6 +114,7 @@ TestFramework:AddTest("Controlling", controlling)
 local TestFramework = require("Test.Framework.init")
 local Helper = require("Test.FactoryControl.Helper")
 
+local Task = require("Core.Common.Task")
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
 ---@param logger Core.Logger
@@ -123,9 +127,11 @@ local function overall(logger)
 
     log("adding listener to button")
     local pressed = false
-    button.OnChanged:AddListener(function()
-        pressed = true
-    end)
+    button.OnChanged:AddTask(
+        Task(function()
+            pressed = true
+        end)
+    )
 
     log("pressing button")
     button:Press()
@@ -140,6 +146,7 @@ TestFramework:AddTest("Button Overall", overall)
 local TestFramework = require("Test.Framework.init")
 local Helper = require("Test.FactoryControl.Helper")
 
+local Task = require("Core.Common.Task")
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
 ---@param logger Core.Logger
@@ -158,11 +165,13 @@ local function overall(logger)
     log("adding listener to chart")
     local called = false
     local dataCount = 0
+    chart.OnChanged:AddTask(
     ---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Chart.Update
-    chart.OnChanged:AddListener(function(featureUpdate)
-        called = true
-        dataCount = #chart:GetData() - #featureUpdate.Data
-    end)
+        Task(function(featureUpdate)
+            called = true
+            dataCount = #chart:GetData() - #featureUpdate.Data
+        end)
+    )
 
     log("modifying chart")
     chart:Modify(function(modify)
@@ -180,6 +189,7 @@ TestFramework:AddTest("Chart Overall", overall)
 local TestFramework = require("Test.Framework.init")
 local Helper = require("Test.FactoryControl.Helper")
 
+local Task = require("Core.Common.Task")
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
 ---@param logger Core.Logger
@@ -193,11 +203,13 @@ local function overall(logger)
     log("adding listener to radial")
     local called = false
     local setting = 0
+    radial.OnChanged:AddTask(
     ---@param featureUpdate FactoryControl.Core.Entities.Controller.Feature.Radial.Update
-    radial.OnChanged:AddListener(function(featureUpdate)
-        called = true
-        setting = featureUpdate.Setting
-    end)
+        Task(function(featureUpdate)
+            called = true
+            setting = featureUpdate.Setting
+        end)
+    )
 
     log("modifying radial")
     radial:Modify(function(modify)
@@ -215,6 +227,7 @@ TestFramework:AddTest("Radial Overall", overall)
 local TestFramework = require("Test.Framework.init")
 local Helper = require("Test.FactoryControl.Helper")
 
+local Task = require("Core.Common.Task")
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
 ---@param logger Core.Logger
@@ -228,12 +241,14 @@ local function overall(logger)
     log("adding listener to switch")
     local called = false
     local switched = false
-    switch.OnChanged:AddListener(function(isEnabled)
-        called = true
-        if isEnabled then
-            switched = isEnabled
-        end
-    end)
+    switch.OnChanged:AddTask(
+        Task(function(isEnabled)
+            called = true
+            if isEnabled then
+                switched = isEnabled
+            end
+        end)
+    )
 
     log("toggling switch")
     switch:Toggle()
