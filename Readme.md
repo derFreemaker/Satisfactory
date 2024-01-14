@@ -80,7 +80,3 @@ The BuildNumber can only be an integer.
 ### More Information in the Obsidian Vault
 
 Download: [Obsidian](https://obsidian.md)
-
-### New (WIP)
-
-[Github Pages](https://derfreemaker.github.io/Satisfactory/)
