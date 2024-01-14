@@ -1,4 +1,4 @@
-local Curl = require("Tools.Curl")
+local Curl = require("tools.Curl")
 
 ---@param eeprom string
 return function(eeprom)

@@ -1,5 +1,5 @@
-[submodule "Tools/Freemaker"]
-	path = Tools/Freemaker
+[submodule "tools/Freemaker"]
+	path = tools/Freemaker
 	url = http://github.com/derFreemaker/Freemaker.Lua
 [submodule "docu"]
 	path = docu

@@ -6,14 +6,12 @@
 	],
 	"Lua.workspace.ignoreDir": [
 		".git",
-		".stfolder",
 		".vscode",
-		".pages",
 		"Code-Server",
 		"Obsidian Vault",
 		"Packages",
 		"PackageTemplate",
-		"Tools/Lua-Bundler",
+		"tools/Lua-Bundler",
 		"**/Sim-Files"
 	],
 	"Lua.workspace.useGitIgnore": false,

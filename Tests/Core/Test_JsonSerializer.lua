@@ -1,5 +1,5 @@
-local luaunit = require('Tools.Testing.Luaunit')
-require('Tools.Testing.Simulator'):Initialize(1)
+local luaunit = require('tools.Testing.Luaunit')
+require('tools.Testing.Simulator'):Initialize(1)
 
 local UUID = require("Core.Common.UUID")
 local JsonSerializer = require("Core.Json.JsonSerializer")

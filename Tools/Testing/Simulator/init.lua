@@ -1,11 +1,11 @@
-local FileSystem = require("Tools.Freemaker.bin.filesystem")
-local Path = require("Tools.Freemaker.bin.path")
+local FileSystem = require("tools.Freemaker.bin.filesystem")
+local Path = require("tools.Freemaker.bin.path")
 
-local loadClassesAndStructs = require("Tools.Testing.Simulator.classes&structs")
-local loadFileSystem = require("Tools.Testing.Simulator.filesystem")
-local loadComputer = require("Tools.Testing.Simulator.computer")
-local loadComponent = require("Tools.Testing.Simulator.component")
-local loadEvent = require("Tools.Testing.Simulator.event")
+local loadClassesAndStructs = require("tools.Testing.Simulator.classes&structs")
+local loadFileSystem = require("tools.Testing.Simulator.filesystem")
+local loadComputer = require("tools.Testing.Simulator.computer")
+local loadComponent = require("tools.Testing.Simulator.component")
+local loadEvent = require("tools.Testing.Simulator.event")
 
 local CurrentPath = ''
 
@@ -16,7 +16,7 @@ local Simulator = {}
 
 ---@private
 function Simulator:loadLoaderFiles()
-	self.m_loadedLoaderFiles = require("Tools.Testing.Simulator.LoadFiles")(CurrentPath)
+	self.m_loadedLoaderFiles = require("tools.Testing.Simulator.LoadFiles")(CurrentPath)
 end
 
 local requireFunc = require --[[@as fun(moduleName: string)]]
@@ -82,7 +82,7 @@ end
 ---@return Test.Simulator
 function Simulator:Initialize(logLevel, fileSystemPath, eeprom)
 	local simulatorPath = FileSystem.GetCurrentDirectory()
-	CurrentPath = simulatorPath:gsub("Tools/Testing/Simulator", "")
+	CurrentPath = simulatorPath:gsub("tools/Testing/Simulator", "")
 
 	if not fileSystemPath then
 		local info = debug.getinfo(2)
@@ -103,11 +103,11 @@ end
 ---@param forceDownload boolean?
 ---@return Test.Simulator, Github_Loading.Loader
 function Simulator:InitializeWithLoader(logLevel, fileSystemPath, eeprom, forceDownload)
-	local Curl = require("Tools.Curl")
+	local Curl = require("tools.Curl")
 	local Loader = require("Github-Loading.Loader")
 
 	local simulatorPath = FileSystem.GetCurrentDirectory()
-	CurrentPath = simulatorPath:gsub("Tools/Testing/Simulator", "")
+	CurrentPath = simulatorPath:gsub("tools/Testing/Simulator", "")
 
 	if not fileSystemPath then
 		local info = debug.getinfo(2)

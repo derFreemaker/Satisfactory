@@ -1,7 +1,7 @@
 print("### START ###")
 
--- local sim = require('Tools.Testing.Simulator'):Initialize(1)
-local sim, loader = require('Tools.Testing.Simulator'):InitializeWithLoader(1, nil, nil, true)
+-- local sim = require('tools.Testing.Simulator'):Initialize(1)
+local sim, loader = require('tools.Testing.Simulator'):InitializeWithLoader(1, nil, nil, true)
 
 local option = loader:LoadOption("FactoryControl_Server")
 sim:OverrideRequire()

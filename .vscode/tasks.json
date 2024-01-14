@@ -6,7 +6,7 @@
 		{
 			"label": "Start Code Server",
 			"type": "shell",
-			"command": "${workspaceFolder}/Tools/start_Code_Server.bat",
+			"command": "${workspaceFolder}/tools/start_Code_Server.bat",
 			"args": ["\"${workspaceFolder}/Code-Server\""],
 			"presentation": {
 				"echo": true,
@@ -23,7 +23,7 @@
 		},
 		{
 			"label": "check all",
-			"command": "${workspaceFolder}\\Tools\\Lua-Bundler\\Lua-Bundler.exe",
+			"command": "${workspaceFolder}\\tools\\Lua-Bundler\\Lua-Bundler.exe",
 			"args": [
 				"--SourcePath",
 				"${workspaceFolder}\\src",
@@ -62,7 +62,7 @@
 		},
 		{
 			"label": "bundle All",
-			"command": "${workspaceFolder}\\Tools\\Lua-Bundler\\Lua-Bundler.exe",
+			"command": "${workspaceFolder}\\tools\\Lua-Bundler\\Lua-Bundler.exe",
 			"args": [
 				"--SourcePath",
 				"${workspaceFolder}\\src",
@@ -97,7 +97,7 @@
 		},
 		// {
 		// 	"label": "bundle All optimized",
-		// 	"command": "${workspaceFolder}\\Tools\\Lua-Bundler\\Lua-Bundler.exe",
+		// 	"command": "${workspaceFolder}\\tools\\Lua-Bundler\\Lua-Bundler.exe",
 		// 	"args": [
 		// 		"--SourcePath",
 		// 		"${workspaceFolder}\\src",

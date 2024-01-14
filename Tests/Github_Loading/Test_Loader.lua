@@ -1,8 +1,8 @@
-local luaunit = require('Tools.Testing.Luaunit')
+local luaunit = require('tools.Testing.Luaunit')
 
-local FileSystem = require("Tools.Freemaker.bin.filesystem")
+local FileSystem = require("tools.Freemaker.bin.filesystem")
 local FileSystemPath = FileSystem:GetCurrentDirectory() .. "/Sim-Files/Test_LoaderLoad"
-local Sim, Loader = require('Tools.Testing.Simulator'):InitializeWithLoader(1, FileSystemPath, nil, true)
+local Sim, Loader = require('tools.Testing.Simulator'):InitializeWithLoader(1, FileSystemPath, nil, true)
 
 function TestCheckVersion()
     _ = Loader:CheckVersion()

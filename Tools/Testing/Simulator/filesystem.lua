@@ -1,5 +1,5 @@
-local FileSystem = require("Tools.Freemaker.bin.filesystem")
-local Path = require("Tools.Freemaker.bin.path")
+local FileSystem = require("tools.Freemaker.bin.filesystem")
+local Path = require("tools.Freemaker.bin.path")
 
 ---@param file file*
 ---@return FIN.Filesystem.File

@@ -1,9 +1,9 @@
-local luaunit = require('Tools.Testing.Luaunit')
+local luaunit = require('tools.Testing.Luaunit')
 
-local Curl = require("Tools.Curl")
+local Curl = require("tools.Curl")
 local Installer = require("SphinxOS.misc.installer")
 
-local FileSystem = require("Tools.Freemaker.bin.filesystem")
+local FileSystem = require("tools.Freemaker.bin.filesystem")
 local currentPath = FileSystem:GetCurrentDirectory()
 local FileSystemPath = currentPath .. "/Sim-Files/Test_LoaderLoad"
 
@@ -15,7 +15,7 @@ end
 local eeprom = eepromFile:read("a")
 eepromFile:close()
 
-local Sim = require('Tools.Testing.Simulator'):Initialize(1, FileSystemPath, eeprom)
+local Sim = require('tools.Testing.Simulator'):Initialize(1, FileSystemPath, eeprom)
 
 local BASE_URL = "http://localhost"
 -- local BASE_URL = "https://raw.githubusercontent.com/derFreemaker/Satisfactory/main"
