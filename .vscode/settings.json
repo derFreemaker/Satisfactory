@@ -13,7 +13,8 @@
 		"PackageTemplate",
 		"tools/Lua-Bundler",
 		"docu/tools",
-		"**/Sim-Files"
+		"**/Sim-Files",
+		"**/Freemaker/src"
 	],
 	"Lua.workspace.useGitIgnore": false,
 	"Lua.workspace.ignoreSubmodules": false,
