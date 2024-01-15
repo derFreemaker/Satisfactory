@@ -12,6 +12,7 @@
 		"Packages",
 		"PackageTemplate",
 		"tools/Lua-Bundler",
+		"docu/tools",
 		"**/Sim-Files"
 	],
 	"Lua.workspace.useGitIgnore": false,
