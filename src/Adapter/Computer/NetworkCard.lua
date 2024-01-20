@@ -1,7 +1,7 @@
 local ProxyReference = require("Core.References.ProxyReference")
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
-local Cache = require("Core.Adapter.Cache")()
+local Cache = require("Core.Common.Cache")()
 
 ---@class Adapter.Computer.NetworkCard : Adapter.IAdapter
 ---@field private m_refNetworkCard Core.IReference<FIN.Components.NetworkCard_C>
