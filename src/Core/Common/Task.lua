@@ -1,5 +1,5 @@
 ---@class Core.Task : object
----@field private m_func fun(...)
+---@field private m_func function
 ---@field private m_thread thread
 ---@field private m_closed boolean
 ---@field private m_success boolean

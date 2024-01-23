@@ -150,8 +150,8 @@ function File:Close()
 end
 
 function File:Clear()
-    local isOpen = self:IsOpen()
-    if isOpen then
+    local wasOpen = self:IsOpen()
+    if wasOpen then
         self:Close()
     end
 
@@ -165,7 +165,7 @@ function File:Clear()
     file:write("")
     file:close()
 
-    if isOpen then
+    if wasOpen then
         self.m_file = filesystem.open(self.m_path:GetPath(), self.m_mode)
     end
 end

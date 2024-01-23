@@ -1,11 +1,11 @@
 ---@class Core.PCIDeviceReference<T> : Core.IReference<T>
----@field m_class FIN.Class
+---@field m_class FIN.PCIDevice
 ---@field m_index integer
 ---@overload fun(class: FIN.Class, index: integer) : Core.PCIDeviceReference
 local PCIDeviceReference = {}
 
 ---@private
----@param class FIN.Class
+---@param class FIN.PCIDevice
 ---@param index integer
 function PCIDeviceReference:__init(class, index)
     self.m_class = class
