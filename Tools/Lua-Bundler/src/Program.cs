@@ -6,7 +6,7 @@ namespace Lua_Bundler
     {
         private static void Main(string[] args)
         {
-            ParserResult<BundlerConfigDataObject> parseResult = Parser.Default.ParseArguments<BundlerConfigDataObject>(args);
+            var parseResult = Parser.Default.ParseArguments<BundlerConfigDataObject>(args);
             if (parseResult.Tag == ParserResultType.NotParsed)
             {
                 Environment.Exit(0);

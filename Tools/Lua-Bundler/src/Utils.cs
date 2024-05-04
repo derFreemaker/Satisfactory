@@ -6,17 +6,18 @@ namespace Lua_Bundler
     {
         internal static int Generated = 0;
 
+        private const string CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        
         internal static string GenerateId()
         {
-            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
             char[] stringChars = new char[8];
-            Random random = new(Generated);
+            var random = new Random(Generated);
 
             for (int i = 0; i < stringChars.Length; i++)
-                stringChars[i] = chars[random.Next(chars.Length)];
+                stringChars[i] = CHARS[random.Next(CHARS.Length)];
 
             Generated++;
-            return new(stringChars);
+            return new string(stringChars);
         }
 
         [GeneratedRegex(@"(?:([\n]+?))")]

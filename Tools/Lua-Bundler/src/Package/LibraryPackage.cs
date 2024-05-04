@@ -1,28 +1,24 @@
 ﻿using Lua_Bundler.Interfaces;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Principal;
 using System.Text;
 
 namespace Lua_Bundler.Package
 {
     internal class LibraryPackage : IPackage
     {
-        private readonly PackageInfo Info;
+        private readonly PackageInfo _Info;
         public List<IPackageModule> Modules { get; private set; } = new();
 
         public LibraryPackage(PackageInfo info)
         {
-            Info = info;
+            _Info = info;
         }
 
         public IPackageInfo GetInfo()
-            => Info;
+            => _Info;
 
         public void Map(PackageMap map)
         {
-            Modules = map.Finder.FindModules(Info.LocationSourcePath, this);
+            Modules = map.Finder.FindModules(_Info.LocationSourcePath, this);
 
             foreach (var module in Modules)
                 module.Map(map);
@@ -33,18 +29,18 @@ namespace Lua_Bundler.Package
             foreach (var module in Modules)
                 module.Check(map);
 
-            Info.Check(map);
-            Info.Save();
+            _Info.Check(map);
+            _Info.Save();
 
-            foreach (var requiredPackge in Info.RequiredPackages)
+            foreach (var requiredPackage in _Info.RequiredPackages)
             {
-                if (!map.TryGetPackage(requiredPackge, out var package))
+                if (!map.TryGetPackage(requiredPackage, out var package))
                 {
-                    ErrorWriter.PackageRequireNotFound(requiredPackge, Info.InfoFileSourcePath);
+                    ErrorWriter.PackageRequireNotFound(requiredPackage, _Info.InfoFileSourcePath);
                     continue;
                 }
 
-                if (package.RequiredPackages.Contains(Info.Location))
+                if (package.RequiredPackages.Contains(_Info.Location))
                     ErrorWriter.PackageCircularReference(package, this);
             }
         }
@@ -52,23 +48,22 @@ namespace Lua_Bundler.Package
         /// <inheritdoc/>
         public void Bundle(BundleOptions options)
         {
-            if (!Directory.Exists(Info.LocationOutputPath))
-                Directory.CreateDirectory(Info.LocationOutputPath);
+            if (!Directory.Exists(_Info.LocationOutputPath))
+                Directory.CreateDirectory(_Info.LocationOutputPath);
 
             var changed = BundleData(options);
             if (changed)
             {
-                Info.UpdateBuildNumber();
-                Info.Save();
+                _Info.UpdateBuildNumber();
+                _Info.Save();
             }
 
-            Info.Bundle(options, this);
+            _Info.Bundle(options, this);
         }
 
-        /// <inheritdoc/>
         public bool BundleData(BundleOptions options)
         {
-            var dataFilePath = Path.Combine(Info.LocationOutputPath, "Data.lua");
+            var dataFilePath = Path.Combine(_Info.LocationOutputPath, "Data.lua");
             var copyDataFilePath = dataFilePath + ".copy";
             if (File.Exists(dataFilePath))
             {
@@ -84,9 +79,9 @@ namespace Lua_Bundler.Package
 
             foreach (var module in Modules)
             {
-                builder.AppendLine($"[\"{module.Id}\"] = [[");
+                builder.AppendLine($"[\"{module.Id}\"] = [=[");
                 builder.AppendLine(module.BundleData(options));
-                builder.AppendLine("]],");
+                builder.AppendLine("]=],");
             }
 
             builder.AppendLine("}");
@@ -101,7 +96,7 @@ namespace Lua_Bundler.Package
                 var dataCopy = File.ReadAllText(copyDataFilePath);
                 File.Delete(copyDataFilePath);
 
-                var changed = data.CompareTo(dataCopy) != 0;
+                var changed = string.Compare(data, dataCopy, StringComparison.InvariantCulture) != 0;
                 return changed;
             }
 
@@ -111,17 +106,17 @@ namespace Lua_Bundler.Package
         #region - IPackage -
 
         string IPackage.Name
-            => Info.Name;
+            => _Info.Name;
         string IPackage.Version
-            => Info.Version;
+            => _Info.Version;
         string IPackage.Namespace
-            => Info.Namespace;
+            => _Info.Namespace;
         List<string> IPackage.RequiredPackages
-            => Info.RequiredPackages;
+            => _Info.RequiredPackages;
         string IPackage.Location
-            => Info.Location;
+            => _Info.Location;
         string IPackage.LocationPath
-            => Info.LocationSourcePath;
+            => _Info.LocationSourcePath;
 
         #endregion
     }

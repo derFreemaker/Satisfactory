@@ -5,8 +5,11 @@
 **/bin
 **/obj
 
-# ignore .stfolder used for Syncthing
-.stfolder/
+# ignore userfiles
+*.user
+
+# ignore .idea from JetBrains 
+**/.idea
 
 # ignore .vs folder
 .vs/

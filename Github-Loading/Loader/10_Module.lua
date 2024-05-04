@@ -33,7 +33,7 @@ function Module:Load()
 
     if self.IsRunnable then
         if InGame then
-            self.Data = self.Data:gsub("{{{", "[["):gsub("}}}", "]]")
+            self.Data = self.Data
             self.StoredData = { load(self.Data, self.Location)() }
         else
             self.StoredData = { require(self.Location:gsub("/", ".")) }

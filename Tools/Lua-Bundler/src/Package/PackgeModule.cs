@@ -126,7 +126,7 @@ namespace Lua_Bundler.Package
         private void CheckCreateClass(string content, PackageMap map)
         {
             var createClassRegex = GetRegexCreateClass();
-            MatchCollection createClassMatches = createClassRegex.Matches(content);
+            var createClassMatches = createClassRegex.Matches(content);
 
             foreach (var match in createClassMatches.Cast<Match>())
             {
@@ -137,7 +137,6 @@ namespace Lua_Bundler.Package
                 if (!map.TryAddClass(className, (LocationPath, lineInfo)))
                 {
                     ErrorWriter.ClassExistsMoreThanOnce(className, (LocationPath, lineInfo), map.GetClassFileLineInfo(className)!);
-                    continue;
                 }
             }
         }
@@ -184,20 +183,12 @@ namespace Lua_Bundler.Package
         }
 
         #region - Modify -
-        private static void ConvertLines(Span<string> lines)
-        {
-            for (int i = 0; i < lines.Length; i++)
-            {
-                string line = lines[i];
-                lines[i] = line.Replace("[[", "{{{").Replace("]]", "}}}");
-            }
-        }
         private static void RemoveComments(Span<string> lines)
         {
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i];
-                int foundComment = line.IndexOf("--");
+                int foundComment = line.IndexOf("--", StringComparison.InvariantCulture);
                 if (foundComment == -1)
                     continue;
 
@@ -224,13 +215,8 @@ namespace Lua_Bundler.Package
             return CollectionsMarshal.AsSpan(newLines);
         }
 
-        private static Span<string> ModifyContent(Span<string> content, BundleOptions options, IPackageModule module)
+        private static Span<string> ModifyContent(Span<string> content, BundleOptions options)
         {
-            if (module.IsRunnable)
-            {
-                ConvertLines(content);
-            }
-
             if (options.RemoveComments)
             {
                 RemoveComments(content);
@@ -266,14 +252,11 @@ namespace Lua_Bundler.Package
         public string BundleData(BundleOptions options)
         {
             var content = File.ReadAllLines(LocationPath).AsSpan();
-            content = ModifyContent(content, options, this);
+            content = ModifyContent(content, options);
             var builder = new StringBuilder();
 
             foreach (var line in content)
             {
-                if (line is null)
-                    continue;
-
                 builder.AppendLine(line);
             }
 
