@@ -14,33 +14,44 @@ namespace Lua_Bundler
             _BundleOptions = config.Options;
         }
 
-        internal void Map()
+        private void Map()
         {
             _PackageMap.Map();
         }
 
-        internal void Check()
+        private CheckResult Check()
         {
-            foreach ((_, var package) in _PackageMap.GetPackages())
-                package.Check(_PackageMap);
+            var result = new CheckResult();
+            
+            foreach (var (_, package) in _PackageMap.GetPackages())
+                package.Check(_PackageMap, ref result);
+
+            return result;
         }
 
-        internal void Bundle()
+        private void Bundle()
         {
             if (!_BundleOptions.Bundle)
                 throw new InvalidOperationException("bundle feature got deactivated in config");
 
-            foreach ((_, var package) in _PackageMap.GetPackages())
+            foreach (var (_, package) in _PackageMap.GetPackages())
                 package.Bundle(_BundleOptions);
         }
 
-        internal void Run()
+        internal int Run()
         {
             Map();
-            Check();
+            var result = Check();
 
+            if (result.HasError) {
+                Console.WriteLine("Check failed. Exiting...");
+                return 1;
+            }
+            
             if (_BundleOptions.Bundle)
                 Bundle();
+
+            return 0;
         }
     }
 }

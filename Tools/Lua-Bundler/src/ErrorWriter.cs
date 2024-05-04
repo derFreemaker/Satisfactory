@@ -6,19 +6,26 @@ namespace Lua_Bundler
     {
         private static class Core
         {
-            private static void WriteError(string kind, string code, FileLineInfo info)
+            private static void WriteError(string kind, string message, FileLineInfo info)
             {
-                Console.WriteLine($"{kind}'-'{code}'-'{info.FilePath}'-{info.Line}:{info.Start}:{info.End}");
+                Console.WriteLine("{0}'-'{1}'-'{2}'-{3}:{4}:{5}", kind, message, info.FilePath, info.Line, info.Start, info.End);
             }
 
+            internal static void Error(string subKind, FileLineInfo info, string message)
+            {
+                WriteError($"{subKind}_Error", message, info);
+            }
+            
             internal static void CircularReference(string subKind, string location, FileLineInfo info)
             {
-                WriteError($"{subKind}_CircularReference", $"'{location}' is already referencing this", info);
+                WriteError($"{subKind}_CircularReference",
+                           $"'{location}' is already referencing this", info);
             }
 
             internal static void ExistsMoreThanOnce(string subKind, string location, FileLineInfo info)
             {
-                WriteError($"{subKind}_Exists_MoreThanOnce", $"'{location}' exists more than once", info);
+                WriteError($"{subKind}_Exists_MoreThanOnce",
+                           $"'{location}' exists more than once", info);
             }
 
             internal static void NotFound(string subKind, string @namespace, FileLineInfo info)
@@ -76,9 +83,13 @@ namespace Lua_Bundler
             Core.ExistsMoreThanOnce("Module", module.Namespace, (module.LocationPath, null));
         }
 
-        internal static void ModuleNotFound(string moduleName, FileLineInfo info)
+        internal static void ModuleNotFound(string moduleNamespace, FileLineInfo info)
         {
-            Core.NotFound("Module", moduleName, info);
+            Core.NotFound("Module", moduleNamespace, info);
+        }
+
+        internal static void ModuleMultiLineStringWithLevel10Found(FileLineInfo info) {
+            Core.Error("Module", info, "Cannot use multiline string close with a level of 10 since it is reserved for the bundler.");
         }
 
         #endregion

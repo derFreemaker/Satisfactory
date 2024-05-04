@@ -23,7 +23,7 @@ namespace Lua_Bundler
         [GeneratedRegex(@"(?:([\n]+?))")]
         private static partial Regex GetRegexNewLine();
 
-        internal static (int Line, int Colomn, int EndColomn) GetLine(string content, Group group)
+        internal static (int Line, int Column, int EndColumn) GetLine(string content, int index, int length)
         {
             var newLineRegex = GetRegexNewLine();
             var newLineMatches = newLineRegex.Matches(content);
@@ -34,16 +34,15 @@ namespace Lua_Bundler
             {
                 var newLineGroup = newLineMatch.Groups[1];
 
-                if (newLineGroup.Index > group.Index)
+                if (newLineGroup.Index > index)
                     break;
 
                 line++;
                 lastLineEnd = newLineGroup.Index + newLineGroup.Length;
             }
 
-            var index = group.Index - lastLineEnd + 1;
-
-            return (line, index, index + group.Length);
+            var column = index - lastLineEnd + 1;
+            return (line, column, column + length);
         }
     }
 }

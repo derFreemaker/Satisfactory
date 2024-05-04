@@ -6,8 +6,8 @@ namespace Lua_Bundler
     {
         private readonly int _Depth;
 
-        private readonly Dictionary<string, IPackageModule> _Modules = new();
-        private readonly Dictionary<string, PackageMapPart> _Childs = new();
+        private readonly Dictionary<string, IPackageModule> _Modules = new Dictionary<string, IPackageModule>();
+        private readonly Dictionary<string, PackageMapPart> _Childs = new Dictionary<string, PackageMapPart>();
 
         public PackageMapPart(int depth = 0)
         {

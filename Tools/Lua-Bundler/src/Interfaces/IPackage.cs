@@ -16,7 +16,7 @@
 
         public void Map(PackageMap map);
         
-        public void Check(PackageMap map);
+        public void Check(PackageMap map, ref CheckResult result);
 
         /// <summary>
         /// </summary>

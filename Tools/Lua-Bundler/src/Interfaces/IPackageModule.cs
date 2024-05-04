@@ -13,7 +13,7 @@
         public List<string> RequiringModules { get; }
 
         public void Map(PackageMap map);
-        public void Check(PackageMap map);
+        public void Check(PackageMap map, ref CheckResult result);
         public string BundleInfo(BundleOptions options);
         public string BundleData(BundleOptions options);
     }

@@ -1,4 +1,5 @@
-﻿using Lua_Bundler.Interfaces;
+﻿using System.Globalization;
+using Lua_Bundler.Interfaces;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -24,7 +25,7 @@ namespace Lua_Bundler.Package
             Name = config.Name ?? location;
             Version = config.Version;
             Namespace = config.Namespace ?? location;
-            RequiredPackages = new();
+            RequiredPackages = new List<string>();
             Type = (PackageType)Enum.Parse(typeof(PackageType), config.PackageType ?? "Library");
 
             Location = location;
@@ -39,12 +40,12 @@ namespace Lua_Bundler.Package
 
         public void UpdateBuildNumber()
         {
-            string[] splitedVersionString = Version.Split("-");
+            string[] splitVersionString = Version.Split("-");
 
-            double buildNumber = double.Parse(splitedVersionString[1]);
+            double buildNumber = double.Parse(splitVersionString[1]);
             buildNumber += 1;
-            splitedVersionString[1] = buildNumber.ToString();
-            Version = string.Join("-", splitedVersionString);
+            splitVersionString[1] = buildNumber.ToString(CultureInfo.InvariantCulture);
+            Version = string.Join("-", splitVersionString);
         }
 
         public void Save()
@@ -55,12 +56,14 @@ namespace Lua_Bundler.Package
             File.WriteAllText(infoFilePath, json);
         }
 
-        public void Check(PackageMap map)
-        {
-            foreach (var package in RequiredPackages)
-            {
-                if (!map.PackageExists(package))
-                    ErrorWriter.PackageRequireNotFound(package, InfoFileSourcePath);
+        public void Check(PackageMap map, ref CheckResult result) {
+            foreach (var package in RequiredPackages) {
+                if (map.PackageExists(package)) {
+                    continue;
+                }
+                
+                ErrorWriter.PackageRequireNotFound(package, InfoFileSourcePath);
+                result.Error();
             }
 
             RequiredPackages.Sort();

@@ -6,7 +6,7 @@ namespace Lua_Bundler.Package
     internal class ApplicationPackage : IPackage
     {
         private readonly PackageInfo _Info;
-        public List<IPackageModule> Modules { get; private set; } = new();
+        public List<IPackageModule> Modules { get; private set; } = new List<IPackageModule>();
 
         public ApplicationPackage(PackageInfo info)
         {
@@ -24,12 +24,12 @@ namespace Lua_Bundler.Package
                 module.Map(map);
         }
 
-        public void Check(PackageMap map)
+        public void Check(PackageMap map, ref CheckResult result)
         {
             foreach (var module in Modules)
-                module.Check(map);
+                module.Check(map, ref result);
 
-            _Info.Check(map);
+            _Info.Check(map, ref result);
             _Info.Save();
 
             foreach (var requiredPackage in _Info.RequiredPackages)
@@ -40,8 +40,12 @@ namespace Lua_Bundler.Package
                     continue;
                 }
 
-                if (package.RequiredPackages.Contains(_Info.Location))
-                    ErrorWriter.PackageCircularReference(package, this);
+                if (!package.RequiredPackages.Contains(_Info.Location)) {
+                    continue;
+                }
+                
+                ErrorWriter.PackageCircularReference(package, this);
+                result.Error();
             }
         }
 
@@ -73,7 +77,7 @@ namespace Lua_Bundler.Package
                 File.Copy(dataFilePath, copyDataFilePath);
             }
 
-            StringBuilder builder = new();
+            StringBuilder builder = new StringBuilder();
 
             builder.AppendLine("local Data={");
 
@@ -90,17 +94,17 @@ namespace Lua_Bundler.Package
 
             File.WriteAllText(dataFilePath, builder.ToString());
 
-            if (File.Exists(copyDataFilePath))
-            {
-                var data = File.ReadAllText(dataFilePath);
-                var dataCopy = File.ReadAllText(copyDataFilePath);
-                File.Delete(copyDataFilePath);
-
-                var changed = string.Compare(data, dataCopy, StringComparison.InvariantCulture) != 0;
-                return changed;
+            if (!File.Exists(copyDataFilePath)) {
+                return false;
             }
+            
+            var data = File.ReadAllText(dataFilePath);
+            var dataCopy = File.ReadAllText(copyDataFilePath);
+            File.Delete(copyDataFilePath);
 
-            return false;
+            var changed = string.Compare(data, dataCopy, StringComparison.InvariantCulture) != 0;
+            return changed;
+
         }
 
         #region - IPackage -

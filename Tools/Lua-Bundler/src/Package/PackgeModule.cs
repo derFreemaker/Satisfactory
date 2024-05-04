@@ -16,7 +16,7 @@ namespace Lua_Bundler.Package
         public string LocationPath { get; }
         public IPackage Parent { get; }
 
-        public List<string> RequiringModules { get; } = new();
+        public List<string> RequiringModules { get; } = new List<string>();
 
         public PackageModule(string directoryLocation, FileInfo info, IPackage parent)
         {
@@ -38,7 +38,7 @@ namespace Lua_Bundler.Package
         private void SearchNamespace(string content, PackageMap map)
         {
             var namespaceRegex = GetRegexNamespace();
-            MatchCollection namespaceMatches = namespaceRegex.Matches(content);
+            var namespaceMatches = namespaceRegex.Matches(content);
 
             foreach (var match in namespaceMatches.Cast<Match>())
             {
@@ -58,7 +58,7 @@ namespace Lua_Bundler.Package
         private void SearchIsRunnable(string content)
         {
             var isRunnableRegex = GetRegexIsRunnable();
-            MatchCollection isRunnableMatches = isRunnableRegex.Matches(content);
+            var isRunnableMatches = isRunnableRegex.Matches(content);
 
             foreach (var match in isRunnableMatches.Cast<Match>())
             {
@@ -88,12 +88,12 @@ namespace Lua_Bundler.Package
 
         #region - Check -
 
-        [GeneratedRegex("require(?>\\(| )(?>\\\"|\\')([^\\\"]+?)(?>\\\"|\\')(?>\\)| )")]
+        [GeneratedRegex("require(?>\\(| )(?>\\\"|\\')([^\\\"]+?)(?>\\\"|\\')(?>\\)|)")]
         private static partial Regex GetRegexRequireFunction();
-        private void CheckRequireFunctions(string content, PackageMap map)
+        private void CheckRequireFunctions(string content, PackageMap map, ref CheckResult result)
         {
             var requireRegex = GetRegexRequireFunction();
-            MatchCollection requireMatches = requireRegex.Matches(content);
+            var requireMatches = requireRegex.Matches(content);
 
             var requireMatches2 = requireMatches.Cast<Match>();
 
@@ -104,7 +104,8 @@ namespace Lua_Bundler.Package
 
                 if (!map.TryGetModule(moduleNamespace, out var module))
                 {
-                    ErrorWriter.ModuleNotFound(moduleNamespace, (LocationPath, Utils.GetLine(content, group)));
+                    ErrorWriter.ModuleNotFound(moduleNamespace, (LocationPath, Utils.GetLine(content, group.Index, group.Length)));
+                    result.Error();
                     continue;
                 }
 
@@ -123,7 +124,7 @@ namespace Lua_Bundler.Package
 
         [GeneratedRegex("Utils\\.Class\\.CreateClass\\(.+, \"(.+)\".*?\\)")]
         private static partial Regex GetRegexCreateClass();
-        private void CheckCreateClass(string content, PackageMap map)
+        private void CheckCreateClass(string content, PackageMap map, ref CheckResult result)
         {
             var createClassRegex = GetRegexCreateClass();
             var createClassMatches = createClassRegex.Matches(content);
@@ -133,20 +134,21 @@ namespace Lua_Bundler.Package
                 var classGroup = match.Groups[1];
                 var className = classGroup.Value;
 
-                var lineInfo = Utils.GetLine(content, classGroup);
+                var lineInfo = Utils.GetLine(content, classGroup.Index, classGroup.Length);
                 if (!map.TryAddClass(className, (LocationPath, lineInfo)))
                 {
                     ErrorWriter.ClassExistsMoreThanOnce(className, (LocationPath, lineInfo), map.GetClassFileLineInfo(className)!);
+                    result.Error();
                 }
             }
         }
 
         [GeneratedRegex("---@using ([a-zA-Z0-9._]*)")]
         private static partial Regex GetRegexUsing();
-        private void CheckUsing(string content, PackageMap map)
+        private void CheckUsing(string content, PackageMap map, ref CheckResult result)
         {
             var usingRegex = GetRegexUsing();
-            MatchCollection usingMatches = usingRegex.Matches(content);
+            var usingMatches = usingRegex.Matches(content);
 
             foreach (var match in usingMatches.Cast<Match>())
             {
@@ -155,7 +157,8 @@ namespace Lua_Bundler.Package
 
                 if (!map.TryGetPackage(packageNamespace, out var package))
                 {
-                    ErrorWriter.PackageUsingNotFound(packageNamespace, (LocationPath, Utils.GetLine(content, group)));
+                    ErrorWriter.PackageUsingNotFound(packageNamespace, (LocationPath, Utils.GetLine(content, group.Index, group.Length)));
+                    result.Error();
                     continue;
                 }
 
@@ -164,22 +167,39 @@ namespace Lua_Bundler.Package
             }
         }
 
-        internal void CheckContent(string content, PackageMap map)
+        [GeneratedRegex(@"(\]==========\])")]
+        private static partial Regex GetRegexMultiLineStringWithLevel10();
+        private void CheckMultiLineStringWithLevel10(string content, ref CheckResult result)
         {
+            var multiLineStringWithLevel10Regex = GetRegexMultiLineStringWithLevel10();
+            var multiLineStringWithLevel10Matches = multiLineStringWithLevel10Regex.Matches(content);
+
+            foreach (var match in multiLineStringWithLevel10Matches.Cast<Match>())
+            {
+                var group = match.Groups[1];
+                ErrorWriter.ModuleMultiLineStringWithLevel10Found((LocationPath, Utils.GetLine(content, group.Index, group.Length)));
+                result.Error();
+            }
+        }
+        
+        private void CheckContent(string content, PackageMap map, ref CheckResult result)
+        {
+            CheckMultiLineStringWithLevel10(content, ref result);
+            
             if (IsRunnable)
             {
-                CheckRequireFunctions(content, map);
-                CheckCreateClass(content, map);
+                CheckRequireFunctions(content, map, ref result);
+                CheckCreateClass(content, map, ref result);
             }
-
-            CheckUsing(content, map);
+            
+            CheckUsing(content, map, ref result);
         }
         #endregion
 
-        public void Check(PackageMap map)
+        public void Check(PackageMap map, ref CheckResult result)
         {
             var content = File.ReadAllText(LocationPath);
-            CheckContent(content, map);
+            CheckContent(content, map, ref result);
         }
 
         #region - Modify -
@@ -205,7 +225,7 @@ namespace Lua_Bundler.Package
         }
         private static Span<string> RemoveEmptyLines(Span<string> lines)
         {
-            List<string> newLines = new();
+            List<string> newLines = new List<string>();
             foreach (string line in lines)
             {
                 if (line.Length == 0)

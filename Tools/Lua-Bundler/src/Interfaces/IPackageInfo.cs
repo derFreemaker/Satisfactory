@@ -20,7 +20,7 @@
 
         public void UpdateBuildNumber();
         public void Save();
-        public void Check(PackageMap map);
+        public void Check(PackageMap map, ref CheckResult result);
         public void Bundle(BundleOptions options, IPackage package);
     }
 }

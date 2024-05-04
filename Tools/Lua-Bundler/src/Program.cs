@@ -4,7 +4,7 @@ namespace Lua_Bundler
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        private static int Main(string[] args)
         {
             var parseResult = Parser.Default.ParseArguments<BundlerConfigDataObject>(args);
             if (parseResult.Tag == ParserResultType.NotParsed)
@@ -18,7 +18,7 @@ namespace Lua_Bundler
 
             var bundler = new Bundler(config, finder);
 
-            bundler.Run();
+            return bundler.Run();
         }
     }
 }

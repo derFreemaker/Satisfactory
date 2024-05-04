@@ -8,9 +8,9 @@ namespace Lua_Bundler
         internal BundlerConfig Config { get; }
         internal IPackageFinder Finder { get; }
 
-        private readonly Dictionary<string, IPackage> _Packages = new();
-        private readonly PackageMapPart _RootMapPart = new();
-        private readonly Dictionary<string, FileLineInfo> _Classes = new();
+        private readonly Dictionary<string, IPackage> _Packages = new Dictionary<string, IPackage>();
+        private readonly PackageMapPart _RootMapPart = new PackageMapPart();
+        private readonly Dictionary<string, FileLineInfo> _Classes = new Dictionary<string, FileLineInfo>();
 
         public PackageMap(BundlerConfig config, IPackageFinder finder)
         {
