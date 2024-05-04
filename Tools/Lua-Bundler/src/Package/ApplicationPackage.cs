@@ -79,9 +79,9 @@ namespace Lua_Bundler.Package
 
             foreach (var module in Modules)
             {
-                builder.AppendLine($"[\"{module.Id}\"] = [=[");
+                builder.AppendLine($"[\"{module.Id}\"] = [==========[");
                 builder.AppendLine(module.BundleData(options));
-                builder.AppendLine("]=],");
+                builder.AppendLine("]==========],");
             }
 
             builder.AppendLine("}");
