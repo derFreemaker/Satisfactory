@@ -1,6 +1,7 @@
 # Overview
 
-This Repository contains all my code for the [FicsIt-Networks Mod](https://github.com/Panakotta00/FicsIt-Networks) for [Satisfactory](https://www.satisfactorygame.com).
+This Repository contains code for the [FicsIt-Networks Mod](https://github.com/Panakotta00/FicsIt-Networks) for the Game [Satisfactory](https://www.satisfactorygame.com).
+This serves as PackageManger and startup program in order to keep things up to date with Github.
 
 ## Supported Module Modifiers
 
@@ -76,7 +77,3 @@ The BuildNumber can only be an integer.
 1. setting [Logger](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/__main.lua#L2) of Package
 2. running [Configure](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/__main.lua#L5) function
 3. running [Run](https://github.com/derFreemaker/Satisfactory/blob/main/PackageTemplate/__main.lua#L9) function
-
-### More Information in the Obsidian Vault
-
-Download: [Obsidian](https://obsidian.md)
