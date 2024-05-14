@@ -1,7 +1,7 @@
 # FiGiL
 
+Serves as PackageManger and startup program in order to keep things up to date with Github.
 This Repository contains code for the [FicsIt-Networks Mod](https://github.com/Panakotta00/FicsIt-Networks) for the Game [Satisfactory](https://www.satisfactorygame.com).
-This serves as PackageManger and startup program in order to keep things up to date with Github.
 
 ## Supported Module Modifiers
 
