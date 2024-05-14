@@ -2,6 +2,8 @@
 
 Serves as PackageManger and startup program in order to keep things up to date with Github.
 This Repository contains code for the [FicsIt-Networks Mod](https://github.com/Panakotta00/FicsIt-Networks) for the Game [Satisfactory](https://www.satisfactorygame.com).
+This Repo is meant to be used in VS Code and is not structured for anything else at the moment.
+Also only works on windows since binaries are all compiled for windows at the moment.
 
 ## Supported Module Modifiers
 
@@ -13,8 +15,15 @@ This Repository contains code for the [FicsIt-Networks Mod](https://github.com/P
 
 1. write source code
 2. bundle the code with task: "bundle all"
+
+GitHub:
+
 3. push the code to repo
-4. can download in game (github has a 300sec raw data cache or run task: "Start Code Server" and use "http://localhost" as url)
+4. can download in game (github has a 300sec raw data cache)
+
+Local
+
+3. run task: "Start Code Server" and use "http://localhost" as url 
 
 ## Run Sequence Overview
 
