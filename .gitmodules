@@ -5,4 +5,5 @@
 	path = docu
 	url = https://github.com/derFreemaker/FIcsIt-Networks-Documentation.git
 [submodule "Tools/Freemaker"]
-	url = http://github.com/derFreemaker/Freemaker.Lua
+	path = Tools/Freemaker
+	url = https://github.com/derFreemaker/Freemaker.Lua
