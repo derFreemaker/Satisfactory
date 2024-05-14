@@ -2,8 +2,9 @@
 
 Serves as PackageManger and startup program in order to keep things up to date with Github.
 This Repository contains code for the [FicsIt-Networks Mod](https://github.com/Panakotta00/FicsIt-Networks) for the Game [Satisfactory](https://www.satisfactorygame.com).
+
 This Repo is meant to be used in VS Code and is not structured for anything else at the moment.
-Also only works on windows since binaries are all compiled for windows at the moment.
+Only works on windows since binaries are all compiled for windows at the moment.
 
 ## Supported Module Modifiers
 
