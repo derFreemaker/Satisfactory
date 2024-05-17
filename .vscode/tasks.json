@@ -6,8 +6,10 @@
 		{
 			"label": "Start Code Server",
 			"type": "shell",
-			"command": "${workspaceFolder}/tools/start_Code_Server.bat",
-			"args": ["\"${workspaceFolder}/Code-Server\""],
+			"command": "${workspaceFolder}/Tools/start_Code_Server.bat",
+			"args": [
+				"\"${workspaceFolder}/Code-Server\""
+			],
 			"presentation": {
 				"echo": true,
 				"reveal": "never",
@@ -19,7 +21,11 @@
 			"runOptions": {
 				"instanceLimit": 1
 			},
-			"problemMatcher": []
+			"problemMatcher": [],
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			}
 		},
 		{
 			"label": "check all",
@@ -34,7 +40,10 @@
 			],
 			"problemMatcher": {
 				"owner": "lua-bundler",
-				"fileLocation": ["autoDetect", "$(workspaceFolder)/src"],
+				"fileLocation": [
+					"autoDetect",
+					"$(workspaceFolder)/src"
+				],
 				"pattern": {
 					"regexp": "^(.*)'-'(.*)'-'(.*)'-([0-9]*):([0-9]*):([0-9]*)$",
 					"code": 1,
@@ -74,7 +83,10 @@
 			],
 			"problemMatcher": {
 				"owner": "lua-bundler",
-				"fileLocation": ["autoDetect", "$(workspaceFolder)/src"],
+				"fileLocation": [
+					"autoDetect",
+					"$(workspaceFolder)/src"
+				],
 				"pattern": {
 					"regexp": "^(.*)'-'(.*)'-'(.*)'-([0-9]*):([0-9]*):([0-9]*)$",
 					"message": 1,
@@ -95,42 +107,6 @@
 				"close": true
 			}
 		},
-		// {
-		// 	"label": "bundle All optimized",
-		// 	"command": "${workspaceFolder}\\tools\\Lua-Bundler\\Lua-Bundler.exe",
-		// 	"args": [
-		// 		"--SourcePath",
-		// 		"${workspaceFolder}\\src",
-		// 		"--OutputPath",
-		// 		"${workspaceFolder}\\Packages",
-		// 		"--Package",
-		// 		".",
-		// 		"-B",
-		// 		"-O"
-		// 	],
-		// 	"problemMatcher": {
-		// 		"owner": "lua-bundler",
-		// 		"fileLocation": ["autoDetect", "$(workspaceFolder)/src"],
-		// 		"pattern": {
-		// 			"regexp": "^(.*)'-'(.*)'-'(.*)'-([0-9]*):([0-9]*):([0-9]*)$",
-		// 			"message": 1,
-		// 			"code": 2,
-		// 			"file": 3,
-		// 			"line": 4,
-		// 			"column": 5,
-		// 			"endColumn": 6
-		// 		}
-		// 	},
-		// 	"presentation": {
-		// 		"echo": true,
-		// 		"reveal": "never",
-		// 		"focus": false,
-		// 		"panel": "shared",
-		// 		"showReuseMessage": true,
-		// 		"clear": true,
-		// 		"close": true
-		// 	}
-		// },
 		{
 			"label": "open FicsIt files",
 			"type": "shell",

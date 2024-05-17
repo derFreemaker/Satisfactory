@@ -1,5 +1,6 @@
 local luaunit = require('tools.Testing.Luaunit')
 
+---@type Freemaker.FileSystem
 local FileSystem = require("tools.Freemaker.bin.filesystem")
 local currentPath = FileSystem:GetCurrentDirectory()
 
@@ -12,7 +13,9 @@ local eeprom = eepromFile:read("a")
 eepromFile:close()
 
 local FileSystemPath = currentPath .. "/Sim-Files/Test_LoaderLoad"
-local Sim = require('tools.Testing.Simulator'):Initialize(1, FileSystemPath, eeprom)
+
+---@type Test.Simulator
+local Sim = require('tools.Testing.Simulator.init'):Initialize(1, FileSystemPath, eeprom)
 
 ---@diagnostic disable-next-line
 function computer.stop()

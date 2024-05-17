@@ -138,7 +138,7 @@ local function loadFiles(loaderBasePath)
 
 	assert(
 		FileTreeTools:doFolder(
-			Path.new(""),
+			Path.new("/"),
 			LoaderFiles,
 			retrievePath,
 			function()
