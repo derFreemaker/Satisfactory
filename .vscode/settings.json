@@ -8,7 +8,6 @@
 		".git",
 		".vscode",
 		"Code-Server",
-		"Obsidian Vault",
 		"Packages",
 		"PackageTemplate",
 		"tools/Lua-Bundler",
@@ -30,9 +29,7 @@
 		"**/CVS": true,
 		"**/.DS_Store": true,
 		"**/Thumbs.db": true,
-		".stfolder": true,
-		"Code-Server": true,
-		"Obsidian Vault": true,
+		"Code-Server": false,
 		"Packages": true
 	},
 	"asciidoc.antora.enableAntoraSupport": true,

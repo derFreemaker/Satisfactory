@@ -2,8 +2,8 @@
 *.log
 *.pid
 
-/Tools/**/bin
-/Tools/**/obj
+/Tools/**/src/bin
+/Tools/**/src/obj
 
 # ignore userfiles
 *.user

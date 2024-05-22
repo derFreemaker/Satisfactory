@@ -19,11 +19,26 @@ function Simulator:loadLoaderFiles()
 	self.m_loadedLoaderFiles = require("tools.Testing.Simulator.LoadFiles")(CurrentPath)
 end
 
-local requireFunc = require --[[@as fun(moduleName: string)]]
+local requireFunc = require --[[@as fun(moduleName: string) : any]]
+---@return boolean success, table results
+local function getResult(success, ...)
+	return success, { ... }
+end
+---@param moduleToGet string
+---@return any
+local function modifiedRequire(moduleToGet)
+	local success
+	local result = { pcall(requireFunc, moduleToGet) }
+	success, result = getResult(table.unpack(result))
+	if not success then
+		result = { requireFunc(moduleToGet .. ".init") }
+	end
+	return result
+end
 function Simulator:OverrideRequire()
 	---@param moduleToGet string
 	function require(moduleToGet)
-		local result = { requireFunc("src." .. moduleToGet) }
+		local result = modifiedRequire("src." .. moduleToGet)
 		if type(result[#result]) == "string" then
 			result[#result] = nil
 		end
@@ -108,13 +123,14 @@ function Simulator:InitializeWithLoader(logLevel, fileSystemPath, eeprom, forceD
 
 	local simulatorPath = FileSystem.GetCurrentDirectory()
 	CurrentPath = simulatorPath:gsub("Tools/Testing/Simulator", "")
+	Curl:SetProgramLocation(CurrentPath .. "Tools/Curl")
 
 	if not fileSystemPath then
 		local info = debug.getinfo(2)
 		fileSystemPath = Path.new(info.source)
-			:GetParentFolderPath()
-			:Append("Sim-Files")
-			:ToString()
+		:GetParentFolderPath()
+		:Append("Sim-Files")
+		:ToString()
 	end
 
 	self:prepare(logLevel or 3, Path.new(fileSystemPath), eeprom or "")
@@ -123,7 +139,7 @@ function Simulator:InitializeWithLoader(logLevel, fileSystemPath, eeprom, forceD
 	Loader:Load(logLevel)
 
 	PackageLoader:DownloadPackage("Core", true)
-
+	
 	return self, Loader
 end
 

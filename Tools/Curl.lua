@@ -20,21 +20,34 @@ local function newFuture(...)
 end
 
 ---@class Test.Curl : FIN.Components.InternetCard_C
+---@field location string
 local Curl = {}
+
+---@param folderPath string
+function Curl:SetProgramLocation(folderPath)
+    self.location = folderPath .. "/bin/curl.exe"
+end
 
 ---@param url string
 ---@param method FIN.Components.FINComputerMod.FINInternetCard.HttpMethods
 ---@param data string
 function Curl:request(url, method, data)
-    local tmpFile = "file.tmp"
-    local command = [[curl "]]
-        .. url .. [["]]
-        .. [[ -X ]] .. method
-        .. [[ -d "]] .. data .. [["]]
-        .. [[ -o "]] .. tmpFile .. [["]]
-        .. [[ -i 2> nul]]
+    if not self.location then
+        return newFuture(400, "no locaiton set for curl.exe")
+    end
 
-    os.execute(command)
+    local tmpFile = "file.tmp"
+    local command = self.location .. " \""
+        .. url .. "\""
+        .. " -X " .. method
+        .. " -d \"" .. data .. "\""
+        .. " -o \"" .. tmpFile .. "\""
+        .. " -i 2> nul"
+
+    local success, exitCode, code = os.execute(command)
+    if not success then
+        return newFuture(400, "did not successfully curl command")
+    end
 
     local file = io.open(tmpFile, "r")
     if not file then

@@ -139,7 +139,7 @@ local function downloadFiles(loaderBaseUrl, loaderBasePath, forceDownload, inter
 			downloadAnyway = true
 		end
 		assert(internalDownload(url, path, downloadAnyway or forceDownload, internetCard),
-			"Unable to download file: '" .. path .. "'")
+			"Unable to download file: '" .. path .. "' from: " .. url)
 		return true
 	end
 
