@@ -2,7 +2,9 @@
 	"Lua.diagnostics.globals": [
 		"Config",
 		"log",
-		"InGame"
+		"InGame",
+		"class",
+		"interface"
 	],
 	"Lua.workspace.ignoreDir": [
 		".git",

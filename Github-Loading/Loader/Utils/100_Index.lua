@@ -81,7 +81,7 @@ Utils.String = LoadedLoaderFiles['/Github-Loading/Loader/Utils/String'][1]
 ---@type Utils.Table
 Utils.Table = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Table'][1]
 
----@type Utils.Class
-Utils.Class = LoadedLoaderFiles['/Github-Loading/Loader/Utils/Class'][1]
+---@type Freemaker.ClassSystem
+Utils.Class = LoadedLoaderFiles['/Github-Loading/Loader/Utils/ClassSystem'][1]
 
 return Utils

@@ -139,7 +139,7 @@ function Simulator:InitializeWithLoader(logLevel, fileSystemPath, eeprom, forceD
 	Loader:Load(logLevel)
 
 	PackageLoader:DownloadPackage("Core", true)
-	
+
 	return self, Loader
 end
 
