@@ -7,7 +7,6 @@
     "FactoryControl.Core",
     "Net.Core",
     "Net.Http",
-    "Net.Rest",
     "Services.Callback.Client"
   ],
   "PackageType": "Library"

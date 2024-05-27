@@ -1529,29 +1529,10 @@ __fileFuncs__["__main__"] = function()
 	---@generic TClass : object
 	---@param name string
 	---@param table TClass
-	---@param optionsOrInit Freemaker.ClassSystem.Create.Options | fun() | nil
-	---@param init fun() | nil
+	---@param options Freemaker.ClassSystem.Create.Options | nil
 	---@return TClass
-	function class(name, table, optionsOrInit, init)
-	    if type(optionsOrInit) == "function" then
-	        if type(init) == "function" then
-	            local initFunc = init
-	            init = function()
-	                optionsOrInit()
-	                initFunc()
-	            end
-	        else
-	            init = optionsOrInit
-	        end
-
-	        optionsOrInit = {}
-	    end
-	    local options = optionsOrInit
-
-	    if init then
-	        init()
-	    end
-
+	function class(name, table, options)
+	    options = options or {}
 	    ---@cast options Freemaker.ClassSystem.Create.Options
 	    options.Name = name
 
@@ -1561,29 +1542,10 @@ __fileFuncs__["__main__"] = function()
 	---@generic TClass
 	---@param name string
 	---@param table TClass
-	---@param optionsOrInit Freemaker.ClassSystem.Create.Options | fun() | nil
-	---@param init fun() | nil
+	---@param options Freemaker.ClassSystem.Create.Options | nil
 	---@return TClass
-	function interface(name, table, optionsOrInit, init)
-	    if type(optionsOrInit) == "function" then
-	        if type(init) == "function" then
-	            local initFunc = init
-	            init = function()
-	                optionsOrInit()
-	                initFunc()
-	            end
-	        else
-	            init = optionsOrInit
-	        end
-
-	        optionsOrInit = {}
-	    end
-	    local options = optionsOrInit
-
-	    if init then
-	        init()
-	    end
-
+	function interface(name, table, options)
+	    options = options or {}
 	    ---@cast options Freemaker.ClassSystem.Create.Options
 	    options.Name = name
 	    options.IsInterface = true

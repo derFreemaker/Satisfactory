@@ -1,4 +1,4 @@
----@class DNS.Core.Entities.Address.Create : Core.Json.Serializable
+---@class DNS.Core.Entities.Address.Create : object, Core.Json.ISerializable
 ---@field Domain string
 ---@field IPAddress Net.Core.IPAddress
 ---@overload fun(domain: string, ipAddress: Net.Core.IPAddress) : DNS.Core.Entities.Address.Create
@@ -17,5 +17,4 @@ function Create:Serialize()
     return self.Domain, self.IPAddress
 end
 
-return Utils.Class.Create(Create, "DNS.Entities.Address.Create",
-    require("Core.Json.Serializable"))
+return class("DNS.Core.Entities.Address.Create", Create, { Inherit = require("Core.Json.ISerializable") })

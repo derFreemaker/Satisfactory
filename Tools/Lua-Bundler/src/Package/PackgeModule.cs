@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using CommandLine;
 
 namespace Lua_Bundler.Package
 {
@@ -90,14 +91,12 @@ namespace Lua_Bundler.Package
 
         [GeneratedRegex("require(?>\\(| )(?>\\\"|\\')([^\\\"]+?)(?>\\\"|\\')(?>\\)|)")]
         private static partial Regex GetRegexRequireFunction();
-        private void CheckRequireFunctions(string content, PackageMap map, ref CheckResult result)
+        private void CheckRequireFunctions(String content, PackageMap map, ref CheckResult result)
         {
             var requireRegex = GetRegexRequireFunction();
-            var requireMatches = requireRegex.Matches(content);
-
-            var requireMatches2 = requireMatches.Cast<Match>();
-
-            foreach (var match in requireMatches2)
+            var requireMatches = requireRegex.Matches(content).Cast<Match>();
+            
+            foreach (var match in requireMatches)
             {
                 var group = match.Groups[1];
                 var moduleNamespace = group.Value;
@@ -122,9 +121,9 @@ namespace Lua_Bundler.Package
             }
         }
 
-        [GeneratedRegex("Utils\\.Class\\.CreateClass\\(.+, \"(.+)\".*?\\)")]
+        [GeneratedRegex("class\\(\"(.+)\".*?")]
         private static partial Regex GetRegexCreateClass();
-        private void CheckCreateClass(string content, PackageMap map, ref CheckResult result)
+        private void CheckCreateClass(String content, PackageMap map, ref CheckResult result)
         {
             var createClassRegex = GetRegexCreateClass();
             var createClassMatches = createClassRegex.Matches(content);

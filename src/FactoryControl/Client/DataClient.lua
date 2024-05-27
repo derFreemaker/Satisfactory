@@ -3,11 +3,11 @@ local EndpointUrlConstructors = require("FactoryControl.Core.EndpointUrls")[2]
 local ControllerUrlConstructors = EndpointUrlConstructors.Controller
 local FeatureUrlConstructors = EndpointUrlConstructors.Feature
 
-local Uri = require("Net.Rest.Uri")
+local Uri = require("Net.Core.Uri")
 
 local FactoryControlConfig = require("FactoryControl.Core.Config")
-local HttpClient = require('Net.Http.Client')
-local HttpRequest = require('Net.Http.Request')
+local HttpClient = require("Net.Http.Client")
+local HttpRequest = require("Net.Http.Request")
 
 ---@class FactoryControl.Client.DataClient : object
 ---@field private m_client Net.Http.Client
@@ -25,7 +25,7 @@ end
 ---@param networkClient Net.Core.NetworkClient?
 function DataClient:__init(logger, networkClient)
 	self.m_logger = logger
-	self.m_client = HttpClient(self.m_logger:subLogger('RestApiClient'), nil, networkClient)
+	self.m_client = HttpClient(self.m_logger:subLogger("RestApiClient"), nil, networkClient)
 
 	self.m_logger:LogDebug("waiting for server heartbeat...")
 	self.Static__WaitForHeartbeat(self.m_client:GetNetworkClient())
@@ -61,7 +61,7 @@ end
 ---@param createController FactoryControl.Core.Entities.Controller.CreateDto
 ---@return FactoryControl.Core.Entities.ControllerDto?
 function DataClient:CreateController(createController)
-	local response = self:request('CREATE', ControllerUrlConstructors.Create(), createController)
+	local response = self:request("CREATE", ControllerUrlConstructors.Create(), createController)
 
 	if response:IsFaulted() then
 		return
@@ -202,4 +202,4 @@ function DataClient:UpdateFeature(featureUpdate)
 	)
 end
 
-return Utils.Class.Create(DataClient, "FactoryControl.Client.DataClient")
+return class("FactoryControl.Client.DataClient", DataClient)

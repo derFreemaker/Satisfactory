@@ -1,4 +1,4 @@
----@class FactoryControl.Core.Entities.Controller.Feature.Update : Core.Json.Serializable
+---@class FactoryControl.Core.Entities.Controller.Feature.Update : object, Core.Json.ISerializable
 ---@field FeatureId Core.UUID
 local Update = {}
 
@@ -10,5 +10,5 @@ function Update:__init(featureId)
     self.FeatureId = featureId
 end
 
-return Utils.Class.Create(Update, "FactoryControl.Core.Entities.Controller.Feature.Update",
-    require("Core.Json.Serializable"))
+return class("FactoryControl.Core.Entities.Controller.Feature.Update", Update,
+    { IsAbstract = true, Inherit = require("Core.Json.ISerializable") })

@@ -216,4 +216,4 @@ function Client:UpdateFeature(featureUpdate)
     self.m_client:UpdateFeature(featureUpdate)
 end
 
-return Utils.Class.Create(Client, "FactoryControl.Client")
+return class("FactoryControl.Client", Client)

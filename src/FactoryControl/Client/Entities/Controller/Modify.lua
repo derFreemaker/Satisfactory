@@ -1,4 +1,4 @@
-local FeatureDto = require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto")
+local FeatureDto = require("FactoryControl.Core.Entities.Controller.Feature.Dto")
 
 local ModfiyDto = require("FactoryControl.Core.Entities.Controller.ModifyDto")
 
@@ -29,4 +29,4 @@ function Modify:ToDto()
     return ModfiyDto(self.Name, self.IPAddress, featureDtos)
 end
 
-return Utils.Class.Create(Modify, "FactoryControl.Client.Entities.Controller.Modify")
+return class("FactoryControl.Client.Entities.Controller.Modify", Modify)

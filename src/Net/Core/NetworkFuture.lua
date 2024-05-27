@@ -28,4 +28,4 @@ function NetworkFuture:Wait()
     return self.m_networkClient:WaitForEvent(self.m_eventName, self.m_port, self.m_timeoutSeconds)
 end
 
-return Utils.Class.Create(NetworkFuture, 'Core.Net.NetworkFuture')
+return class("Core.Net.NetworkFuture", NetworkFuture)

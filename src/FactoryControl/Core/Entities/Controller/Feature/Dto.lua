@@ -4,7 +4,7 @@
 ---|"Radial"
 ---|"Chart"
 
----@class FactoryControl.Core.Entities.Controller.FeatureDto : Core.Json.Serializable
+---@class FactoryControl.Core.Entities.Controller.FeatureDto : object, Core.Json.ISerializable
 ---@field Id Core.UUID
 ---@field Name string
 ---@field Type FactoryControl.Core.Entities.Controller.Feature.Type
@@ -30,8 +30,7 @@ end
 function FeatureDto:OnUpdate(featureUpdate)
     error("OnUpdate not implemented")
 end
+FeatureDto.OnUpdate = Utils.Class.IsAbstract
 
--- No Seriliaze function because this class should only be used as base not for instances
-
-return Utils.Class.Create(FeatureDto, "FactoryControl.Core.Entities.Controller.FeatureDto",
-    require("Core.Json.Serializable"))
+return class("FactoryControl.Core.Entities.Controller.FeatureDto", FeatureDto,
+    { IsAbstract = true, Inherit = require("Core.Json.ISerializable") })

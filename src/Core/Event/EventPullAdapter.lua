@@ -1,6 +1,6 @@
-local Event = require('Core.Event')
+local Event = require("Core.Event")
 
---- Assists in handling events from `event.pull()`
+--- Handles events from `event.pull()`.
 ---
 ---@class Core.EventPullAdapter
 ---@field OnEventPull Core.Event
@@ -89,7 +89,7 @@ end
 ---@param timeoutSeconds number?
 ---@return boolean gotEvent
 function EventPullAdapter:Wait(timeoutSeconds)
-	self.m_logger:LogTrace('## waiting for event pull ##')
+	self.m_logger:LogTrace("## waiting for event pull ##")
 	---@type table?
 	local eventPullData = nil
 	if timeoutSeconds == nil then
@@ -101,8 +101,8 @@ function EventPullAdapter:Wait(timeoutSeconds)
 		return false
 	end
 
-	self.m_logger:LogDebug("event with signalName: '"
-		.. eventPullData[1] .. "' was received from component: "
+	self.m_logger:LogDebug("event with signalName: "
+		.. eventPullData[1] .. " was received from component: "
 		.. tostring(eventPullData[2]))
 
 	self.OnEventPull:Trigger(self.m_logger, eventPullData)
@@ -123,7 +123,7 @@ end
 --- ## will never return
 ---@async
 function EventPullAdapter:Run()
-	self.m_logger:LogDebug('## started event pull loop ##')
+	self.m_logger:LogDebug("## started event pull loop ##")
 	while true do
 		self:Wait()
 	end

@@ -17,5 +17,5 @@ function Update:Serialize()
     return self.FeatureId, self.IsEnabled
 end
 
-return Utils.Class.Create(Update, "FactoryControl.Core.Entities.Controller.Feature.Switch.Update",
-    require("FactoryControl.Core.Entities.Controller.Feature.Update"))
+return class("FactoryControl.Core.Entities.Controller.Feature.Switch.Update", Update,
+    { Inherit = require("FactoryControl.Core.Entities.Controller.Feature.Update") })

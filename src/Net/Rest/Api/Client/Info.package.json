@@ -1,0 +1,10 @@
+{
+  "Name": "Net.Rest.Api.Client",
+  "Namespace": "Net.Rest.Api.Client",
+  "Version": "0.1.0-1",
+  "RequiredPackages": [
+    "Core",
+    "Net.Core"
+  ],
+  "PackageType": "Library"
+}

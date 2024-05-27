@@ -28,5 +28,5 @@ function Button:Press()
     self.m_client:UpdateFeature(update)
 end
 
-return Utils.Class.Create(Button, "FactoryControl.Client.Entities.Controller.Feature.Button",
-    require("FactoryControl.Client.Entities.Controller.Feature.Feature"))
+return class("FactoryControl.Client.Entities.Controller.Feature.Button", Button,
+    { Inherit = require("FactoryControl.Client.Entities.Controller.Feature") })

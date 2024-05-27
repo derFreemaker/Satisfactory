@@ -11,9 +11,9 @@ local HttpRequest = require("Net.Http.Request")
 local Main = {}
 
 function Main:Configure()
-    EventPullAdapter:Initialize(self.Logger:subLogger('EventPullAdapter'))
+    EventPullAdapter:Initialize(self.Logger:subLogger("EventPullAdapter"))
 
-    self.m_httpClient = HttpClient(self.Logger:subLogger('HttpClient'))
+    self.m_httpClient = HttpClient(self.Logger:subLogger("HttpClient"))
 end
 
 function Main:Run()

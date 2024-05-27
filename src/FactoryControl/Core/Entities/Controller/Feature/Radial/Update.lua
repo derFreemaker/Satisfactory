@@ -24,5 +24,5 @@ function Update:Serialize()
     return self.FeatureId, self.Min, self.Max, self.Setting
 end
 
-return Utils.Class.Create(Update, "FactoryControl.Core.Entities.Controller.Feature.Radial.Update",
-    require("FactoryControl.Core.Entities.Controller.Feature.Update"))
+return class("FactoryControl.Core.Entities.Controller.Feature.Radial.Update", Update,
+    { Inherit = require("FactoryControl.Core.Entities.Controller.Feature.Update") })

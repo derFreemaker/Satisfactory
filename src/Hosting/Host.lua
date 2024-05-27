@@ -81,4 +81,4 @@ function Host:RunCycle(timeoutSeconds)
     EventPullAdapter:WaitForAll(timeoutSeconds)
 end
 
-return Utils.Class.Create(Host, "Hosting.Host")
+return class("Hosting.Host", Host)

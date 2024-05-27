@@ -71,5 +71,5 @@ function Radial:Modify(func)
     self.m_client:UpdateFeature(update)
 end
 
-return Utils.Class.Create(Radial, "FactoryControl.Client.Entities.Controller.Feature.Radial",
-    require("FactoryControl.Client.Entities.Controller.Feature.Feature"))
+return class("FactoryControl.Client.Entities.Controller.Feature.Radial", Radial,
+    { Inherit = require("FactoryControl.Client.Entities.Controller.Feature") })

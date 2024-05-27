@@ -1,4 +1,4 @@
----@class FactoryControl.Core.Entities.ControllerDto : Core.Json.Serializable
+---@class FactoryControl.Core.Entities.ControllerDto : object, Core.Json.ISerializable
 ---@field Id Core.UUID
 ---@field Name string
 ---@field IPAddress Net.Core.IPAddress
@@ -25,5 +25,5 @@ function ControllerDto:Serialize()
     return self.Id, self.Name, self.IPAddress, self.Features
 end
 
-return Utils.Class.Create(ControllerDto, "FactoryControl.Core.Entities.ControllerDto",
-    require("Core.Json.Serializable"))
+return class("FactoryControl.Core.Entities.ControllerDto", ControllerDto,
+    { IsAbstract = true, Inherit = require("Core.Json.ISerializable") })

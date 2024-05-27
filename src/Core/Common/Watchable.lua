@@ -10,75 +10,76 @@ local Event = require("Core.Event")
 ---@field private m_OnClose Core.Watchable.OnClose?
 ---@overload fun(onSetup: Core.Watchable.OnSetup?, onClose: Core.Watchable.OnClose?) : Core.Watchable
 local Watchable = {}
-return class("Core.Watchable", Watchable, function()
-    ---@alias Core.Watchable.Constructor fun(onSetup: Core.Watchable.OnSetup?, onClose: Core.Watchable.OnClose?)
 
-    ---@private
-    ---@param onSetup Core.Watchable.OnSetup?
-    ---@param onClose Core.Watchable.OnClose?
-    function Watchable:__init(onSetup, onClose)
-        self.m_Event = Event()
+---@alias Core.Watchable.Constructor fun(onSetup: Core.Watchable.OnSetup?, onClose: Core.Watchable.OnClose?)
 
+---@private
+---@param onSetup Core.Watchable.OnSetup?
+---@param onClose Core.Watchable.OnClose?
+function Watchable:__init(onSetup, onClose)
+    self.m_Event = Event()
+
+    self.m_IsSetup = false
+    self.m_OnSetup = onSetup
+    self.m_OnClose = onClose
+end
+
+---@return integer count
+function Watchable:Count()
+    return self.m_Event:Count()
+end
+
+---@private
+---@param onlyClose boolean?
+function Watchable:Check(onlyClose)
+    local count = self:Count()
+
+    if count > 0 and not self.m_IsSetup and self.m_OnSetup and not onlyClose then
+        self.m_OnSetup(self)
+        self.m_IsSetup = true
+        return
+    end
+
+    if count == 0 and self.m_IsSetup and self.m_OnClose then
+        self.m_OnClose(self)
         self.m_IsSetup = false
-        self.m_OnSetup = onSetup
-        self.m_OnClose = onClose
+        return
     end
+end
 
-    ---@return integer count
-    function Watchable:Count()
-        return self.m_Event:Count()
-    end
+---@param task Core.Task
+---@return integer index
+function Watchable:AddTask(task)
+    local index = self.m_Event:AddTask(task)
+    self:Check()
+    return index
+end
 
-    ---@private
-    ---@param onlyClose boolean?
-    function Watchable:Check(onlyClose)
-        local count = self:Count()
+---@param index integer
+function Watchable:RemoveTask(index)
+    self.m_Event:Remove(index)
+    self:Check()
+end
 
-        if count > 0 and not self.m_IsSetup and self.m_OnSetup and not onlyClose then
-            self.m_OnSetup(self)
-            self.m_IsSetup = true
-            return
-        end
+---@param task Core.Task
+---@return integer index
+function Watchable:AddTaskOnce(task)
+    local index = self.m_Event:AddTaskOnce(task)
+    self:Check()
+    return index
+end
 
-        if count == 0 and self.m_IsSetup and self.m_OnClose then
-            self.m_OnClose(self)
-            self.m_IsSetup = false
-            return
-        end
-    end
+---@param index integer
+function Watchable:RemoveTaskOnce(index)
+    self.m_Event:RemoveOnce(index)
+    self:Check()
+end
 
-    ---@param task Core.Task
-    ---@return integer index
-    function Watchable:AddTask(task)
-        local index = self.m_Event:AddTask(task)
-        self:Check()
-        return index
-    end
+---@param logger Core.Logger?
+---@param ... any
+function Watchable:Trigger(logger, ...)
+    self.m_Event:Trigger(logger, ...)
+    self:Check(true)
+end
 
-    ---@param index integer
-    function Watchable:RemoveTask(index)
-        self.m_Event:Remove(index)
-        self:Check()
-    end
-
-    ---@param task Core.Task
-    ---@return integer index
-    function Watchable:AddTaskOnce(task)
-        local index = self.m_Event:AddTaskOnce(task)
-        self:Check()
-        return index
-    end
-
-    ---@param index integer
-    function Watchable:RemoveTaskOnce(index)
-        self.m_Event:RemoveOnce(index)
-        self:Check()
-    end
-
-    ---@param logger Core.Logger?
-    ---@param ... any
-    function Watchable:Trigger(logger, ...)
-        self.m_Event:Trigger(logger, ...)
-        self:Check(true)
-    end
-end)
+return class("Core.Watchable", Watchable)

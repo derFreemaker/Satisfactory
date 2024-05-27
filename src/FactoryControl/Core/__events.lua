@@ -5,13 +5,13 @@ local Events = {}
 
 function Events:OnLoaded()
     JsonSerializer.Static__Serializer:AddClasses({
-        -- ControllerDto's
+        -- ControllerDto"s
         require("FactoryControl.Core.Entities.Controller.ControllerDto"),
         require("FactoryControl.Core.Entities.Controller.ConnectDto"),
         require("FactoryControl.Core.Entities.Controller.CreateDto"),
         require("FactoryControl.Core.Entities.Controller.ModifyDto"),
 
-        -- FeatureDto's
+        -- FeatureDto"s
         require("FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto"),
         require("FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto"),
         require("FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto"),

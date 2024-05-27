@@ -64,7 +64,7 @@ function Controller:GetFeatures()
 end
 
 ---@param name string
----@return FactoryControl.Client.Entities.Controller.Feature?
+---@return FactoryControl.Client.Entities.Controller.Feature | nil feature
 function Controller:GetFeatureByName(name)
     for _, feature in pairs(self:GetFeatures()) do
         if feature.Name == name then
@@ -74,17 +74,17 @@ function Controller:GetFeatureByName(name)
 end
 
 ---@param name string
----@return FactoryControl.Client.Entities.Controller.Feature.Button?
+---@return FactoryControl.Client.Entities.Controller.Feature.Button | nil button
 function Controller:AddButton(name)
     local buttonDto = ButtonDto(UUID.Static__New(), name, self.Id)
     local button = self.m_client:CreateFeature(Button(buttonDto, self.m_client))
-    ---@cast button FactoryControl.Client.Entities.Controller.Feature.Button?
+    ---@cast button FactoryControl.Client.Entities.Controller.Feature.Button | nil
     return button
 end
 
 ---@param name string
 ---@param isEnabled boolean?
----@return FactoryControl.Client.Entities.Controller.Feature.Switch?
+---@return FactoryControl.Client.Entities.Controller.Feature.Switch | nil switch
 function Controller:AddSwitch(name, isEnabled)
     if isEnabled == nil then
         isEnabled = false
@@ -92,12 +92,13 @@ function Controller:AddSwitch(name, isEnabled)
 
     local switchDto = SwitchDto(UUID.Static__New(), name, self.Id, isEnabled)
     local switch = self.m_client:CreateFeature(Switch(switchDto, self.m_client))
-    ---@cast switch FactoryControl.Client.Entities.Controller.Feature.Switch?
+    ---@cast switch FactoryControl.Client.Entities.Controller.Feature.Switch | nil
     return switch
 end
 
 ---@param name string
 ---@param data FactoryControl.Client.Entities.Controller.Feature.Radial.Data?
+---@return FactoryControl.Client.Entities.Controller.Feature.Radial | nil radial
 function Controller:AddRadial(name, data)
     if data == nil then
         data = {}
@@ -116,12 +117,13 @@ function Controller:AddRadial(name, data)
 
     local radialDto = RadialDto(UUID.Static__New(), name, self.Id, min, max, setting)
     local radial = self.m_client:CreateFeature(Radial(radialDto, self.m_client))
-    ---@cast radial FactoryControl.Client.Entities.Controller.Feature.Radial?
+    ---@cast radial FactoryControl.Client.Entities.Controller.Feature.Radial | nil
     return radial
 end
 
 ---@param name string
----@param data FactoryControl.Client.Entities.Controller.Feature.Chart.Data?
+---@param data FactoryControl.Client.Entities.Controller.Feature.Chart.Data | nil
+---@return FactoryControl.Client.Entities.Controller.Feature.Chart | nil chart
 function Controller:AddChart(name, data)
     data = data or {}
     local xAxisName = data.XAxisName or "X"
@@ -130,11 +132,11 @@ function Controller:AddChart(name, data)
 
     local chartDto = ChartDto(UUID.Static__New(), name, self.Id, xAxisName, yAxisName, data)
     local chart = self.m_client:CreateFeature(Chart(chartDto, self.m_client))
-    ---@cast chart FactoryControl.Client.Entities.Controller.Feature.Chart?
+    ---@cast chart FactoryControl.Client.Entities.Controller.Feature.Chart | nil
     return chart
 end
 
-return Utils.Class.Create(Controller, "FactoryControl.Client.Entities.Controller",
-    require("FactoryControl.Client.Entities.Entity"))
+return class("FactoryControl.Client.Entities.Controller", Controller,
+    { Inherit = require("FactoryControl.Client.Entities.Entity") })
 
 -- //TODO: implement some kind of status like online and offline

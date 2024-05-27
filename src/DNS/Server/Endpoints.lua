@@ -61,5 +61,4 @@ function Endpoints:GetAddressWithDomain(addressStr)
     return self.Templates:Ok(address)
 end
 
-return Utils.Class.Create(Endpoints, "DNS.Server.Endpoints",
-    require("Net.Rest.Api.Server.EndpointBase"))
+return class("DNS.Endpoints", Endpoints, { Inherit = require("Net.Rest.Api.Server.EndpointBase") })

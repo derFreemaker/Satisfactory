@@ -1,4 +1,4 @@
-local ValveAdapter = require('Adapter.Pipeline.Valve')
+local ValveAdapter = require("Adapter.Pipeline.Valve")
 
 ---@class PowerPlant.Coal.Main : Github_Loading.Entities.Main
 ---@field private m_hotSteamValves Adapter.Pipeline.Valve[]

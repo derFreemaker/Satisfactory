@@ -49,5 +49,5 @@ function RadialDto:Serialize()
     return self.Id, self.Name, self.ControllerId, self.Min, self.Max, self.Setting
 end
 
-return Utils.Class.Create(RadialDto, "FactoryControl.Core.Entities.Controller.Feature.RadialDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))
+return class("FactoryControl.Core.Entities.Controller.Feature.RadialDto", RadialDto,
+    { Inherit = require("FactoryControl.Core.Entities.Controller.Feature.Dto") })

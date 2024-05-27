@@ -1,4 +1,4 @@
----@class Net.Core.IPAddress : Core.Json.Serializable
+---@class Net.Core.IPAddress : object, Core.Json.ISerializable
 ---@field private m_address FIN.UUID
 ---@overload fun(address: string) : Net.Core.IPAddress
 local IPAddress = {}
@@ -6,9 +6,15 @@ local IPAddress = {}
 ---@private
 ---@param address FIN.UUID
 function IPAddress:__init(address)
-    self:Raw__ModifyBehavior({ DisableCustomIndexing = true })
+    self:Raw__ModifyBehavior(function (modify)
+        modify.CustomIndexing = false
+    end)
+
     self.m_address = address
-    self:Raw__ModifyBehavior({ DisableCustomIndexing = false })
+
+    self:Raw__ModifyBehavior(function (modify)
+        modify.CustomIndexing = true
+    end)
 end
 
 ---@return FIN.UUID
@@ -40,4 +46,5 @@ end
 
 --#endregion
 
-return Utils.Class.Create(IPAddress, "Net.Core.IPAddress", require("Core.Json.Serializable"))
+return class("Net.Core.IPAddress", IPAddress,
+    { Inherit = require("Core.Json.ISerializable") })

@@ -1,8 +1,8 @@
-local luaunit = require('tools.Testing.Luaunit')
+local luaunit = require("tools.Testing.Luaunit")
 local functions = require("tools.Testing.Functions")
-require('tools.Testing.Simulator'):Initialize(1)
+require("tools.Testing.Simulator"):Initialize(1)
 
-local UUID = require('Core.Common.UUID')
+local UUID = require("Core.Common.UUID")
 
 function TestNewUUIDBenchmark()
     local test = UUID.Static__New
@@ -19,7 +19,7 @@ end
 function TestParseUUIDBenchmark()
     functions.benchmarkFunction(
         function()
-            UUID.Static__Parse('000000-0000-000000')
+            UUID.Static__Parse("000000-0000-000000")
         end,
         100000
     )

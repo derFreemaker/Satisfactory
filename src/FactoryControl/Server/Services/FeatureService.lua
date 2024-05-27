@@ -106,4 +106,4 @@ function FeatureService:SendToWachters(featureUpdate)
     end
 end
 
-return Utils.Class.Create(FeatureService, "FactoryControl.Server.Services.FeatureService")
+return class("FactoryControl.Server.Services.FeatureService", FeatureService)

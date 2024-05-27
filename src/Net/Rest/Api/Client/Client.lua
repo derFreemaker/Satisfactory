@@ -1,7 +1,7 @@
 local EventNameUsage = require("Core.Usage.Usage_EventName")
 local StatusCodes = require("Net.Core.StatusCodes")
 
-local Response = require('Net.Rest.Api.Response')
+local Response = require("Net.Rest.Api.Response")
 
 local DEFAULT_TIMEOUT = 5
 
@@ -48,4 +48,4 @@ function Client:Send(request, timeout)
     return context:GetApiResponse()
 end
 
-return Utils.Class.Create(Client, 'Net.Rest.Api.Client')
+return Utils.Class.Create(Client, "Net.Rest.Api.Client")

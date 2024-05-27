@@ -40,10 +40,14 @@ function Feature:OnUpdate(update)
     error("OnUpdate not implemented")
 end
 
+Feature.OnUpdate = Utils.Class.IsAbstract
+
 ---@return FactoryControl.Core.Entities.Controller.FeatureDto
 function Feature:ToDto()
     error("ToDto not implemented")
 end
 
-return Utils.Class.Create(Feature, "FactoryControl.Client.Entities.Controller.Feature",
-    require("FactoryControl.Client.Entities.Entity"))
+Feature.ToDto = Utils.Class.IsAbstract
+
+return class("FactoryControl.Client.Entities.Controller.Feature", Feature,
+    { IsAbstract = true, Inherit = require("FactoryControl.Client.Entities.Entity") })

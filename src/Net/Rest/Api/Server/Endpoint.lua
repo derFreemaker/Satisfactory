@@ -1,4 +1,4 @@
-local ResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
+local ResponseTemplates = require("Net.Rest.Api.Server.ResponseTemplates")
 
 local UUID              = require("Core.Common.UUID")
 
@@ -55,7 +55,7 @@ function Endpoint:GetUriParameters(uri)
         elseif parameterType == "Core.UUID" then
             parameters[i] = UUID.Static__Parse(parameter)
         else
-            error("unkown parameter type: '" .. parameterType .. "'")
+            error("unkown parameter type: "" .. parameterType .. """)
         end
     end
 
@@ -96,7 +96,7 @@ end
 ---@param context Net.Core.NetworkContext
 ---@return Net.Rest.Api.Response response
 function Endpoint:Invoke(request, context)
-    self.m_logger:LogTrace('executing...')
+    self.m_logger:LogTrace("executing...")
     ___logger:setLogger(self.m_logger)
 
     local response
@@ -104,12 +104,12 @@ function Endpoint:Invoke(request, context)
     if parseError then
         response = ResponseTemplates.InternalServerError(parseError or "uri parameters could not be parsed")
         self.m_logger:LogError("endpoint failed with error:", parseError)
-        self.m_logger:LogDebug('request finished with status code: ' .. response.Headers.Code)
+        self.m_logger:LogDebug("request finished with status code: " .. response.Headers.Code)
         return response
     end
 
     response = self:Execute(uriParameters, request, context)
-    self.m_logger:LogDebug('request finished with status code: ' .. response.Headers.Code)
+    self.m_logger:LogDebug("request finished with status code: " .. response.Headers.Code)
 
     return response
 end

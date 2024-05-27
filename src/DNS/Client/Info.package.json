@@ -6,7 +6,8 @@
     "Core",
     "DNS.Core",
     "Net.Core",
-    "Net.Rest"
+    "Net.Rest.Api.Client",
+    "Net.Rest.Api.Core"
   ],
   "PackageType": "Library"
 }

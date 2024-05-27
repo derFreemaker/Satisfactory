@@ -8,7 +8,7 @@
     "DNS.Client",
     "FactoryControl.Core",
     "Hosting",
-    "Net.Rest",
+    "Net.Rest.Api.Server",
     "Services.Callback.Server"
   ],
   "PackageType": "Application"

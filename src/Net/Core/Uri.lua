@@ -1,4 +1,4 @@
----@class Net.Rest.Uri : Core.Json.Serializable
+---@class Net.Rest.Uri : object, Core.Json.ISerializable
 ---@field private m_path string
 ---@field private m_query table<string, string>
 ---@overload fun(paht: string, query: table<string, string>) : Net.Rest.Uri
@@ -59,5 +59,5 @@ function Uri:Serialize()
     return self.m_path, self.m_query
 end
 
-return Utils.Class.Create(Uri, "Net.Rest.Uri",
-    require("Core.Json.Serializable"))
+return class("Net.Uri", Uri,
+    { Inherit = require("Core.Json.ISerializable") })

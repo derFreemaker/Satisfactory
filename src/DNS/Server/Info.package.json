@@ -7,7 +7,7 @@
     "Database",
     "DNS.Core",
     "Hosting",
-    "Net.Rest"
+    "Net.Rest.Api.Server"
   ],
   "PackageType": "Application"
 }

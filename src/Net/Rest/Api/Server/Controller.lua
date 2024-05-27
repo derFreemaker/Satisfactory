@@ -1,10 +1,10 @@
 local EventNameUsage = require("Core.Usage.Usage_EventName")
 
-local Task = require('Core.Common.Task')
+local Task = require("Core.Common.Task")
 
 local Endpoint = require("Net.Rest.Api.Server.Endpoint")
 
-local ResponseTemplates = require('Net.Rest.Api.Server.ResponseTemplates')
+local ResponseTemplates = require("Net.Rest.Api.Server.ResponseTemplates")
 
 ---@class Net.Rest.Api.Server.Controller : object
 ---@field private m_endpoints table<Net.Core.Method, table<string, Net.Rest.Api.Server.Endpoint>>
@@ -36,23 +36,23 @@ function Controller:onMessageReceived(context)
 
     local endpoint = self:GetEndpoint(request.Method, request.Endpoint)
     if not endpoint then
-        self.m_logger:LogTrace('found no endpoint:', request.Endpoint:GetUrl())
+        self.m_logger:LogTrace("found no endpoint:", request.Endpoint:GetUrl())
         if context.Header.ReturnPort then
             self.m_netPort:GetNetClient():Send(
                 context.Header.ReturnIPAddress,
                 context.Header.ReturnPort,
                 EventNameUsage.RestResponse,
-                ResponseTemplates.NotFound('Unable to find endpoint'))
+                ResponseTemplates.NotFound("Unable to find endpoint"))
         end
         return
     end
 
-    self.m_logger:LogTrace('found endpoint:', request.Endpoint:GetUrl())
+    self.m_logger:LogTrace("found endpoint:", request.Endpoint:GetUrl())
     local response = endpoint:Invoke(request, context)
 
     if context.Header.ReturnPort then
-        self.m_logger:LogTrace("sending response to '" ..
-            context.SenderIPAddress .. "' on port: " .. context.Header.ReturnPort .. " ...")
+        self.m_logger:LogTrace("sending response to "" ..
+            context.SenderIPAddress .. "" on port: " .. context.Header.ReturnPort .. " ...")
         self.m_netPort:GetNetClient():Send(
             context.Header.ReturnIPAddress,
             context.Header.ReturnPort,
@@ -60,7 +60,7 @@ function Controller:onMessageReceived(context)
             response
         )
     else
-        self.m_logger:LogTrace('sending no response')
+        self.m_logger:LogTrace("sending no response")
     end
 end
 
@@ -108,7 +108,7 @@ function Controller:AddEndpoint(method, endpointUrl, task)
 
     local endpoint = methodEndpoints[tostring(endpointUrl)]
     if endpoint then
-        self.m_logger:LogWarning('Endpoint already exists: ' .. tostring(endpointUrl))
+        self.m_logger:LogWarning("Endpoint already exists: " .. tostring(endpointUrl))
         return
     end
 

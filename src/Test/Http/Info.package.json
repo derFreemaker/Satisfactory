@@ -5,8 +5,7 @@
   "RequiredPackages": [
     "Core",
     "FactoryControl.Core",
-    "Net.Http",
-    "Net.Rest"
+    "Net.Http"
   ],
   "PackageType": "Application"
 }

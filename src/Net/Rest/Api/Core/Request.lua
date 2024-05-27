@@ -1,4 +1,4 @@
----@class Net.Rest.Api.Request : Core.Json.Serializable
+---@class Net.Rest.Api.Request : object, Core.Json.ISerializable
 ---@field Method Net.Core.Method
 ---@field Endpoint Net.Rest.Uri
 ---@field Headers table<string, any>
@@ -23,5 +23,5 @@ function Request:Serialize()
     return self.Method, self.Endpoint, self.Body, self.Headers
 end
 
-return Utils.Class.Create(Request, "Net.Rest.Api.Request",
-    require("Core.Json.Serializable"))
+return class("Net.Rest.Api.Request", Request,
+    { Inherit = require("Core.Json.ISerializable") })

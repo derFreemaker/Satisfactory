@@ -14,4 +14,4 @@ function Entity:__init(id, client)
     self.m_client = client
 end
 
-return Utils.Class.Create(Entity, "FactoryControl.Client.Entities.Entity")
+return class("FactoryControl.Client.Entities.Entity", Entity)

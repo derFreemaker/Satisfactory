@@ -251,4 +251,4 @@ function NetworkClient:BroadCast(port, eventName, body, header)
 	self.m_networkCard:BroadCast(port, eventName, jsonBody, jsonHeader)
 end
 
-return Utils.Class.Create(NetworkClient, 'Core.Net.NetworkClient')
+return class("Core.Net.NetworkClient", NetworkClient)

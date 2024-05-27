@@ -2,7 +2,7 @@
 ---@field Code Net.Core.StatusCodes
 ---@field Message string?
 
----@class Net.Rest.Api.Response : Core.Json.Serializable
+---@class Net.Rest.Api.Response : object, Core.Json.ISerializable
 ---@field Headers Net.Rest.Api.Response.Header
 ---@field Body any
 ---@field WasSuccessful boolean
@@ -15,7 +15,7 @@ local Response = {}
 function Response:__init(body, header)
     self.Body = body
     self.Headers = header or {}
-    if type(self.Headers.Code) == 'number' then
+    if type(self.Headers.Code) == "number" then
         self.WasSuccessful = self.Headers.Code < 300
     else
         self.WasSuccessful = false
@@ -27,5 +27,5 @@ function Response:Serialize()
     return self.Body, self.Headers
 end
 
-return Utils.Class.Create(Response, "Net.Rest.Api.Response",
-    require("Core.Json.Serializable"))
+return class("Net.Rest.Api.Response", Response,
+    { Inherit = require("Core.Json.ISerializable") })

@@ -1,4 +1,4 @@
-local Options = require('Net.Http.RequestOptions')
+local Options = require("Net.Http.RequestOptions")
 
 ---@class Net.Http.Request : object
 ---@field Method Net.Core.Method
@@ -23,4 +23,4 @@ function HttpRequest:__init(method, serverUrl, uri, body, options)
 	self.Options = options or Options()
 end
 
-return Utils.Class.Create(HttpRequest, "Net.Http.HttpRequest")
+return class("Net.Http.HttpRequest", HttpRequest)

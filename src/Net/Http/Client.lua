@@ -1,12 +1,12 @@
-local PortUsage = require('Core.Usage.Usage_Port')
+local PortUsage = require("Core.Usage.Usage_Port")
 
 local IPAddress = require("Net.Core.IPAddress")
-local NetworkClient = require('Net.Core.NetworkClient')
-local ApiClient = require('Net.Rest.Api.Client.Client')
-local DNSClient = require('DNS.Client.Client')
-local HttpResponse = require('Net.Http.Response')
-local ApiRequest = require('Net.Rest.Api.Request')
-local ApiResponse = require('Net.Rest.Api.Response')
+local NetworkClient = require("Net.Core.NetworkClient")
+local ApiClient = require("Net.Rest.Api.Client.Client")
+local DNSClient = require("DNS.Client.Client")
+local HttpResponse = require("Net.Http.Response")
+local ApiRequest = require("Net.Rest.Api.Core.Request")
+local ApiResponse = require("Net.Rest.Api.Core.Response")
 
 ---@alias Net.Http.Client.CachedAddress { ExpireTime: integer, IPAddress: Net.Core.IPAddress }
 
@@ -27,8 +27,8 @@ function HttpClient:__init(logger, dnsClient, networkClient)
 	end
 
 	self.m_cache = {}
-	self.m_netClient = networkClient or NetworkClient(logger:subLogger('NetworkClient'))
-	self.m_dnsClient = dnsClient or DNSClient(self.m_netClient, logger:subLogger('DNSClient'))
+	self.m_netClient = networkClient or NetworkClient(logger:subLogger("NetworkClient"))
+	self.m_dnsClient = dnsClient or DNSClient(self.m_netClient, logger:subLogger("DNSClient"))
 	self.m_logger = logger
 end
 
@@ -39,7 +39,7 @@ end
 ---@param address string
 ---@return Net.Core.IPAddress? address
 function HttpClient:GetAddress(address)
-	if not address:match('^.*%..*$') then
+	if not address:match("^.*%..*$") then
 		return IPAddress(address)
 	end
 
@@ -74,7 +74,7 @@ function HttpClient:Send(request)
 	end
 
 	local apiClient = ApiClient(address, PortUsage.HTTP, PortUsage.HTTP, self.m_netClient,
-		self.m_logger:subLogger('ApiClient'))
+		self.m_logger:subLogger("ApiClient"))
 
 	local apiRequest = ApiRequest(request.Method, request.Uri, request.Body, request.Options.Headers)
 	local apiResponse = apiClient:Send(apiRequest, request.Options.Timeout)
@@ -82,4 +82,4 @@ function HttpClient:Send(request)
 	return HttpResponse(apiResponse, request)
 end
 
-return Utils.Class.Create(HttpClient, 'Http.HttpClient')
+return class("Http.HttpClient", HttpClient)

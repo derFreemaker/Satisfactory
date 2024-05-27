@@ -99,5 +99,5 @@ function ControllerEndpoints:GetByName(name)
 	return self.Templates:Ok(controller)
 end
 
-return Utils.Class.Create(ControllerEndpoints, 'FactoryControl.Server.Endpoints.Controller',
-	require('Net.Rest.Api.Server.EndpointBase'))
+return class("FactoryControl.Server.Endpoints.Controller", ControllerEndpoints,
+	{ Inherit = require("Net.Rest.Api.Server.EndpointBase") })
