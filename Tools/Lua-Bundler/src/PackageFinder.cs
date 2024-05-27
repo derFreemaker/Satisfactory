@@ -14,7 +14,7 @@ namespace Lua_Bundler
             _Config = config;
         }
 
-        private bool TryFindPackage(string location, [MaybeNullWhen(false)] out IPackage package)
+        private Boolean TryFindPackage(String location, [MaybeNullWhen(false)] out IPackage package)
         {
             package = default;
 
@@ -41,9 +41,9 @@ namespace Lua_Bundler
             return true;
         }
 
-        public Dictionary<string, IPackage> FindPackages(string location)
+        public Dictionary<String, IPackage> FindPackages(String location)
         {
-            var packages = new Dictionary<string, IPackage>();
+            var packages = new Dictionary<String, IPackage>();
 
             if (TryFindPackage(location, out var package))
             {
@@ -58,15 +58,16 @@ namespace Lua_Bundler
             directories.Sort();
             foreach (var directoryPath in directories)
             {
-                string directory = Path.Combine(location, directoryPath.Split("\\")[^1]);
+                String directory = Path.Combine(location, directoryPath.Split("\\")[^1]);
                 var foundPackages = FindPackages(directory);
-                foreach (var foundPackage in foundPackages)
+                foreach (var foundPackage in foundPackages) {
                     packages.Add(foundPackage.Key, foundPackage.Value);
+                }
             }
             return packages;
         }
 
-        public List<IPackageModule> FindModules(string locationPath, IPackage parent)
+        public List<IPackageModule> FindModules(String locationPath, IPackage parent)
         {
             var modules = new List<IPackageModule>();
 

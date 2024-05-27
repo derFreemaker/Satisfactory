@@ -2,7 +2,7 @@
 ---|"Send"
 ---|"Invoke"
 
----@class Services.Callback.Core.Entities.CallbackInfo : Core.Json.Serializable
+---@class Services.Callback.Core.Entities.CallbackInfo : object, Core.Json.ISerializable
 ---@field Id Core.UUID
 ---@field CallbackMethod string
 ---@field CallbackServiceName string
@@ -27,5 +27,5 @@ function CallbackInfo:Serialize()
     return self.Id, self.CallbackMethod, self.CallbackServiceName, self.ExecutionMode
 end
 
-return Utils.Class.Create(CallbackInfo, "Services.Callback.Core.Entities.CallbackInfo",
-    require("Core.Json.Serializable"))
+return class("Services.Callback.Core.Entities.CallbackInfo", CallbackInfo,
+    { Inherit = require("Core.Json.ISerializable") })

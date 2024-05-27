@@ -6,11 +6,11 @@ local Events = {}
 function Events:OnLoaded()
     JsonSerializer.Static__Serializer:AddClasses({
         -- IPAddress
-        require("Net.Core.IPAddress"),
+        require("Net.IPAddress"),
     })
 
     -- Loading Host Extensions
-    require("Net.Core.Hosting.HostExtensions")
+    require("Net.Hosting.HostExtensions")
 end
 
 return Events

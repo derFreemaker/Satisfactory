@@ -6,4 +6,4 @@ function NetworkContextExtensions:GetFeatureUpdate()
     return self.Body
 end
 
-Utils.Class.Extend(require("Net.Core.NetworkContext"), NetworkContextExtensions)
+Utils.Class.Extend(require("Net.NetworkContext"), NetworkContextExtensions)

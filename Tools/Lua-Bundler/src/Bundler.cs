@@ -6,12 +6,12 @@ namespace Lua_Bundler
     {
         private readonly PackageMap _PackageMap;
 
-        private readonly BundleOptions _BundleOptions;
+        private readonly BundlerConfig _Config;
 
         public Bundler(BundlerConfig config, IPackageFinder packageFinder)
         {
-            _PackageMap = new PackageMap(config, packageFinder);
-            _BundleOptions = config.Options;
+            _PackageMap = new PackageMap(packageFinder);
+            _Config = config;
         }
 
         private void Map()
@@ -31,25 +31,31 @@ namespace Lua_Bundler
 
         private void Bundle()
         {
-            if (!_BundleOptions.Bundle)
+            if (!_Config.Options.Bundle)
                 throw new InvalidOperationException("bundle feature got deactivated in config");
 
             foreach (var (_, package) in _PackageMap.GetPackages())
-                package.Bundle(_BundleOptions);
+                package.Bundle(_Config.Options);
         }
 
-        internal int Run()
+        internal Int32 Run()
         {
             Map();
             var result = Check();
 
             if (result.HasError) {
-                Console.WriteLine("Check failed. Exiting...");
+                Console.WriteLine("errors found");
                 return 1;
             }
-            
-            if (_BundleOptions.Bundle)
+
+            if (_Config.Options.Bundle) {
+                if (_Config.OutputPath == String.Empty) {
+                    Console.WriteLine("Cannot bundle with out an output path.");
+                    return 1;
+                }
+                
                 Bundle();
+            }
 
             return 0;
         }

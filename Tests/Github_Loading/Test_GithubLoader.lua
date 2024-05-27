@@ -1,7 +1,7 @@
 local luaunit = require('tools.Testing.Luaunit')
 
 ---@type Freemaker.FileSystem
-local FileSystem = require("tools.Freemaker.bin.filesystem")
+local FileSystem = require("Tools.Freemaker.bin.filesystem")
 local currentPath = FileSystem:GetCurrentDirectory()
 
 local eepromFilePath = currentPath .. "/../../Github-Loading/GithubLoaderInGame.lua"

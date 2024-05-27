@@ -66,7 +66,7 @@ namespace Lua_Bundler.Package
             _Info.Bundle(options, this);
         }
 
-        public bool BundleData(BundleOptions options)
+        public Boolean BundleData(BundleOptions options)
         {
             var dataFilePath = Path.Combine(_Info.LocationOutputPath, "Data.lua");
             var copyDataFilePath = dataFilePath + ".copy";
@@ -78,7 +78,7 @@ namespace Lua_Bundler.Package
                 File.Copy(dataFilePath, copyDataFilePath);
             }
 
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
 
             builder.AppendLine("local Data={");
 
@@ -101,7 +101,7 @@ namespace Lua_Bundler.Package
                 var dataCopy = File.ReadAllText(copyDataFilePath);
                 File.Delete(copyDataFilePath);
 
-                var changed = string.Compare(data, dataCopy, StringComparison.InvariantCulture) != 0;
+                var changed = String.Compare(data, dataCopy, StringComparison.InvariantCulture) != 0;
                 return changed;
             }
 
@@ -110,17 +110,17 @@ namespace Lua_Bundler.Package
 
         #region - IPackage -
 
-        string IPackage.Name
+        String IPackage.Name
             => _Info.Name;
-        string IPackage.Version
+        String IPackage.Version
             => _Info.Version;
-        string IPackage.Namespace
+        String IPackage.Namespace
             => _Info.Namespace;
-        List<string> IPackage.RequiredPackages
+        List<String> IPackage.RequiredPackages
             => _Info.RequiredPackages;
-        string IPackage.Location
+        String IPackage.Location
             => _Info.Location;
-        string IPackage.LocationPath
+        String IPackage.LocationPath
             => _Info.LocationSourcePath;
 
         #endregion

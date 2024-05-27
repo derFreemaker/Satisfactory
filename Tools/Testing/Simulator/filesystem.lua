@@ -1,5 +1,5 @@
-local FileSystem = require("tools.Freemaker.bin.filesystem")
-local Path = require("tools.Freemaker.bin.path")
+local FileSystem = require("Tools.Freemaker.bin.filesystem")
+local Path = require("Tools.Freemaker.bin.path")
 
 ---@param file file*
 ---@return FIN.Filesystem.File
@@ -143,7 +143,7 @@ return function(fileSystemPath)
     function filesystem.createDir(path, all)
         initializeFileSystem()
 
-        return FileSystem.CreateFolder(fileSystemPath:Extend(path):ToString())
+        return FileSystem.CreateDirectory(fileSystemPath:Extend(path):ToString())
     end
 
     ---@param parameter FIN.Filesystem.PathParameters | string

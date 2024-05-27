@@ -1,5 +1,5 @@
 local EventNameUsage = require("Core.Usage.Usage_EventName")
-local StatusCodes = require("Net.Core.StatusCodes")
+local StatusCodes = require("Net.StatusCodes")
 
 local Response = require("Net.Rest.Api.Response")
 
@@ -48,4 +48,4 @@ function Client:Send(request, timeout)
     return context:GetApiResponse()
 end
 
-return Utils.Class.Create(Client, "Net.Rest.Api.Client")
+return class("Net.Rest.Api.Client", Client)

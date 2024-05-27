@@ -1,5 +1,5 @@
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
-local NetworkClient = require("Net.Core.NetworkClient")
+local NetworkClient = require("Net.NetworkClient")
 local DNSClient = require("DNS.Client.Client")
 
 ---@class Test.DNS.Main : Github_Loading.Entities.Main
@@ -40,7 +40,7 @@ function Main:Run()
 	assert(address ~= nil, "http request was not successfull")
 
 	assert(address.IPAddress:Equals(self.m_netClient:GetIPAddress()),
-		"got wrong address id back from dns server "" .. tostring(address.Id) .. """)
+		"got wrong address id back from dns server: " .. tostring(address.Id))
 
 	log("got address", address.Id, address.Domain, address.IPAddress)
 

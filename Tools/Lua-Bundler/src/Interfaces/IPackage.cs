@@ -2,14 +2,14 @@
 {
     internal interface IPackage
     {
-        public string Name { get; }
-        public string Version { get; }
-        public string Namespace { get; }
-        public List<string> RequiredPackages { get; }
-        public string Location { get; }
+        public String Name { get; }
+        public String Version { get; }
+        public String Namespace { get; }
+        public List<String> RequiredPackages { get; }
+        public String Location { get; }
 
         public List<IPackageModule> Modules { get; }
-        public string LocationPath { get; }
+        public String LocationPath { get; }
 
 
         public IPackageInfo GetInfo();

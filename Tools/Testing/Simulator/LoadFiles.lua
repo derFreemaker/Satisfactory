@@ -1,5 +1,5 @@
-local FileSystem = require("tools.Freemaker.bin.filesystem")
-local Path = require("tools.Freemaker.bin.path")
+local FileSystem = require("Tools.Freemaker.bin.filesystem")
+local Path = require("Tools.Freemaker.bin.path")
 
 local LoaderFiles = {
 	'Github-Loading',
@@ -7,17 +7,7 @@ local LoaderFiles = {
 		'Loader',
 		{
 			'Utils',
-			{
-				"Class",
-				{ "00_Config.lua" },
-				{ "20_Instance.lua" },
-				{ "20_Object.lua" },
-				{ "30_Members.lua" },
-				{ "30_Type.lua" },
-				{ "40_Metatable.lua" },
-				{ "50_Construction.lua" },
-				{ "80_Index.lua" }
-			},
+			{ '00_ClassSystem.lua' },
 			{ '10_File.lua' },
 			{ '10_Function.lua' },
 			{ '10_String.lua' },
@@ -116,7 +106,7 @@ local function loadFiles(loaderBasePath)
 			end
 			table.insert(entries, pathStr)
 		else
-			local file = FileSystem.OpenFile(loaderBasePath .. pathStr, 'r')
+			local file = io.open(loaderBasePath .. pathStr, 'r')
 			if not file then
 				error("unable to open file: " .. loaderBasePath .. pathStr)
 			end

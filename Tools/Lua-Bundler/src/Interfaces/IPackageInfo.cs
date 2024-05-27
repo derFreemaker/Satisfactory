@@ -2,21 +2,21 @@
 {
     internal interface IPackageInfo
     {
-        public string Name { get; }
-        public string Version { get; }
-        public string Namespace { get; }
-        public List<string> RequiredPackages { get; }
+        public String Name { get; }
+        public String Version { get; }
+        public String Namespace { get; }
+        public List<String> RequiredPackages { get; }
 
 
-        public string Location { get; }
+        public String Location { get; }
 
-        public string LocationSourcePath { get; }
-        public string LocationOutputPath { get; }
+        public String LocationSourcePath { get; }
+        public String LocationOutputPath { get; }
 
-        public string InfoFileSourcePath { get; }
-        public string InfoFileOutputPath { get; }
+        public String InfoFileSourcePath { get; }
+        public String InfoFileOutputPath { get; }
 
-        public string GetPackageType();
+        public String GetPackageType();
 
         public void UpdateBuildNumber();
         public void Save();

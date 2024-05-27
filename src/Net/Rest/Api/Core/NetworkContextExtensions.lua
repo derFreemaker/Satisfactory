@@ -1,4 +1,4 @@
-local NetworkContext = require("Net.Core.NetworkContext")
+local NetworkContext = require("Net.NetworkContext")
 
 ---@class Net.Core.NetworkContext
 local NetworkContextExtensions = {}

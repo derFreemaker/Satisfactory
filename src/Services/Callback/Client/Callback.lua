@@ -73,4 +73,4 @@ function Callback:Invoke(logger, args)
     return results
 end
 
-return Utils.Class.Create(Callback, "Services.Callback.Client.Callback")
+return class("Services.Callback.Client.Callback", Callback)

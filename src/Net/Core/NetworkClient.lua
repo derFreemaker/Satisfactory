@@ -2,11 +2,11 @@ local NetworkCardAdapter = require('Adapter.Computer.NetworkCard')
 local JsonSerializer = require('Core.Json.JsonSerializer')
 local EventPullAdapter = require('Core.Event.EventPullAdapter')
 local Task = require('Core.Common.Task')
-local NetworkPort = require('Net.Core.NetworkPort')
-local NetworkContext = require('Net.Core.NetworkContext')
-local NetworkFuture = require("Net.Core.NetworkFuture")
+local NetworkPort = require('Net.NetworkPort')
+local NetworkContext = require('Net.NetworkContext')
+local NetworkFuture = require("Net.NetworkFuture")
 
-local IPAddress = require("Net.Core.IPAddress")
+local IPAddress = require("Net.IPAddress")
 
 ---@alias Net.Core.Port
 ---|integer

@@ -1,7 +1,7 @@
 namespace Lua_Bundler;
 
 internal struct CheckResult {
-    public bool HasError { get; private set; } = false;
+    public Boolean HasError { get; private set; } = false;
 
     public CheckResult() { }
 

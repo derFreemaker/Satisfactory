@@ -1,7 +1,7 @@
 local Usage = require("Core.Usage.init")
 
 local Task = require("Core.Common.Task")
-local NetworkClient = require("Net.Core.NetworkClient")
+local NetworkClient = require("Net.NetworkClient")
 
 ---@class Services.Callback.Client.CallbackService : object
 ---@field private m_name string
@@ -97,4 +97,4 @@ function CallbackService:onCallbackReceived(context)
     )
 end
 
-return Utils.Class.Create(CallbackService, "Services.Callback.Client.CallbackService")
+return class("Services.Callback.Client.CallbackService", CallbackService)

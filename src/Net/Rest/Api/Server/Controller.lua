@@ -51,8 +51,8 @@ function Controller:onMessageReceived(context)
     local response = endpoint:Invoke(request, context)
 
     if context.Header.ReturnPort then
-        self.m_logger:LogTrace("sending response to "" ..
-            context.SenderIPAddress .. "" on port: " .. context.Header.ReturnPort .. " ...")
+        self.m_logger:LogTrace("sending response to " ..
+            context.SenderIPAddress .. " on port: " .. context.Header.ReturnPort .. " ...")
         self.m_netPort:GetNetClient():Send(
             context.Header.ReturnIPAddress,
             context.Header.ReturnPort,
@@ -116,4 +116,4 @@ function Controller:AddEndpoint(method, endpointUrl, task)
     methodEndpoints[endpointUrl] = endpoint
 end
 
-return Utils.Class.Create(Controller, "Net.Rest.Api.Server.Controller")
+return class("Net.Rest.Api.Server.Controller", Controller)

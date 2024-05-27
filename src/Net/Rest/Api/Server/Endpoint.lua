@@ -55,7 +55,7 @@ function Endpoint:GetUriParameters(uri)
         elseif parameterType == "Core.UUID" then
             parameters[i] = UUID.Static__Parse(parameter)
         else
-            error("unkown parameter type: "" .. parameterType .. """)
+            error("unkown parameter type: " .. parameterType)
         end
     end
 
@@ -114,4 +114,4 @@ function Endpoint:Invoke(request, context)
     return response
 end
 
-return Utils.Class.Create(Endpoint, "Net.Rest.Api.Server.Endpoint")
+return class("Net.Rest.Api.Server.Endpoint", Endpoint)

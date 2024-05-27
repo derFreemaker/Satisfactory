@@ -40,4 +40,4 @@ function Framework:Run(logger)
     )
 end
 
-return Utils.Class.Create(Framework, "Test.Framework")()
+return class("Test.Framework", Framework)()

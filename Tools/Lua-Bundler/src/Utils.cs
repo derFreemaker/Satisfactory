@@ -4,38 +4,39 @@ namespace Lua_Bundler
 {
     internal partial class Utils
     {
-        internal static int Generated = 0;
+        internal static Int32 Generated;
 
-        private const string CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        private const String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         
-        internal static string GenerateId()
+        internal static String GenerateId()
         {
-            char[] stringChars = new char[8];
+            var stringChars = new Char[8];
             var random = new Random(Generated);
 
-            for (int i = 0; i < stringChars.Length; i++)
+            for (Int32 i = 0; i < stringChars.Length; i++)
                 stringChars[i] = CHARS[random.Next(CHARS.Length)];
 
             Generated++;
-            return new string(stringChars);
+            return new String(stringChars);
         }
 
         [GeneratedRegex(@"(?:([\n]+?))")]
         private static partial Regex GetRegexNewLine();
 
-        internal static (int Line, int Column, int EndColumn) GetLine(string content, int index, int length)
+        internal static (Int32 Line, Int32 Column, Int32 EndColumn) GetLine(String content, Int32 index, Int32 length)
         {
             var newLineRegex = GetRegexNewLine();
             var newLineMatches = newLineRegex.Matches(content);
-            int line = 1;
-            int lastLineEnd = 0;
+            Int32 line = 1;
+            Int32 lastLineEnd = 0;
 
             foreach (var newLineMatch in newLineMatches.Cast<Match>())
             {
                 var newLineGroup = newLineMatch.Groups[1];
 
-                if (newLineGroup.Index > index)
+                if (newLineGroup.Index > index) {
                     break;
+                }
 
                 line++;
                 lastLineEnd = newLineGroup.Index + newLineGroup.Length;

@@ -8,10 +8,10 @@ local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local function controlling(logger)
     local client = Helper.CreateFactoryControlClient(logger)
 
-    log("create controller")
+    log("create controller...")
     local controller = client:Connect("Controlling")
 
-    log("adding button")
+    log("adding button...")
     local featureName = "test"
     local button = controller:AddButton(featureName)
     assert(button, "could not add button")
@@ -22,7 +22,7 @@ local function controlling(logger)
         end)
     )
 
-    log("getting controller")
+    log("getting controller...")
     local gotController = client:GetControllerByName("Controlling")
     if not gotController then
         log("could not get controller by name")
@@ -30,15 +30,14 @@ local function controlling(logger)
     end
     assert(gotController, "could not get controller")
 
-    log("getting button")
+    log("getting button...")
     local feature = gotController:GetFeatureByName(featureName)
     assert(feature, "could not get feature")
     ---@cast feature FactoryControl.Client.Entities.Controller.Feature.Button
 
-    log("pressing button")
+    log("pressing button...")
     feature:Press()
 
-    button:Press()
     while not pressed do
         EventPullAdapter:Wait()
     end

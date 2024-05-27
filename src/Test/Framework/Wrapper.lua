@@ -56,4 +56,4 @@ function Wrapper:WasSuccessful()
     return self.m_task:IsSuccess()
 end
 
-return Utils.Class.Create(Wrapper, "Test.Framework.Wrapper")
+return class("Test.Framework.Wrapper", Wrapper)

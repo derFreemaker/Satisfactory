@@ -2,13 +2,13 @@
 {
     internal class BundleOptions
     {
-        internal bool Bundle { get; }
+        internal Boolean Bundle { get; }
 
-        internal bool RemoveComments { get; }
+        internal Boolean RemoveComments { get; }
 
-        internal bool RemoveIndents { get; }
+        internal Boolean RemoveIndents { get; }
 
-        internal bool RemoveEmptyLines { get; }
+        internal Boolean RemoveEmptyLines { get; }
 
         public BundleOptions(BundlerConfigDataObject config)
         {

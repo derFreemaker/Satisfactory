@@ -4,36 +4,36 @@ namespace Lua_Bundler.Package
 {
     internal class PackageInfoConfig
     {
-        private const string DEFAULT_VERSION = "0.1.0";
-        private const string DEFAULT_BUILD_NUMBER = "-1";
+        private const String DEFAULT_VERSION = "0.1.0";
+        private const String DEFAULT_BUILD_NUMBER = "-1";
 
         [JsonProperty]
-        public string? Name { get; set; }
+        public String? Name { get; set; }
 
         [JsonProperty]
-        public string? Namespace { get; set; }
+        public String? Namespace { get; set; }
 
         [JsonProperty]
-        public string Version { get; set; }
+        public String Version { get; set; }
 
         [JsonProperty]
-        public string[] RequiredPackages { get; set; }
+        public String[] RequiredPackages { get; set; }
 
         [JsonProperty]
-        public string? PackageType { get; set; }
+        public String? PackageType { get; set; }
 
         [JsonConstructor]
-        public PackageInfoConfig(string? Name = null, string? Version = null, string? Namespace = null, string[]? RequiredPackages = null, string? packageType = null)
+        public PackageInfoConfig(String? name = null, String? version = null, String? @namespace = null, String[]? requiredPackages = null, String? packageType = null)
         {
-            this.Name = Name;
-            this.Namespace = Namespace;
-            this.Version = Version ?? DEFAULT_VERSION;
-            this.RequiredPackages = RequiredPackages ?? Array.Empty<string>();
+            Name = name;
+            Namespace = @namespace;
+            Version = version ?? DEFAULT_VERSION;
+            RequiredPackages = requiredPackages ?? Array.Empty<String>();
 
             // Check if Version has BuildNumber
-            string[] splitedVersionString = this.Version.Split("-");
+            var splitedVersionString = Version.Split("-");
             if (splitedVersionString.Length < 2)
-                this.Version += DEFAULT_BUILD_NUMBER;
+                Version += DEFAULT_BUILD_NUMBER;
 
             PackageType = packageType;
         }

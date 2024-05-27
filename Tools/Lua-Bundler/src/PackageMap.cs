@@ -5,16 +5,14 @@ namespace Lua_Bundler
 {
     internal class PackageMap
     {
-        internal BundlerConfig Config { get; }
         internal IPackageFinder Finder { get; }
 
-        private readonly Dictionary<string, IPackage> _Packages = new Dictionary<string, IPackage>();
-        private readonly PackageMapPart _RootMapPart = new PackageMapPart();
-        private readonly Dictionary<string, FileLineInfo> _Classes = new Dictionary<string, FileLineInfo>();
+        private readonly Dictionary<String, IPackage> _Packages = new();
+        private readonly PackageMapPart _RootMapPart = new();
+        private readonly Dictionary<String, FileLineInfo> _Classes = new();
 
-        public PackageMap(BundlerConfig config, IPackageFinder finder)
+        public PackageMap(IPackageFinder finder)
         {
-            Config = config;
             Finder = finder;
         }
 
@@ -22,72 +20,73 @@ namespace Lua_Bundler
         {
             var packages = Finder.FindPackages("");
 
-            foreach ((_, var package) in packages)
+            foreach (var (_, package) in packages)
             {
                 if (TryAddPackage(package))
                     package.Map(this);
                 else
-                    ErrorWriter.PackageExistsMoreThanOnce(package, GetPackage(package.Namespace)!);
+                    ErrorWriter.PackageExistsMoreThanOnce(package, GetPackage(package.Location));
             }
         }
 
         #region - Packages -
-        internal Dictionary<string, IPackage> GetPackages()
+        internal Dictionary<String, IPackage> GetPackages()
         {
             return _Packages;
         }
 
-        internal bool TryAddPackage(IPackage package)
-        {
-            if (_Packages.ContainsKey(package.Namespace))
-                return false;
-
-            _Packages.Add(package.Namespace, package);
-            return true;
+        internal Boolean TryAddPackage(IPackage package) {
+            return _Packages.TryAdd(package.Location, package);
         }
 
-        internal IPackage? GetPackage(string packageNamespace)
+        internal IPackage GetPackage(String packageLocation)
         {
-            return _Packages[packageNamespace];
+            return _Packages[packageLocation];
         }
 
-        internal bool TryGetPackage(string packageNamespace, [MaybeNullWhen(false)] out IPackage package)
+        internal Boolean TryGetPackage(String packageLocation, [MaybeNullWhen(false)] out IPackage package)
         {
             package = null;
 
-            if (!_Packages.ContainsKey(packageNamespace))
+            if (!_Packages.ContainsKey(packageLocation))
                 return false;
 
-            package = GetPackage(packageNamespace)!;
+            package = GetPackage(packageLocation);
             return true;
         }
 
-        internal bool PackageExists(string packageNamespace)
+        internal Boolean TryGetPackageWithNamespace(String packageNamespace,
+                                                    [MaybeNullWhen(false)] out IPackage package) {
+            package = _Packages.FirstOrDefault(x => x.Value.Namespace == packageNamespace).Value;
+            return package is not null;
+        }
+
+        internal Boolean PackageExists(String packageLocation)
         {
-            return TryGetPackage(packageNamespace, out _);
+            return TryGetPackage(packageLocation, out _);
         }
         #endregion
 
         #region - Modules -
-        internal bool TryAddModule(IPackageModule module)
+        internal Boolean TryAddModule(IPackageModule module)
         {
             var splitedNamespace = module.Namespace.Split(".");
             return _RootMapPart.TryAddModule(module, splitedNamespace);
         }
 
-        internal void RemoveModule(string moduleNamespace)
+        internal void RemoveModule(String moduleNamespace)
         {
             var splitedNamespace = moduleNamespace.Split(".");
             _RootMapPart.RemoveModule(splitedNamespace);
         }
 
-        internal IPackageModule? GetModule(string moduleNamespace)
+        internal IPackageModule? GetModule(String moduleNamespace)
         {
             var splitedNamespace = moduleNamespace.Split(".");
             return _RootMapPart.GetModule(splitedNamespace);
         }
 
-        internal bool TryGetModule(string moduleNamespace, [MaybeNullWhen(false)] out IPackageModule module)
+        internal Boolean TryGetModule(String moduleNamespace, [MaybeNullWhen(false)] out IPackageModule module)
         {
             module = GetModule(moduleNamespace);
             if (module is not null)
@@ -96,7 +95,7 @@ namespace Lua_Bundler
             return false;
         }
 
-        internal bool ModuleExists(string moduleNamespace)
+        internal Boolean ModuleExists(String moduleNamespace)
         {
             return GetModule(moduleNamespace) is not null;
         }
@@ -104,7 +103,7 @@ namespace Lua_Bundler
 
         #region - Classes -
 
-        internal bool TryAddClass(string className, FileLineInfo info)
+        internal Boolean TryAddClass(String className, FileLineInfo info)
         {
             if (_Classes.ContainsKey(className))
                 return false;
@@ -113,12 +112,12 @@ namespace Lua_Bundler
             return true;
         }
 
-        internal FileLineInfo? GetClassFileLineInfo(string className)
+        internal FileLineInfo GetClassFileLineInfo(String className)
         {
             return _Classes[className];
         }
 
-        internal bool TryGetClassFileLineInfo(string className, [MaybeNullWhen(false)] out FileLineInfo info)
+        internal Boolean TryGetClassFileLineInfo(String className, [MaybeNullWhen(false)] out FileLineInfo info)
         {
             return _Classes.TryGetValue(className, out info);
         }

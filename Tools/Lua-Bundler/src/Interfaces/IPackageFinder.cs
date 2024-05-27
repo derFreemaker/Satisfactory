@@ -2,7 +2,7 @@
 {
     internal interface IPackageFinder
     {
-        public Dictionary<string, IPackage> FindPackages(string location);
-        public List<IPackageModule> FindModules(string location, IPackage parent);
+        public Dictionary<String, IPackage> FindPackages(String location);
+        public List<IPackageModule> FindModules(String location, IPackage parent);
     }
 }

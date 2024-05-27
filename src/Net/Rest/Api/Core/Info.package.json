@@ -1,6 +1,6 @@
 {
   "Name": "Net.Rest.Api.Core",
-  "Namespace": "Net.Rest.Api.Core",
+  "Namespace": "Net.Rest.Api",
   "Version": "0.1.0-1",
   "RequiredPackages": [
     "Core",

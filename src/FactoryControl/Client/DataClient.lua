@@ -3,7 +3,7 @@ local EndpointUrlConstructors = require("FactoryControl.Core.EndpointUrls")[2]
 local ControllerUrlConstructors = EndpointUrlConstructors.Controller
 local FeatureUrlConstructors = EndpointUrlConstructors.Feature
 
-local Uri = require("Net.Core.Uri")
+local Uri = require("Net.Uri")
 
 local FactoryControlConfig = require("FactoryControl.Core.Config")
 local HttpClient = require("Net.Http.Client")

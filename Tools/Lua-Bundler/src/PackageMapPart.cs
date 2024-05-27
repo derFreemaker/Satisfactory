@@ -4,17 +4,17 @@ namespace Lua_Bundler
 {
     internal class PackageMapPart
     {
-        private readonly int _Depth;
+        private readonly Int32 _Depth;
 
-        private readonly Dictionary<string, IPackageModule> _Modules = new Dictionary<string, IPackageModule>();
-        private readonly Dictionary<string, PackageMapPart> _Childs = new Dictionary<string, PackageMapPart>();
+        private readonly Dictionary<String, IPackageModule> _Modules = new();
+        private readonly Dictionary<String, PackageMapPart> _Childs = new();
 
-        public PackageMapPart(int depth = 0)
+        public PackageMapPart(Int32 depth = 0)
         {
             _Depth = depth;
         }
 
-        internal bool TryAddModule(IPackageModule module, string[] splitedNamespace, int depth = 0)
+        internal Boolean TryAddModule(IPackageModule module, String[] splitedNamespace, Int32 depth = 0)
         {
             var moduleNamespaceNextPart = splitedNamespace[depth];
             if (_Depth == splitedNamespace.Length - 1)
@@ -30,7 +30,7 @@ namespace Lua_Bundler
             return child.TryAddModule(module, splitedNamespace, depth + 1);
         }
 
-        internal void RemoveModule(string[] splitedNamespace, int depth = 0)
+        internal void RemoveModule(String[] splitedNamespace, Int32 depth = 0)
         {
             // no good naming found for this variable
             var splitedNamespaceLength = splitedNamespace.Length - 1;
@@ -43,11 +43,11 @@ namespace Lua_Bundler
             if (splitedNamespaceLength > depth)
             {
                 var child = _Childs[splitedNamespace[depth + 1]];
-                child?.RemoveModule(splitedNamespace, depth + 1);
+                child.RemoveModule(splitedNamespace, depth + 1);
             }
         }
 
-        internal IPackageModule? GetModule(string[] splitedNamespace, int depth = 0)
+        internal IPackageModule? GetModule(String[] splitedNamespace, Int32 depth = 0)
         {
             PackageMapPart? child;
 

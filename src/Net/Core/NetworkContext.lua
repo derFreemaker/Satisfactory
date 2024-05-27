@@ -1,5 +1,5 @@
 local JsonSerializer = require("Core.Json.JsonSerializer")
-local IPaddress = require("Net.Core.IPAddress")
+local IPaddress = require("Net.IPAddress")
 
 ---@class Net.Core.NetworkContext.Header : table<string, any>
 ---@field ReturnIPAddress Net.Core.IPAddress

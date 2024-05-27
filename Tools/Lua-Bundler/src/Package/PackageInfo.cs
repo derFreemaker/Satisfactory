@@ -7,25 +7,25 @@ namespace Lua_Bundler.Package
 {
     internal class PackageInfo : IPackageInfo
     {
-        public string Name { get; }
-        public string Version { get; private set; }
-        public string Namespace { get; }
-        public List<string> RequiredPackages { get; }
+        public String Name { get; }
+        public String Version { get; private set; }
+        public String Namespace { get; }
+        public List<String> RequiredPackages { get; }
         public PackageType Type { get; }
         
-        public string Location { get; }
-        public string LocationSourcePath { get; }
-        public string LocationOutputPath { get; }
+        public String Location { get; }
+        public String LocationSourcePath { get; }
+        public String LocationOutputPath { get; }
 
-        public string InfoFileSourcePath { get; }
-        public string InfoFileOutputPath { get; }
+        public String InfoFileSourcePath { get; }
+        public String InfoFileOutputPath { get; }
 
-        public PackageInfo(PackageInfoConfig config, string location, string locationPath, string outputLocationPath)
+        public PackageInfo(PackageInfoConfig config, String location, String locationPath, String outputLocationPath)
         {
             Name = config.Name ?? location;
             Version = config.Version;
             Namespace = config.Namespace ?? location;
-            RequiredPackages = new List<string>();
+            RequiredPackages = new List<String>();
             Type = (PackageType)Enum.Parse(typeof(PackageType), config.PackageType ?? "Library");
 
             Location = location;
@@ -35,17 +35,17 @@ namespace Lua_Bundler.Package
             InfoFileOutputPath = Path.Combine(outputLocationPath, "Info.lua");
         }
 
-        public string GetPackageType()
+        public String GetPackageType()
             => Type.ToString();
 
         public void UpdateBuildNumber()
         {
-            string[] splitVersionString = Version.Split("-");
+            String[] splitVersionString = Version.Split("-");
 
-            double buildNumber = double.Parse(splitVersionString[1]);
+            var buildNumber = Double.Parse(splitVersionString[1]);
             buildNumber += 1;
             splitVersionString[1] = buildNumber.ToString(CultureInfo.InvariantCulture);
-            Version = string.Join("-", splitVersionString);
+            Version = String.Join("-", splitVersionString);
         }
 
         public void Save()
@@ -82,17 +82,17 @@ namespace Lua_Bundler.Package
             if (RequiredPackages.Count > 0)
             {
                 builder.AppendLine("    RequiredPackages = {");
-                builder.AppendLine(new string(' ', 8) + "\"" + string.Join($"\",\r\n{new string(' ', 8)}\"", RequiredPackages) + "\"");
+                builder.AppendLine(new String(' ', 8) + "\"" + String.Join($"\",\r\n{new String(' ', 8)}\"", RequiredPackages) + "\"");
                 builder.AppendLine("    },");
             }
 
             builder.AppendLine("    ModuleIndex={");
-            var moduleIndexStr = new string[package.Modules.Count];
-            for (int i = 0; i < moduleIndexStr.Length; i++)
+            var moduleIndexStr = new String[package.Modules.Count];
+            for (Int32 i = 0; i < moduleIndexStr.Length; i++)
             {
                 moduleIndexStr[i] = package.Modules[i].BundleInfo(options);
             }
-            builder.Append(string.Join("\r\n", moduleIndexStr));
+            builder.Append(String.Join("\r\n", moduleIndexStr));
             builder.AppendLine("    },");
 
             builder.AppendLine("}");

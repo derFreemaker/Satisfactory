@@ -2,7 +2,7 @@ local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
 local Config = require("FactoryControl.Core.Config")
 
-local Uri = require("Net.Rest.Uri")
+local Uri = require("Net.Uri")
 local HttpClient = require("Net.Http.Client")
 local HttpRequest = require("Net.Http.Request")
 

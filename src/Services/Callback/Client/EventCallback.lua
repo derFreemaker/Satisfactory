@@ -38,5 +38,5 @@ function EventCallback:Invoke(logger, args)
     return {}
 end
 
-return Utils.Class.Create(EventCallback, "Services.Callback.Client.EventCallback",
-    require("Services.Callback.Client.Callback"))
+return class("Services.Callback.Client.EventCallback", EventCallback,
+    { Inherit = require("Services.Callback.Client.Callback") })

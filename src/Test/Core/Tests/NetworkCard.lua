@@ -29,4 +29,5 @@ local function test()
 
     assert(gotEvent, "did not get the right networkCard message")
 end
+
 Framework:AddTest("NetworkCard", test)
