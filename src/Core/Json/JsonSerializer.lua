@@ -4,6 +4,7 @@ local Json = require("Core.Json.Json")
 ---@field private m_typeInfos table<string, Freemaker.ClassSystem.Type>
 ---@overload fun(typeInfos: Freemaker.ClassSystem.Type[]?) : Core.Json.Serializer
 local JsonSerializer = {}
+
 ---@type Core.Json.Serializer
 JsonSerializer.Static__Serializer = {} --[[@as unknown]]
 
@@ -29,7 +30,7 @@ end
 ---@return Core.Json.Serializer
 function JsonSerializer:AddTypeInfo(typeInfo)
     if not Utils.Class.HasBase(typeInfo, "Core.Json.Serializable") then
-        error("class:" .. typeInfo.Name .. " has not Core.Json.ISerializable as interface", 2)
+        error("class: " .. typeInfo.Name .. " has not Core.Json.ISerializable as interface", 2)
     end
     if not Utils.Table.ContainsKey(self.m_typeInfos, typeInfo.Name) then
         self.m_typeInfos[typeInfo.Name] = typeInfo

@@ -97,7 +97,7 @@ end
 ---@return Test.Simulator
 function Simulator:Initialize(logLevel, fileSystemPath, eeprom)
 	local simulatorPath = FileSystem.GetCurrentDirectory()
-	CurrentPath = simulatorPath:gsub("tools/Testing/Simulator", "")
+	CurrentPath = simulatorPath:gsub("Tools/Testing/Simulator", "")
 
 	if not fileSystemPath then
 		local info = debug.getinfo(2)
