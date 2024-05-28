@@ -1,4 +1,6 @@
 local Json = require("Core.Json.Json")
+local ISerializable = require("Core.Json.ISerializable")
+local NAME_ISERIALIZABLE = nameof(ISerializable)
 
 ---@class Core.Json.Serializer : object
 ---@field private m_typeInfos table<string, Freemaker.ClassSystem.Type>
@@ -26,24 +28,16 @@ function JsonSerializer:AddTypesFromStatic()
     end
 end
 
+---@private
 ---@param typeInfo Freemaker.ClassSystem.Type
 ---@return Core.Json.Serializer
 function JsonSerializer:AddTypeInfo(typeInfo)
-    if not Utils.Class.HasBase(typeInfo, "Core.Json.Serializable") then
-        error("class: " .. typeInfo.Name .. " has not Core.Json.ISerializable as interface", 2)
+    if Utils.Table.ContainsKey(self.m_typeInfos, typeInfo.Name) then
+        error("serializer already contains type: " .. typeInfo.Name)
     end
-    if not Utils.Table.ContainsKey(self.m_typeInfos, typeInfo.Name) then
-        self.m_typeInfos[typeInfo.Name] = typeInfo
-    end
-    return self
-end
+    
+    self.m_typeInfos[typeInfo.Name] = typeInfo
 
----@param typeInfos Freemaker.ClassSystem.Type[]
----@return Core.Json.Serializer
-function JsonSerializer:AddTypeInfos(typeInfos)
-    for _, typeInfo in ipairs(typeInfos) do
-        self:AddTypeInfo(typeInfo)
-    end
     return self
 end
 
@@ -52,8 +46,17 @@ end
 function JsonSerializer:AddClass(class)
     local typeInfo = typeof(class)
     if not typeInfo then
-        return self
+        error("unable to get type of passed class")
     end
+
+    if typeInfo.Options.IsAbstract or typeInfo.Options.IsInterface then
+        error("passed class needs cannot be abstract or an interface")
+    end
+
+    if not Utils.Class.HasInterface(class, NAME_ISERIALIZABLE) then
+        error("class: " .. typeInfo.Name .. " has not " .. NAME_ISERIALIZABLE .. " as interface", 2)
+    end
+
     return self:AddTypeInfo(typeInfo)
 end
 
@@ -113,7 +116,7 @@ function JsonSerializer:serializeInternal(obj)
         return obj
     end
 
-    if Utils.Class.HasBase(obj, "Core.Json.ISerializable") then
+    if Utils.Class.HasInterface(obj, NAME_ISERIALIZABLE) then
         ---@cast obj Core.Json.ISerializable
         return self:serializeClass(obj)
     end

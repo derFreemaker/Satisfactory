@@ -70,12 +70,6 @@
 	    __newindex = true
 	}
 
-	-- Indicates that the value should be retrieved with rawget. Needs to be returned by the __index meta method.
-	Configs.GetNormal = {}
-
-	-- Indicates that value in newindex should be set like table[index] = value. Needs to be returned by the __newindex meta method.
-	Configs.SetNormal = {}
-
 	-- Indicates that the __close method is called from the ClassSystem.Deconstruct method.
 	Configs.Deconstructing = {}
 
@@ -558,24 +552,49 @@ __fileFuncs__["src.Class"] = function()
 	    local metatable = getmetatable(obj)
 
 	    ---@param typeInfo Freemaker.ClassSystem.Type
-	    local function hasTypeBase(typeInfo)
+	    local function hasBase(typeInfo)
 	        local typeName = typeInfo.Name
 	        if typeName == className then
 	            return true
 	        end
 
-	        if typeName ~= "object" then 
-	            for _, value in pairs(typeInfo.Inherits) do
-	                if hasTypeBase(value) then
-	                    return true
-	                end
+	        if not typeInfo.Base then
+	            return false
+	        end
+
+	        return hasBase(typeInfo.Base)
+	    end
+
+	    return hasBase(metatable.Type)
+	end
+
+	---@param obj any
+	---@param interfaceName string
+	---@return boolean hasInterface
+	function Class.HasInterface(obj, interfaceName)
+	    if not Class.IsClass(obj) then
+	        return false
+	    end
+
+	    local metatable = getmetatable(obj)
+
+	    ---@param typeInfo Freemaker.ClassSystem.Type
+	    local function hasInterface(typeInfo)
+	        local typeName = typeInfo.Name
+	        if typeName == interfaceName then
+	            return true
+	        end
+
+	        for _, value in pairs(typeInfo.Interfaces) do
+	            if hasInterface(value) then
+	                return true
 	            end
 	        end
 
 	        return false
 	    end
 
-	    return hasTypeBase(metatable.Type)
+	    return hasInterface(metatable.Type)
 	end
 
 	return Class
@@ -1418,9 +1437,7 @@ __fileFuncs__["__main__"] = function()
 	---@class Freemaker.ClassSystem
 	local ClassSystem = {}
 
-	ClassSystem.GetNormal = Configs.GetNormal
-	ClassSystem.SetNormal = Configs.SetNormal
-	ClassSystem.Deconstructed = Configs.Deconstructing
+	ClassSystem.Deconstructing = Configs.Deconstructing
 	ClassSystem.IsAbstract = Configs.AbstractPlaceholder
 	ClassSystem.IsInterface = Configs.InterfacePlaceholder --//TODO: how to find better name
 
@@ -1431,6 +1448,7 @@ __fileFuncs__["__main__"] = function()
 	ClassSystem.GetInstanceData = Class.GetInstanceData
 	ClassSystem.IsClass = Class.IsClass
 	ClassSystem.HasBase = Class.HasBase
+	ClassSystem.HasInterface = Class.HasInterface
 
 	---@param options Freemaker.ClassSystem.Create.Options
 	---@return Freemaker.ClassSystem.Type | nil base, table<Freemaker.ClassSystem.Type> interfaces

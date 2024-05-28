@@ -10,7 +10,7 @@ local eventListenFunc = event.listen
 ---@param component FIN.Component | Core.IReference
 ---@diagnostic disable-next-line
 function event.listen(component)
-    if Utils.Class.HasBaseClass(component, "Core.IReference") then
+    if Utils.Class.HasInterface(component, "Core.IReference") then
         ---@cast component Core.IReference
         return eventListenFunc(component:Get())
     end

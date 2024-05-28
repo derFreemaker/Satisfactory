@@ -27,11 +27,13 @@ end
 ---@param moduleToGet string
 ---@return any
 local function modifiedRequire(moduleToGet)
+	local thread = coroutine.create(requireFunc)
 	local success
-	local result = { pcall(requireFunc, moduleToGet) }
+	local result = { coroutine.resume(thread, moduleToGet) }
 	success, result = getResult(table.unpack(result))
 	if not success then
-		result = { requireFunc(moduleToGet .. ".init") }
+		print("error when trying to get module: " .. moduleToGet .. "\n" .. debug.traceback(thread, result[1]))
+		return { requireFunc(moduleToGet .. ".init") }
 	end
 	return result
 end
