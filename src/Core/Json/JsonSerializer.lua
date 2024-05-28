@@ -176,6 +176,10 @@ function JsonSerializer:deserializeClass(t)
         end
     end
 
+    if not classBlueprint.Static__Deserialize then
+        return ISerializable.Static__Deserialize(classBlueprint, table.unpack(data))
+    end
+
     return classBlueprint:Static__Deserialize(table.unpack(data))
 end
 

@@ -12,7 +12,7 @@ end
 function TestEmptyUUID()
 	local test = UUID.Static__Empty
 
-	luaunit.assertEquals(tostring(test), "000000-0000-00000000")
+	luaunit.assertEquals(tostring(test), "0000-0000-00000000")
 end
 
 function TestParseUUID()

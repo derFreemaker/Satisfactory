@@ -5,32 +5,32 @@ local string = string
 ---@field private m_head number[]
 ---@field private m_body number[]
 ---@field private m_tail number[]
----@overload fun(head: number[], body: number[], tail: number[]) : Core.UUID
+---@overload fun(head: number[] | string, body: number[] | nil, tail: number[] | nil) : Core.UUID
 local UUID = {}
 
 ---@private
 ---@type integer
-UUID.Static__GeneratedCount = 1
+UUID.Static__GeneratedCount = 0
 
 ---@private
 ---@type string
-UUID.Static__TemplateRegex = "......%-....%-........"
+UUID.Static__TemplateRegex = "....%-....%-........"
 
---- Replaces "x" in template with random character.
 ---@param amount integer
 ---@return number[] char
 local function generateRandomChars(amount)
     ---@type number[]
     local chars = {}
-    for i = 1, amount, 1 do
-        local j = math.random(1, 3)
 
-        if j == 1 then
-            chars[i] = math.random(48, 57)
-        elseif j == 2 then
-            chars[i] = math.random(65, 90)
-        elseif j == 3 then
-            chars[i] = math.random(97, 122)
+    for i = 1, amount, 1 do
+        local j = math.random(0, 57)
+
+        if j <= 7 then
+            chars[i] = j + 48
+        elseif j <= 32 then
+            chars[i] = j + 65
+        else
+            chars[i] = j + 97
         end
     end
     return chars
@@ -39,7 +39,7 @@ end
 ---@return Core.UUID
 function UUID.Static__New()
     math.randomseed(math.floor(computer.time()) + UUID.Static__GeneratedCount)
-    local head = generateRandomChars(6)
+    local head = generateRandomChars(4)
     local body = generateRandomChars(4)
     local tail = generateRandomChars(8)
     return UUID(head, body, tail)
@@ -76,13 +76,15 @@ function UUID.Static__Parse(str)
 end
 
 ---@private
----@param headOrString number[]
----@param body number[]
----@param tail number[]
+---@param headOrString number[] | string
+---@param body number[] | nil
+---@param tail number[] | nil
 function UUID:__init(headOrString, body, tail)
     if type(headOrString) == "string" then
         headOrString, body, tail = parse(headOrString)
     end
+    ---@cast body number[]
+    ---@cast tail number[]
 
     self:Raw__ModifyBehavior(function(modify)
         modify.CustomIndexing = false

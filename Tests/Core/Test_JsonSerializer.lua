@@ -11,7 +11,7 @@ function TestOverall()
     local json = serializer:Serialize({ Id = UUID.Static__Empty })
     local testObj = serializer:Deserialize(json)
 
-    luaunit.assertEquals(tostring(testObj.Id), "000000-0000-00000000")
+    luaunit.assertEquals(tostring(testObj.Id), "0000-0000-00000000")
 end
 
 os.exit(luaunit.LuaUnit.run())

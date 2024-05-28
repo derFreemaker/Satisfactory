@@ -11,7 +11,7 @@ local function benchmarkFunction(func, amount)
     local totalTime = endTime - startTime
 
     print('total time: ' .. totalTime .. 's amount: ' .. amount)
-    print('each time : ' .. (totalTime / amount) * 1000 * 1000 * 1000 .. 'ns')
+    print('each time : ' .. (totalTime / amount) * 1000 * 1000 .. 'µs')
 end
 
 ---@param func function
@@ -25,7 +25,7 @@ local function captureFunction(func, amount)
     local totalTime = endTime - startTime
 
     print('total time: ' .. totalTime .. 's amount: ' .. amount)
-    print('each time : ' .. (totalTime / amount) * 1000 * 1000 * 1000 .. 'ns')
+    print('each time : ' .. (totalTime / amount) * 1000 * 1000 .. 'µs')
 end
 
 return { benchmarkFunction = benchmarkFunction, captureFunction = captureFunction }
