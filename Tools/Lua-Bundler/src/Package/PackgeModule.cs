@@ -252,13 +252,13 @@ namespace Lua_Bundler.Package {
         public String BundleInfo(BundleOptions options) {
             var builder = new StringBuilder();
 
-            builder.AppendLine($"        [\"{Id}\"] = {{");
-            builder.AppendLine($"            Location = \"{Location}\",");
-            builder.AppendLine($"            Namespace = \"{Namespace}\",");
-            builder.AppendLine($"            IsRunnable = {IsRunnable.ToString().ToLower()},");
-            builder.AppendLine($"        }},");
+            builder.Append($"        [\"{Id}\"] = {{\n");
+            builder.Append($"            Location = \"{Location}\",\n");
+            builder.Append($"            Namespace = \"{Namespace}\",\n");
+            builder.Append($"            IsRunnable = {IsRunnable.ToString().ToLower()},\n");
+            builder.Append($"        }},\n");
 
-            return builder.ToString().ReplaceLineEndings("\n");
+            return builder.ToString();
         }
 
         public String BundleData(BundleOptions options) {
@@ -267,7 +267,7 @@ namespace Lua_Bundler.Package {
             var builder = new StringBuilder();
 
             foreach (var line in content) {
-                builder.AppendLine(line);
+                builder.Append(line + "\n");
             }
 
             return builder.ToString();

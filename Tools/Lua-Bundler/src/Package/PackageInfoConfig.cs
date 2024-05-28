@@ -31,8 +31,8 @@ namespace Lua_Bundler.Package
             RequiredPackages = requiredPackages ?? Array.Empty<String>();
 
             // Check if Version has BuildNumber
-            var splitedVersionString = Version.Split("-");
-            if (splitedVersionString.Length < 2)
+            var splitVersionString = Version.Split("-");
+            if (splitVersionString.Length < 2)
                 Version += DEFAULT_BUILD_NUMBER;
 
             PackageType = packageType;

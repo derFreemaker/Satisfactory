@@ -14,7 +14,7 @@ internal class Program {
                 Environment.Exit(1);
             }
 #endif
-        
+
         var config = new BundlerConfig(parseResult.Value);
         
         var finder = new PackageFinder(config);
