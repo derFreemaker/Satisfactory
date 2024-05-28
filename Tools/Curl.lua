@@ -19,7 +19,7 @@ local function newFuture(...)
     return instance
 end
 
----@class Test.Curl : FIN.Components.InternetCard_C
+---@class Test.Curl : FIN.FINInternetCard
 ---@field location string
 local Curl = {}
 
@@ -29,7 +29,7 @@ function Curl:SetProgramLocation(folderPath)
 end
 
 ---@param url string
----@param method FIN.Components.FINComputerMod.FINInternetCard.HttpMethods
+---@param method string
 ---@param data string
 function Curl:request(url, method, data)
     if not self.location then

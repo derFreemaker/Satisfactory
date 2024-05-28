@@ -40,7 +40,7 @@ return function(eeprom, curl)
     function computer.beep(pitch)
     end
 
-    ---@param position Satisfactory.Components.Vector
+    ---@param position Vector
     ---@param playerName string?
     ---@diagnostic disable-next-line
     function computer.attentionPing(position, playerName)
@@ -64,7 +64,7 @@ return function(eeprom, curl)
         eeprom = code
     end
 
-    ---@generic TPCIDevice : FIN.PCIDevice
+    ---@generic TPCIDevice : FIN.FINComputerModule
     ---@param type TPCIDevice
     ---@return TPCIDevice[]
     ---@diagnostic disable-next-line

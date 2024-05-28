@@ -1,9 +1,3 @@
-[submodule "tools/Freemaker"]
-	path = tools/Freemaker
-	url = http://github.com/derFreemaker/Freemaker.Lua
-[submodule "docu"]
-	path = docu
-	url = https://github.com/derFreemaker/FIcsIt-Networks-Documentation.git
 [submodule "Tools/Freemaker"]
 	path = Tools/Freemaker
 	url = https://github.com/derFreemaker/Freemaker.Lua
