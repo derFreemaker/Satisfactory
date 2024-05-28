@@ -1,7 +1,6 @@
-local Curl = require("tools.Curl")
-
 ---@param eeprom string
-return function(eeprom)
+---@param curl Test.Curl
+return function(eeprom, curl)
     computer = {}
 
     ---@diagnostic disable-next-line
@@ -71,7 +70,7 @@ return function(eeprom)
     ---@diagnostic disable-next-line
     function computer.getPCIDevices(type)
         if type == classes.InternetCard_C then
-            return { Curl }
+            return { curl }
         end
 
         return {}

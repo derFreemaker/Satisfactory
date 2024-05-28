@@ -25,7 +25,7 @@ local Curl = {}
 
 ---@param folderPath string
 function Curl:SetProgramLocation(folderPath)
-    self.location = folderPath .. "/bin/curl.exe"
+    self.location = folderPath:gsub("/", "\\")
 end
 
 ---@param url string
@@ -36,29 +36,20 @@ function Curl:request(url, method, data)
         return newFuture(400, "no locaiton set for curl.exe")
     end
 
-    local tmpFile = "file.tmp"
-    local command = self.location .. " \""
-        .. url .. "\""
-        .. " -X " .. method
-        .. " -d \"" .. data .. "\""
-        .. " -o \"" .. tmpFile .. "\""
-        .. " -i 2> nul"
+    local command = self.location .. "\\bin\\curl.exe"
+        .. " --url \"" .. url .. "\""
+        .. " --request " .. method
+        .. " --data \"" .. data .. "\""
+        .. " --include --no-progress-meter"
 
-    local success, exitCode, code = os.execute(command)
-    if not success then
-        return newFuture(400, "did not successfully curl command")
-    end
-
-    local file = io.open(tmpFile, "r")
+    local file, msg = io.popen(command, "r")
+    -- local success, exitCode, code = os.execute(command)
     if not file then
-        return newFuture(400, "Unable to open file")
+        return newFuture(400, "did not successfully execute curl command: " .. tostring(msg))
     end
 
     ---@type string
     local reqData = file:read("a")
-
-    file:close()
-    os.execute("del " .. tmpFile)
 
     local headersEndPos = reqData:find("\n\n")
     if not headersEndPos then

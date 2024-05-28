@@ -111,7 +111,7 @@ function Package:OnLoaded()
 
     ---@type Github_Loading.Entities.Events?
     local eventsModuleLoaded = eventsModule:Load()
-    if not eventsModuleLoaded then
+    if type(eventsModuleLoaded) ~= "table" then
         return
     end
 

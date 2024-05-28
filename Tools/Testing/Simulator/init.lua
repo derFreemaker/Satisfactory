@@ -70,9 +70,10 @@ end
 ---@param logLevel Github_Loading.Logger.LogLevel
 ---@param fileSystemPath Freemaker.FileSystem.Path
 ---@param eeprom string
-function Simulator:prepare(logLevel, fileSystemPath, eeprom)
+---@param curl Test.Curl
+function Simulator:prepare(logLevel, fileSystemPath, eeprom, curl)
 	loadClassesAndStructs()
-	loadComputer(eeprom)
+	loadComputer(eeprom, curl)
 	loadFileSystem(fileSystemPath)
 	loadComponent()
 	loadEvent()
@@ -98,8 +99,13 @@ end
 ---@param eeprom string?
 ---@return Test.Simulator
 function Simulator:Initialize(logLevel, fileSystemPath, eeprom)
+	local Curl = require("Tools.Curl")
+
 	local simulatorPath = FileSystem.GetCurrentDirectory()
 	CurrentPath = simulatorPath:gsub("Tools/Testing/Simulator", "")
+
+	-- init curl for internet requests
+	Curl:SetProgramLocation(CurrentPath .. "Tools/Curl")
 
 	if not fileSystemPath then
 		local info = debug.getinfo(2)
@@ -109,7 +115,7 @@ function Simulator:Initialize(logLevel, fileSystemPath, eeprom)
 			:ToString()
 	end
 
-	self:prepare(logLevel or 3, Path.new(fileSystemPath), eeprom or "")
+	self:prepare(logLevel or 3, Path.new(fileSystemPath), eeprom or "", Curl)
 
 	return self
 end
@@ -125,6 +131,8 @@ function Simulator:InitializeWithLoader(logLevel, fileSystemPath, eeprom, forceD
 
 	local simulatorPath = FileSystem.GetCurrentDirectory()
 	CurrentPath = simulatorPath:gsub("Tools/Testing/Simulator", "")
+
+	-- init curl for internet requests
 	Curl:SetProgramLocation(CurrentPath .. "Tools/Curl")
 
 	if not fileSystemPath then
@@ -135,7 +143,7 @@ function Simulator:InitializeWithLoader(logLevel, fileSystemPath, eeprom, forceD
 		:ToString()
 	end
 
-	self:prepare(logLevel or 3, Path.new(fileSystemPath), eeprom or "")
+	self:prepare(logLevel or 3, Path.new(fileSystemPath), eeprom or "", Curl)
 
 	Loader = Loader.new("http://localhost", "", forceDownload or false, Curl)
 	Loader:Load(logLevel)

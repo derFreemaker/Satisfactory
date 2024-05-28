@@ -15,7 +15,8 @@ eepromFile:close()
 local FileSystemPath = currentPath .. "/Sim-Files/Test_LoaderLoad"
 
 ---@type Test.Simulator
-local Sim = require('tools.Testing.Simulator.init'):Initialize(1, FileSystemPath, eeprom)
+local Sim = require('Tools.Testing.Simulator.init')
+    :Initialize(1, FileSystemPath, eeprom)
 
 ---@diagnostic disable-next-line
 function computer.stop()
