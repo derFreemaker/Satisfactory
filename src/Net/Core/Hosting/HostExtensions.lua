@@ -7,7 +7,7 @@ end
 Host = Host.Value:Load()
 
 local Task = require("Core.Common.Task")
-local NetworkClient = require("Net.NetworkClient")
+local NetworkClient = require("Net.Core.NetworkClient")
 
 ---@class Hosting.Host
 ---@field package m_networkClient Net.Core.NetworkClient

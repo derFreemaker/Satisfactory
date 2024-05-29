@@ -1,9 +1,10 @@
 local ProxyReference = require("Core.References.ProxyReference")
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
-local Cache = require("Core.Adapter.Cache")()
+---@type Core.Cache<(string | integer), Adapter.Computer.NetworkCard>
+local Cache = require("Core.Common.Cache")()
 
----@class Adapter.Computer.NetworkCard : Adapter.IAdapter
+---@class Adapter.Computer.NetworkCard : object
 ---@field private m_refNetworkCard Core.IReference<FIN.Components.NetworkCard_C>
 ---@field private m_openPorts table<integer, true>
 ---@overload fun(idOrIndexOrNetworkCard: (FIN.UUID | integer) | nil) : Adapter.Computer.NetworkCard

@@ -1,5 +1,3 @@
----@namespace Core.IReference
-
 local Config = require("Core.Config")
 
 ---@generic TReference : Satisfactory.Components.Object

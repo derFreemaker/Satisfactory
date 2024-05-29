@@ -1,12 +1,12 @@
-local NetworkCardAdapter = require('Adapter.Computer.NetworkCard')
-local JsonSerializer = require('Core.Json.JsonSerializer')
-local EventPullAdapter = require('Core.Event.EventPullAdapter')
-local Task = require('Core.Common.Task')
-local NetworkPort = require('Net.NetworkPort')
-local NetworkContext = require('Net.NetworkContext')
-local NetworkFuture = require("Net.NetworkFuture")
+local NetworkCardAdapter = require("Adapter.Computer.NetworkCard")
+local JsonSerializer = require("Core.Json.JsonSerializer")
+local EventPullAdapter = require("Core.Event.EventPullAdapter")
+local Task = require("Core.Common.Task")
+local NetworkPort = require("Net.Core.NetworkPort")
+local NetworkContext = require("Net.Core.NetworkContext")
+local NetworkFuture = require("Net.Core.NetworkFuture")
 
-local IPAddress = require("Net.IPAddress")
+local IPAddress = require("Net.Core.IPAddress")
 
 ---@alias Net.Core.Port
 ---|integer
@@ -31,11 +31,9 @@ local NetworkClient = {}
 ---@param networkCard Adapter.Computer.NetworkCard?
 ---@param serializer Core.Json.Serializer?
 function NetworkClient:__init(logger, networkCard, serializer)
-	networkCard = networkCard or NetworkCardAdapter(1)
-
 	self.m_logger = logger
 	self.m_ports = {}
-	self.m_networkCard = networkCard
+	self.m_networkCard = networkCard or NetworkCardAdapter(1)
 
 	self.m_serializer = serializer or JsonSerializer.Static__Serializer
 

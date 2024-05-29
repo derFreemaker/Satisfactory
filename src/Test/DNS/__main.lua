@@ -1,5 +1,5 @@
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
-local NetworkClient = require("Net.NetworkClient")
+local NetworkClient = require("Net.Core.NetworkClient")
 local DNSClient = require("DNS.Client.Client")
 
 ---@class Test.DNS.Main : Github_Loading.Entities.Main

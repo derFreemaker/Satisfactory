@@ -6,4 +6,4 @@ function NetworkContextExtensions:GetCallback()
     return self.Body[1], self.Body[2]
 end
 
-Utils.Class.Extend(require("Net.NetworkContext"), NetworkContextExtensions)
+Utils.Class.Extend(require("Net.Core.NetworkContext"), NetworkContextExtensions)

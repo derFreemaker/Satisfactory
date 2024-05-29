@@ -1,12 +1,4 @@
 {
-	"Lua.diagnostics.globals": [
-		"Config",
-		"log",
-		"InGame",
-		"class",
-		"interface",
-		"computer"
-	],
 	"Lua.workspace.ignoreDir": [
 		".git",
 		".vscode",

@@ -1,7 +1,7 @@
 local Usage = require("Core.Usage.init")
 
 local Task = require("Core.Common.Task")
-local NetworkClient = require("Net.NetworkClient")
+local NetworkClient = require("Net.Core.NetworkClient")
 
 ---@class Services.Callback.Client.CallbackService : object
 ---@field private m_name string

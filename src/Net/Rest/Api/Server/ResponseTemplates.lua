@@ -1,4 +1,4 @@
-local StatusCodes = require("Net.StatusCodes")
+local StatusCodes = require("Net.Core.StatusCodes")
 local Response = require("Net.Rest.Api.Response")
 
 ---@class Net.Rest.Api.Server.RestApiResponseTemplates

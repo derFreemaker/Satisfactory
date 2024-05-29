@@ -1,4 +1,4 @@
-local NetworkClient = require("Net.NetworkClient")
+local NetworkClient = require("Net.Core.NetworkClient")
 
 local FacotryControlClient = require("FactoryControl.Client.Client")
 

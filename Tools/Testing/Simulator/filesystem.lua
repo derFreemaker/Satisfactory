@@ -62,7 +62,7 @@ return function(fileSystemPath)
 
     ---@param path string
     ---@return boolean success
-    ---@diagnostic disable-next-line
+    ---@diagnostic disable-next-line: duplicate-set-field
     function filesystem.initFileSystem(path)
         initializeFileSystem()
         return true
@@ -70,13 +70,13 @@ return function(fileSystemPath)
 
     ---@param device string
     ---@param mountPoint string
-    ---@diagnostic disable-next-line
+    ---@diagnostic disable-next-line: duplicate-set-field
     function filesystem.mount(device, mountPoint)
     end
 
     ---@param path string
     ---@return string[] childs
-    ---@diagnostic disable-next-line
+    ---@diagnostic disable-next-line: duplicate-set-field
     function filesystem.childs(path)
         initializeFileSystem()
 
@@ -89,11 +89,11 @@ return function(fileSystemPath)
         return { table.unpack(dirs), table.unpack(files) }
     end
 
-    ---@diagnostic disable-next-line
+    ---@diagnostic disable-next-line: duplicate-set-field
     filesystem.children = filesystem.childs
 
     ---@param path string
-    ---@diagnostic disable-next-line
+    ---@diagnostic disable-next-line: duplicate-set-field
     function filesystem.exists(path)
         initializeFileSystem()
 
@@ -103,7 +103,7 @@ return function(fileSystemPath)
     ---@param path string
     ---@param mode FIN.Filesystem.File.Openmode
     ---@return FIN.Filesystem.File
-    ---@diagnostic disable-next-line
+    ---@diagnostic disable-next-line: duplicate-set-field
     function filesystem.open(path, mode)
         initializeFileSystem()
 
@@ -139,7 +139,7 @@ return function(fileSystemPath)
 
     ---@param path string
     ---@param all boolean
-    ---@diagnostic disable-next-line
+    ---@diagnostic disable-next-line: duplicate-set-field
     function filesystem.createDir(path, all)
         initializeFileSystem()
 
@@ -149,7 +149,7 @@ return function(fileSystemPath)
     ---@param parameter FIN.Filesystem.PathParameters | string
     ---@param ... string
     ---@return string
-    ---@diagnostic disable-next-line
+    ---@diagnostic disable-next-line: duplicate-set-field
     function filesystem.path(parameter, ...)
         if type(parameter) == "string" then
             local paths = { ... }
@@ -197,7 +197,7 @@ return function(fileSystemPath)
     end
 
     ---@param path string
-    ---@diagnostic disable-next-line
+    ---@diagnostic disable-next-line: duplicate-set-field
     function filesystem.loadFile(path)
         initializeFileSystem()
 
@@ -205,7 +205,7 @@ return function(fileSystemPath)
     end
 
     ---@param path string
-    ---@diagnostic disable-next-line
+    ---@diagnostic disable-next-line: duplicate-set-field
     function filesystem.doFile(path)
         initializeFileSystem()
 

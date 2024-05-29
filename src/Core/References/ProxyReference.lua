@@ -15,4 +15,5 @@ function ProxyReference:Fetch()
     return obj ~= nil
 end
 
-return class("Core.ProxyReference", ProxyReference, { Inherit = require("Core.References.IReference") })
+return class("Core.ProxyReference", ProxyReference,
+    { Inherit = require("Core.References.IReference") })

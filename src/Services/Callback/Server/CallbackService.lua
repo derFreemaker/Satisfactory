@@ -1,7 +1,7 @@
 local Usage = require("Core.Usage.init")
 
-local NetworkClient = require("Net.NetworkClient")
-local NetworkFuture = require("Net.NetworkFuture")
+local NetworkClient = require("Net.Core.NetworkClient")
+local NetworkFuture = require("Net.Core.NetworkFuture")
 
 local CallbackInfo = require("Services.Callback.Core.Entities.CallbackInfo")
 

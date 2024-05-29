@@ -1,13 +1,13 @@
 local Usage = require("Core.Usage.init")
 
-local IPAddress = require("Net.IPAddress")
-local NetworkClient = require("Net.NetworkClient")
+local IPAddress = require("Net.Core.IPAddress")
+local NetworkClient = require("Net.Core.NetworkClient")
 local ApiClient = require("Net.Rest.Api.Client.Client")
 local ApiRequest = require("Net.Rest.Api.Request")
 
 local CreateAddress = require("DNS.Core.Entities.Address.Create")
 
-local Uri = require("Net.Uri")
+local Uri = require("Net.Core.Uri")
 
 ---@class DNS.Client : object
 ---@field private m_networkClient Net.Core.NetworkClient

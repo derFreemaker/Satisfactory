@@ -148,8 +148,6 @@ function Simulator:InitializeWithLoader(logLevel, fileSystemPath, eeprom, forceD
 	Loader = Loader.new("http://localhost", "", forceDownload or false, Curl)
 	Loader:Load(logLevel)
 
-	PackageLoader:DownloadPackage("Core", true)
-
 	return self, Loader
 end
 

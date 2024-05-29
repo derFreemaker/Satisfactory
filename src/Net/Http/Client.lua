@@ -1,7 +1,7 @@
 local PortUsage = require("Core.Usage.Usage_Port")
 
-local IPAddress = require("Net.IPAddress")
-local NetworkClient = require("Net.NetworkClient")
+local IPAddress = require("Net.Core.IPAddress")
+local NetworkClient = require("Net.Core.NetworkClient")
 local ApiClient = require("Net.Rest.Api.Client.Client")
 local DNSClient = require("DNS.Client.Client")
 local HttpResponse = require("Net.Http.Response")

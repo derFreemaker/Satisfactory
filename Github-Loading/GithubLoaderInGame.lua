@@ -73,8 +73,6 @@ local function Run()
 		print('[Computer] INFO downloaded Github Loader')
 	end
 
-	InGame = true
-
 	-- ######## load Loader Files and initialize ######## --
 	---@type Github_Loading.Loader
 	Loader = filesystem.doFile(LoaderPath)

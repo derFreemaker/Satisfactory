@@ -10,7 +10,7 @@ end
 
 function Main:Run()
 	for _, valve in pairs(self.m_hotSteamValves) do
-		log(valve:GetId(), valve:GetFlowLimit())
+		log(valve:GetId(), valve:GetNick())
 	end
 end
 

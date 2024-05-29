@@ -2,7 +2,7 @@ local Usage = require("Core.Usage.init")
 local Config = require("FactoryControl.Core.Config")
 
 local Task = require("Core.Common.Task")
-local NetworkClient = require("Net.NetworkClient")
+local NetworkClient = require("Net.Core.NetworkClient")
 
 local DataClient = require("FactoryControl.Client.DataClient")
 
