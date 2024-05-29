@@ -1,3 +1,5 @@
+local table = table
+
 ---@param ... any data
 ---@return Test.Curl.Future
 local function newFuture(...)
@@ -19,7 +21,7 @@ local function newFuture(...)
     return instance
 end
 
----@class Test.Curl : FIN.FINInternetCard
+---@class Test.Curl : FIN.Components.InternetCard_C
 ---@field location string
 local Curl = {}
 
@@ -43,12 +45,10 @@ function Curl:request(url, method, data)
         .. " --include --no-progress-meter"
 
     local file, msg = io.popen(command, "r")
-    -- local success, exitCode, code = os.execute(command)
     if not file then
         return newFuture(400, "did not successfully execute curl command: " .. tostring(msg))
     end
 
-    ---@type string
     local reqData = file:read("a")
 
     local headersEndPos = reqData:find("\n\n")
