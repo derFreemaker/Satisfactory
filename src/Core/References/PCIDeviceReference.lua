@@ -19,4 +19,5 @@ function PCIDeviceReference:Fetch()
     return obj ~= nil
 end
 
-return class("Core.PCIDeviceReference", PCIDeviceReference, { Inherit = require("Core.References.IReference") })
+return class("Core.PCIDeviceReference", PCIDeviceReference,
+    { Inherit = require("Core.IReference") })

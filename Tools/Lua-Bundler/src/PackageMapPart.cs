@@ -40,9 +40,8 @@ namespace Lua_Bundler
                 return;
             }
 
-            if (splitedNamespaceLength > depth)
-            {
-                var child = _Childs[splitedNamespace[depth + 1]];
+            if (splitedNamespaceLength > depth
+                && _Childs.TryGetValue(splitedNamespace[depth + 1], out var child)) {
                 child.RemoveModule(splitedNamespace, depth + 1);
             }
         }
