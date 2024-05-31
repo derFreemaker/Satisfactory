@@ -19,7 +19,7 @@ return function(eeprom, curl)
 
     ---@diagnostic disable-next-line: duplicate-set-field
     function computer.magicTime()
-        return os.time, os.date(), os.date()
+        return os.time(), os.date("%Y.%m.%d-%H.%M.%S"), os.date("%Y-%m-%d")
     end
 
     ---@param errorMsg string

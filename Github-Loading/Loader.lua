@@ -264,11 +264,12 @@ function Loader:setupLogger(logLevel)
 	local function logConsole(message)
 		print(message)
 	end
+	local logFilePath = "/Logs/main-" .. ({ computer.magicTime() })[2] .. ".log"
 	local function logFile(message)
-		Utils.File.Write('/Logs/main.log', '+a', message .. '\n', true)
+		Utils.File.Write(logFilePath,  '+a', message .. '\n', true)
 	end
 	local function clear()
-		Utils.File.Clear('/Logs/main.log')
+		Utils.File.Clear(logFilePath)
 	end
 
 	---@type Github_Loading.Listener
@@ -281,7 +282,6 @@ function Loader:setupLogger(logLevel)
 	self.Logger.OnClear:AddListener(Listener.new(clear))
 	___logger:setLogger(self.Logger)
 
-	self.Logger:Clear()
 	self.Logger:LogWrite('###### LOG START: ' .. tostring(({ computer.magicTime() })[2]) .. ' ######')
 	self.Logger:LogWrite("###### Loader Version: " .. tostring(self:Get('/Github-Loading/Version.latest')) .. " ######")
 
