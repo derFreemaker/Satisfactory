@@ -31,7 +31,7 @@ local LoaderFiles = {
 ---@param url string
 ---@param path string
 ---@param forceDownload boolean
----@param internetCard FIN.Components.InternetCard_C
+---@param internetCard FIN.InternetCard_C
 ---@return boolean
 local function internalDownload(url, path, forceDownload, internetCard)
 	if forceDownload == nil then
@@ -116,7 +116,7 @@ end
 ---@param loaderBaseUrl string
 ---@param loaderBasePath string
 ---@param forceDownload boolean
----@param internetCard FIN.Components.InternetCard_C
+---@param internetCard FIN.InternetCard_C
 ---@return boolean
 local function downloadFiles(loaderBaseUrl, loaderBasePath, forceDownload, internetCard)
 	---@param path string
@@ -220,7 +220,7 @@ end
 ---@field private m_loaderBaseUrl string
 ---@field private m_loaderBasePath string
 ---@field private m_forceDownload boolean
----@field private m_internetCard FIN.Components.InternetCard_C
+---@field private m_internetCard FIN.InternetCard_C
 ---@field private m_loadedLoaderFiles table<string, table>
 ---@field Logger Github_Loading.Logger
 local Loader = {}
@@ -228,7 +228,7 @@ local Loader = {}
 ---@param loaderBaseUrl string
 ---@param loaderBasePath string
 ---@param forceDownload boolean
----@param internetCard FIN.Components.InternetCard_C
+---@param internetCard FIN.InternetCard_C
 ---@return Github_Loading.Loader
 function Loader.new(loaderBaseUrl, loaderBasePath, forceDownload, internetCard)
 	-- //WARN: computer.promote used

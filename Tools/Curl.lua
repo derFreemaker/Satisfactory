@@ -21,7 +21,7 @@ local function newFuture(...)
     return instance
 end
 
----@class Test.Curl : FIN.Components.InternetCard_C
+---@class Test.Curl : FIN.InternetCard_C
 ---@field location string
 local Curl = {}
 

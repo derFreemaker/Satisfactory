@@ -40,7 +40,7 @@ return function(eeprom, curl)
     function computer.beep(pitch)
     end
 
-    ---@param position Satisfactory.Components.Vector
+    ---@param position Engine.Vector
     ---@param playerName string?
     ---@diagnostic disable-next-line: duplicate-set-field
     function computer.attentionPing(position, playerName)

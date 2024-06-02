@@ -7,7 +7,7 @@ local IPaddress = require("Net.Core.IPAddress")
 
 ---@class Net.Core.NetworkContext : object
 ---@field SignalName string
----@field SignalSender Satisfactory.Components.Object
+---@field SignalSender Engine.Object
 ---@field SenderIPAddress Net.Core.IPAddress
 ---@field Port integer
 ---@field EventName string

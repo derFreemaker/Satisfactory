@@ -5,7 +5,7 @@ local Cache = require("Core.Common.Cache")()
 
 ---@class Adapter.Pipeline.Valve : object
 ---@field private m_iPAddress Net.Core.IPAddress
----@field private m_valve Core.IReference<Satisfactory.Components.Build_Valve_C>
+---@field private m_valve Core.IReference<Satis.Build_Valve_C>
 ---@overload fun(id: FIN.UUID) : Adapter.Pipeline.Valve
 local Valve = {}
 
