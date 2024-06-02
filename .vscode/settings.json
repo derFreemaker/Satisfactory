@@ -68,4 +68,8 @@
 			"foreground": "#0da00d"
 		}
 	],
+	"Lua.diagnostics.globals": [
+		"classes",
+		"structs"
+	],
 }
