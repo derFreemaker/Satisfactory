@@ -63,4 +63,4 @@ function Chart:Modify(func)
 end
 
 return class("FactoryControl.Client.Entities.Controller.Feature.Chart", Chart,
-    { Inherit = require("FactoryControl.Client.Entities.Controller.Feature") })
+    { Inherit = require("FactoryControl.Client.Entities.Controller.Feature.init") })

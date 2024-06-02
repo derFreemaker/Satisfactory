@@ -1,4 +1,4 @@
-local Event = require("Core.Event")
+local Event = require("Core.Event.init")
 
 ---@alias Core.Logger.LogLevel
 ---|1 Trace
@@ -171,7 +171,7 @@ function Logger:Log(logLevel, ...)
 	end
 
 	if logLevel ~= 10 then
-		message = ({ computer.magicTime() })[2] .. "-" .. computer.millis() .. " [" .. LogLevelToName[logLevel] .. "]: " .. self.Name .. "\n"
+		message = ({ computer.magicTime() })[2] .. "-" .. computer.millis() .. " [" .. LogLevelToName[logLevel] .. "]: " .. self.Name
 			.. "    " .. message:gsub("\n", "\n    ")
 	else
 		message = message:gsub("\n", "\n    "):gsub("\r", "\n")

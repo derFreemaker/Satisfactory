@@ -1,6 +1,5 @@
 ---@class Net.Rest.Api.Response.Header : table<string, any>
 ---@field Code Net.Core.StatusCodes
----@field Message string?
 
 ---@class Net.Rest.Api.Response : object, Core.Json.ISerializable
 ---@field Headers Net.Rest.Api.Response.Header

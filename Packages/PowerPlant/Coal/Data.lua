@@ -1,6 +1,6 @@
 local Data={
-["PowerPlant.Coal.__main"] = [[
-local ValveAdapter = require('Adapter.Pipeline.Valve')
+["PowerPlant.Coal.__main"] = [==========[
+local ValveAdapter = require("Adapter.Pipeline.Valve")
 
 ---@class PowerPlant.Coal.Main : Github_Loading.Entities.Main
 ---@field private m_hotSteamValves Adapter.Pipeline.Valve[]
@@ -12,13 +12,13 @@ end
 
 function Main:Run()
 	for _, valve in pairs(self.m_hotSteamValves) do
-		log(valve:GetId(), valve:GetFlowLimit())
+		log(valve:GetId(), valve:GetNick())
 	end
 end
 
 return Main
 
-]],
+]==========],
 }
 
 return Data

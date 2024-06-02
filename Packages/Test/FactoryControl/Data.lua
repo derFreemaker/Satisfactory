@@ -1,5 +1,5 @@
 local Data={
-["Test.FactoryControl.__main"] = [[
+["Test.FactoryControl.__main"] = [==========[
 local Host = require("Hosting.Host")
 
 ---@class FactoryControl.Test.Main : Github_Loading.Entities.Main
@@ -19,8 +19,8 @@ end
 
 return Main
 
-]],
-["Test.FactoryControl.Helper"] = [[
+]==========],
+["Test.FactoryControl.Helper"] = [==========[
 local NetworkClient = require("Net.Core.NetworkClient")
 
 local FacotryControlClient = require("FactoryControl.Client.Client")
@@ -44,8 +44,8 @@ end
 
 return Helper
 
-]],
-["Test.FactoryControl.Tests.Connection"] = [[
+]==========],
+["Test.FactoryControl.Tests.Connection"] = [==========[
 local TestFramework = require("Test.Framework.init")
 local Helper = require("Test.FactoryControl.Helper")
 
@@ -60,8 +60,8 @@ local function connection(logger)
 end
 TestFramework:AddTest("Connection", connection)
 
-]],
-["Test.FactoryControl.Tests.Controlling"] = [[
+]==========],
+["Test.FactoryControl.Tests.Controlling"] = [==========[
 local TestFramework = require("Test.Framework.init")
 local Helper = require("Test.FactoryControl.Helper")
 
@@ -72,10 +72,10 @@ local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local function controlling(logger)
     local client = Helper.CreateFactoryControlClient(logger)
 
-    log("create controller")
+    log("create controller...")
     local controller = client:Connect("Controlling")
 
-    log("adding button")
+    log("adding button...")
     local featureName = "test"
     local button = controller:AddButton(featureName)
     assert(button, "could not add button")
@@ -86,7 +86,7 @@ local function controlling(logger)
         end)
     )
 
-    log("getting controller")
+    log("getting controller...")
     local gotController = client:GetControllerByName("Controlling")
     if not gotController then
         log("could not get controller by name")
@@ -94,23 +94,22 @@ local function controlling(logger)
     end
     assert(gotController, "could not get controller")
 
-    log("getting button")
+    log("getting button...")
     local feature = gotController:GetFeatureByName(featureName)
     assert(feature, "could not get feature")
     ---@cast feature FactoryControl.Client.Entities.Controller.Feature.Button
 
-    log("pressing button")
+    log("pressing button...")
     feature:Press()
 
-    button:Press()
     while not pressed do
         EventPullAdapter:Wait()
     end
 end
 TestFramework:AddTest("Controlling", controlling)
 
-]],
-["Test.FactoryControl.Tests.Features.Button"] = [[
+]==========],
+["Test.FactoryControl.Tests.Features.Button"] = [==========[
 local TestFramework = require("Test.Framework.init")
 local Helper = require("Test.FactoryControl.Helper")
 
@@ -141,8 +140,8 @@ local function overall(logger)
 end
 TestFramework:AddTest("Button Overall", overall)
 
-]],
-["Test.FactoryControl.Tests.Features.Chart"] = [[
+]==========],
+["Test.FactoryControl.Tests.Features.Chart"] = [==========[
 local TestFramework = require("Test.Framework.init")
 local Helper = require("Test.FactoryControl.Helper")
 
@@ -184,8 +183,8 @@ local function overall(logger)
 end
 TestFramework:AddTest("Chart Overall", overall)
 
-]],
-["Test.FactoryControl.Tests.Features.Radial"] = [[
+]==========],
+["Test.FactoryControl.Tests.Features.Radial"] = [==========[
 local TestFramework = require("Test.Framework.init")
 local Helper = require("Test.FactoryControl.Helper")
 
@@ -222,8 +221,8 @@ local function overall(logger)
 end
 TestFramework:AddTest("Radial Overall", overall)
 
-]],
-["Test.FactoryControl.Tests.Features.Switch"] = [[
+]==========],
+["Test.FactoryControl.Tests.Features.Switch"] = [==========[
 local TestFramework = require("Test.Framework.init")
 local Helper = require("Test.FactoryControl.Helper")
 
@@ -259,7 +258,7 @@ local function overall(logger)
 end
 TestFramework:AddTest("Switch Overall", overall)
 
-]],
+]==========],
 }
 
 return Data

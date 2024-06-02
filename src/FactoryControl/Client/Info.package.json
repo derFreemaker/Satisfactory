@@ -1,7 +1,7 @@
 {
   "Name": "FactoryControl.Client",
   "Namespace": "FactoryControl.Client",
-  "Version": "0.1-54",
+  "Version": "0.1-56",
   "RequiredPackages": [
     "Core",
     "FactoryControl.Core",

@@ -32,8 +32,11 @@ function Module:Load()
     end
 
     if self.IsRunnable then
-        self.Data = self.Data
-        self.StoredData = { load(self.Data, self.Location)() }
+        if NotInGame then
+            self.StoredData = { require(self.Namespace) }
+        else
+            self.StoredData = { load(self.Data, self.Location)() }
+        end
     else
         self.StoredData = { self.Data }
     end

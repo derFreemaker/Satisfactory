@@ -1,5 +1,5 @@
 local Data={
-["Services.Callback.Core.__events"] = [[
+["Services.Callback.Core.__events"] = [==========[
 local JsonSerializer = require("Core.Json.JsonSerializer")
 
 ---@class Services.Callback.Core.Events : Github_Loading.Entities.Events
@@ -15,13 +15,13 @@ end
 
 return Events
 
-]],
-["Services.Callback.Core.Entities.CallbackInfo"] = [[
+]==========],
+["Services.Callback.Core.Entities.CallbackInfo"] = [==========[
 ---@alias Services.Callback.Core.Entities.CallbackInfo.ExecutionMode
 ---|"Send"
 ---|"Invoke"
 
----@class Services.Callback.Core.Entities.CallbackInfo : Core.Json.Serializable
+---@class Services.Callback.Core.Entities.CallbackInfo : object, Core.Json.ISerializable
 ---@field Id Core.UUID
 ---@field CallbackMethod string
 ---@field CallbackServiceName string
@@ -46,11 +46,11 @@ function CallbackInfo:Serialize()
     return self.Id, self.CallbackMethod, self.CallbackServiceName, self.ExecutionMode
 end
 
-return Utils.Class.Create(CallbackInfo, "Services.Callback.Core.Entities.CallbackInfo",
-    require("Core.Json.Serializable"))
+return class("Services.Callback.Core.Entities.CallbackInfo", CallbackInfo,
+    { Inherit = require("Core.Json.ISerializable") })
 
-]],
-["Services.Callback.Core.Extensions.NetworkContextExtensions"] = [[
+]==========],
+["Services.Callback.Core.Extensions.NetworkContextExtensions"] = [==========[
 ---@class Net.Core.NetworkContext
 local NetworkContextExtensions = {}
 
@@ -61,7 +61,7 @@ end
 
 Utils.Class.Extend(require("Net.Core.NetworkContext"), NetworkContextExtensions)
 
-]],
+]==========],
 }
 
 return Data

@@ -20,13 +20,13 @@ namespace Lua_Bundler.Package {
             var fileStem = Path.GetFileNameWithoutExtension(info.Name);
 
             var locationDirectory = directoryLocation
-                .Replace("\\", "/");
+                .Replace("\\", ".");
 
             var namespaceDirectory = directoryLocation
                                      .Replace("\\", ".")
                                      .Replace(parent.Location, parent.Namespace);
 
-            Location = $"{locationDirectory}/{fileStem}";
+            Location = $"{locationDirectory}.{fileStem}";
             Namespace = $"{namespaceDirectory}.{fileStem}";
             IsRunnable = info.Extension == ".lua";
 

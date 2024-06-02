@@ -1,12 +1,13 @@
 local Data={
-["Adapter.Pipeline.Valve"] = [[
+["Adapter.Pipeline.Valve"] = [==========[
 local ProxyReference = require("Core.References.ProxyReference")
 
-local Cache = require("Core.Adapter.Cache")()
+---@type Core.Cache<(string | integer), Adapter.Pipeline.Valve>
+local Cache = require("Core.Common.Cache")()
 
----@class Adapter.Pipeline.Valve : Adapter.IAdapter
+---@class Adapter.Pipeline.Valve : object
 ---@field private m_iPAddress Net.Core.IPAddress
----@field private m_valve Core.IReference<Satisfactory.Components.Build_Valve_C>
+---@field private m_valve Core.IReference<Satis.Build_Valve_C>
 ---@overload fun(id: FIN.UUID) : Adapter.Pipeline.Valve
 local Valve = {}
 
@@ -26,10 +27,13 @@ end
 ---@return Adapter.Pipeline.Valve[]
 function Valve.Static__GetAllValvesInNetwork(nickName)
 	local valveIds = Valve.Static__FindAllValveIdsInNetwork(nickName)
+
+	---@type Adapter.Pipeline.Valve[]
 	local valveAdapters = {}
 	for _, valveId in ipairs(valveIds) do
 		table.insert(valveAdapters, Valve(valveId))
 	end
+
 	return valveAdapters
 end
 
@@ -91,9 +95,9 @@ function Valve:GetFlowLimit()
 	return self.m_valve:Get().userFlowLimit
 end
 
-return Utils.Class.Create(Valve, 'Adapter.Pipeline.Valve')
+return class("Adapter.Pipeline.Valve", Valve)
 
-]],
+]==========],
 }
 
 return Data

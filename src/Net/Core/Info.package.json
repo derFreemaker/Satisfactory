@@ -1,7 +1,7 @@
 {
   "Name": "Net.Core",
   "Namespace": "Net.Core",
-  "Version": "0.1.0-103",
+  "Version": "0.1.0-105",
   "RequiredPackages": [
     "Adapter.Computer",
     "Core"

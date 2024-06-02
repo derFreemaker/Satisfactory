@@ -1,5 +1,5 @@
 local Data={
-["Database.DbTable"] = [[
+["Database.DbTable"] = [==========[
 local JsonSerializer = require("Core.Json.JsonSerializer")
 local File = require("Core.FileSystem.File")
 
@@ -35,7 +35,7 @@ function DbTable:__init(name, path, logger, serializer)
 end
 
 function DbTable:Load()
-    self.m_logger:LogTrace("loading Database Table: '" .. self.m_name .. "'...")
+    self.m_logger:LogTrace("loading Database Table: " .. self.m_name .. "...")
 
     local parentFolder = self.m_path:GetParentFolderPath()
     if not filesystem.exists(parentFolder:GetPath()) then
@@ -46,7 +46,7 @@ function DbTable:Load()
 end
 
 function DbTable:Save()
-    self.m_logger:LogTrace("saving Database Table: '" .. self.m_name .. "'...")
+    self.m_logger:LogTrace("saving Database Table: " .. self.m_name .. "...")
 
     for key, value in pairs(self.m_dataChanged) do
         local path = self.m_path:Extend(tostring(key) .. ".dto.json")
@@ -135,9 +135,9 @@ function DbTable:__pairs()
     return iterator, Utils.Table.Invert(childs), nil
 end
 
-return Utils.Class.Create(DbTable, "Database.DbTable")
+return class("Database.DbTable", DbTable)
 
-]],
+]==========],
 }
 
 return Data

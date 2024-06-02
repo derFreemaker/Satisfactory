@@ -1,5 +1,5 @@
 local Data={
-["Test.Core.__main"] = [[
+["Test.Core.__main"] = [==========[
 local Host = require("Hosting.Host")
 
 ---@class Test.Core.Main : Github_Loading.Entities.Main
@@ -23,8 +23,8 @@ end
 
 return Main
 
-]],
-["Test.Core.Tests.NetworkCard"] = [[
+]==========],
+["Test.Core.Tests.NetworkCard"] = [==========[
 local Framework = require("Test.Framework.init")
 
 local NetworkCard = require("Adapter.Computer.NetworkCard")
@@ -56,9 +56,10 @@ local function test()
 
     assert(gotEvent, "did not get the right networkCard message")
 end
+
 Framework:AddTest("NetworkCard", test)
 
-]],
+]==========],
 }
 
 return Data

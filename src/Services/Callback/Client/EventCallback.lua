@@ -1,4 +1,4 @@
-local Event = require("Core.Event")
+local Event = require("Core.Event.init")
 
 ---@class Services.Callback.Client.EventCallback : Services.Callback.Client.Callback
 ---@field m_onCalled Core.Event

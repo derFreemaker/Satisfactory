@@ -70,6 +70,7 @@
 	],
 	"Lua.diagnostics.globals": [
 		"classes",
-		"structs"
+		"structs",
+		"NotInGame"
 	],
 }

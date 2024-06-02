@@ -1,5 +1,5 @@
 local Data={
-["FactoryControl.Client.Client"] = [[
+["FactoryControl.Client.Client"] = [==========[
 local Usage = require("Core.Usage.init")
 local Config = require("FactoryControl.Core.Config")
 
@@ -218,20 +218,20 @@ function Client:UpdateFeature(featureUpdate)
     self.m_client:UpdateFeature(featureUpdate)
 end
 
-return Utils.Class.Create(Client, "FactoryControl.Client")
+return class("FactoryControl.Client", Client)
 
-]],
-["FactoryControl.Client.DataClient"] = [[
+]==========],
+["FactoryControl.Client.DataClient"] = [==========[
 local Usage = require("Core.Usage.init")
 local EndpointUrlConstructors = require("FactoryControl.Core.EndpointUrls")[2]
 local ControllerUrlConstructors = EndpointUrlConstructors.Controller
 local FeatureUrlConstructors = EndpointUrlConstructors.Feature
 
-local Uri = require("Net.Rest.Uri")
+local Uri = require("Net.Core.Uri")
 
 local FactoryControlConfig = require("FactoryControl.Core.Config")
-local HttpClient = require('Net.Http.Client')
-local HttpRequest = require('Net.Http.Request')
+local HttpClient = require("Net.Http.Client")
+local HttpRequest = require("Net.Http.Request")
 
 ---@class FactoryControl.Client.DataClient : object
 ---@field private m_client Net.Http.Client
@@ -249,7 +249,7 @@ end
 ---@param networkClient Net.Core.NetworkClient?
 function DataClient:__init(logger, networkClient)
 	self.m_logger = logger
-	self.m_client = HttpClient(self.m_logger:subLogger('RestApiClient'), nil, networkClient)
+	self.m_client = HttpClient(self.m_logger:subLogger("RestApiClient"), nil, networkClient)
 
 	self.m_logger:LogDebug("waiting for server heartbeat...")
 	self.Static__WaitForHeartbeat(self.m_client:GetNetworkClient())
@@ -285,7 +285,7 @@ end
 ---@param createController FactoryControl.Core.Entities.Controller.CreateDto
 ---@return FactoryControl.Core.Entities.ControllerDto?
 function DataClient:CreateController(createController)
-	local response = self:request('CREATE', ControllerUrlConstructors.Create(), createController)
+	local response = self:request("CREATE", ControllerUrlConstructors.Create(), createController)
 
 	if response:IsFaulted() then
 		return
@@ -426,10 +426,10 @@ function DataClient:UpdateFeature(featureUpdate)
 	)
 end
 
-return Utils.Class.Create(DataClient, "FactoryControl.Client.DataClient")
+return class("FactoryControl.Client.DataClient", DataClient)
 
-]],
-["FactoryControl.Client.EventNames"] = [[
+]==========],
+["FactoryControl.Client.EventNames"] = [==========[
 ---@enum FactoryControl.Client.EventNames
 local EventNames = {
     ButtonPressed = "FactoryControl__Feature__ButtonPressed"
@@ -437,8 +437,8 @@ local EventNames = {
 
 return EventNames
 
-]],
-["FactoryControl.Client.Entities.Entity"] = [[
+]==========],
+["FactoryControl.Client.Entities.Entity"] = [==========[
 ---@class FactoryControl.Client.Entities.Entity : object
 ---@field Id Core.UUID
 ---@field protected m_client FactoryControl.Client
@@ -455,10 +455,10 @@ function Entity:__init(id, client)
     self.m_client = client
 end
 
-return Utils.Class.Create(Entity, "FactoryControl.Client.Entities.Entity")
+return class("FactoryControl.Client.Entities.Entity", Entity)
 
-]],
-["FactoryControl.Client.Entities.Controller.Controller"] = [[
+]==========],
+["FactoryControl.Client.Entities.Controller.Controller"] = [==========[
 local UUID = require("Core.Common.UUID")
 
 local Modify = require("FactoryControl.Client.Entities.Controller.Modify")
@@ -525,7 +525,7 @@ function Controller:GetFeatures()
 end
 
 ---@param name string
----@return FactoryControl.Client.Entities.Controller.Feature?
+---@return FactoryControl.Client.Entities.Controller.Feature | nil feature
 function Controller:GetFeatureByName(name)
     for _, feature in pairs(self:GetFeatures()) do
         if feature.Name == name then
@@ -535,17 +535,17 @@ function Controller:GetFeatureByName(name)
 end
 
 ---@param name string
----@return FactoryControl.Client.Entities.Controller.Feature.Button?
+---@return FactoryControl.Client.Entities.Controller.Feature.Button | nil button
 function Controller:AddButton(name)
     local buttonDto = ButtonDto(UUID.Static__New(), name, self.Id)
     local button = self.m_client:CreateFeature(Button(buttonDto, self.m_client))
-    ---@cast button FactoryControl.Client.Entities.Controller.Feature.Button?
+    ---@cast button FactoryControl.Client.Entities.Controller.Feature.Button | nil
     return button
 end
 
 ---@param name string
 ---@param isEnabled boolean?
----@return FactoryControl.Client.Entities.Controller.Feature.Switch?
+---@return FactoryControl.Client.Entities.Controller.Feature.Switch | nil switch
 function Controller:AddSwitch(name, isEnabled)
     if isEnabled == nil then
         isEnabled = false
@@ -553,12 +553,13 @@ function Controller:AddSwitch(name, isEnabled)
 
     local switchDto = SwitchDto(UUID.Static__New(), name, self.Id, isEnabled)
     local switch = self.m_client:CreateFeature(Switch(switchDto, self.m_client))
-    ---@cast switch FactoryControl.Client.Entities.Controller.Feature.Switch?
+    ---@cast switch FactoryControl.Client.Entities.Controller.Feature.Switch | nil
     return switch
 end
 
 ---@param name string
 ---@param data FactoryControl.Client.Entities.Controller.Feature.Radial.Data?
+---@return FactoryControl.Client.Entities.Controller.Feature.Radial | nil radial
 function Controller:AddRadial(name, data)
     if data == nil then
         data = {}
@@ -577,12 +578,13 @@ function Controller:AddRadial(name, data)
 
     local radialDto = RadialDto(UUID.Static__New(), name, self.Id, min, max, setting)
     local radial = self.m_client:CreateFeature(Radial(radialDto, self.m_client))
-    ---@cast radial FactoryControl.Client.Entities.Controller.Feature.Radial?
+    ---@cast radial FactoryControl.Client.Entities.Controller.Feature.Radial | nil
     return radial
 end
 
 ---@param name string
----@param data FactoryControl.Client.Entities.Controller.Feature.Chart.Data?
+---@param data FactoryControl.Client.Entities.Controller.Feature.Chart.Data | nil
+---@return FactoryControl.Client.Entities.Controller.Feature.Chart | nil chart
 function Controller:AddChart(name, data)
     data = data or {}
     local xAxisName = data.XAxisName or "X"
@@ -591,18 +593,18 @@ function Controller:AddChart(name, data)
 
     local chartDto = ChartDto(UUID.Static__New(), name, self.Id, xAxisName, yAxisName, data)
     local chart = self.m_client:CreateFeature(Chart(chartDto, self.m_client))
-    ---@cast chart FactoryControl.Client.Entities.Controller.Feature.Chart?
+    ---@cast chart FactoryControl.Client.Entities.Controller.Feature.Chart | nil
     return chart
 end
 
-return Utils.Class.Create(Controller, "FactoryControl.Client.Entities.Controller",
-    require("FactoryControl.Client.Entities.Entity"))
+return class("FactoryControl.Client.Entities.Controller", Controller,
+    { Inherit = require("FactoryControl.Client.Entities.Entity") })
 
 -- //TODO: implement some kind of status like online and offline
 
-]],
-["FactoryControl.Client.Entities.Controller.Modify"] = [[
-local FeatureDto = require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto")
+]==========],
+["FactoryControl.Client.Entities.Controller.Modify"] = [==========[
+local FeatureDto = require("FactoryControl.Core.Entities.Controller.Feature.Dto")
 
 local ModfiyDto = require("FactoryControl.Core.Entities.Controller.ModifyDto")
 
@@ -633,10 +635,10 @@ function Modify:ToDto()
     return ModfiyDto(self.Name, self.IPAddress, featureDtos)
 end
 
-return Utils.Class.Create(Modify, "FactoryControl.Client.Entities.Controller.Modify")
+return class("FactoryControl.Client.Entities.Controller.Modify", Modify)
 
-]],
-["FactoryControl.Client.Entities.Controller.Feature.Factory"] = [[
+]==========],
+["FactoryControl.Client.Entities.Controller.Feature.Factory"] = [==========[
 local ButtonFeature = require("FactoryControl.Client.Entities.Controller.Feature.Button.Button")
 local ChartFeature = require("FactoryControl.Client.Entities.Controller.Feature.Chart.Chart")
 local RadialFeature = require("FactoryControl.Client.Entities.Controller.Feature.Radial.Radial")
@@ -668,8 +670,8 @@ end
 
 return Factory
 
-]],
-["FactoryControl.Client.Entities.Controller.Feature.Feature"] = [[
+]==========],
+["FactoryControl.Client.Entities.Controller.Feature.init"] = [==========[
 local Task = require("Core.Common.Task")
 local Watchable = require("Core.Common.Watchable")
 
@@ -712,16 +714,20 @@ function Feature:OnUpdate(update)
     error("OnUpdate not implemented")
 end
 
+Feature.OnUpdate = Utils.Class.IsAbstract
+
 ---@return FactoryControl.Core.Entities.Controller.FeatureDto
 function Feature:ToDto()
     error("ToDto not implemented")
 end
 
-return Utils.Class.Create(Feature, "FactoryControl.Client.Entities.Controller.Feature",
-    require("FactoryControl.Client.Entities.Entity"))
+Feature.ToDto = Utils.Class.IsAbstract
 
-]],
-["FactoryControl.Client.Entities.Controller.Feature.Button.Button"] = [[
+return class("FactoryControl.Client.Entities.Controller.Feature", Feature,
+    { IsAbstract = true, Inherit = require("FactoryControl.Client.Entities.Entity") })
+
+]==========],
+["FactoryControl.Client.Entities.Controller.Feature.Button.Button"] = [==========[
 local ButtonDto = require("FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto")
 
 local Update = require("FactoryControl.Core.Entities.Controller.Feature.Button.Update")
@@ -752,11 +758,11 @@ function Button:Press()
     self.m_client:UpdateFeature(update)
 end
 
-return Utils.Class.Create(Button, "FactoryControl.Client.Entities.Controller.Feature.Button",
-    require("FactoryControl.Client.Entities.Controller.Feature.Feature"))
+return class("FactoryControl.Client.Entities.Controller.Feature.Button", Button,
+    { Inherit = require("FactoryControl.Client.Entities.Controller.Feature.init") })
 
-]],
-["FactoryControl.Client.Entities.Controller.Feature.Chart.Chart"] = [[
+]==========],
+["FactoryControl.Client.Entities.Controller.Feature.Chart.Chart"] = [==========[
 local ChartDto = require("FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto")
 local Update = require("FactoryControl.Core.Entities.Controller.Feature.Chart.Update")
 
@@ -821,11 +827,11 @@ function Chart:Modify(func)
     self.m_client:UpdateFeature(update)
 end
 
-return Utils.Class.Create(Chart, "FactoryControl.Client.Entities.Controller.Feature.Chart",
-    require("FactoryControl.Client.Entities.Controller.Feature.Feature"))
+return class("FactoryControl.Client.Entities.Controller.Feature.Chart", Chart,
+    { Inherit = require("FactoryControl.Client.Entities.Controller.Feature.init") })
 
-]],
-["FactoryControl.Client.Entities.Controller.Feature.Radial.Radial"] = [[
+]==========],
+["FactoryControl.Client.Entities.Controller.Feature.Radial.Radial"] = [==========[
 local RadialDto = require("FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto")
 
 local Update = require("FactoryControl.Core.Entities.Controller.Feature.Radial.Update")
@@ -899,11 +905,11 @@ function Radial:Modify(func)
     self.m_client:UpdateFeature(update)
 end
 
-return Utils.Class.Create(Radial, "FactoryControl.Client.Entities.Controller.Feature.Radial",
-    require("FactoryControl.Client.Entities.Controller.Feature.Feature"))
+return class("FactoryControl.Client.Entities.Controller.Feature.Radial", Radial,
+    { Inherit = require("FactoryControl.Client.Entities.Controller.Feature.init") })
 
-]],
-["FactoryControl.Client.Entities.Controller.Feature.Switch.Switch"] = [[
+]==========],
+["FactoryControl.Client.Entities.Controller.Feature.Switch.Switch"] = [==========[
 local SwitchDto = require("FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto")
 
 local Update = require("FactoryControl.Core.Entities.Controller.Feature.Switch.Update")
@@ -970,10 +976,10 @@ function Switch:Toggle()
     self:update()
 end
 
-return Utils.Class.Create(Switch, "FactoryControl.Client.Entities.Controller.Feature.Switch",
-    require("FactoryControl.Client.Entities.Controller.Feature.Feature"))
+return class("FactoryControl.Client.Entities.Controller.Feature.Switch", Switch,
+    { Inherit = require("FactoryControl.Client.Entities.Controller.Feature.init") })
 
-]],
+]==========],
 }
 
 return Data

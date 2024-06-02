@@ -20,41 +20,28 @@ function Simulator:loadLoaderFiles()
 end
 
 local requireFunc = require --[[@as fun(moduleName: string) : any]]
----@return boolean success, table results
-local function getResult(success, ...)
-	return success, { ... }
-end
----@param moduleToGet string
----@return any
-local function modifiedRequire(moduleToGet)
-	local thread = coroutine.create(requireFunc)
-	local success
-	local result = { coroutine.resume(thread, moduleToGet) }
-	success, result = getResult(table.unpack(result))
-	if not success then
-		print("error when trying to get module: " .. moduleToGet .. "\n" .. debug.traceback(thread, result[1]))
-		return { requireFunc(moduleToGet .. ".init") }
-	end
-	return result
-end
 function Simulator:OverrideRequire()
 	---@param moduleToGet string
 	function require(moduleToGet)
-		local result = modifiedRequire("src." .. moduleToGet)
+		local moduleLocation
+		if PackageLoader then
+			moduleLocation = PackageLoader:GetModule(moduleToGet).Location
+		else
+			moduleLocation = moduleToGet
+		end
+
+		local result = { requireFunc("src." .. moduleLocation) }
 		if type(result[#result]) == "string" then
 			result[#result] = nil
 		end
+
 		return table.unpack(result)
 	end
 end
 
 ---@private
----@param logLevel Github_Loading.Logger.LogLevel
----@return Github_Loading.Logger
 function Simulator:setupLogger(logLevel)
-	---@type Github_Loading.Logger
 	local Logger = self.m_loadedLoaderFiles['/Github-Loading/Loader/Logger'][1]
-	---@type Github_Loading.Listener
 	local Listener = self.m_loadedLoaderFiles['/Github-Loading/Loader/Listener'][1]
 
 	local logger = Logger.new("Simulator", logLevel)
@@ -67,11 +54,10 @@ function Simulator:setupLogger(logLevel)
 end
 
 ---@private
----@param logLevel Github_Loading.Logger.LogLevel
 ---@param fileSystemPath Freemaker.FileSystem.Path
 ---@param eeprom string
 ---@param curl Test.Curl
-function Simulator:prepare(logLevel, fileSystemPath, eeprom, curl)
+function Simulator:prepare(fileSystemPath, eeprom, curl)
 	loadClassesAndStructs()
 	loadComputer(eeprom, curl)
 	loadFileSystem(fileSystemPath)
@@ -79,26 +65,16 @@ function Simulator:prepare(logLevel, fileSystemPath, eeprom, curl)
 	loadEvent()
 
 	self:loadLoaderFiles()
-
-	local logger = self:setupLogger(logLevel)
-
-	self:OverrideRequire()
-
-	Utils = self.m_loadedLoaderFiles['/Github-Loading/Loader/Utils'][1] --[[@as Utils]]
-
-	local Logger = require("Core.Common.Logger")
-	local newLogger = Logger("Simulator", logLevel)
-	logger:CopyListenersToCoreLogger(require("Core.Common.Task"), newLogger)
-	___logger:setLogger(newLogger)
-
-	self.Logger = newLogger
 end
 
----@param logLevel Github_Loading.Logger.LogLevel?
 ---@param fileSystemPath string?
 ---@param eeprom string?
 ---@return Test.Simulator
 function Simulator:Initialize(logLevel, fileSystemPath, eeprom)
+	logLevel = logLevel or 3
+
+	NotInGame = true
+
 	local Curl = require("Tools.Curl")
 
 	local simulatorPath = FileSystem.GetCurrentDirectory()
@@ -115,17 +91,30 @@ function Simulator:Initialize(logLevel, fileSystemPath, eeprom)
 			:ToString()
 	end
 
-	self:prepare(logLevel or 3, Path.new(fileSystemPath), eeprom or "", Curl)
+	self:prepare(Path.new(fileSystemPath), eeprom or "", Curl)
+
+	local logger = self:setupLogger(logLevel)
+
+	self:OverrideRequire()
+
+	Utils = self.m_loadedLoaderFiles['/Github-Loading/Loader/Utils'][1] --[[@as Utils]]
+
+	local Logger = require("Core.Common.Logger")
+	local newLogger = Logger("Simulator", logLevel)
+	logger:CopyListenersToCoreLogger(require("Core.Common.Task"), newLogger)
+	___logger:setLogger(newLogger)
+
+	self.Logger = newLogger
 
 	return self
 end
 
----@param logLevel Github_Loading.Logger.LogLevel?
 ---@param fileSystemPath string?
 ---@param eeprom string?
 ---@param forceDownload boolean?
----@return Test.Simulator, Github_Loading.Loader
 function Simulator:InitializeWithLoader(logLevel, fileSystemPath, eeprom, forceDownload)
+	NotInGame = true
+
 	local Curl = require("Tools.Curl")
 	local Loader = require("Github-Loading.Loader")
 
@@ -143,7 +132,7 @@ function Simulator:InitializeWithLoader(logLevel, fileSystemPath, eeprom, forceD
 		:ToString()
 	end
 
-	self:prepare(logLevel or 3, Path.new(fileSystemPath), eeprom or "", Curl)
+	self:prepare(Path.new(fileSystemPath), eeprom or "", Curl)
 
 	Loader = Loader.new("http://localhost", "", forceDownload or false, Curl)
 	Loader:Load(logLevel)

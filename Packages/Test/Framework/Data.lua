@@ -1,9 +1,9 @@
 local Data={
-["Test.Framework.__events"] = [[
+["Test.Framework.__events"] = [==========[
 require("Test.Framework.Extensions.HostExtensions")
 
-]],
-["Test.Framework.init"] = [[
+]==========],
+["Test.Framework.init"] = [==========[
 local Task = require("Core.Common.Task")
 
 local Test = require("Test.Framework.Wrapper")
@@ -46,10 +46,10 @@ function Framework:Run(logger)
     )
 end
 
-return Utils.Class.Create(Framework, "Test.Framework")()
+return class("Test.Framework", Framework)()
 
-]],
-["Test.Framework.Wrapper"] = [[
+]==========],
+["Test.Framework.Wrapper"] = [==========[
 local Task = require("Core.Common.Task")
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
@@ -108,10 +108,10 @@ function Wrapper:WasSuccessful()
     return self.m_task:IsSuccess()
 end
 
-return Utils.Class.Create(Wrapper, "Test.Framework.Wrapper")
+return class("Test.Framework.Wrapper", Wrapper)
 
-]],
-["Test.Framework.Extensions.HostExtensions"] = [[
+]==========],
+["Test.Framework.Extensions.HostExtensions"] = [==========[
 ---@class Hosting.Host
 local HostExtensions = {}
 
@@ -126,7 +126,7 @@ end
 
 Utils.Class.Extend(require("Hosting.Host"), HostExtensions)
 
-]],
+]==========],
 }
 
 return Data

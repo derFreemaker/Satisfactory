@@ -65,4 +65,4 @@ function Switch:Toggle()
 end
 
 return class("FactoryControl.Client.Entities.Controller.Feature.Switch", Switch,
-    { Inherit = require("FactoryControl.Client.Entities.Controller.Feature") })
+    { Inherit = require("FactoryControl.Client.Entities.Controller.Feature.init") })

@@ -1,5 +1,5 @@
 local Data={
-["Net.Core.__events"] = [[
+["Net.Core.__events"] = [==========[
 local JsonSerializer = require("Core.Json.JsonSerializer")
 
 ---@class Net.Core.Events : Github_Loading.Entities.Events
@@ -17,9 +17,9 @@ end
 
 return Events
 
-]],
-["Net.Core.IPAddress"] = [[
----@class Net.Core.IPAddress : Core.Json.Serializable
+]==========],
+["Net.Core.IPAddress"] = [==========[
+---@class Net.Core.IPAddress : object, Core.Json.ISerializable
 ---@field private m_address FIN.UUID
 ---@overload fun(address: string) : Net.Core.IPAddress
 local IPAddress = {}
@@ -27,9 +27,15 @@ local IPAddress = {}
 ---@private
 ---@param address FIN.UUID
 function IPAddress:__init(address)
-    self:Raw__ModifyBehavior({ DisableCustomIndexing = true })
+    self:Raw__ModifyBehavior(function (modify)
+        modify.CustomIndexing = false
+    end)
+
     self.m_address = address
-    self:Raw__ModifyBehavior({ DisableCustomIndexing = false })
+
+    self:Raw__ModifyBehavior(function (modify)
+        modify.CustomIndexing = true
+    end)
 end
 
 ---@return FIN.UUID
@@ -61,34 +67,35 @@ end
 
 --#endregion
 
-return Utils.Class.Create(IPAddress, "Net.Core.IPAddress", require("Core.Json.Serializable"))
+return class("Net.Core.IPAddress", IPAddress,
+    { Inherit = require("Core.Json.ISerializable") })
 
-]],
-["Net.Core.Method"] = [[
+]==========],
+["Net.Core.Method"] = [==========[
 ---@enum Net.Core.Method
 local Methods = {
-	GET = 'GET',
-	HEAD = 'HEAD',
-	POST = 'POST',
-	PUT = 'PUT',
-	CREATE = 'CREATE',
-	DELETE = 'DELETE',
-	CONNECT = 'CONNECT',
-	OPTIONS = 'OPTIONS',
-	TRACE = 'TRACE',
-	PATCH = 'PATCH'
+	GET = "GET",
+	HEAD = "HEAD",
+	POST = "POST",
+	PUT = "PUT",
+	CREATE = "CREATE",
+	DELETE = "DELETE",
+	CONNECT = "CONNECT",
+	OPTIONS = "OPTIONS",
+	TRACE = "TRACE",
+	PATCH = "PATCH"
 }
 
 return Methods
 
-]],
-["Net.Core.NetworkClient"] = [[
-local NetworkCardAdapter = require('Adapter.Computer.NetworkCard')
-local JsonSerializer = require('Core.Json.JsonSerializer')
-local EventPullAdapter = require('Core.Event.EventPullAdapter')
-local Task = require('Core.Common.Task')
-local NetworkPort = require('Net.Core.NetworkPort')
-local NetworkContext = require('Net.Core.NetworkContext')
+]==========],
+["Net.Core.NetworkClient"] = [==========[
+local NetworkCardAdapter = require("Adapter.Computer.NetworkCard")
+local JsonSerializer = require("Core.Json.JsonSerializer")
+local EventPullAdapter = require("Core.Event.EventPullAdapter")
+local Task = require("Core.Common.Task")
+local NetworkPort = require("Net.Core.NetworkPort")
+local NetworkContext = require("Net.Core.NetworkContext")
 local NetworkFuture = require("Net.Core.NetworkFuture")
 
 local IPAddress = require("Net.Core.IPAddress")
@@ -116,11 +123,9 @@ local NetworkClient = {}
 ---@param networkCard Adapter.Computer.NetworkCard?
 ---@param serializer Core.Json.Serializer?
 function NetworkClient:__init(logger, networkCard, serializer)
-	networkCard = networkCard or NetworkCardAdapter(1)
-
 	self.m_logger = logger
 	self.m_ports = {}
-	self.m_networkCard = networkCard
+	self.m_networkCard = networkCard or NetworkCardAdapter(1)
 
 	self.m_serializer = serializer or JsonSerializer.Static__Serializer
 
@@ -336,11 +341,11 @@ function NetworkClient:BroadCast(port, eventName, body, header)
 	self.m_networkCard:BroadCast(port, eventName, jsonBody, jsonHeader)
 end
 
-return Utils.Class.Create(NetworkClient, 'Core.Net.NetworkClient')
+return class("Core.Net.NetworkClient", NetworkClient)
 
-]],
-["Net.Core.NetworkContext"] = [[
-local JsonSerializer = require('Core.Json.JsonSerializer')
+]==========],
+["Net.Core.NetworkContext"] = [==========[
+local JsonSerializer = require("Core.Json.JsonSerializer")
 local IPaddress = require("Net.Core.IPAddress")
 
 ---@class Net.Core.NetworkContext.Header : table<string, any>
@@ -349,7 +354,7 @@ local IPaddress = require("Net.Core.IPAddress")
 
 ---@class Net.Core.NetworkContext : object
 ---@field SignalName string
----@field SignalSender Satisfactory.Components.Object
+---@field SignalSender Engine.Object
 ---@field SenderIPAddress Net.Core.IPAddress
 ---@field Port integer
 ---@field EventName string
@@ -371,18 +376,18 @@ function NetworkContext:__init(data, serializer)
 	self.SenderIPAddress = IPaddress(data[3])
 	self.Port = data[4]
 	self.EventName = data[5]
-	self.Body = serializer:Deserialize(data[6] or 'null')
-	self.Header = serializer:Deserialize(data[7] or 'null') or {}
+	self.Body = serializer:Deserialize(data[6] or "null")
+	self.Header = serializer:Deserialize(data[7] or "null") or {}
 
 	if not self.Header.ReturnIPAddress then
 		self.Header.ReturnIPAddress = self.SenderIPAddress
 	end
 end
 
-return Utils.Class.Create(NetworkContext, 'Core.Net.NetworkContext')
+return class("Core.Net.NetworkContext", NetworkContext)
 
-]],
-["Net.Core.NetworkFuture"] = [[
+]==========],
+["Net.Core.NetworkFuture"] = [==========[
 ---@class Net.Core.NetworkFuture : object
 ---@field private m_eventName string
 ---@field private m_port Net.Core.Port
@@ -413,12 +418,12 @@ function NetworkFuture:Wait()
     return self.m_networkClient:WaitForEvent(self.m_eventName, self.m_port, self.m_timeoutSeconds)
 end
 
-return Utils.Class.Create(NetworkFuture, 'Core.Net.NetworkFuture')
+return class("Core.Net.NetworkFuture", NetworkFuture)
 
-]],
-["Net.Core.NetworkPort"] = [[
+]==========],
+["Net.Core.NetworkPort"] = [==========[
 local Task = require("Core.Common.Task")
-local Event = require('Core.Event')
+local Event = require("Core.Event.init")
 
 ---@class Net.Core.NetworkPort : object
 ---@field Port Net.Core.Port
@@ -581,10 +586,10 @@ function NetworkPort:BroadCastMessage(eventName, body, header)
 	self.m_netClient:BroadCast(port, eventName, body, header)
 end
 
-return Utils.Class.Create(NetworkPort, 'Core.Net.NetworkPort')
+return class("Core.Net.NetworkPort", NetworkPort)
 
-]],
-["Net.Core.StatusCodes"] = [[
+]==========],
+["Net.Core.StatusCodes"] = [==========[
 ---@enum Net.Core.StatusCodes
 local StatusCodes = {
 	Status100Continue = 100,
@@ -664,8 +669,74 @@ local StatusCodes = {
 
 return StatusCodes
 
-]],
-["Net.Core.Hosting.HostExtensions"] = [[
+]==========],
+["Net.Core.Uri"] = [==========[
+---@class Net.Rest.Uri : object, Core.Json.ISerializable
+---@field private m_path string
+---@field private m_query table<string, string>
+---@overload fun(paht: string, query: table<string, string>) : Net.Rest.Uri
+local Uri = {}
+
+---@param uri string
+---@return Net.Rest.Uri uri
+function Uri.Static__Parse(uri)
+    local splittedUri = Utils.String.Split(uri, "?")
+    local path = splittedUri[1]
+
+    local query = {}
+    local splittedQuery = Utils.String.Split(splittedUri[2], "&")
+
+    if not splittedQuery == "" then
+        for _, queryPart in ipairs(splittedQuery) do
+            local splittedQueryPart = Utils.String.Split(queryPart, "=")
+            query[splittedQueryPart[1]] = splittedQueryPart[2]
+        end
+    end
+
+    return Uri(path, query)
+end
+
+---@private
+---@param path string
+---@param query table<string, string>
+function Uri:__init(path, query)
+    self.m_path = path
+    self.m_query = query or {}
+end
+
+---@param name string
+---@param value string
+function Uri:AddToQuery(name, value)
+    self.m_query[name] = value
+end
+
+---@return string url
+function Uri:GetUrl()
+    local str = self.m_path
+    if #self.m_query > 0 then
+        str = str .. "?"
+        for name, value in pairs(self.m_query) do
+            str = str .. name .. "=" .. value .. "&"
+        end
+    end
+    return str
+end
+
+---@private
+function Uri:__tostring()
+    return self:GetUrl()
+end
+
+---@return string path, table<string, string> query
+function Uri:Serialize()
+    return self.m_path, self.m_query
+end
+
+return class("Net.Uri", Uri,
+    { Inherit = require("Core.Json.ISerializable") })
+
+]==========],
+["Net.Core.Hosting.HostExtensions"] = [==========[
 ---@type Out<Github_Loading.Module>
 local Host = {}
 if not PackageLoader:TryGetModule("Hosting.Host", Host) then
@@ -754,7 +825,7 @@ end
 
 return Utils.Class.Extend(Host, HostExtensions)
 
-]],
+]==========],
 }
 
 return Data

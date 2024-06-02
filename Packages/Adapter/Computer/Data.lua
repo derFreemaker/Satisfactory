@@ -1,14 +1,17 @@
 local Data={
-["Adapter.Computer.InternetCard"] = [[
+["Adapter.Computer.InternetCard"] = [==========[
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
-local Cache = require("Core.Adapter.Cache")()
+---@type Core.Cache<(string | integer), Adapter.Computer.InternetCard>
+local Cache = require("Core.Common.Cache")()
 
----@class Adapter.Computer.InternetCard : Adapter.IAdapter
----@field m_refInternetCard Core.IReference<FIN.Components.InternetCard_C>
+---@class Adapter.Computer.InternetCard : object
+---@field m_refInternetCard Core.IReference<FIN.InternetCard_C>
+---@overload fun(index: integer) : Adapter.Computer.InternetCard
 local InternetCard = {}
 
----@param index number
+---@private
+---@param index integer
 function InternetCard:__init(index)
     if not index then
         index = 1
@@ -34,16 +37,16 @@ end
 ---@return boolean success, string? data, number statusCode
 function InternetCard:Download(url, logger)
     if logger then
-        logger:LogTrace("downloading from: '" .. url .. "'...")
+        logger:LogTrace("downloading from: " .. url .. "...")
     end
 
-    local req = self.m_refInternetCard:Get():request(url, 'GET', '')
+    local req = self.m_refInternetCard:Get():request(url, "GET", "")
     repeat until req:canGet()
 
     local code, data = req:get()
 
     if logger then
-        logger:LogTrace("downloaded from: '" .. url .. "'")
+        logger:LogTrace("downloaded from: " .. url)
     end
 
     if code > 302 then
@@ -53,23 +56,24 @@ function InternetCard:Download(url, logger)
     return true, data, code
 end
 
-return Utils.Class.Create(InternetCard, "Adapter.Computer.InternetCard")
+return class("Adapter.Computer.InternetCard", InternetCard)
 
-]],
-["Adapter.Computer.NetworkCard"] = [[
+]==========],
+["Adapter.Computer.NetworkCard"] = [==========[
 local ProxyReference = require("Core.References.ProxyReference")
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
-local Cache = require("Core.Adapter.Cache")()
+---@type Core.Cache<(string | integer), Adapter.Computer.NetworkCard>
+local Cache = require("Core.Common.Cache")()
 
----@class Adapter.Computer.NetworkCard : Adapter.IAdapter
----@field private m_refNetworkCard Core.IReference<FIN.Components.NetworkCard_C>
+---@class Adapter.Computer.NetworkCard : object
+---@field private m_refNetworkCard Core.IReference<FIN.NetworkCard_C>
 ---@field private m_openPorts table<integer, true>
----@overload fun(idOrIndexOrNetworkCard: (FIN.UUID | integer)?) : Adapter.Computer.NetworkCard
+---@overload fun(idOrIndexOrNetworkCard: (FIN.UUID | integer) | nil) : Adapter.Computer.NetworkCard
 local NetworkCard = {}
 
 ---@private
----@param idOrIndex (FIN.UUID | integer)?
+---@param idOrIndex (FIN.UUID | integer) | nil
 function NetworkCard:__init(idOrIndex)
 	self.m_openPorts = {}
 	if not idOrIndex then
@@ -83,7 +87,7 @@ function NetworkCard:__init(idOrIndex)
 	end
 
 	local networkCard
-	if type(idOrIndex) == 'string' then
+	if type(idOrIndex) == "string" then
 		---@cast idOrIndex FIN.UUID
 		networkCard = ProxyReference(idOrIndex)
 	else
@@ -152,9 +156,9 @@ function NetworkCard:BroadCast(port, ...)
 	self.m_refNetworkCard:Get():broadcast(port, ...)
 end
 
-return Utils.Class.Create(NetworkCard, 'Adapter.Computer.NetworkCard')
+return class("Adapter.Computer.NetworkCard", NetworkCard)
 
-]],
+]==========],
 }
 
 return Data

@@ -1,4 +1,4 @@
-local Event = require("Core.Event")
+local Event = require("Core.Event.init")
 
 ---@alias Core.Watchable.OnSetup fun(Watchable: Core.Watchable)
 ---@alias Core.Watchable.OnClose fun(Watchable: Core.Watchable)

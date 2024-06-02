@@ -1,14 +1,14 @@
 local Data={
-["Net.Http.Client"] = [[
-local PortUsage = require('Core.Usage.Usage_Port')
+["Net.Http.Client"] = [==========[
+local PortUsage = require("Core.Usage.Usage_Port")
 
 local IPAddress = require("Net.Core.IPAddress")
-local NetworkClient = require('Net.Core.NetworkClient')
-local ApiClient = require('Net.Rest.Api.Client.Client')
-local DNSClient = require('DNS.Client.Client')
-local HttpResponse = require('Net.Http.Response')
-local ApiRequest = require('Net.Rest.Api.Request')
-local ApiResponse = require('Net.Rest.Api.Response')
+local NetworkClient = require("Net.Core.NetworkClient")
+local ApiClient = require("Net.Rest.Api.Client.Client")
+local DNSClient = require("DNS.Client.Client")
+local HttpResponse = require("Net.Http.Response")
+local ApiRequest = require("Net.Rest.Api.Request")
+local ApiResponse = require("Net.Rest.Api.Response")
 
 ---@alias Net.Http.Client.CachedAddress { ExpireTime: integer, IPAddress: Net.Core.IPAddress }
 
@@ -29,8 +29,8 @@ function HttpClient:__init(logger, dnsClient, networkClient)
 	end
 
 	self.m_cache = {}
-	self.m_netClient = networkClient or NetworkClient(logger:subLogger('NetworkClient'))
-	self.m_dnsClient = dnsClient or DNSClient(self.m_netClient, logger:subLogger('DNSClient'))
+	self.m_netClient = networkClient or NetworkClient(logger:subLogger("NetworkClient"))
+	self.m_dnsClient = dnsClient or DNSClient(self.m_netClient, logger:subLogger("DNSClient"))
 	self.m_logger = logger
 end
 
@@ -41,7 +41,7 @@ end
 ---@param address string
 ---@return Net.Core.IPAddress? address
 function HttpClient:GetAddress(address)
-	if not address:match('^.*%..*$') then
+	if not address:match("^.*%..*$") then
 		return IPAddress(address)
 	end
 
@@ -76,7 +76,7 @@ function HttpClient:Send(request)
 	end
 
 	local apiClient = ApiClient(address, PortUsage.HTTP, PortUsage.HTTP, self.m_netClient,
-		self.m_logger:subLogger('ApiClient'))
+		self.m_logger:subLogger("ApiClient"))
 
 	local apiRequest = ApiRequest(request.Method, request.Uri, request.Body, request.Options.Headers)
 	local apiResponse = apiClient:Send(apiRequest, request.Options.Timeout)
@@ -84,11 +84,11 @@ function HttpClient:Send(request)
 	return HttpResponse(apiResponse, request)
 end
 
-return Utils.Class.Create(HttpClient, 'Http.HttpClient')
+return class("Http.HttpClient", HttpClient)
 
-]],
-["Net.Http.Request"] = [[
-local Options = require('Net.Http.RequestOptions')
+]==========],
+["Net.Http.Request"] = [==========[
+local Options = require("Net.Http.RequestOptions")
 
 ---@class Net.Http.Request : object
 ---@field Method Net.Core.Method
@@ -113,10 +113,10 @@ function HttpRequest:__init(method, serverUrl, uri, body, options)
 	self.Options = options or Options()
 end
 
-return Utils.Class.Create(HttpRequest, "Net.Http.HttpRequest")
+return class("Net.Http.HttpRequest", HttpRequest)
 
-]],
-["Net.Http.RequestOptions"] = [[
+]==========],
+["Net.Http.RequestOptions"] = [==========[
 ---@class Net.Http.Request.Options : object
 ---@field Headers table<string, any>
 ---@field Timeout integer in seconds
@@ -129,10 +129,10 @@ function HttpRequestOptions:__init()
 	self.Timeout = 10
 end
 
-return Utils.Class.Create(HttpRequestOptions, 'Http.HttpRequestOptions')
+return class("Http.HttpRequestOptions", HttpRequestOptions)
 
-]],
-["Net.Http.Response"] = [[
+]==========],
+["Net.Http.Response"] = [==========[
 ---@class Net.Http.Response : object
 ---@field ApiResponse Net.Rest.Api.Response
 ---@field Request Net.Http.Request
@@ -166,9 +166,9 @@ function HttpResponse:GetStatusCode()
 	return self.ApiResponse.Headers.Code
 end
 
-return Utils.Class.Create(HttpResponse, 'Http.HttpResponse')
+return class("Http.HttpResponse", HttpResponse)
 
-]],
+]==========],
 }
 
 return Data

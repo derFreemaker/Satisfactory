@@ -1,5 +1,5 @@
 local Data={
-["DNS.Client.__events"] = [[
+["DNS.Client.__events"] = [==========[
 ---@class DNS.Client.Events : Github_Loading.Entities.Events
 local Events = {}
 
@@ -9,18 +9,18 @@ end
 
 return Events
 
-]],
-["DNS.Client.Client"] = [[
+]==========],
+["DNS.Client.Client"] = [==========[
 local Usage = require("Core.Usage.init")
 
 local IPAddress = require("Net.Core.IPAddress")
-local NetworkClient = require('Net.Core.NetworkClient')
-local ApiClient = require('Net.Rest.Api.Client.Client')
-local ApiRequest = require('Net.Rest.Api.Request')
+local NetworkClient = require("Net.Core.NetworkClient")
+local ApiClient = require("Net.Rest.Api.Client.Client")
+local ApiRequest = require("Net.Rest.Api.Request")
 
-local CreateAddress = require('DNS.Core.Entities.Address.Create')
+local CreateAddress = require("DNS.Core.Entities.Address.Create")
 
-local Uri = require("Net.Rest.Uri")
+local Uri = require("Net.Core.Uri")
 
 ---@class DNS.Client : object
 ---@field private m_networkClient Net.Core.NetworkClient
@@ -33,7 +33,7 @@ local Client = {}
 ---@param networkClient Net.Core.NetworkClient?
 ---@param logger Core.Logger
 function Client:__init(networkClient, logger)
-	self.m_networkClient = networkClient or NetworkClient(logger:subLogger('NetworkClient'))
+	self.m_networkClient = networkClient or NetworkClient(logger:subLogger("NetworkClient"))
 	self.m_logger = logger
 end
 
@@ -61,7 +61,7 @@ function Client.Static__GetServerAddress(networkClient)
 		response = netPort:WaitForEvent(Usage.Events.DNS_ReturnServerAddress, 10)
 	until response ~= nil or try == 10
 	if try == 10 then
-		error('unable to get dns server address')
+		error("unable to get dns server address")
 	end
 	---@cast response Net.Core.NetworkContext
 	return IPAddress(response.Body)
@@ -72,7 +72,7 @@ function Client:GetOrRequestDNSServerIP()
 	if not self.m_apiClient then
 		local serverIPAddress = Client.Static__GetServerAddress(self.m_networkClient)
 		self.m_apiClient = ApiClient(serverIPAddress, Usage.Ports.HTTP, Usage.Ports.HTTP, self.m_networkClient,
-			self.m_logger:subLogger('ApiClient'))
+			self.m_logger:subLogger("ApiClient"))
 	end
 
 	return self.m_apiClient.ServerIPAddress
@@ -96,7 +96,7 @@ end
 function Client:CreateAddress(url, ipAddress)
 	local createAddress = CreateAddress(url, ipAddress)
 
-	local response = self:InternalRequest('CREATE', '/Address/Create/', createAddress)
+	local response = self:InternalRequest("CREATE", "/Address/Create/", createAddress)
 
 	if not response.WasSuccessful then
 		return false
@@ -107,7 +107,7 @@ end
 ---@param id Core.UUID
 ---@return boolean success
 function Client:DeleteAddress(id)
-	local response = self:InternalRequest('DELETE', "/Address/" .. tostring(id) .. "/Delete/")
+	local response = self:InternalRequest("DELETE", "/Address/" .. tostring(id) .. "/Delete/")
 
 	if not response.WasSuccessful then
 		return false
@@ -118,7 +118,7 @@ end
 ---@param id Core.UUID
 ---@return DNS.Core.Entities.Address? address
 function Client:GetWithId(id)
-	local response = self:InternalRequest('GET', "/Address/Id/" .. tostring(id) .. "/")
+	local response = self:InternalRequest("GET", "/Address/Id/" .. tostring(id) .. "/")
 
 	if not response.WasSuccessful then
 		return nil
@@ -129,7 +129,7 @@ end
 ---@param domain string
 ---@return DNS.Core.Entities.Address? address
 function Client:GetWithDomain(domain)
-	local response = self:InternalRequest('GET', "/Address/Domain/" .. domain .. "/")
+	local response = self:InternalRequest("GET", "/Address/Domain/" .. domain .. "/")
 
 	if not response.WasSuccessful then
 		return nil
@@ -137,10 +137,10 @@ function Client:GetWithDomain(domain)
 	return response.Body
 end
 
-return Utils.Class.Create(Client, 'DNS.Client')
+return class("DNS.Client", Client)
 
-]],
-["DNS.Client.Hosting.HostExtensions"] = [[
+]==========],
+["DNS.Client.Hosting.HostExtensions"] = [==========[
 ---@type Out<Github_Loading.Module>
 local Host = {}
 if not PackageLoader:TryGetModule("Hosting.Host", Host) then
@@ -190,7 +190,7 @@ end
 
 Utils.Class.Extend(Host, HostExtensions)
 
-]],
+]==========],
 }
 
 return Data

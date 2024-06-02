@@ -1,9 +1,9 @@
 local Data={
-["Services.Callback.Client.__events"] = [[
+["Services.Callback.Client.__events"] = [==========[
 require("Services.Callback.Core.Entities.CallbackInfo")
 
-]],
-["Services.Callback.Client.Callback"] = [[
+]==========],
+["Services.Callback.Client.Callback"] = [==========[
 ---@class Services.Callback.Client.Callback : object
 ---@field protected Id Core.UUID
 ---@field protected CallbackMethod string
@@ -79,10 +79,10 @@ function Callback:Invoke(logger, args)
     return results
 end
 
-return Utils.Class.Create(Callback, "Services.Callback.Client.Callback")
+return class("Services.Callback.Client.Callback", Callback)
 
-]],
-["Services.Callback.Client.CallbackService"] = [[
+]==========],
+["Services.Callback.Client.CallbackService"] = [==========[
 local Usage = require("Core.Usage.init")
 
 local Task = require("Core.Common.Task")
@@ -182,11 +182,11 @@ function CallbackService:onCallbackReceived(context)
     )
 end
 
-return Utils.Class.Create(CallbackService, "Services.Callback.Client.CallbackService")
+return class("Services.Callback.Client.CallbackService", CallbackService)
 
-]],
-["Services.Callback.Client.EventCallback"] = [[
-local Event = require("Core.Event")
+]==========],
+["Services.Callback.Client.EventCallback"] = [==========[
+local Event = require("Core.Event.init")
 
 ---@class Services.Callback.Client.EventCallback : Services.Callback.Client.Callback
 ---@field m_onCalled Core.Event
@@ -226,10 +226,10 @@ function EventCallback:Invoke(logger, args)
     return {}
 end
 
-return Utils.Class.Create(EventCallback, "Services.Callback.Client.EventCallback",
-    require("Services.Callback.Client.Callback"))
+return class("Services.Callback.Client.EventCallback", EventCallback,
+    { Inherit = require("Services.Callback.Client.Callback") })
 
-]],
+]==========],
 }
 
 return Data

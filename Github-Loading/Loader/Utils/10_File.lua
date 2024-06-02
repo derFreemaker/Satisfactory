@@ -70,7 +70,8 @@ function File.Write(path, mode, data, createPath)
     createPath = createPath or false
 
     local fileName = filesystem.path(3, path)
-    local folderPath = path:gsub(fileName, "")
+    local fileNamePos = path:find(fileName, nil, true)
+    local folderPath = path:sub(0, fileNamePos - 1)
     if not filesystem.exists(folderPath) then
         if not createPath then
             error("folder does not exists: '" .. folderPath .. "'", 2)

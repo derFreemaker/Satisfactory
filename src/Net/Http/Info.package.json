@@ -1,7 +1,7 @@
 {
   "Name": "Http",
   "Namespace": "Net.Http",
-  "Version": "0.1.0-82",
+  "Version": "0.1.0-83",
   "RequiredPackages": [
     "Core",
     "DNS.Client",

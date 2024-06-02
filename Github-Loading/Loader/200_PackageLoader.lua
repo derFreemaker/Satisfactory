@@ -181,12 +181,12 @@ end
 ---@param moduleToGet string
 ---@param outModule Out<Github_Loading.Module>
 function PackageLoader:TryGetModule(moduleToGet, outModule)
-	self.Logger:LogTrace("try got module: '" .. moduleToGet .. "'")
+	self.Logger:LogTrace("try get module: '" .. moduleToGet .. "'...")
 
 	for _, package in ipairs(self.Packages) do
 		local module = package:GetModule(moduleToGet)
 		if module then
-			self.Logger:LogDebug("try got module: '" .. moduleToGet .. "'")
+			self.Logger:LogDebug("got module: '" .. moduleToGet .. "'")
 			outModule.Value = module
 			return true
 		end

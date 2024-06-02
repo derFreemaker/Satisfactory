@@ -1,4 +1,4 @@
-local Event = require("Core.Event")
+local Event = require("Core.Event.init")
 
 --- Handles events from `event.pull()`.
 ---

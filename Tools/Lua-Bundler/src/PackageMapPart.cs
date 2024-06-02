@@ -55,14 +55,8 @@ namespace Lua_Bundler
             var splitedNamespaceLength = splitedNamespace.Length - 1;
             if (splitedNamespaceLength == depth)
             {
-                if (_Modules.TryGetValue(moduleNamespaceAtCurrent, out var module))
+                if (_Modules.TryGetValue(moduleNamespaceAtCurrent, out var module)) {
                     return module;
-
-                if (_Childs.TryGetValue(moduleNamespaceAtCurrent, out child))
-                {
-                    var newSplitedNamespace = splitedNamespace.ToList();
-                    newSplitedNamespace.Add("init");
-                    return child.GetModule(newSplitedNamespace.ToArray(), depth + 1);
                 }
 
                 return null;

@@ -1,5 +1,5 @@
 local Data={
-["DNS.Core.__events"] = [[
+["DNS.Core.__events"] = [==========[
 local JsonSerializer = require("Core.Json.JsonSerializer")
 
 ---@class DNS.Core.Events : Github_Loading.Entities.Events
@@ -14,9 +14,9 @@ end
 
 return Events
 
-]],
-["DNS.Core.Entities.Address.Address"] = [[
----@class DNS.Core.Entities.Address : Core.Json.Serializable
+]==========],
+["DNS.Core.Entities.Address.Address"] = [==========[
+---@class DNS.Core.Entities.Address : object, Core.Json.ISerializable
 ---@field Id Core.UUID
 ---@field Domain string
 ---@field IPAddress Net.Core.IPAddress
@@ -38,12 +38,11 @@ function Address:Serialize()
     return self.Id, self.Domain, self.IPAddress
 end
 
-return Utils.Class.Create(Address, "DNS.Entities.Address",
-    require("Core.Json.Serializable"))
+return class("DNS.Core.Entities.Address", Address, { Inherit = require("Core.Json.ISerializable") })
 
-]],
-["DNS.Core.Entities.Address.Create"] = [[
----@class DNS.Core.Entities.Address.Create : Core.Json.Serializable
+]==========],
+["DNS.Core.Entities.Address.Create"] = [==========[
+---@class DNS.Core.Entities.Address.Create : object, Core.Json.ISerializable
 ---@field Domain string
 ---@field IPAddress Net.Core.IPAddress
 ---@overload fun(domain: string, ipAddress: Net.Core.IPAddress) : DNS.Core.Entities.Address.Create
@@ -62,10 +61,9 @@ function Create:Serialize()
     return self.Domain, self.IPAddress
 end
 
-return Utils.Class.Create(Create, "DNS.Entities.Address.Create",
-    require("Core.Json.Serializable"))
+return class("DNS.Core.Entities.Address.Create", Create, { Inherit = require("Core.Json.ISerializable") })
 
-]],
+]==========],
 }
 
 return Data

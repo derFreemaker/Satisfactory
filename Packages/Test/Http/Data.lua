@@ -1,10 +1,10 @@
 local Data={
-["Test.Http.__main"] = [[
+["Test.Http.__main"] = [==========[
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 
 local Config = require("FactoryControl.Core.Config")
 
-local Uri = require("Net.Rest.Uri")
+local Uri = require("Net.Core.Uri")
 local HttpClient = require("Net.Http.Client")
 local HttpRequest = require("Net.Http.Request")
 
@@ -13,9 +13,9 @@ local HttpRequest = require("Net.Http.Request")
 local Main = {}
 
 function Main:Configure()
-    EventPullAdapter:Initialize(self.Logger:subLogger('EventPullAdapter'))
+    EventPullAdapter:Initialize(self.Logger:subLogger("EventPullAdapter"))
 
-    self.m_httpClient = HttpClient(self.Logger:subLogger('HttpClient'))
+    self.m_httpClient = HttpClient(self.Logger:subLogger("HttpClient"))
 end
 
 function Main:Run()
@@ -31,7 +31,7 @@ end
 
 return Main
 
-]],
+]==========],
 }
 
 return Data

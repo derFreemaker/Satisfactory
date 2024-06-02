@@ -1,5 +1,5 @@
 local Data={
-["Core.Config"] = [[
+["Core.Config"] = [==========[
 ---@class Core.Config
 local Config = {
     REFERENCE_REFRESH_DELAY = 60000
@@ -7,29 +7,29 @@ local Config = {
 
 return Config
 
-]],
-["Core.Adapter.Cache"] = [[
----@class Adapter.IAdapter : object
+]==========],
+["Core.Common.Cache"] = [==========[
+---@alias Core.Cache.ValidKeyTypes string | integer
 
----@generic TAdapter : Adapter.IAdapter
----@class Adapter.Cache<TAdapter> : { m_cache: { [string|integer]: TAdapter } }
----@field m_cache table<string|integer, Adapter.IAdapter>
----@overload fun(): Adapter.Cache
+---@generic TKey : Core.Cache.ValidKeyTypes
+---@class Core.Cache<TKey, TValue> : { m_cache: { [TKey]: TValue }, Add: (fun(self: Core.Cache<TKey, TValue>, key: TKey, value: TValue) : nil), Get: (fun(self: Core.Cache<TKey, TValue>, key: TKey) : TValue), TryGet: (fun(self: Core.Cache<TKey, TValue>, key: TKey, outValue: (Out<TValue>)) : boolean) }, object
+---@field m_cache table<string|integer, any>
+---@overload fun(): Core.Cache
 local Cache = {}
 
+---@private
 function Cache:__init()
     self.m_cache = setmetatable({}, { __mode = "v" })
 end
 
----@param indexOrId string | integer
----@param adapter Adapter.IAdapter
+---@param indexOrId Core.Cache.ValidKeyTypes
+---@param adapter any
 function Cache:Add(indexOrId, adapter)
     self.m_cache[indexOrId] = adapter
 end
 
----@generic TAdapter : Adapter.IAdapter
----@param idOrIndex string | integer
----@return TAdapter
+---@param idOrIndex Core.Cache.ValidKeyTypes
+---@return any
 function Cache:Get(idOrIndex)
     local adapter = self.m_cache[idOrIndex]
     if not adapter then
@@ -39,9 +39,8 @@ function Cache:Get(idOrIndex)
     return adapter
 end
 
----@generic TAdapter : Adapter.IAdapter
----@param idOrIndex string | integer
----@param outAdapter Out<TAdapter>
+---@param idOrIndex Core.Cache.ValidKeyTypes
+---@param outAdapter Out<any>
 ---@return boolean
 function Cache:TryGet(idOrIndex, outAdapter)
     local adapter = self.m_cache[idOrIndex]
@@ -53,11 +52,11 @@ function Cache:TryGet(idOrIndex, outAdapter)
     return true
 end
 
-return Utils.Class.Create(Cache, "Adapter.Cache")
+return class("Core.Cache", Cache)
 
-]],
-["Core.Common.Logger"] = [[
-local Event = require('Core.Event')
+]==========],
+["Core.Common.Logger"] = [==========[
+local Event = require("Core.Event.init")
 
 ---@alias Core.Logger.LogLevel
 ---|1 Trace
@@ -94,18 +93,18 @@ local Logger = {}
 ---@param padding string?
 ---@return string[]
 local function tableToLineTree(node, maxLevel, properties, level, padding)
-	padding = padding or '     '
+	padding = padding or "     "
 	maxLevel = maxLevel or 5
 	level = level or 1
 	local lines = {}
 
-	if type(node) == 'table' and not Utils.Class.IsClass(node) then
+	if type(node) == "table" and not Utils.Class.IsClass(node) then
 		local keys = {}
-		if type(properties) == 'string' then
+		if type(properties) == "string" then
 			local propSet = {}
-			for p in string.gmatch(properties, '%b{}') do
+			for p in string.gmatch(properties, "%b{}") do
 				local propName = string.sub(p, 2, -2)
-				for k in string.gmatch(propName, '[^,%s]+') do
+				for k in string.gmatch(propName, "[^,%s]+") do
 					propSet[k] = true
 				end
 			end
@@ -123,23 +122,23 @@ local function tableToLineTree(node, maxLevel, properties, level, padding)
 		end
 
 		for i, k in ipairs(keys) do
-			local line = ''
+			local line = ""
 			if i == #keys then
-				line = padding .. '└── ' .. tostring(k)
+				line = padding .. "└── " .. tostring(k)
 			else
-				line = padding .. '├── ' .. tostring(k)
+				line = padding .. "├── " .. tostring(k)
 			end
 			table.insert(lines, line)
 
 			if level < maxLevel then
 				---@cast properties string[]
 				local childLines = tableToLineTree(node[k], maxLevel, properties, level + 1,
-					padding .. (i == #keys and '    ' or '│   '))
+					padding .. (i == #keys and "    " or "│   "))
 				for _, l in ipairs(childLines) do
 					table.insert(lines, l)
 				end
 			elseif i == #keys then
-				table.insert(lines, padding .. '└── ...')
+				table.insert(lines, padding .. "└── ...")
 			end
 		end
 	else
@@ -156,7 +155,7 @@ end
 ---@param onClear Core.Event?
 function Logger:__init(name, logLevel, onLog, onClear)
 	self.m_logLevel = logLevel
-	self.Name = (string.gsub(name, ' ', '_') or '')
+	self.Name = (string.gsub(name, " ", "_") or "")
 	self.OnLog = onLog or Event()
 	self.OnClear = onClear or Event()
 end
@@ -164,7 +163,7 @@ end
 ---@param name string
 ---@return Core.Logger
 function Logger:subLogger(name)
-	name = self.Name .. '.' .. name
+	name = self.Name .. "." .. name
 	local logger = Logger(name, self.m_logLevel)
 	return self:CopyListenersTo(logger)
 end
@@ -230,7 +229,7 @@ function Logger:Log(logLevel, ...)
 	end
 
 	if logLevel ~= 10 then
-		message = ({ computer.magicTime() })[2] .. " [" .. LogLevelToName[logLevel] .. "]: " .. self.Name .. "\n"
+		message = ({ computer.magicTime() })[2] .. "-" .. computer.millis() .. " [" .. LogLevelToName[logLevel] .. "]: " .. self.Name
 			.. "    " .. message:gsub("\n", "\n    ")
 	else
 		message = message:gsub("\n", "\n    "):gsub("\r", "\n")
@@ -247,7 +246,7 @@ function Logger:LogTable(t, logLevel, maxLevel, properties)
 		return
 	end
 
-	if t == nil or type(t) ~= 'table' then
+	if t == nil or type(t) ~= "table" then
 		return
 	end
 
@@ -268,7 +267,7 @@ function Logger:FreeLine(logLevel)
 		return
 	end
 
-	self.OnLog:Trigger(self, '')
+	self.OnLog:Trigger(self, "")
 end
 
 ---@param ... any
@@ -304,12 +303,12 @@ function Logger:LogWrite(...)
 	self:Log(10, ...)
 end
 
-return Utils.Class.Create(Logger, 'Core.Common.Logger')
+return class("Core.Logger", Logger)
 
-]],
-["Core.Common.Task"] = [[
+]==========],
+["Core.Common.Task"] = [==========[
 ---@class Core.Task : object
----@field private m_func fun(...)
+---@field private m_func function
 ---@field private m_thread thread
 ---@field private m_closed boolean
 ---@field private m_success boolean
@@ -445,43 +444,43 @@ function Task:LogError(logger, all)
 	end
 end
 
-return Utils.Class.Create(Task, "Core.Common.Task")
+return class("Core.Task", Task)
 
-]],
-["Core.Common.UUID"] = [[
+]==========],
+["Core.Common.UUID"] = [==========[
 local math = math
 local string = string
 
----@class Core.UUID : Core.Json.Serializable
+---@class Core.UUID : object, Core.Json.ISerializable
 ---@field private m_head number[]
 ---@field private m_body number[]
 ---@field private m_tail number[]
----@overload fun(head: number[], body: number[], tail: number[]) : Core.UUID
+---@overload fun(head: number[] | string, body: number[] | nil, tail: number[] | nil) : Core.UUID
 local UUID = {}
 
 ---@private
 ---@type integer
-UUID.Static__GeneratedCount = 1
+UUID.Static__GeneratedCount = 0
 
 ---@private
 ---@type string
-UUID.Static__TemplateRegex = "......%-....%-........"
+UUID.Static__TemplateRegex = "....%-....%-........"
 
---- Replaces 'x' in template with random character.
 ---@param amount integer
 ---@return number[] char
 local function generateRandomChars(amount)
     ---@type number[]
     local chars = {}
-    for i = 1, amount, 1 do
-        local j = math.random(1, 3)
 
-        if j == 1 then
-            chars[i] = math.random(48, 57)
-        elseif j == 2 then
-            chars[i] = math.random(65, 90)
-        elseif j == 3 then
-            chars[i] = math.random(97, 122)
+    for i = 1, amount, 1 do
+        local j = math.random(0, 57)
+
+        if j <= 7 then
+            chars[i] = j + 48
+        elseif j <= 32 then
+            chars[i] = j + 65
+        else
+            chars[i] = j + 97
         end
     end
     return chars
@@ -490,14 +489,14 @@ end
 ---@return Core.UUID
 function UUID.Static__New()
     math.randomseed(math.floor(computer.time()) + UUID.Static__GeneratedCount)
-    local head = generateRandomChars(6)
+    local head = generateRandomChars(4)
     local body = generateRandomChars(4)
     local tail = generateRandomChars(8)
     return UUID(head, body, tail)
 end
 
 ---@type Core.UUID
-UUID.Static__Empty = Utils.Class.Placeholder
+UUID.Static__Empty = {} --[[@as unknown]]
 
 ---@param str string
 ---@return integer[]
@@ -527,19 +526,27 @@ function UUID.Static__Parse(str)
 end
 
 ---@private
----@param headOrString number[]
----@param body number[]
----@param tail number[]
+---@param headOrString number[] | string
+---@param body number[] | nil
+---@param tail number[] | nil
 function UUID:__init(headOrString, body, tail)
     if type(headOrString) == "string" then
         headOrString, body, tail = parse(headOrString)
     end
+    ---@cast body number[]
+    ---@cast tail number[]
 
-    self:Raw__ModifyBehavior({ DisableCustomIndexing = true })
+    self:Raw__ModifyBehavior(function(modify)
+        modify.CustomIndexing = false
+    end)
+
     self.m_head = headOrString
     self.m_body = body
     self.m_tail = tail
-    self:Raw__ModifyBehavior({ DisableCustomIndexing = false })
+
+    self:Raw__ModifyBehavior(function(modify)
+        modify.CustomIndexing = true
+    end)
 end
 
 ---@param other Core.UUID
@@ -603,7 +610,7 @@ function UUID:__tostring()
     return self:ToString()
 end
 
-Utils.Class.Create(UUID, 'Core.Common.UUID', require("Core.Json.Serializable"))
+class("Core.UUID", UUID, { Inherit = require("Core.Json.ISerializable") })
 
 local empty = {}
 local splittedTemplate = Utils.String.Split(UUID.Static__TemplateRegex, "%-")
@@ -618,9 +625,9 @@ UUID.Static__Empty = UUID(table.unpack(empty))
 
 return UUID
 
-]],
-["Core.Common.Watchable"] = [[
-local Event = require("Core.Event")
+]==========],
+["Core.Common.Watchable"] = [==========[
+local Event = require("Core.Event.init")
 
 ---@alias Core.Watchable.OnSetup fun(Watchable: Core.Watchable)
 ---@alias Core.Watchable.OnClose fun(Watchable: Core.Watchable)
@@ -654,7 +661,7 @@ end
 ---@private
 ---@param onlyClose boolean?
 function Watchable:Check(onlyClose)
-    local count = self.m_Event:Count()
+    local count = self:Count()
 
     if count > 0 and not self.m_IsSetup and self.m_OnSetup and not onlyClose then
         self.m_OnSetup(self)
@@ -670,19 +677,31 @@ function Watchable:Check(onlyClose)
 end
 
 ---@param task Core.Task
----@return Core.Watchable
+---@return integer index
 function Watchable:AddTask(task)
-    self.m_Event:AddTask(task)
+    local index = self.m_Event:AddTask(task)
     self:Check()
-    return self
+    return index
+end
+
+---@param index integer
+function Watchable:RemoveTask(index)
+    self.m_Event:Remove(index)
+    self:Check()
 end
 
 ---@param task Core.Task
----@return Core.Watchable
+---@return integer index
 function Watchable:AddTaskOnce(task)
-    self.m_Event:AddTaskOnce(task)
+    local index = self.m_Event:AddTaskOnce(task)
     self:Check()
-    return self
+    return index
+end
+
+---@param index integer
+function Watchable:RemoveTaskOnce(index)
+    self.m_Event:RemoveOnce(index)
+    self:Check()
 end
 
 ---@param logger Core.Logger?
@@ -692,13 +711,13 @@ function Watchable:Trigger(logger, ...)
     self:Check(true)
 end
 
-return Utils.Class.Create(Watchable, "Core.Common.Watchable")
+return class("Core.Watchable", Watchable)
 
-]],
-["Core.Event.EventPullAdapter"] = [[
-local Event = require('Core.Event')
+]==========],
+["Core.Event.EventPullAdapter"] = [==========[
+local Event = require("Core.Event.init")
 
---- Assists in handling events from `event.pull()`
+--- Handles events from `event.pull()`.
 ---
 ---@class Core.EventPullAdapter
 ---@field OnEventPull Core.Event
@@ -787,7 +806,7 @@ end
 ---@param timeoutSeconds number?
 ---@return boolean gotEvent
 function EventPullAdapter:Wait(timeoutSeconds)
-	self.m_logger:LogTrace('## waiting for event pull ##')
+	self.m_logger:LogTrace("## waiting for event pull ##")
 	---@type table?
 	local eventPullData = nil
 	if timeoutSeconds == nil then
@@ -799,8 +818,8 @@ function EventPullAdapter:Wait(timeoutSeconds)
 		return false
 	end
 
-	self.m_logger:LogDebug("event with signalName: '"
-		.. eventPullData[1] .. "' was received from component: "
+	self.m_logger:LogDebug("event with signalName: "
+		.. eventPullData[1] .. " was received from component: "
 		.. tostring(eventPullData[2]))
 
 	self.OnEventPull:Trigger(self.m_logger, eventPullData)
@@ -821,7 +840,7 @@ end
 --- ## will never return
 ---@async
 function EventPullAdapter:Run()
-	self.m_logger:LogDebug('## started event pull loop ##')
+	self.m_logger:LogDebug("## started event pull loop ##")
 	while true do
 		self:Wait()
 	end
@@ -829,8 +848,8 @@ end
 
 return EventPullAdapter
 
-]],
-["Core.Event.init"] = [[
+]==========],
+["Core.Event.init"] = [==========[
 ---@class Core.Event : object
 ---@field private m_funcs Core.Task[]
 ---@field private m_onceFuncs Core.Task[]
@@ -926,10 +945,10 @@ function Event:CopyTo(event)
     return event
 end
 
-return Utils.Class.Create(Event, "Core.Event")
+return class("Core.Event", Event)
 
-]],
-["Core.FileSystem.File"] = [[
+]==========],
+["Core.FileSystem.File"] = [==========[
 local Path = require("Core.FileSystem.Path")
 
 ---@alias Core.FileSystem.File.OpenModes
@@ -1082,8 +1101,8 @@ function File:Close()
 end
 
 function File:Clear()
-    local isOpen = self:IsOpen()
-    if isOpen then
+    local wasOpen = self:IsOpen()
+    if wasOpen then
         self:Close()
     end
 
@@ -1097,15 +1116,15 @@ function File:Clear()
     file:write("")
     file:close()
 
-    if isOpen then
+    if wasOpen then
         self.m_file = filesystem.open(self.m_path:GetPath(), self.m_mode)
     end
 end
 
-return Utils.Class.Create(File, "Core.FileSystem.File")
+return class("Core.FileSystem.File", File)
 
-]],
-["Core.FileSystem.Path"] = [[
+]==========],
+["Core.FileSystem.Path"] = [==========[
 ---@param str string
 ---@return string str
 local function formatStr(str)
@@ -1113,7 +1132,7 @@ local function formatStr(str)
     return str
 end
 
----@class Core.FileSystem.Path
+---@class Core.FileSystem.Path : object
 ---@field private m_nodes string[]
 ---@overload fun(pathOrNodes: (string | string[])?) : Core.FileSystem.Path
 local Path = {}
@@ -1299,10 +1318,35 @@ function Path:Copy()
     return Path(copyNodes)
 end
 
-return Utils.Class.Create(Path, "Core.Path")
+return class("Core.FileSystem.Path", Path)
 
-]],
-["Core.Json.Json"] = [[
+]==========],
+["Core.Json.ISerializable"] = [==========[
+---@alias Core.Json.Serializable.Types
+---| string
+---| number
+---| boolean
+---| table
+---| Core.Json.ISerializable
+
+---@class Core.Json.ISerializable
+local ISerializable = {}
+---@return any ...
+function ISerializable:Serialize()
+end
+
+ISerializable.Serialize = Utils.Class.IsInterface
+
+---@param ... any
+---@return any obj
+function ISerializable:Static__Deserialize(...)
+    return self(...)
+end
+
+return interface("Core.Json.ISerializable", ISerializable)
+
+]==========],
+["Core.Json.Json"] = [==========[
 --
 -- json.lua
 --
@@ -1692,20 +1736,22 @@ end
 
 return json
 
-]],
-["Core.Json.JsonSerializer"] = [[
+]==========],
+["Core.Json.JsonSerializer"] = [==========[
 local Json = require("Core.Json.Json")
+local ISerializable = require("Core.Json.ISerializable")
+local NAME_ISERIALIZABLE = nameof(ISerializable)
 
----@class Core.Json.Serializer
----@field private m_typeInfos table<string, Utils.Class.Type>
----@overload fun(typeInfos: Utils.Class.Type[]?) : Core.Json.Serializer
+---@class Core.Json.Serializer : object
+---@field private m_typeInfos table<string, Freemaker.ClassSystem.Type>
+---@overload fun(typeInfos: Freemaker.ClassSystem.Type[]?) : Core.Json.Serializer
 local JsonSerializer = {}
 
 ---@type Core.Json.Serializer
-JsonSerializer.Static__Serializer = Utils.Class.Placeholder
+JsonSerializer.Static__Serializer = {} --[[@as unknown]]
 
 ---@private
----@param typeInfos Utils.Class.Type[]?
+---@param typeInfos Freemaker.ClassSystem.Type[]?
 function JsonSerializer:__init(typeInfos)
     self.m_typeInfos = {}
 
@@ -1722,31 +1768,36 @@ function JsonSerializer:AddTypesFromStatic()
     end
 end
 
----@param typeInfo Utils.Class.Type
+---@private
+---@param typeInfo Freemaker.ClassSystem.Type
 ---@return Core.Json.Serializer
 function JsonSerializer:AddTypeInfo(typeInfo)
-    if not Utils.Class.HasTypeBaseClass("Core.Json.Serializable", typeInfo) then
-        error("class type has not Core.Json.Serializable as base class", 2)
+    if Utils.Table.ContainsKey(self.m_typeInfos, typeInfo.Name) then
+        error("serializer already contains type: " .. typeInfo.Name)
     end
-    if not Utils.Table.ContainsKey(self.m_typeInfos, typeInfo.Name) then
-        self.m_typeInfos[typeInfo.Name] = typeInfo
-    end
-    return self
-end
+    
+    self.m_typeInfos[typeInfo.Name] = typeInfo
 
----@param typeInfos Utils.Class.Type[]
----@return Core.Json.Serializer
-function JsonSerializer:AddTypeInfos(typeInfos)
-    for _, typeInfo in ipairs(typeInfos) do
-        self:AddTypeInfo(typeInfo)
-    end
     return self
 end
 
 ---@param class object
 ---@return Core.Json.Serializer
 function JsonSerializer:AddClass(class)
-    return self:AddTypeInfo(typeof(class))
+    local typeInfo = typeof(class)
+    if not typeInfo then
+        error("unable to get type of passed class")
+    end
+
+    if typeInfo.Options.IsAbstract or typeInfo.Options.IsInterface then
+        error("passed class needs cannot be abstract or an interface")
+    end
+
+    if not Utils.Class.HasInterface(class, NAME_ISERIALIZABLE) then
+        error("class: " .. typeInfo.Name .. " has not " .. NAME_ISERIALIZABLE .. " as interface", 2)
+    end
+
+    return self:AddTypeInfo(typeInfo)
 end
 
 ---@param classes object[]
@@ -1759,10 +1810,14 @@ function JsonSerializer:AddClasses(classes)
 end
 
 ---@private
----@param class Core.Json.Serializable
+---@param class Core.Json.ISerializable
 ---@return table data
 function JsonSerializer:serializeClass(class)
     local typeInfo = typeof(class)
+    if not typeInfo then
+        error("unable to get type from class")
+    end
+
     local data = { __Type = typeInfo.Name, __Data = { class:Serialize() } }
 
     local max = 0
@@ -1801,8 +1856,8 @@ function JsonSerializer:serializeInternal(obj)
         return obj
     end
 
-    if Utils.Class.HasBaseClass(obj, "Core.Json.Serializable") then
-        ---@cast obj Core.Json.Serializable
+    if Utils.Class.HasInterface(obj, NAME_ISERIALIZABLE) then
+        ---@cast obj Core.Json.ISerializable
         return self:serializeClass(obj)
     end
 
@@ -1847,8 +1902,7 @@ function JsonSerializer:deserializeClass(t)
         error("unable to find typeInfo for class: " .. t.__Type)
     end
 
-    ---@type Core.Json.Serializable
-    local classTemplate = typeInfo.Template
+    local classBlueprint = typeInfo.Blueprint --[[@as Core.Json.ISerializable]]
 
     if type(data) == "table" then
         for key, value in next, data, nil do
@@ -1862,7 +1916,11 @@ function JsonSerializer:deserializeClass(t)
         end
     end
 
-    return classTemplate:Static__Deserialize(table.unpack(data))
+    if not classBlueprint.Static__Deserialize then
+        return ISerializable.Static__Deserialize(classBlueprint, table.unpack(data))
+    end
+
+    return classBlueprint:Static__Deserialize(table.unpack(data))
 end
 
 ---@private
@@ -1904,46 +1962,20 @@ function JsonSerializer:TryDeserialize(str, outObj)
     return success
 end
 
-Utils.Class.Create(JsonSerializer, "Core.Json.JsonSerializer")
+class("Core.Json.Serializer", JsonSerializer)
 
 JsonSerializer.Static__Serializer = JsonSerializer()
 JsonSerializer.Static__Serializer:AddClass(require("Core.Common.UUID"))
 
 return JsonSerializer
 
-]],
-["Core.Json.Serializable"] = [[
----@alias Core.Json.Serializable.Types
----| string
----| number
----| boolean
----| table
----| Core.Json.Serializable
-
----@class Core.Json.Serializable : object
-local Serializable = {}
-
----@return any ...
-function Serializable:Serialize()
-    local typeInfo = typeof(self)
-    error("Serialize function was not override for type " .. typeInfo.Name)
-end
-
----@param ... any
----@return any obj
-function Serializable:Static__Deserialize(...)
-    return self(...)
-end
-
-return Utils.Class.Create(Serializable, "Core.Json.Serializable")
-
-]],
-["Core.References.IReference"] = [[
+]==========],
+["Core.References.IReference"] = [==========[
 local Config = require("Core.Config")
 
----@generic TReference : Satisfactory.Components.Object
----@class Core.IReference<TReference> : object, { Get: fun() : TReference }
----@field protected m_obj Satisfactory.Components.Object?
+---@generic TReference : Engine.Object
+---@class Core.IReference<TReference> : { Get: fun() : TReference }
+---@field protected m_obj Engine.Object?
 ---@field m_expires number
 local IReference = {}
 
@@ -1964,26 +1996,28 @@ end
 
 ---@return boolean found
 function IReference:Fetch()
-    error("cannot call abstract method IReference:Fetch")
+    return false
 end
+
+IReference.Fetch = Utils.Class.IsInterface
 
 ---@return boolean isValid
 function IReference:Check()
     return self:Get() == nil
 end
 
-return Utils.Class.Create(IReference, "Core.IReference")
+return interface("Core.IReference", IReference)
 
-]],
-["Core.References.PCIDeviceReference"] = [[
----@class Core.PCIDeviceReference<T> : Core.IReference<T>
----@field m_class FIN.Class
+]==========],
+["Core.References.PCIDeviceReference"] = [==========[
+---@class Core.PCIDeviceReference<T> : object, Core.IReference<T>
+---@field m_class FIN.PCIDevice
 ---@field m_index integer
 ---@overload fun(class: FIN.Class, index: integer) : Core.PCIDeviceReference
 local PCIDeviceReference = {}
 
 ---@private
----@param class FIN.Class
+---@param class FIN.PCIDevice
 ---@param index integer
 function PCIDeviceReference:__init(class, index)
     self.m_class = class
@@ -1997,12 +2031,12 @@ function PCIDeviceReference:Fetch()
     return obj ~= nil
 end
 
-return Utils.Class.Create(PCIDeviceReference, "Core.PCIDeviceReference",
-    require("Core.References.IReference"))
+return class("Core.PCIDeviceReference", PCIDeviceReference,
+    { Inherit = require("Core.References.IReference") })
 
-]],
-["Core.References.ProxyReference"] = [[
----@class Core.ProxyReference<T> : Core.IReference<T>
+]==========],
+["Core.References.ProxyReference"] = [==========[
+---@class Core.ProxyReference<T> : object, Core.IReference<T>
 ---@field m_id FIN.UUID
 ---@overload fun(id: FIN.UUID) : Core.ProxyReference
 local ProxyReference = {}
@@ -2019,18 +2053,18 @@ function ProxyReference:Fetch()
     return obj ~= nil
 end
 
-return Utils.Class.Create(ProxyReference, "Core.ProxyReference",
-    require("Core.References.IReference"))
+return class("Core.ProxyReference", ProxyReference,
+    { Inherit = require("Core.References.IReference") })
 
-]],
-["Core.Usage.init"] = [[
+]==========],
+["Core.Usage.init"] = [==========[
 return {
     Ports = require("Core.Usage.Usage_Port"),
     Events = require("Core.Usage.Usage_EventName")
 }
 
-]],
-["Core.Usage.Usage_EventName"] = [[
+]==========],
+["Core.Usage.Usage_EventName"] = [==========[
 ---@enum Core.EventNameUsage
 local EventNameUsage = {
     -- DNS
@@ -2053,8 +2087,8 @@ local EventNameUsage = {
 
 return EventNameUsage
 
-]],
-["Core.Usage.Usage_Port"] = [[
+]==========],
+["Core.Usage.Usage_Port"] = [==========[
 -- 0 .. 10000
 
 ---@enum Core.PortUsage
@@ -2076,7 +2110,7 @@ local PortUsage = {
 
 return PortUsage
 
-]],
+]==========],
 }
 
 return Data

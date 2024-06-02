@@ -1,5 +1,5 @@
 local Data={
-["FactoryControl.Core.__events"] = [[
+["FactoryControl.Core.__events"] = [==========[
 local JsonSerializer = require("Core.Json.JsonSerializer")
 
 ---@class FactoryControl.Core.Events : Github_Loading.Entities.Events
@@ -7,13 +7,13 @@ local Events = {}
 
 function Events:OnLoaded()
     JsonSerializer.Static__Serializer:AddClasses({
-        -- ControllerDto's
+        -- ControllerDto"s
         require("FactoryControl.Core.Entities.Controller.ControllerDto"),
         require("FactoryControl.Core.Entities.Controller.ConnectDto"),
         require("FactoryControl.Core.Entities.Controller.CreateDto"),
         require("FactoryControl.Core.Entities.Controller.ModifyDto"),
 
-        -- FeatureDto's
+        -- FeatureDto"s
         require("FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto"),
         require("FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto"),
         require("FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto"),
@@ -31,15 +31,15 @@ end
 
 return Events
 
-]],
-["FactoryControl.Core.Config"] = [[
+]==========],
+["FactoryControl.Core.Config"] = [==========[
 return {
-	DOMAIN = 'FactoryControl.com',
-	CallbackServiceNameForFeatures = 'Features',
+	DOMAIN = "FactoryControl.com",
+	CallbackServiceNameForFeatures = "Features",
 }
 
-]],
-["FactoryControl.Core.EndpointUrls"] = [[
+]==========],
+["FactoryControl.Core.EndpointUrls"] = [==========[
 ---@class FactoryControl.Core.EndpointUrlTemplates
 local EndpointUrlTemplates = {}
 
@@ -136,9 +136,9 @@ EndpointUrlConstructors.Feature = FeatureConstructors
 
 return { EndpointUrlTemplates, EndpointUrlConstructors }
 
-]],
-["FactoryControl.Core.Entities.Controller.ConnectDto"] = [[
----@class FactoryControl.Core.Entities.Controller.ConnectDto : Core.Json.Serializable
+]==========],
+["FactoryControl.Core.Entities.Controller.ConnectDto"] = [==========[
+---@class FactoryControl.Core.Entities.Controller.ConnectDto : object, Core.Json.ISerializable
 ---@field Name string
 ---@field IPAddress Net.Core.IPAddress
 ---@overload fun(name: string, ipAddress: Net.Core.IPAddress) : FactoryControl.Core.Entities.Controller.ConnectDto
@@ -157,12 +157,12 @@ function ConnectDto:Serialize()
     return self.Name, self.IPAddress
 end
 
-return Utils.Class.Create(ConnectDto, "FactoryControl.Core.Entities.Controller.ConnectDto",
-    require("Core.Json.Serializable"))
+return class("FactoryControl.Core.Entities.Controller.ConnectDto", ConnectDto,
+    { Inherit = require("Core.Json.ISerializable") })
 
-]],
-["FactoryControl.Core.Entities.Controller.ControllerDto"] = [[
----@class FactoryControl.Core.Entities.ControllerDto : Core.Json.Serializable
+]==========],
+["FactoryControl.Core.Entities.Controller.ControllerDto"] = [==========[
+---@class FactoryControl.Core.Entities.ControllerDto : object, Core.Json.ISerializable
 ---@field Id Core.UUID
 ---@field Name string
 ---@field IPAddress Net.Core.IPAddress
@@ -189,12 +189,12 @@ function ControllerDto:Serialize()
     return self.Id, self.Name, self.IPAddress, self.Features
 end
 
-return Utils.Class.Create(ControllerDto, "FactoryControl.Core.Entities.ControllerDto",
-    require("Core.Json.Serializable"))
+return class("FactoryControl.Core.Entities.ControllerDto", ControllerDto,
+    { IsAbstract = true, Inherit = require("Core.Json.ISerializable") })
 
-]],
-["FactoryControl.Core.Entities.Controller.CreateDto"] = [[
----@class FactoryControl.Core.Entities.Controller.CreateDto : Core.Json.Serializable
+]==========],
+["FactoryControl.Core.Entities.Controller.CreateDto"] = [==========[
+---@class FactoryControl.Core.Entities.Controller.CreateDto : object, Core.Json.ISerializable
 ---@field Name string
 ---@field IPAddress Net.Core.IPAddress
 ---@field Features table<string, FactoryControl.Core.Entities.Controller.FeatureDto>
@@ -216,12 +216,12 @@ function ControllerDto:Serialize()
     return self.Name, self.IPAddress, self.Features
 end
 
-return Utils.Class.Create(ControllerDto, "FactoryControl.Core.Entities.Controller.CreateDto",
-    require("Core.Json.Serializable"))
+return class("FactoryControl.Core.Entities.Controller.CreateDto", ControllerDto,
+    { Inherit = require("Core.Json.ISerializable") })
 
-]],
-["FactoryControl.Core.Entities.Controller.ModifyDto"] = [[
----@class FactoryControl.Core.Entities.Controller.ModifyDto : Core.Json.Serializable
+]==========],
+["FactoryControl.Core.Entities.Controller.ModifyDto"] = [==========[
+---@class FactoryControl.Core.Entities.Controller.ModifyDto : object, Core.Json.ISerializable
 ---@field Name string
 ---@field IPAddress Net.Core.IPAddress
 ---@field Features Core.UUID[]
@@ -243,18 +243,18 @@ function ModifyDto:Serialize()
     return self.Name, self.IPAddress, self.Features
 end
 
-return Utils.Class.Create(ModifyDto, "FactoryControl.Core.Entities.Controller.ModifyDto",
-    require("Core.Json.Serializable"))
+return class("FactoryControl.Core.Entities.Controller.ModifyDto", ModifyDto,
+    { Inherit = require("Core.Json.ISerializable") })
 
-]],
-["FactoryControl.Core.Entities.Controller.Feature.FeatureDto"] = [[
+]==========],
+["FactoryControl.Core.Entities.Controller.Feature.Dto"] = [==========[
 ---@alias FactoryControl.Core.Entities.Controller.Feature.Type
 ---|"Switch"
 ---|"Button"
 ---|"Radial"
 ---|"Chart"
 
----@class FactoryControl.Core.Entities.Controller.FeatureDto : Core.Json.Serializable
+---@class FactoryControl.Core.Entities.Controller.FeatureDto : object, Core.Json.ISerializable
 ---@field Id Core.UUID
 ---@field Name string
 ---@field Type FactoryControl.Core.Entities.Controller.Feature.Type
@@ -280,15 +280,14 @@ end
 function FeatureDto:OnUpdate(featureUpdate)
     error("OnUpdate not implemented")
 end
+FeatureDto.OnUpdate = Utils.Class.IsAbstract
 
--- No Seriliaze function because this class should only be used as base not for instances
+return class("FactoryControl.Core.Entities.Controller.FeatureDto", FeatureDto,
+    { IsAbstract = true, Inherit = require("Core.Json.ISerializable") })
 
-return Utils.Class.Create(FeatureDto, "FactoryControl.Core.Entities.Controller.FeatureDto",
-    require("Core.Json.Serializable"))
-
-]],
-["FactoryControl.Core.Entities.Controller.Feature.Update"] = [[
----@class FactoryControl.Core.Entities.Controller.Feature.Update : Core.Json.Serializable
+]==========],
+["FactoryControl.Core.Entities.Controller.Feature.Update"] = [==========[
+---@class FactoryControl.Core.Entities.Controller.Feature.Update : object, Core.Json.ISerializable
 ---@field FeatureId Core.UUID
 local Update = {}
 
@@ -300,11 +299,11 @@ function Update:__init(featureId)
     self.FeatureId = featureId
 end
 
-return Utils.Class.Create(Update, "FactoryControl.Core.Entities.Controller.Feature.Update",
-    require("Core.Json.Serializable"))
+return class("FactoryControl.Core.Entities.Controller.Feature.Update", Update,
+    { IsAbstract = true, Inherit = require("Core.Json.ISerializable") })
 
-]],
-["FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto"] = [[
+]==========],
+["FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto"] = [==========[
 ---@class FactoryControl.Core.Entities.Controller.Feature.ButtonDto : FactoryControl.Core.Entities.Controller.FeatureDto
 ---@overload fun(id: Core.UUID, name: string, controllerId: Core.UUID) : FactoryControl.Core.Entities.Controller.Feature.ButtonDto
 local ButtonDto = {}
@@ -327,11 +326,11 @@ function ButtonDto:Serialize()
     return self.Id, self.Name, self.ControllerId
 end
 
-return Utils.Class.Create(ButtonDto, "FactoryControl.Core.Entities.Controller.Feature.ButtonDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))
+return class("FactoryControl.Core.Entities.Controller.Feature.ButtonDto", ButtonDto,
+    { Inherit = require("FactoryControl.Core.Entities.Controller.Feature.Dto") })
 
-]],
-["FactoryControl.Core.Entities.Controller.Feature.Button.Update"] = [[
+]==========],
+["FactoryControl.Core.Entities.Controller.Feature.Button.Update"] = [==========[
 ---@class FactoryControl.Core.Entities.Controller.Feature.Button.Update : FactoryControl.Core.Entities.Controller.Feature.Update
 ---@overload fun(id: Core.UUID) : FactoryControl.Core.Entities.Controller.Feature.Button.Update
 local Update = {}
@@ -348,11 +347,11 @@ function Update:Serialize()
     return self.FeatureId
 end
 
-return Utils.Class.Create(Update, "FactoryControl.Core.Entities.Controller.Feature.Button.Update",
-    require("FactoryControl.Core.Entities.Controller.Feature.Update"))
+return class("FactoryControl.Core.Entities.Controller.Feature.Button.Update", Update,
+    { Inherit = require("FactoryControl.Core.Entities.Controller.Feature.Update") })
 
-]],
-["FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto"] = [[
+]==========],
+["FactoryControl.Core.Entities.Controller.Feature.Chart.ChartDto"] = [==========[
 ---@class FactoryControl.Core.Entities.Controller.Feature.ChartDto : FactoryControl.Core.Entities.Controller.FeatureDto
 ---@field XAxisName string
 ---@field YAxisName string
@@ -386,11 +385,11 @@ function ChartDto:Serialize()
     return self.Id, self.Name, self.ControllerId, self.XAxisName, self.YAxisName, self.Data
 end
 
-return Utils.Class.Create(ChartDto, "FactoryControl.Core.Entities.Controller.Feature.ChartDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))
+return class("FactoryControl.Core.Entities.Controller.Feature.ChartDto", ChartDto,
+    { Inherit = require("FactoryControl.Core.Entities.Controller.Feature.Dto") })
 
-]],
-["FactoryControl.Core.Entities.Controller.Feature.Chart.Update"] = [[
+]==========],
+["FactoryControl.Core.Entities.Controller.Feature.Chart.Update"] = [==========[
 ---@class FactoryControl.Core.Entities.Controller.Feature.Chart.Update : FactoryControl.Core.Entities.Controller.Feature.Update
 ---@field Data table<number, any>
 ---@overload fun(id: Core.UUID, data: table<number, any>) : FactoryControl.Core.Entities.Controller.Feature.Chart.Update
@@ -410,11 +409,11 @@ function Update:Serialize()
     return self.FeatureId, self.Data
 end
 
-return Utils.Class.Create(Update, "FactoryControl.Core.Entities.Controller.Feature.Chart.Update",
-    require("FactoryControl.Core.Entities.Controller.Feature.Update"))
+return class("FactoryControl.Core.Entities.Controller.Feature.Chart.Update", Update,
+    { Inherit = require("FactoryControl.Core.Entities.Controller.Feature.Update") })
 
-]],
-["FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto"] = [[
+]==========],
+["FactoryControl.Core.Entities.Controller.Feature.Radial.RadialDto"] = [==========[
 ---@class FactoryControl.Core.Entities.Controller.Feature.RadialDto : FactoryControl.Core.Entities.Controller.FeatureDto
 ---@field Min number
 ---@field Max number
@@ -466,11 +465,11 @@ function RadialDto:Serialize()
     return self.Id, self.Name, self.ControllerId, self.Min, self.Max, self.Setting
 end
 
-return Utils.Class.Create(RadialDto, "FactoryControl.Core.Entities.Controller.Feature.RadialDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))
+return class("FactoryControl.Core.Entities.Controller.Feature.RadialDto", RadialDto,
+    { Inherit = require("FactoryControl.Core.Entities.Controller.Feature.Dto") })
 
-]],
-["FactoryControl.Core.Entities.Controller.Feature.Radial.Update"] = [[
+]==========],
+["FactoryControl.Core.Entities.Controller.Feature.Radial.Update"] = [==========[
 ---@class FactoryControl.Core.Entities.Controller.Feature.Radial.Update : FactoryControl.Core.Entities.Controller.Feature.Update
 ---@field Min number
 ---@field Max number
@@ -497,11 +496,11 @@ function Update:Serialize()
     return self.FeatureId, self.Min, self.Max, self.Setting
 end
 
-return Utils.Class.Create(Update, "FactoryControl.Core.Entities.Controller.Feature.Radial.Update",
-    require("FactoryControl.Core.Entities.Controller.Feature.Update"))
+return class("FactoryControl.Core.Entities.Controller.Feature.Radial.Update", Update,
+    { Inherit = require("FactoryControl.Core.Entities.Controller.Feature.Update") })
 
-]],
-["FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto"] = [[
+]==========],
+["FactoryControl.Core.Entities.Controller.Feature.Switch.SwitchDto"] = [==========[
 ---@class FactoryControl.Core.Entities.Controller.Feature.SwitchDto : FactoryControl.Core.Entities.Controller.FeatureDto
 ---@field IsEnabled boolean
 ---@overload fun(id: Core.UUID, name: string, controllerId: Core.UUID, isEnabled: boolean) : FactoryControl.Core.Entities.Controller.Feature.SwitchDto
@@ -533,11 +532,11 @@ function SwitchDto:Serialize()
     return self.Id, self.Name, self.ControllerId, self.IsEnabled
 end
 
-return Utils.Class.Create(SwitchDto, "FactoryControl.Core.Entities.Controller.Feature.SwitchDto",
-    require("FactoryControl.Core.Entities.Controller.Feature.FeatureDto"))
+return class("FactoryControl.Core.Entities.Controller.Feature.SwitchDto", SwitchDto,
+    { Inherit = require("FactoryControl.Core.Entities.Controller.Feature.Dto") })
 
-]],
-["FactoryControl.Core.Entities.Controller.Feature.Switch.Update"] = [[
+]==========],
+["FactoryControl.Core.Entities.Controller.Feature.Switch.Update"] = [==========[
 ---@class FactoryControl.Core.Entities.Controller.Feature.Switch.Update : FactoryControl.Core.Entities.Controller.Feature.Update
 ---@field IsEnabled boolean
 ---@overload fun(id: Core.UUID, isEnabled: boolean) : FactoryControl.Core.Entities.Controller.Feature.Switch.Update
@@ -557,11 +556,11 @@ function Update:Serialize()
     return self.FeatureId, self.IsEnabled
 end
 
-return Utils.Class.Create(Update, "FactoryControl.Core.Entities.Controller.Feature.Switch.Update",
-    require("FactoryControl.Core.Entities.Controller.Feature.Update"))
+return class("FactoryControl.Core.Entities.Controller.Feature.Switch.Update", Update,
+    { Inherit = require("FactoryControl.Core.Entities.Controller.Feature.Update") })
 
-]],
-["FactoryControl.Core.Extensions.NetworkContextExtensions"] = [[
+]==========],
+["FactoryControl.Core.Extensions.NetworkContextExtensions"] = [==========[
 ---@class Net.Core.NetworkContext
 local NetworkContextExtensions = {}
 
@@ -572,7 +571,7 @@ end
 
 Utils.Class.Extend(require("Net.Core.NetworkContext"), NetworkContextExtensions)
 
-]],
+]==========],
 }
 
 return Data

@@ -1,19 +1,19 @@
 local Data={
-["FactoryControl.Server.__main"] = [[
+["FactoryControl.Server.__main"] = [==========[
 ---@using DNS.Client
 
-local Config = require('FactoryControl.Core.Config')
-local Usage = require('Core.Usage.init')
+local Config = require("FactoryControl.Core.Config")
+local Usage = require("Core.Usage.init")
 
 local DatabaseAccessLayer = require("FactoryControl.Server.DatabaseAccessLayer")
 
-local ControllerEndpoints = require('FactoryControl.Server.Endpoints.Controller')
+local ControllerEndpoints = require("FactoryControl.Server.Endpoints.Controller")
 local FeatureEndpoints = require("FactoryControl.Server.Endpoints.Feature")
 
 local CallbackService = require("Services.Callback.Server.CallbackService")
 local FeatureService = require("FactoryControl.Server.Services.FeatureService")
 
-local Host = require('Hosting.Host')
+local Host = require("Hosting.Host")
 
 ---@class FactoryControl.Server.Main : Github_Loading.Entities.Main
 ---@field private m_host Hosting.Host
@@ -21,7 +21,7 @@ local Host = require('Hosting.Host')
 local Main = {}
 
 function Main:Configure()
-	self.m_host = Host(self.Logger:subLogger('Host'), "FactoryControl Server")
+	self.m_host = Host(self.Logger:subLogger("Host"), "FactoryControl Server")
 
 	self.m_databaseAccessLayer = DatabaseAccessLayer(self.Logger:subLogger("DatabaseAccessLayer"))
 
@@ -50,7 +50,7 @@ function Main:Configure()
 		featureService
 	)
 
-	self.Logger:LogDebug('setup endpoints')
+	self.Logger:LogDebug("setup endpoints")
 
 	self.m_host:RegisterAddress(Config.DOMAIN)
 end
@@ -71,8 +71,8 @@ end
 
 return Main
 
-]],
-["FactoryControl.Server.DatabaseAccessLayer"] = [[
+]==========],
+["FactoryControl.Server.DatabaseAccessLayer"] = [==========[
 local DbTable = require("Database.DbTable")
 local Path = require("Core.FileSystem.Path")
 local UUID = require("Core.Common.UUID")
@@ -188,10 +188,10 @@ function DatabaseAccessLayer:GetFeatureByIds(featureIds)
     return features
 end
 
-return Utils.Class.Create(DatabaseAccessLayer, "FactoryControl.Server.Database")
+return class("FactoryControl.Server.Database", DatabaseAccessLayer)
 
-]],
-["FactoryControl.Server.Endpoints.Controller"] = [[
+]==========],
+["FactoryControl.Server.Endpoints.Controller"] = [==========[
 local ControllerUrlTemplates = require("FactoryControl.Core.EndpointUrls")[1].Controller
 
 ---@class FactoryControl.Server.Endpoints.Controller : Net.Rest.Api.Server.EndpointBase
@@ -293,11 +293,11 @@ function ControllerEndpoints:GetByName(name)
 	return self.Templates:Ok(controller)
 end
 
-return Utils.Class.Create(ControllerEndpoints, 'FactoryControl.Server.Endpoints.Controller',
-	require('Net.Rest.Api.Server.EndpointBase'))
+return class("FactoryControl.Server.Endpoints.Controller", ControllerEndpoints,
+	{ Inherit = require("Net.Rest.Api.Server.EndpointBase") })
 
-]],
-["FactoryControl.Server.Endpoints.Feature"] = [[
+]==========],
+["FactoryControl.Server.Endpoints.Feature"] = [==========[
 local FeatureUrlTemplates = require("FactoryControl.Core.EndpointUrls")[1].Feature
 
 ---@class FactoryControl.Server.Endpoints.Feature : Net.Rest.Api.Server.EndpointBase
@@ -363,11 +363,11 @@ function FeatureEndpoints:GetByIds(featureIds)
     return self.Templates:Ok(features)
 end
 
-return Utils.Class.Create(FeatureEndpoints, "FactoryControl.Server.Endpoints.Feature",
-    require("Net.Rest.Api.Server.EndpointBase"))
+return class("FactoryControl.Server.Endpoints.Feature", FeatureEndpoints,
+    { Inherit =  require("Net.Rest.Api.Server.EndpointBase") })
 
-]],
-["FactoryControl.Server.Services.FeatureService"] = [[
+]==========],
+["FactoryControl.Server.Services.FeatureService"] = [==========[
 local Usage = require("Core.Usage.init")
 local Config = require("FactoryControl.Core.Config")
 
@@ -476,9 +476,9 @@ function FeatureService:SendToWachters(featureUpdate)
     end
 end
 
-return Utils.Class.Create(FeatureService, "FactoryControl.Server.Services.FeatureService")
+return class("FactoryControl.Server.Services.FeatureService", FeatureService)
 
-]],
+]==========],
 }
 
 return Data
