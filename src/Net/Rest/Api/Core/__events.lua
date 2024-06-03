@@ -6,11 +6,11 @@ local Events = {}
 function Events:OnLoaded()
     JsonSerializer.Static__Serializer:AddClasses({
         -- Api
-        require("Net.Rest.Api.Request"),
-        require("Net.Rest.Api.Response"),
+        require("Net.Rest.Api.Core.Request"),
+        require("Net.Rest.Api.Core.Response"),
     })
 
-    require("Net.Rest.Api.NetworkContextExtensions")
+    require("Net.Rest.Api.Core.NetworkContextExtensions")
 end
 
 return Events
