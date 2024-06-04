@@ -45,7 +45,7 @@ end
 ------------------------------------------------------------------------------
 
 ---@param name string
----@param features FactoryControl.Client.Entities.Controller.Feature[]?
+---@param features FactoryControl.Client.Entities.Controller.Feature[] | nil
 ---@return FactoryControl.Client.Entities.Controller
 function Client:Connect(name, features)
     local controllerDto = self.m_client:Connect(ConnectController(name, self.NetClient:GetIPAddress()))

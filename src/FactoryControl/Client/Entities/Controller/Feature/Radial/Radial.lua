@@ -72,4 +72,4 @@ function Radial:Modify(func)
 end
 
 return class("FactoryControl.Client.Entities.Controller.Feature.Radial", Radial,
-    { Inherit = require("FactoryControl.Client.Entities.Controller.Feature.init") })
+    { Inherit = require("FactoryControl.Client.Entities.Controller.Feature.Feature") })

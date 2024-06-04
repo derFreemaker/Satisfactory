@@ -29,4 +29,4 @@ function Button:Press()
 end
 
 return class("FactoryControl.Client.Entities.Controller.Feature.Button", Button,
-    { Inherit = require("FactoryControl.Client.Entities.Controller.Feature.init") })
+    { Inherit = require("FactoryControl.Client.Entities.Controller.Feature.Feature") })

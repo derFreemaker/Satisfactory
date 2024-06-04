@@ -75,6 +75,11 @@ function Valve:Open()
 	self.m_valve:Get().userFlowLimit = -1
 end
 
+---@return number
+function Valve:GetFlow()
+	return self.m_valve:Get().flow
+end
+
 ---@param amountPct number
 function Valve:SetFlowLimitPercentage(amountPct)
 	self.m_valve:Get().userFlowLimit = amountPct / 10

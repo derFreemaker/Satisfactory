@@ -1,4 +1,8 @@
 return {
+	PowerPlant_Coal = "PowerPlant.Coal",
+	PowerPlant_Watcher = "PowerPlant.Watcher",
+
+	-- Servers --
 	DNS_Server = "DNS.Server",
 	FactoryControl_Server = "FactoryControl.Server",
 

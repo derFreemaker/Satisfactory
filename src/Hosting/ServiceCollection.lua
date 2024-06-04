@@ -10,7 +10,7 @@ end
 
 ---@param service object
 function ServiceCollection:AddService(service)
-    self.m_services[typeof(service).Name] = service
+    self.m_services[nameof(service)] = service
 end
 
 ---@param serviceTypeName string

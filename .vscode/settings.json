@@ -14,6 +14,7 @@
 	"Lua.workspace.ignoreSubmodules": false,
 	"Lua.workspace.maxPreload": 10000,
 	"Lua.workspace.preloadFileSize": 2000,
+	"Lua.doc.privateName": ["m_*"],
 	"triggerTaskOnSave.tasks": {
 		"check all": ["*"]
 	},

@@ -1,0 +1,10 @@
+{
+  "Name": "PowerPlant.Watcher",
+  "Namespace": "PowerPlant.Watcher",
+  "Version": "0.1.0-1",
+  "RequiredPackages": [
+    "Core",
+    "FactoryControl.Client"
+  ],
+  "PackageType": "Application"
+}

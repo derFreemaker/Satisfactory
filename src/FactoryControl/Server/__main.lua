@@ -55,13 +55,14 @@ end
 
 function Main:Run()
 	self.m_host:Ready()
+
 	while true do
 		self.m_host:GetNetworkClient():BroadCast(
 			Usage.Ports.FactoryControl_Heartbeat,
 			Usage.Events.FactoryControl_Heartbeat
 		)
 
-		self.m_host:RunCycle(3)
+		self.m_host:RunCycle(1)
 
 		self.m_databaseAccessLayer:Save()
 	end

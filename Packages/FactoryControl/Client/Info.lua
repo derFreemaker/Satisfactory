@@ -1,7 +1,7 @@
 return {
     Name = "FactoryControl.Client",
     Namespace = "FactoryControl.Client",
-    Version = "0.1-56",
+    Version = "0.1-57",
     PackageType = "Library",
     RequiredPackages = {
         "Core",
@@ -53,9 +53,9 @@ return {
             IsRunnable = true,
         },
 
-        ["FactoryControl.Client.Entities.Controller.Feature.init"] = {
-            Location = "FactoryControl.Client.Entities.Controller.Feature.init",
-            Namespace = "FactoryControl.Client.Entities.Controller.Feature.init",
+        ["FactoryControl.Client.Entities.Controller.Feature.Feature"] = {
+            Location = "FactoryControl.Client.Entities.Controller.Feature.Feature",
+            Namespace = "FactoryControl.Client.Entities.Controller.Feature.Feature",
             IsRunnable = true,
         },
 

@@ -16,7 +16,7 @@ local Usage = require("Core.Usage.init")
 local IPAddress = require("Net.Core.IPAddress")
 local NetworkClient = require("Net.Core.NetworkClient")
 local ApiClient = require("Net.Rest.Api.Client.Client")
-local ApiRequest = require("Net.Rest.Api.Request")
+local ApiRequest = require("Net.Rest.Api.Core.Request")
 
 local CreateAddress = require("DNS.Core.Entities.Address.Create")
 

@@ -304,7 +304,7 @@ return class("Net.Rest.Api.Server.EndpointBase", EndpointBase, { IsAbstract = tr
 ]==========],
 ["Net.Rest.Api.Server.ResponseTemplates"] = [==========[
 local StatusCodes = require("Net.Core.StatusCodes")
-local Response = require("Net.Rest.Api.Response")
+local Response = require("Net.Rest.Api.Core.Response")
 
 ---@class Net.Rest.Api.Server.RestApiResponseTemplates
 local ResponseTemplates = {}

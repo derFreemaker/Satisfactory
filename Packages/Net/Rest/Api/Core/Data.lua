@@ -1,5 +1,5 @@
 local Data={
-["Net.Rest.Api.__events"] = [==========[
+["Net.Rest.Api.Core.__events"] = [==========[
 local JsonSerializer = require("Core.Json.JsonSerializer")
 
 ---@class Net.Rest.Events : Github_Loading.Entities.Events
@@ -8,17 +8,17 @@ local Events = {}
 function Events:OnLoaded()
     JsonSerializer.Static__Serializer:AddClasses({
         -- Api
-        require("Net.Rest.Api.Request"),
-        require("Net.Rest.Api.Response"),
+        require("Net.Rest.Api.Core.Request"),
+        require("Net.Rest.Api.Core.Response"),
     })
 
-    require("Net.Rest.Api.NetworkContextExtensions")
+    require("Net.Rest.Api.Core.NetworkContextExtensions")
 end
 
 return Events
 
 ]==========],
-["Net.Rest.Api.NetworkContextExtensions"] = [==========[
+["Net.Rest.Api.Core.NetworkContextExtensions"] = [==========[
 local NetworkContext = require("Net.Core.NetworkContext")
 
 ---@class Net.Core.NetworkContext
@@ -39,7 +39,7 @@ end
 Utils.Class.Extend(NetworkContext, NetworkContextExtensions)
 
 ]==========],
-["Net.Rest.Api.Request"] = [==========[
+["Net.Rest.Api.Core.Request"] = [==========[
 ---@class Net.Rest.Api.Request : object, Core.Json.ISerializable
 ---@field Method Net.Core.Method
 ---@field Endpoint Net.Rest.Uri
@@ -69,7 +69,7 @@ return class("Net.Rest.Api.Request", Request,
     { Inherit = require("Core.Json.ISerializable") })
 
 ]==========],
-["Net.Rest.Api.Response"] = [==========[
+["Net.Rest.Api.Core.Response"] = [==========[
 ---@class Net.Rest.Api.Response.Header : table<string, any>
 ---@field Code Net.Core.StatusCodes
 

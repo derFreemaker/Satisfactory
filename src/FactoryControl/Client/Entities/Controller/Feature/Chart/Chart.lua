@@ -2,14 +2,14 @@ local ChartDto = require("FactoryControl.Core.Entities.Controller.Feature.Chart.
 local Update = require("FactoryControl.Core.Entities.Controller.Feature.Chart.Update")
 
 ---@class FactoryControl.Client.Entities.Controller.Feature.Chart.Data
----@field XAxisName string?
----@field YAxisName string?
----@field Data table<number, any>?
+---@field XAxisName string | nil
+---@field YAxisName string | nil
+---@field Data FactoryControl.Core.Entities.Controller.Feature.ChartDto.DataType | nil
 
 ---@class FactoryControl.Client.Entities.Controller.Feature.Chart : FactoryControl.Client.Entities.Controller.Feature
 ---@field private m_xAxisName string
 ---@field private m_yAxisName string
----@field private m_data table<number, any>
+---@field private m_data FactoryControl.Core.Entities.Controller.Feature.ChartDto.DataType
 ---@overload fun(chartDto: FactoryControl.Core.Entities.Controller.Feature.ChartDto, client: FactoryControl.Client) : FactoryControl.Client.Entities.Controller.Feature.Chart
 local Chart = {}
 
@@ -28,7 +28,7 @@ end
 ---@private
 ---@param update FactoryControl.Core.Entities.Controller.Feature.Chart.Update
 function Chart:OnUpdate(update)
-    for key, value in pairs(update.Data) do
+    for key, value in pairs(update.Data or {}) do
         self.m_data[key] = value
     end
 end
@@ -43,13 +43,13 @@ function Chart:GetAxisNames()
     return self.m_xAxisName, self.m_yAxisName
 end
 
----@return table<number, any>
+---@return FactoryControl.Core.Entities.Controller.Feature.ChartDto.DataType
 function Chart:GetData()
     return Utils.Table.Copy(self.m_data)
 end
 
 ---@class FactoryControl.Client.Entities.Controller.Feature.Chart.Modify
----@field Data table<number, any>
+---@field Data FactoryControl.Core.Entities.Controller.Feature.ChartDto.DataType
 
 ---@param func fun(modify: FactoryControl.Client.Entities.Controller.Feature.Chart.Modify)
 function Chart:Modify(func)
@@ -63,4 +63,4 @@ function Chart:Modify(func)
 end
 
 return class("FactoryControl.Client.Entities.Controller.Feature.Chart", Chart,
-    { Inherit = require("FactoryControl.Client.Entities.Controller.Feature.init") })
+    { Inherit = require("FactoryControl.Client.Entities.Controller.Feature.Feature") })
