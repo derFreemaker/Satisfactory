@@ -6,16 +6,16 @@ local Response = require("Net.Rest.Api.Core.Response")
 local DEFAULT_TIMEOUT = 5
 
 ---@class Net.Rest.Api.Client : object
----@field ServerIPAddress Net.Core.IPAddress
+---@field ServerIPAddress Net.IPAddress
 ---@field ServerPort integer
 ---@field ReturnPort integer
 ---@field private m_netClient Net.Core.NetworkClient
 ---@field private m_logger Core.Logger
----@overload fun(serverIPAddress: Net.Core.IPAddress, serverPort: integer, returnPort: integer, netClient: Net.Core.NetworkClient, logger: Core.Logger) : Net.Rest.Api.Client
+---@overload fun(serverIPAddress: Net.IPAddress, serverPort: integer, returnPort: integer, netClient: Net.Core.NetworkClient, logger: Core.Logger) : Net.Rest.Api.Client
 local Client = {}
 
 ---@private
----@param serverIPAddress Net.Core.IPAddress
+---@param serverIPAddress Net.IPAddress
 ---@param serverPort integer
 ---@param returnPort integer
 ---@param netClient Net.Core.NetworkClient
