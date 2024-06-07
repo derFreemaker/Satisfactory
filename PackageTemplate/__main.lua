@@ -2,11 +2,11 @@
 local Main = {}
 
 function Main:Configure()
-	log('called configure')
+	log("called configure")
 end
 
 function Main:Run()
-	log('called run')
+	log("called run")
 end
 
 return Main

@@ -7,7 +7,7 @@
         public String Namespace { get; }
         public Boolean IsRunnable { get; }
 
-        public String LocationPath { get; }
+        public FileInfo FileInfo { get; }
         public IPackage Parent { get; }
 
         public List<String> RequiringModules { get; }

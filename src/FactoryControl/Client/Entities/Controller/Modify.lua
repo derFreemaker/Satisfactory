@@ -4,14 +4,14 @@ local ModfiyDto = require("FactoryControl.Core.Entities.Controller.ModifyDto")
 
 ---@class FactoryControl.Client.Entities.Controller.Modify : object
 ---@field Name string
----@field IPAddress Net.Core.IPAddress
+---@field IPAddress Net.IPAddress
 ---@field Features table<Core.UUID, FactoryControl.Client.Entities.Controller.Feature>
----@overload fun(name: string, ipAddress: Net.Core.IPAddress, features: table<Core.UUID, FactoryControl.Client.Entities.Controller.Feature>) : FactoryControl.Client.Entities.Controller.Modify
+---@overload fun(name: string, ipAddress: Net.IPAddress, features: table<Core.UUID, FactoryControl.Client.Entities.Controller.Feature>) : FactoryControl.Client.Entities.Controller.Modify
 local Modify = {}
 
 ---@private
 ---@param name string
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 ---@param features table<Core.UUID, FactoryControl.Client.Entities.Controller.Feature>
 function Modify:__init(name, ipAddress, features)
     self.Name = name

@@ -5,7 +5,7 @@ namespace Lua_Bundler.Package;
 
 internal class ApplicationPackage : IPackage {
     private readonly PackageInfo _Info;
-    public List<IPackageModule> Modules { get; private set; } = new List<IPackageModule>();
+    public List<IPackageModule> Modules { get; private set; } = new();
 
     public ApplicationPackage(PackageInfo info) {
         _Info = info;
@@ -22,8 +22,13 @@ internal class ApplicationPackage : IPackage {
     }
 
     public void Check(PackageMap map, ref CheckResult result) {
-        foreach (var module in Modules)
+        if (!Modules.Any(x => x.FileInfo.Name == "__main.lua")) {
+            ErrorWriter.ApplicationPackageHasNoMainFile(_Info);
+        }
+        
+        foreach (var module in Modules) {
             module.Check(map, ref result);
+        }
 
         _Info.Check(map, ref result);
         _Info.Save();

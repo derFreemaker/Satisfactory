@@ -8,7 +8,7 @@ local HttpResponse = require("Net.Http.Response")
 local ApiRequest = require("Net.Rest.Api.Core.Request")
 local ApiResponse = require("Net.Rest.Api.Core.Response")
 
----@alias Net.Http.Client.CachedAddress { ExpireTime: integer, IPAddress: Net.Core.IPAddress }
+---@alias Net.Http.Client.CachedAddress { ExpireTime: integer, IPAddress: Net.IPAddress }
 
 ---@class Net.Http.Client : object
 ---@field private m_cache table<string, Net.Http.Client.CachedAddress>
@@ -37,7 +37,7 @@ function HttpClient:GetNetworkClient()
 end
 
 ---@param address string
----@return Net.Core.IPAddress? address
+---@return Net.IPAddress? address
 function HttpClient:GetAddress(address)
 	if not address:match("^.*%..*$") then
 		return IPAddress(address)

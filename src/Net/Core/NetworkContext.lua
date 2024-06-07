@@ -2,13 +2,13 @@ local JsonSerializer = require("Core.Json.JsonSerializer")
 local IPaddress = require("Net.Core.IPAddress")
 
 ---@class Net.Core.NetworkContext.Header : table<string, any>
----@field ReturnIPAddress Net.Core.IPAddress
+---@field ReturnIPAddress Net.IPAddress
 ---@field ReturnPort integer
 
 ---@class Net.Core.NetworkContext : object
 ---@field SignalName string
 ---@field SignalSender Engine.Object
----@field SenderIPAddress Net.Core.IPAddress
+---@field SenderIPAddress Net.IPAddress
 ---@field Port integer
 ---@field EventName string
 ---@field Header Net.Core.NetworkContext.Header

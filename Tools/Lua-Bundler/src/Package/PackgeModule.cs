@@ -11,7 +11,7 @@ namespace Lua_Bundler.Package {
         public Boolean IsRunnable { get; private set; }
 
 
-        public String LocationPath { get; }
+        public FileInfo FileInfo { get; }
         public IPackage Parent { get; }
 
         public List<String> RequiringModules { get; } = new();
@@ -30,7 +30,7 @@ namespace Lua_Bundler.Package {
             Namespace = $"{namespaceDirectory}.{fileStem}";
             IsRunnable = info.Extension == ".lua";
 
-            LocationPath = info.FullName;
+            FileInfo = info;
             Parent = parent;
 
             Id = Namespace;
@@ -83,7 +83,7 @@ namespace Lua_Bundler.Package {
             if (!map.TryAddModule(this))
                 ErrorWriter.ModuleExistsMoreThanOnce(this);
 
-            var content = File.ReadAllText(LocationPath);
+            var content = File.ReadAllText(FileInfo.FullName);
             AnalyseContent(content, map);
         }
 
@@ -102,7 +102,7 @@ namespace Lua_Bundler.Package {
 
                 if (!map.TryGetModule(moduleNamespace, out var module)) {
                     ErrorWriter.ModuleNotFound(moduleNamespace,
-                                               (LocationPath, Utils.GetLine(content, group.Index, group.Length)));
+                                               (FileInfo.FullName, Utils.GetLine(content, group.Index, group.Length)));
                     result.Error();
                     continue;
                 }
@@ -132,10 +132,10 @@ namespace Lua_Bundler.Package {
                 var className = classGroup.Value;
 
                 var lineInfo = Utils.GetLine(content, classGroup.Index, classGroup.Length);
-                if (map.TryAddClass(className, (LocationPath, lineInfo)))
+                if (map.TryAddClass(className, (FileInfo.FullName, lineInfo)))
                     continue;
 
-                ErrorWriter.ClassExistsMoreThanOnce(className, (LocationPath, lineInfo),
+                ErrorWriter.ClassExistsMoreThanOnce(className, (FileInfo.FullName, lineInfo),
                                                     map.GetClassFileLineInfo(className));
                 result.Error();
             }
@@ -154,7 +154,7 @@ namespace Lua_Bundler.Package {
 
                 if (!map.TryGetPackageWithNamespace(packageNamespace, out var package)) {
                     ErrorWriter.PackageUsingNotFound(packageNamespace,
-                                                     (LocationPath, Utils.GetLine(content, group.Index, group.Length)));
+                                                     (FileInfo.FullName, Utils.GetLine(content, group.Index, group.Length)));
                     result.Error();
                     continue;
                 }
@@ -173,7 +173,7 @@ namespace Lua_Bundler.Package {
 
             foreach (var match in multiLineStringWithLevel10Matches.Cast<Match>()) {
                 var group = match.Groups[1];
-                ErrorWriter.ModuleMultiLineStringWithLevel10Found((LocationPath,
+                ErrorWriter.ModuleMultiLineStringWithLevel10Found((FileInfo.FullName,
                                                                    Utils.GetLine(content, group.Index, group.Length)));
                 result.Error();
             }
@@ -193,7 +193,7 @@ namespace Lua_Bundler.Package {
         #endregion
 
         public void Check(PackageMap map, ref CheckResult result) {
-            var content = File.ReadAllText(LocationPath);
+            var content = File.ReadAllText(FileInfo.FullName);
             CheckContent(content, map, ref result);
         }
 
@@ -262,7 +262,7 @@ namespace Lua_Bundler.Package {
         }
 
         public String BundleData(BundleOptions options) {
-            var content = File.ReadAllLines(LocationPath).AsSpan();
+            var content = File.ReadAllLines(FileInfo.FullName).AsSpan();
             content = ModifyContent(content, options);
             var builder = new StringBuilder();
 

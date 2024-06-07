@@ -22,7 +22,7 @@ end
 ---@param id Core.UUID
 ---@param callbackMethod string
 ---@param callbackServiceName string
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 ---@param args any[]
 function CallbackService:Send(id, callbackMethod, callbackServiceName, ipAddress, args)
     local callbackInfo = CallbackInfo(id, callbackMethod, callbackServiceName, "Send")
@@ -30,7 +30,7 @@ function CallbackService:Send(id, callbackMethod, callbackServiceName, ipAddress
     self.m_networkClient:Send(
         ipAddress,
         Usage.Ports.CallbackService,
-        Usage.Events.CallbackService,
+        Usage.Events.CallbackService_Request,
         { callbackInfo, args }
     )
 end
@@ -38,7 +38,7 @@ end
 ---@param id Core.UUID
 ---@param callbackMethod string
 ---@param callbackServiceName string
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 ---@param args any[]
 ---@return any[] results
 function CallbackService:Invoke(id, callbackMethod, callbackServiceName, ipAddress, args)
@@ -54,7 +54,7 @@ function CallbackService:Invoke(id, callbackMethod, callbackServiceName, ipAddre
     self.m_networkClient:Send(
         ipAddress,
         Usage.Ports.CallbackService,
-        Usage.Events.CallbackService,
+        Usage.Events.CallbackService_Request,
         { callbackInfo, args }
     )
 

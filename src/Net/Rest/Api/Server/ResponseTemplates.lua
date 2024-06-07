@@ -10,6 +10,8 @@ function ResponseTemplates.Ok(value)
 	return Response(value, { Code = StatusCodes.Status200OK })
 end
 
+---@param value any
+---@return Net.Rest.Api.Response
 function ResponseTemplates.Accepted(value)
 	return Response(value, { Code = StatusCodes.Status202Accepted })
 end

@@ -56,8 +56,9 @@ end
 function Main:Run()
 	self.m_host:Ready()
 
+	local networkClient = self.m_host:GetNetworkClient()
 	while true do
-		self.m_host:GetNetworkClient():BroadCast(
+		networkClient:BroadCast(
 			Usage.Ports.FactoryControl_Heartbeat,
 			Usage.Events.FactoryControl_Heartbeat
 		)

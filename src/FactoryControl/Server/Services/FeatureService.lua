@@ -5,7 +5,7 @@ local Task = require("Core.Common.Task")
 
 ---@class FactoryControl.Server.Services.FeatureService : object
 ---@field OnFeatureInvoked Core.Task<Net.Core.NetworkContext>
----@field private m_watchedFeatures table<string, Net.Core.IPAddress[]>
+---@field private m_watchedFeatures table<string, Net.IPAddress[]>
 ---@field private m_callbackService Services.Callback.Server.CallbackService
 ---@field private m_databaseAccessLayer FactoryControl.Server.DatabaseAccessLayer
 ---@field private m_networkClient Net.Core.NetworkClient
@@ -28,7 +28,7 @@ function FeatureService:__init(callbackService, databaseAccessLayer, networkClie
 end
 
 ---@param featureId Core.UUID
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 function FeatureService:Watch(featureId, ipAddress)
     local ipAddresses = self.m_watchedFeatures[featureId:ToString()]
     if not ipAddresses then
@@ -40,7 +40,7 @@ function FeatureService:Watch(featureId, ipAddress)
 end
 
 ---@param featureId Core.UUID
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 function FeatureService:Unwatch(featureId, ipAddress)
     local ipAddresses = self.m_watchedFeatures[featureId:ToString()]
     if not ipAddresses then

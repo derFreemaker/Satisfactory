@@ -15,6 +15,12 @@ local PortUsage = {
 	-- Callback
 	CallbackService = 2400,
 	CallbackService_Response = 2401,
+
+	-- TDS (TrainDistributionSystem)
+	TDS = 3200,
+	TDS_Heartbeat = 3201,
+
+
 }
 
 return PortUsage

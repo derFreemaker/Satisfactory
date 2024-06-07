@@ -14,8 +14,11 @@ local EventNameUsage = {
     FactoryControl_Feature_Update = "FactoryControl-Feature-Update",
 
     -- CallbackService
-    CallbackService = "CallbackService",
-    CallbackService_Response = "CallbackService-Response"
+    CallbackService_Request = "CallbackService-Request",
+    CallbackService_Response = "CallbackService-Response",
+
+    -- TDS (TrainDistributionSystem)
+    TDS_Heartbeat = "TrainDistributionSystem",
 }
 
 return EventNameUsage

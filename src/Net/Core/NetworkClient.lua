@@ -17,7 +17,7 @@ local IPAddress = require("Net.Core.IPAddress")
 ---|"*"
 
 ---@class Net.Core.NetworkClient : object
----@field private m_iPAddress Net.Core.IPAddress
+---@field private m_iPAddress Net.IPAddress
 ---@field private m_ports table<Net.Core.Port, Net.Core.NetworkPort?>
 ---@field private m_networkCard Adapter.Computer.NetworkCard
 ---@field private m_serializer Core.Json.Serializer
@@ -56,7 +56,7 @@ function NetworkClient:Dispose()
 	Utils.Class.Deconstruct(self)
 end
 
----@return Net.Core.IPAddress
+---@return Net.IPAddress
 function NetworkClient:GetIPAddress()
 	if self.m_iPAddress then
 		return self.m_iPAddress
@@ -219,7 +219,7 @@ function NetworkClient:CloseAll()
 	self.m_logger:LogTrace('closed all Ports')
 end
 
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 ---@param port integer
 ---@param eventName string
 ---@param body any

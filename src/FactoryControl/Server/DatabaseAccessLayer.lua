@@ -42,7 +42,6 @@ function DatabaseAccessLayer:CreateController(createController)
     end
 
     self.m_controllers:Set(controller.Id:ToString(), controller)
-    self.m_controllers:Save()
 
     return controller
 end
@@ -50,7 +49,6 @@ end
 ---@param controllerId Core.UUID
 function DatabaseAccessLayer:DeleteController(controllerId)
     self.m_controllers:Delete(controllerId:ToString())
-    self.m_controllers:Save()
 end
 
 ---@param controllerId Core.UUID
@@ -83,15 +81,14 @@ function DatabaseAccessLayer:CreateFeature(feature)
     end
 
     self.m_features:Set(feature.Id:ToString(), feature)
-    self.m_features:Save()
 
     return feature
 end
 
 ---@param featureId Core.UUID
+---@return boolean success
 function DatabaseAccessLayer:DeleteFeature(featureId)
-    self.m_features:Delete(featureId:ToString())
-    self.m_features:Save()
+    return self.m_features:Delete(featureId:ToString())
 end
 
 ---@param featureId Core.UUID

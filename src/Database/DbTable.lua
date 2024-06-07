@@ -1,7 +1,7 @@
 local JsonSerializer = require("Core.Json.JsonSerializer")
 local File = require("Core.FileSystem.File")
 
----@class Database.DbTable : object
+---@class Database.DbTable<T> : object
 ---@field private m_name string
 ---@field private m_path Core.FileSystem.Path
 ---@field private m_dataChanged table<string | number, any>
@@ -60,6 +60,7 @@ function DbTable:Save()
 end
 
 ---@param key string | integer
+---@param value any
 function DbTable:ObjectChanged(key, value)
     if Utils.Table.ContainsKey(self.m_dataChanged, key) then
         return
@@ -81,10 +82,11 @@ function DbTable:Set(key, value)
 end
 
 ---@param key string | integer
+---@return boolean success
 function DbTable:Delete(key)
     local path = self.m_path:Extend(tostring(key) .. ".dto.json")
 
-    filesystem.remove(path:GetPath())
+    return filesystem.remove(path:GetPath())
 end
 
 ---@param key string | integer
@@ -99,14 +101,11 @@ function DbTable:Get(key)
             if key == fileKey then
                 local data = File.Static__ReadAll(path)
                 value = self.m_serializer:Deserialize(data)
+                self:ObjectChanged(key, value)
+                return value
             end
         end
     end
-
-    if value ~= nil then
-        self:ObjectChanged(key, value)
-    end
-    return value
 end
 
 ---@private

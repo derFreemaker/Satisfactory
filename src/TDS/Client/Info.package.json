@@ -1,0 +1,7 @@
+{
+  "Name": "TDS.Client",
+  "Namespace": "TDS.Client",
+  "Version": "0.1.0-1",
+  "RequiredPackages": [],
+  "PackageType": "Application"
+}

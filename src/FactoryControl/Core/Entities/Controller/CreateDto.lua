@@ -1,13 +1,13 @@
 ---@class FactoryControl.Core.Entities.Controller.CreateDto : object, Core.Json.ISerializable
 ---@field Name string
----@field IPAddress Net.Core.IPAddress
+---@field IPAddress Net.IPAddress
 ---@field Features table<string, FactoryControl.Core.Entities.Controller.FeatureDto>
----@overload fun(name: string, ipAddress: Net.Core.IPAddress, features: table<string, FactoryControl.Core.Entities.Controller.FeatureDto>?) : FactoryControl.Core.Entities.Controller.CreateDto
+---@overload fun(name: string, ipAddress: Net.IPAddress, features: table<string, FactoryControl.Core.Entities.Controller.FeatureDto>?) : FactoryControl.Core.Entities.Controller.CreateDto
 local ControllerDto = {}
 
 ---@private
 ---@param name string
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 ---@param features table<string, FactoryControl.Core.Entities.Controller.FeatureDto>?
 function ControllerDto:__init(name, ipAddress, features)
     self.Name = name
@@ -15,7 +15,7 @@ function ControllerDto:__init(name, ipAddress, features)
     self.Features = features or {}
 end
 
----@return string name, Net.Core.IPAddress ipAddress, table<string, FactoryControl.Core.Entities.Controller.FeatureDto> features
+---@return string name, Net.IPAddress ipAddress, table<string, FactoryControl.Core.Entities.Controller.FeatureDto> features
 function ControllerDto:Serialize()
     return self.Name, self.IPAddress, self.Features
 end

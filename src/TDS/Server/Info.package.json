@@ -1,0 +1,13 @@
+{
+  "Name": "TDS.Server",
+  "Namespace": "TDS.Server",
+  "Version": "0.1.0-1",
+  "RequiredPackages": [
+    "Core",
+    "Database",
+    "Hosting",
+    "Net.Rest.Api.Server",
+    "TDS.Core"
+  ],
+  "PackageType": "Application"
+}

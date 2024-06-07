@@ -9,6 +9,8 @@ local ResponseTemplates = require("Net.Rest.Api.Server.ResponseTemplates")
 ---@overload fun(endpointLogger: Core.Logger, apiController: Net.Rest.Api.Server.Controller) : Net.Rest.Api.Server.EndpointBase
 local EndpointBase = {}
 
+---@alias Net.Rest.Api.Server.EndpointBase.Constructor fun(endpointLogger: Core.Logger, apiController: Net.Rest.Api.Server.Controller)
+
 ---@private
 ---@param endpointLogger Core.Logger
 ---@param apiController Net.Rest.Api.Server.Controller

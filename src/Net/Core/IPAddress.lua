@@ -1,6 +1,6 @@
----@class Net.Core.IPAddress : object, Core.Json.ISerializable
+---@class Net.IPAddress : object, Core.Json.ISerializable
 ---@field private m_address FIN.UUID
----@overload fun(address: string) : Net.Core.IPAddress
+---@overload fun(address: string) : Net.IPAddress
 local IPAddress = {}
 
 ---@private
@@ -22,7 +22,7 @@ function IPAddress:GetAddress()
     return self.m_address
 end
 
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 function IPAddress:Equals(ipAddress)
     return self:GetAddress() == ipAddress:GetAddress()
 end

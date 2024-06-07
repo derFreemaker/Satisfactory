@@ -137,7 +137,7 @@ function NetworkPort:ClosePort()
 	end
 end
 
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 ---@param eventName string
 ---@param body any
 ---@param header table<string, any>?

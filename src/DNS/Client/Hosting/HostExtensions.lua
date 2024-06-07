@@ -30,7 +30,7 @@ function HostExtensions:GetDNSClient()
 end
 
 ---@param url string
----@param ipAddress Net.Core.IPAddress?
+---@param ipAddress Net.IPAddress?
 function HostExtensions:RegisterAddress(url, ipAddress)
     local dnsClient = self:GetDNSClient()
 

@@ -1,18 +1,18 @@
 ---@class FactoryControl.Core.Entities.Controller.ConnectDto : object, Core.Json.ISerializable
 ---@field Name string
----@field IPAddress Net.Core.IPAddress
----@overload fun(name: string, ipAddress: Net.Core.IPAddress) : FactoryControl.Core.Entities.Controller.ConnectDto
+---@field IPAddress Net.IPAddress
+---@overload fun(name: string, ipAddress: Net.IPAddress) : FactoryControl.Core.Entities.Controller.ConnectDto
 local ConnectDto = {}
 
 ---@private
 ---@param name string
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 function ConnectDto:__init(name, ipAddress)
     self.Name = name
     self.IPAddress = ipAddress
 end
 
----@return string name, Net.Core.IPAddress ipAddress
+---@return string name, Net.IPAddress ipAddress
 function ConnectDto:Serialize()
     return self.Name, self.IPAddress
 end

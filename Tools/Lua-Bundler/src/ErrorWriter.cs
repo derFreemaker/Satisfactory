@@ -68,19 +68,23 @@ internal class ErrorWriter
         Core.UnknownType("Package", info.GetPackageType(), (info.InfoFileSourcePath, null));
     }
 
+    internal static void ApplicationPackageHasNoMainFile(IPackageInfo info) {
+        Core.Error("Package_NoMainFileFound", new FileLineInfo(info.InfoFileSourcePath, 0, 0, 0), "No main file found in Application package.");
+    }
+    
     #endregion
 
     #region - Module -
 
     internal static void ModuleCircularReference(IPackageModule module1, IPackageModule module2)
     {
-        Core.CircularReference("Module", module1.Location, (module1.LocationPath, null));
-        Core.CircularReference("Module", module2.Location, (module2.LocationPath, null));
+        Core.CircularReference("Module", module1.Location, (module1.FileInfo.FullName, null));
+        Core.CircularReference("Module", module2.Location, (module2.FileInfo.FullName, null));
     }
 
     internal static void ModuleExistsMoreThanOnce(IPackageModule module)
     {
-        Core.ExistsMoreThanOnce("Module", module.Namespace, (module.LocationPath, null));
+        Core.ExistsMoreThanOnce("Module", module.Namespace, (module.FileInfo.FullName, null));
     }
 
     internal static void ModuleNotFound(String moduleNamespace, FileLineInfo info)

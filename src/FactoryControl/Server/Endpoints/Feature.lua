@@ -10,7 +10,7 @@ local FeatureEndpoints = {}
 ---@param apiController Net.Rest.Api.Server.Controller
 ---@param databaseAccessLayer FactoryControl.Server.DatabaseAccessLayer
 ---@param featureService FactoryControl.Server.Services.FeatureService
----@param super fun(endpointLogger: Core.Logger, apiController: Net.Rest.Api.Server.Controller)
+---@param super Net.Rest.Api.Server.EndpointBase.Constructor
 function FeatureEndpoints:__init(super, logger, apiController, databaseAccessLayer, featureService)
     super(logger, apiController)
 
@@ -26,7 +26,7 @@ function FeatureEndpoints:__init(super, logger, apiController, databaseAccessLay
 end
 
 ---@param featureId Core.UUID
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 ---@return Net.Rest.Api.Response response
 function FeatureEndpoints:Watch(featureId, ipAddress)
     self.m_featureService:Watch(featureId, ipAddress)
@@ -34,7 +34,7 @@ function FeatureEndpoints:Watch(featureId, ipAddress)
 end
 
 ---@param featureId Core.UUID
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 ---@return Net.Rest.Api.Response response
 function FeatureEndpoints:Unwatch(featureId, ipAddress)
     self.m_featureService:Unwatch(featureId, ipAddress)

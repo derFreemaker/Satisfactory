@@ -16,7 +16,7 @@ local Chart = require("FactoryControl.Client.Entities.Controller.Feature.Chart.C
 
 ---@class FactoryControl.Client.Entities.Controller : FactoryControl.Client.Entities.Entity
 ---@field Name string
----@field IPAddress Net.Core.IPAddress
+---@field IPAddress Net.IPAddress
 ---@field private m_featuresIds Core.UUID[]
 ---@field private m_features table<string, FactoryControl.Client.Entities.Controller.Feature>
 ---@overload fun(controllerDto: FactoryControl.Core.Entities.ControllerDto, client: FactoryControl.Client) : FactoryControl.Client.Entities.Controller
