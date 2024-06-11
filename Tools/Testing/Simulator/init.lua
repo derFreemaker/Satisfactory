@@ -19,7 +19,7 @@ function Simulator:loadLoaderFiles()
 	self.m_loadedLoaderFiles = require("tools.Testing.Simulator.LoadFiles")(CurrentPath)
 end
 
-local requireFunc = require --[[@as fun(moduleName: string) : any]]
+local requireFunc = require
 function Simulator:OverrideRequire()
 	---@param moduleToGet string
 	function require(moduleToGet)
@@ -30,6 +30,7 @@ function Simulator:OverrideRequire()
 			moduleLocation = moduleToGet
 		end
 
+		---@diagnostic disable-next-line: need-check-nil
 		local result = { requireFunc("src." .. moduleLocation) }
 		if type(result[#result]) == "string" then
 			result[#result] = nil
@@ -97,7 +98,8 @@ function Simulator:Initialize(logLevel, fileSystemPath, eeprom)
 
 	self:OverrideRequire()
 
-	Utils = self.m_loadedLoaderFiles['/Github-Loading/Loader/Utils'][1] --[[@as Utils]]
+	---@type Utils
+	Utils = self.m_loadedLoaderFiles['/Github-Loading/Loader/Utils'][1]
 
 	local Logger = require("Core.Common.Logger")
 	local newLogger = Logger("Simulator", logLevel)

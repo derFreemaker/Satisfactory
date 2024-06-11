@@ -71,7 +71,7 @@ Local
 }
 ```
 
-"Version": "[Version]-[BuildNumber]" the BuildNumber will be increased by one erverytime the bundler bundles this package.
+`"Version": "[Version]-[BuildNumber]"` the BuildNumber will be increased by one erverytime the bundler bundles this package.
 The BuildNumber can only be an integer.
 
 "ApplicationType": can be "Library" or "Application" at the moment.

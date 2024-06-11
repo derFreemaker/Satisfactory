@@ -40,7 +40,7 @@ end
 ---@private
 ---@param trainRef Core.Reference<Satis.Train>
 function DistributionSystem:AddTrain(trainRef)
-    local train
+    
 end
 
 return class("TDS.DistributionSystem", DistributionSystem)

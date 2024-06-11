@@ -16,4 +16,4 @@ function ProxyReference:Fetch()
 end
 
 return class("Core.ProxyReference", ProxyReference,
-    { Inherit = require("Core.References.IReference") })
+    { Inherit = require("Core.References.Reference") })

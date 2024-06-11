@@ -8,7 +8,8 @@ local NAME_ISERIALIZABLE = nameof(ISerializable)
 local JsonSerializer = {}
 
 ---@type Core.Json.Serializer
-JsonSerializer.Static__Serializer = {} --[[@as unknown]]
+---@diagnostic disable-next-line: missing-fields
+JsonSerializer.Static__Serializer = {}
 
 ---@private
 ---@param typeInfos Freemaker.ClassSystem.Type[]?
@@ -162,7 +163,8 @@ function JsonSerializer:deserializeClass(t)
         error("unable to find typeInfo for class: " .. t.__Type)
     end
 
-    local classBlueprint = typeInfo.Blueprint --[[@as Core.Json.Serializable]]
+    ---@type Core.Json.Serializable
+    local classBlueprint = typeInfo.Blueprint
 
     if type(data) == "table" then
         for key, value in next, data, nil do

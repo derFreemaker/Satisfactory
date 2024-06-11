@@ -46,7 +46,8 @@ function UUID.Static__New()
 end
 
 ---@type Core.UUID
-UUID.Static__Empty = {} --[[@as unknown]]
+---@diagnostic disable-next-line: missing-fields
+UUID.Static__Empty = {}
 
 ---@param str string
 ---@return integer[]
