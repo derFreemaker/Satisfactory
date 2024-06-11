@@ -1,4 +1,4 @@
----@class Core.ProxyReference<T> : object, Core.IReference<T>
+---@class Core.ProxyReference<T> : object, Core.Reference<T>
 ---@field m_id FIN.UUID
 ---@overload fun(id: FIN.UUID) : Core.ProxyReference
 local ProxyReference = {}

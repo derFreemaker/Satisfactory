@@ -1,5 +1,3 @@
----@alias TDS.Entities.Train.Create { NumCargoWagons: integer, NumFluidWagons: integer }
-
 ---@enum TDS.Entities.Train.State
 local Train_State = {
     None = 0,

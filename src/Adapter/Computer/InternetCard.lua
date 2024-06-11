@@ -4,7 +4,7 @@ local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 local Cache = require("Core.Common.Cache")()
 
 ---@class Adapter.Computer.InternetCard : object
----@field m_refInternetCard Core.IReference<FIN.InternetCard_C>
+---@field m_refInternetCard Core.Reference<FIN.InternetCard_C>
 ---@overload fun(index: integer) : Adapter.Computer.InternetCard
 local InternetCard = {}
 

@@ -7,11 +7,11 @@ local Utils = LoadedLoaderFiles["/Github-Loading/Loader/Utils"][1]
 ----------------------------------------------
 
 local eventListenFunc = event.listen
----@param component Engine.Object | Core.IReference
+---@param component Engine.Object | Core.Reference
 ---@diagnostic disable-next-line
 function event.listen(component)
     if Utils.Class.HasInterface(component, "Core.IReference") then
-        ---@cast component Core.IReference
+        ---@cast component Core.Reference
         return eventListenFunc(component:Get())
     end
 

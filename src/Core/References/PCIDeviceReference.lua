@@ -1,4 +1,4 @@
----@class Core.PCIDeviceReference<T> : object, Core.IReference<T>
+---@class Core.PCIDeviceReference<T> : object, Core.Reference<T>
 ---@field m_class FIN.PCIDevice
 ---@field m_index integer
 ---@overload fun(class: FIN.Class, index: integer) : Core.PCIDeviceReference
