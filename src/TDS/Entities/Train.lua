@@ -7,7 +7,7 @@ local Train_State = {
     Working = 2,
 }
 
----@class TDS.Entities.Train : object, Core.Json.ISerializable
+---@class TDS.Entities.Train : object, Core.Json.Serializable
 ---@field Id Core.UUID
 ---@field State TDS.Entities.Train.State
 ---@field IsFluid boolean
@@ -28,4 +28,4 @@ function Train:Serialize()
 end
 
 return class("TDS.Entities.Train", Train,
-    { Inherit = require("Core.Json.ISerializable") })
+    { Inherit = require("Core.Json.Serializable") })

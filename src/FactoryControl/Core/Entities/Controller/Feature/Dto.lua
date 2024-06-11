@@ -4,7 +4,7 @@
 ---|"Radial"
 ---|"Chart"
 
----@class FactoryControl.Core.Entities.Controller.FeatureDto : object, Core.Json.ISerializable
+---@class FactoryControl.Core.Entities.Controller.FeatureDto : object, Core.Json.Serializable
 ---@field Id Core.UUID
 ---@field Name string
 ---@field Type FactoryControl.Core.Entities.Controller.Feature.Type
@@ -33,4 +33,4 @@ end
 FeatureDto.OnUpdate = Utils.Class.IsAbstract
 
 return class("FactoryControl.Core.Entities.Controller.FeatureDto", FeatureDto,
-    { IsAbstract = true, Inherit = require("Core.Json.ISerializable") })
+    { IsAbstract = true, Inherit = require("Core.Json.Serializable") })

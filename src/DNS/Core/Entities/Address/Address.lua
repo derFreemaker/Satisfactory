@@ -1,4 +1,4 @@
----@class DNS.Core.Entities.Address : object, Core.Json.ISerializable
+---@class DNS.Core.Entities.Address : object, Core.Json.Serializable
 ---@field Id Core.UUID
 ---@field Domain string
 ---@field IPAddress Net.IPAddress
@@ -20,4 +20,4 @@ function Address:Serialize()
     return self.Id, self.Domain, self.IPAddress
 end
 
-return class("DNS.Core.Entities.Address", Address, { Inherit = require("Core.Json.ISerializable") })
+return class("DNS.Core.Entities.Address", Address, { Inherit = require("Core.Json.Serializable") })

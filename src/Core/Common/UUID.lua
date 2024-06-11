@@ -1,7 +1,7 @@
 local math = math
 local string = string
 
----@class Core.UUID : object, Core.Json.ISerializable
+---@class Core.UUID : object, Core.Json.Serializable
 ---@field private m_head number[]
 ---@field private m_body number[]
 ---@field private m_tail number[]
@@ -160,7 +160,7 @@ function UUID:__tostring()
     return self:ToString()
 end
 
-class("Core.UUID", UUID, { Inherit = require("Core.Json.ISerializable") })
+class("Core.UUID", UUID, { Inherit = require("Core.Json.Serializable") })
 
 local empty = {}
 local splittedTemplate = Utils.String.Split(UUID.Static__TemplateRegex, "%-")

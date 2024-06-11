@@ -1,6 +1,5 @@
----@class TDS.Request.Create
----@field ItemId integer
----@field 
+---@class TDS.Request.Data
+---@field Item string
 
 ---@enum TDS.Request.State
 local Request_State = {
@@ -9,27 +8,29 @@ local Request_State = {
     Processing = 2,
 }
 
----@class TDS.Request : object, TDS.Request.Create, Core.Json.ISerializable
+---@class TDS.Request : object, Core.Json.Serializable
 ---@field Id Core.UUID
 ---@field State TDS.Request.State
 ---@field TrainId Core.UUID | nil
----@field ItemId integer
----@overload fun(id: Core.UUID, state: TDS.Request.State, trainId: Core.UUID | nil, itemId: integer) : TDS.Request
+---@field Data TDS.Request.Data
+---@overload fun(id: Core.UUID, state: TDS.Request.State, trainId: Core.UUID | nil, data: TDS.Request.Data) : TDS.Request
 local Request = {}
 
 ---@private
 ---@param id Core.UUID
 ---@param state TDS.Request.State
 ---@param trainId Core.UUID | nil
-function Request:__init(id, state, trainId)
+---@param data TDS.Request.Data
+function Request:__init(id, state, trainId, data)
     self.Id = id
     self.State = state
     self.TrainId = trainId
+    self.Data = data
 end
 
 function Request:Serialize()
-    return self.Id, self.State, self.TrainId
+    return self.Id, self.State, self.TrainId, self.Data
 end
 
 return class("TDS.Request", Request,
-    { Inherit = require("Core.Json.ISerializable") })
+    { Inherit = require("Core.Json.Serializable") })

@@ -1,7 +1,7 @@
 ---@class Net.Rest.Api.Response.Header : table<string, any>
 ---@field Code Net.Core.StatusCodes
 
----@class Net.Rest.Api.Response : object, Core.Json.ISerializable
+---@class Net.Rest.Api.Response : object, Core.Json.Serializable
 ---@field Headers Net.Rest.Api.Response.Header
 ---@field Body any
 ---@field WasSuccessful boolean
@@ -27,4 +27,4 @@ function Response:Serialize()
 end
 
 return class("Net.Rest.Api.Response", Response,
-    { Inherit = require("Core.Json.ISerializable") })
+    { Inherit = require("Core.Json.Serializable") })

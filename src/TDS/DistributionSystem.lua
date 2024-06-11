@@ -1,7 +1,9 @@
+local UUID = require("Core.Common.UUID")
 local Path = require("Core.FileSystem.Path")
 local ProxyReference = require("Core.References.ProxyReference")
-
 local DbTable = require("Database.DbTable")
+
+local Request = require("TDS.Entities.Request")
 
 NEW_NAME = "NEW_TRAIN"
 
@@ -27,9 +29,12 @@ function DistributionSystem:Save()
 end
 
 ---@private
----@param createRequest TDS.Request.Builder
-function DistributionSystem:AddRequest(createRequest)
-    createRequest
+---@param requestData TDS.Request.Data
+---@return TDS.Request
+function DistributionSystem:AddRequest(requestData)
+    local request = Request(UUID.Static__New(), 1, nil, requestData)
+    self.m_requests:Set(request.Id:ToString(), request)
+    return request
 end
 
 return class("TDS.DistributionSystem", DistributionSystem)

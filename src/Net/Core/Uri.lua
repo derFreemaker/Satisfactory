@@ -1,4 +1,4 @@
----@class Net.Rest.Uri : object, Core.Json.ISerializable
+---@class Net.Rest.Uri : object, Core.Json.Serializable
 ---@field private m_path string
 ---@field private m_query table<string, string>
 ---@overload fun(paht: string, query: table<string, string>) : Net.Rest.Uri
@@ -60,4 +60,4 @@ function Uri:Serialize()
 end
 
 return class("Net.Uri", Uri,
-    { Inherit = require("Core.Json.ISerializable") })
+    { Inherit = require("Core.Json.Serializable") })

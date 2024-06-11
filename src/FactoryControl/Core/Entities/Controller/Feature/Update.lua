@@ -1,4 +1,4 @@
----@class FactoryControl.Core.Entities.Controller.Feature.Update : object, Core.Json.ISerializable
+---@class FactoryControl.Core.Entities.Controller.Feature.Update : object, Core.Json.Serializable
 ---@field FeatureId Core.UUID
 local Update = {}
 
@@ -11,4 +11,4 @@ function Update:__init(featureId)
 end
 
 return class("FactoryControl.Core.Entities.Controller.Feature.Update", Update,
-    { IsAbstract = true, Inherit = require("Core.Json.ISerializable") })
+    { IsAbstract = true, Inherit = require("Core.Json.Serializable") })

@@ -1,4 +1,4 @@
----@class FactoryControl.Core.Entities.Controller.ModifyDto : object, Core.Json.ISerializable
+---@class FactoryControl.Core.Entities.Controller.ModifyDto : object, Core.Json.Serializable
 ---@field Name string
 ---@field IPAddress Net.IPAddress
 ---@field Features Core.UUID[]
@@ -21,4 +21,4 @@ function ModifyDto:Serialize()
 end
 
 return class("FactoryControl.Core.Entities.Controller.ModifyDto", ModifyDto,
-    { Inherit = require("Core.Json.ISerializable") })
+    { Inherit = require("Core.Json.Serializable") })

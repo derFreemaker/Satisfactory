@@ -1,5 +1,5 @@
 local Json = require("Core.Json.Json")
-local ISerializable = require("Core.Json.ISerializable")
+local ISerializable = require("Core.Json.Serializable")
 local NAME_ISERIALIZABLE = nameof(ISerializable)
 
 ---@class Core.Json.Serializer : object
@@ -70,7 +70,7 @@ function JsonSerializer:AddClasses(classes)
 end
 
 ---@private
----@param class Core.Json.ISerializable
+---@param class Core.Json.Serializable
 ---@return table data
 function JsonSerializer:serializeClass(class)
     local typeInfo = typeof(class)
@@ -117,7 +117,7 @@ function JsonSerializer:serializeInternal(obj)
     end
 
     if Utils.Class.HasInterface(obj, NAME_ISERIALIZABLE) then
-        ---@cast obj Core.Json.ISerializable
+        ---@cast obj Core.Json.Serializable
         return self:serializeClass(obj)
     end
 
@@ -162,7 +162,7 @@ function JsonSerializer:deserializeClass(t)
         error("unable to find typeInfo for class: " .. t.__Type)
     end
 
-    local classBlueprint = typeInfo.Blueprint --[[@as Core.Json.ISerializable]]
+    local classBlueprint = typeInfo.Blueprint --[[@as Core.Json.Serializable]]
 
     if type(data) == "table" then
         for key, value in next, data, nil do

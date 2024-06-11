@@ -1,4 +1,4 @@
----@class Net.IPAddress : object, Core.Json.ISerializable
+---@class Net.IPAddress : object, Core.Json.Serializable
 ---@field private m_address FIN.UUID
 ---@overload fun(address: string) : Net.IPAddress
 local IPAddress = {}
@@ -47,4 +47,4 @@ end
 --#endregion
 
 return class("Net.Core.IPAddress", IPAddress,
-    { Inherit = require("Core.Json.ISerializable") })
+    { Inherit = require("Core.Json.Serializable") })

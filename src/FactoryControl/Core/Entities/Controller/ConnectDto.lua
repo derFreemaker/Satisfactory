@@ -1,4 +1,4 @@
----@class FactoryControl.Core.Entities.Controller.ConnectDto : object, Core.Json.ISerializable
+---@class FactoryControl.Core.Entities.Controller.ConnectDto : object, Core.Json.Serializable
 ---@field Name string
 ---@field IPAddress Net.IPAddress
 ---@overload fun(name: string, ipAddress: Net.IPAddress) : FactoryControl.Core.Entities.Controller.ConnectDto
@@ -18,4 +18,4 @@ function ConnectDto:Serialize()
 end
 
 return class("FactoryControl.Core.Entities.Controller.ConnectDto", ConnectDto,
-    { Inherit = require("Core.Json.ISerializable") })
+    { Inherit = require("Core.Json.Serializable") })
