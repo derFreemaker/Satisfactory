@@ -2,29 +2,26 @@ local JsonSerializer = require("Core.Json.JsonSerializer")
 local File = require("Core.FileSystem.File")
 
 ---@class Database.DbTable<T> : object
----@field private m_name string
----@field private m_path Core.FileSystem.Path
----@field private m_dataChanged table<string | number, any>
----@field private m_logger Core.Logger
----@field private m_serializer Core.Json.Serializer
----@overload fun(name: string, path: Core.FileSystem.Path, logger: Core.Logger, serializer: Core.Json.Serializer?) : Database.DbTable
+---@field m_path Core.FileSystem.Path
+---@field m_dataChanged table<string | number, any>
+---@field m_logger Core.Logger
+---@field m_serializer Core.Json.Serializer
+---@overload fun(path: Core.FileSystem.Path, logger: Core.Logger, serializer: Core.Json.Serializer?) : Database.DbTable
 local DbTable = {}
 
 ---@private
----@param name string
 ---@param path Core.FileSystem.Path
 ---@param logger Core.Logger
 ---@param serializer Core.Json.Serializer
-function DbTable:__init(name, path, logger, serializer)
+function DbTable:__init(path, logger, serializer)
     if not path:IsDir() then
-        error("path needs to be a folder: " .. path:GetPath())
+        error("path needs to be a directory: " .. path:GetPath())
     end
 
     if not filesystem.exists(path:GetPath()) then
         filesystem.createDir(path:GetPath(), true)
     end
 
-    self.m_name = name
     self.m_path = path
     self.m_dataChanged = {}
     self.m_logger = logger
@@ -33,7 +30,7 @@ function DbTable:__init(name, path, logger, serializer)
 end
 
 function DbTable:Load()
-    self.m_logger:LogTrace("loading Database Table: " .. self.m_name .. "...")
+    self.m_logger:LogTrace("loading Database Table...")
 
     local parentFolder = self.m_path:GetParentFolderPath()
     if not filesystem.exists(parentFolder:GetPath()) then
@@ -44,7 +41,7 @@ function DbTable:Load()
 end
 
 function DbTable:Save()
-    self.m_logger:LogTrace("saving Database Table: " .. self.m_name .. "...")
+    self.m_logger:LogTrace("saving Database Table...")
 
     for key, value in pairs(self.m_dataChanged) do
         local path = self.m_path:Extend(tostring(key) .. ".dto.json")
@@ -126,6 +123,7 @@ function DbTable:__pairs()
 
         local nextKey = nextFile:match("^(.+)%.dto%.json$")
         local nextValue = self:Get(nextKey)
+        self:ObjectChanged(nextKey, nextValue)
         return nextKey, nextValue
     end
 

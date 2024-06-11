@@ -14,8 +14,8 @@ local DatabaseAccessLayer = {}
 ---@private
 ---@param logger Core.Logger
 function DatabaseAccessLayer:__init(logger)
-    self.m_controllers = DbTable("Controllers", Path("/Database/Controllers/"), logger:subLogger("ControllerTable"))
-    self.m_features = DbTable("Features", Path("/Database/Features/"), logger:subLogger("FeaturesTable"))
+    self.m_controllers = DbTable(Path("/Database/Controllers/"), logger:subLogger("ControllerTable"))
+    self.m_features = DbTable(Path("/Database/Features/"), logger:subLogger("FeaturesTable"))
     self.m_logger = logger
 
     self.m_controllers:Load()

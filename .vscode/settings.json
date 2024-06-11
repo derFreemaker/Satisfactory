@@ -8,7 +8,10 @@
 		"tools/Lua-Bundler",
 		"docu/tools",
 		"**/Sim-Files",
-		"**/Freemaker/src"
+		"**/Freemaker/src",
+		"Tests",
+		"Benchmarks",
+		"Luaunit.lua"
 	],
 	"Lua.workspace.useGitIgnore": false,
 	"Lua.workspace.ignoreSubmodules": false,

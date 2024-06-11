@@ -1,0 +1,10 @@
+{
+  "Name": "TDS",
+  "Namespace": "TDS",
+  "Version": "0.1.0-1",
+  "RequiredPackages": [
+    "Core",
+    "Database"
+  ],
+  "PackageType": "Application"
+}
