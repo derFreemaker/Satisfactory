@@ -7,6 +7,10 @@ local DistributionSystem = require("TDS.Server.DistributionSystem")
 local Main = {}
 
 function Main:Configure()
+    if not Config.StationId then
+        computer.panic("Config.StationId was not set")
+    end
+
     -- add host to host endpoints
 
     self.m_distibutionSystem = DistributionSystem(self.Logger:subLogger("TrainDistributionSystem"))

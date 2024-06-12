@@ -1,12 +1,14 @@
 ---@class Core.CustomReference<T> : object, Core.Reference<T>
 ---@field m_fetchFunc fun() : Engine.Object | nil
----@overload fun() : Core.CustomReference
+---@overload fun(fetchFunc: (fun() : Engine.Object | nil), obj: Engine.Object | nil) : Core.CustomReference
 local CustomReference = {}
 
 ---@private
 ---@param fetchFunc fun() : Engine.Object | nil
-function CustomReference:__init(fetchFunc)
+---@param obj Engine.Object | nil
+function CustomReference:__init(fetchFunc, obj)
     self.m_fetchFunc = fetchFunc
+    self.m_obj = obj
 end
 
 ---@return boolean success
