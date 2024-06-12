@@ -4,9 +4,9 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "Start Code Server",
+			"label": "Run Code Server",
 			"type": "shell",
-			"command": "${workspaceFolder}/Tools/start_Code_Server.bat",
+			"command": "${workspaceFolder}/Tools/run_Code_Server.bat",
 			"args": [
 				"\"${workspaceFolder}/Code-Server\""
 			],
