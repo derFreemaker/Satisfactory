@@ -1,7 +1,7 @@
 return {
     Name = "Database",
     Namespace = "Database",
-    Version = "0.1-95",
+    Version = "0.1-96",
     PackageType = "Library",
     RequiredPackages = {
         "Core"

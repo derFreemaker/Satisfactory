@@ -229,8 +229,8 @@ function Logger:Log(logLevel, ...)
 	end
 
 	if logLevel ~= 10 then
-		message = ({ computer.magicTime() })[2] .. "-" .. computer.millis() .. " [" .. LogLevelToName[logLevel] .. "]: " .. self.Name
-			.. "    " .. message:gsub("\n", "\n    ")
+		message = ({ computer.magicTime() })[2] .. "-" .. computer.millis() .. " [" .. LogLevelToName[logLevel] .. "] "
+			.. "[" .. self.Name .. "]:    " .. message:gsub("\n", "\n    ")
 	else
 		message = message:gsub("\n", "\n    "):gsub("\r", "\n")
 	end
@@ -451,7 +451,7 @@ return class("Core.Task", Task)
 local math = math
 local string = string
 
----@class Core.UUID : object, Core.Json.ISerializable
+---@class Core.UUID : object, Core.Json.Serializable
 ---@field private m_head number[]
 ---@field private m_body number[]
 ---@field private m_tail number[]
@@ -464,23 +464,37 @@ UUID.Static__GeneratedCount = 0
 
 ---@private
 ---@type string
-UUID.Static__TemplateRegex = "....%-....%-........"
+UUID.Static__Template = "xxxx-xxxx-xxxxxxxx"
+local UUID_HEAD_COUNT = 4
+local UUID_BODY_COUNT = 4
+local UUID_TAIL_COUNT = 8
 
----@param amount integer
----@return number[] char
 local function generateRandomChars(amount)
     ---@type number[]
     local chars = {}
 
     for i = 1, amount, 1 do
-        local j = math.random(0, 57)
+        local j = math.random(0, 61)
 
-        if j <= 7 then
+        if j <= 9 then
             chars[i] = j + 48
-        elseif j <= 32 then
-            chars[i] = j + 65
+        elseif j <= 35 then
+            chars[i] = j + 55
         else
-            chars[i] = j + 97
+            chars[i] = j + 61
+        end
+
+        if chars[i] < string.byte("0") then
+            error("lol1")
+        end
+        if chars[i] > string.byte("9") and chars[i] < string.byte("A") then
+            error("lol2")
+        end
+        if chars[i] > string.byte("Z") and chars[i] < string.byte("a") then
+            error("lol3")
+        end
+        if chars[i] > string.byte("z") then
+            error("lol4")
         end
     end
     return chars
@@ -489,14 +503,16 @@ end
 ---@return Core.UUID
 function UUID.Static__New()
     math.randomseed(math.floor(computer.time()) + UUID.Static__GeneratedCount)
-    local head = generateRandomChars(4)
-    local body = generateRandomChars(4)
-    local tail = generateRandomChars(8)
+    local head = generateRandomChars(UUID_HEAD_COUNT)
+    local body = generateRandomChars(UUID_BODY_COUNT)
+    local tail = generateRandomChars(UUID_TAIL_COUNT)
+    UUID.Static__GeneratedCount = UUID.Static__GeneratedCount + 1
     return UUID(head, body, tail)
 end
 
 ---@type Core.UUID
-UUID.Static__Empty = {} --[[@as unknown]]
+---@diagnostic disable-next-line: missing-fields
+UUID.Static__Empty = {}
 
 ---@param str string
 ---@return integer[]
@@ -518,7 +534,7 @@ end
 ---@param str string
 ---@return Core.UUID?
 function UUID.Static__Parse(str)
-    if not str:find(UUID.Static__TemplateRegex) then
+    if not str:find(UUID.Static__Template:gsub("x", "."), 0) then
         return nil
     end
 
@@ -606,17 +622,32 @@ function UUID:__newindex()
 end
 
 ---@private
+---@param other any
+function UUID:__eq(other)
+    do
+        local selfType = typeof(self)
+        local otherType = typeof(other)
+        if not selfType or selfType.Name ~= "Core.UUID"
+            or not otherType or otherType.Name ~= "Core.UUID" then
+            return false
+        end
+    end
+
+    return self:Equals(other)
+end
+
+---@private
 function UUID:__tostring()
     return self:ToString()
 end
 
-class("Core.UUID", UUID, { Inherit = require("Core.Json.ISerializable") })
+class("Core.UUID", UUID, { Inherit = require("Core.Json.Serializable") })
 
 local empty = {}
-local splittedTemplate = Utils.String.Split(UUID.Static__TemplateRegex, "%-")
+local splittedTemplate = Utils.String.Split(UUID.Static__Template, "-")
 for index, splittedTemplatePart in pairs(splittedTemplate) do
     empty[index] = {}
-    for _ in string.gmatch(splittedTemplatePart, ".") do
+    for _ in string.gmatch(splittedTemplatePart, "x") do
         table.insert(empty[index], 48)
     end
 end
@@ -1321,31 +1352,6 @@ end
 return class("Core.FileSystem.Path", Path)
 
 ]==========],
-["Core.Json.ISerializable"] = [==========[
----@alias Core.Json.Serializable.Types
----| string
----| number
----| boolean
----| table
----| Core.Json.ISerializable
-
----@class Core.Json.ISerializable
-local ISerializable = {}
----@return any ...
-function ISerializable:Serialize()
-end
-
-ISerializable.Serialize = Utils.Class.IsInterface
-
----@param ... any
----@return any obj
-function ISerializable:Static__Deserialize(...)
-    return self(...)
-end
-
-return interface("Core.Json.ISerializable", ISerializable)
-
-]==========],
 ["Core.Json.Json"] = [==========[
 --
 -- json.lua
@@ -1739,7 +1745,7 @@ return json
 ]==========],
 ["Core.Json.JsonSerializer"] = [==========[
 local Json = require("Core.Json.Json")
-local ISerializable = require("Core.Json.ISerializable")
+local ISerializable = require("Core.Json.Serializable")
 local NAME_ISERIALIZABLE = nameof(ISerializable)
 
 ---@class Core.Json.Serializer : object
@@ -1748,7 +1754,8 @@ local NAME_ISERIALIZABLE = nameof(ISerializable)
 local JsonSerializer = {}
 
 ---@type Core.Json.Serializer
-JsonSerializer.Static__Serializer = {} --[[@as unknown]]
+---@diagnostic disable-next-line: missing-fields
+JsonSerializer.Static__Serializer = {}
 
 ---@private
 ---@param typeInfos Freemaker.ClassSystem.Type[]?
@@ -1810,7 +1817,7 @@ function JsonSerializer:AddClasses(classes)
 end
 
 ---@private
----@param class Core.Json.ISerializable
+---@param class Core.Json.Serializable
 ---@return table data
 function JsonSerializer:serializeClass(class)
     local typeInfo = typeof(class)
@@ -1857,7 +1864,7 @@ function JsonSerializer:serializeInternal(obj)
     end
 
     if Utils.Class.HasInterface(obj, NAME_ISERIALIZABLE) then
-        ---@cast obj Core.Json.ISerializable
+        ---@cast obj Core.Json.Serializable
         return self:serializeClass(obj)
     end
 
@@ -1902,7 +1909,8 @@ function JsonSerializer:deserializeClass(t)
         error("unable to find typeInfo for class: " .. t.__Type)
     end
 
-    local classBlueprint = typeInfo.Blueprint --[[@as Core.Json.ISerializable]]
+    ---@type Core.Json.Serializable
+    local classBlueprint = typeInfo.Blueprint
 
     if type(data) == "table" then
         for key, value in next, data, nil do
@@ -1970,12 +1978,107 @@ JsonSerializer.Static__Serializer:AddClass(require("Core.Common.UUID"))
 return JsonSerializer
 
 ]==========],
-["Core.References.IReference"] = [==========[
+["Core.Json.Serializable"] = [==========[
+---@alias Core.Json.Serializable.Types
+---| string
+---| number
+---| boolean
+---| table
+---| Core.Json.Serializable
+
+---@class Core.Json.Serializable
+local Serializable = {}
+---@return any ...
+function Serializable:Serialize()
+end
+
+Serializable.Serialize = Utils.Class.IsInterface
+
+---@param ... any
+---@return any obj
+function Serializable:Static__Deserialize(...)
+    return self(...)
+end
+
+return interface("Core.Json.Serializable", Serializable)
+
+]==========],
+["Core.References.CustomReference"] = [==========[
+---@class Core.CustomReference<T> : object, Core.Reference<T>
+---@field m_fetchFunc fun() : Engine.Object | nil
+---@overload fun() : Core.CustomReference
+local CustomReference = {}
+
+---@private
+---@param fetchFunc fun() : Engine.Object | nil
+function CustomReference:__init(fetchFunc)
+    self.m_fetchFunc = fetchFunc
+end
+
+---@return boolean success
+function CustomReference:Fetch()
+    self.m_obj = self.m_fetchFunc()
+    return self.m_obj ~= nil
+end
+
+return class("Core.CustomReference", CustomReference,
+    { Inherit = require("Core.References.Reference") })
+
+]==========],
+["Core.References.PCIDeviceReference"] = [==========[
+---@class Core.PCIDeviceReference<T> : object, Core.Reference<T>
+---@field m_class FIN.PCIDevice
+---@field m_index integer
+---@overload fun(class: FIN.Class, index: integer) : Core.PCIDeviceReference
+local PCIDeviceReference = {}
+
+---@private
+---@param class FIN.PCIDevice
+---@param index integer
+function PCIDeviceReference:__init(class, index)
+    self.m_class = class
+    self.m_index = index
+end
+
+---@return boolean found
+function PCIDeviceReference:Fetch()
+    local obj = computer.getPCIDevices(self.m_class)[self.m_index]
+    self.m_obj = obj
+    return obj ~= nil
+end
+
+return class("Core.PCIDeviceReference", PCIDeviceReference,
+    { Inherit = require("Core.References.Reference") })
+
+]==========],
+["Core.References.ProxyReference"] = [==========[
+---@class Core.ProxyReference<T> : object, Core.Reference<T>
+---@field m_id FIN.UUID
+---@overload fun(id: FIN.UUID) : Core.ProxyReference
+local ProxyReference = {}
+
+---@private
+---@param id FIN.UUID
+function ProxyReference:__init(id)
+    self.m_id = id
+end
+
+function ProxyReference:Fetch()
+    local obj = component.proxy(self.m_id)
+    self.m_obj = obj
+    return obj ~= nil
+end
+
+return class("Core.ProxyReference", ProxyReference,
+    { Inherit = require("Core.References.Reference") })
+
+]==========],
+["Core.References.Reference"] = [==========[
 local Config = require("Core.Config")
 
 ---@generic TReference : Engine.Object
----@class Core.IReference<TReference> : { Get: fun() : TReference }
----@field protected m_obj Engine.Object?
+---@class Core.Reference<TReference> : { Get: fun() : TReference, Check: fun() : boolean }
+---@field protected m_obj Engine.Object | nil
 ---@field m_expires number
 local IReference = {}
 
@@ -2009,54 +2112,6 @@ end
 return interface("Core.IReference", IReference)
 
 ]==========],
-["Core.References.PCIDeviceReference"] = [==========[
----@class Core.PCIDeviceReference<T> : object, Core.IReference<T>
----@field m_class FIN.PCIDevice
----@field m_index integer
----@overload fun(class: FIN.Class, index: integer) : Core.PCIDeviceReference
-local PCIDeviceReference = {}
-
----@private
----@param class FIN.PCIDevice
----@param index integer
-function PCIDeviceReference:__init(class, index)
-    self.m_class = class
-    self.m_index = index
-end
-
----@return boolean found
-function PCIDeviceReference:Fetch()
-    local obj = computer.getPCIDevices(self.m_class)[self.m_index]
-    self.m_obj = obj
-    return obj ~= nil
-end
-
-return class("Core.PCIDeviceReference", PCIDeviceReference,
-    { Inherit = require("Core.References.IReference") })
-
-]==========],
-["Core.References.ProxyReference"] = [==========[
----@class Core.ProxyReference<T> : object, Core.IReference<T>
----@field m_id FIN.UUID
----@overload fun(id: FIN.UUID) : Core.ProxyReference
-local ProxyReference = {}
-
----@private
----@param id FIN.UUID
-function ProxyReference:__init(id)
-    self.m_id = id
-end
-
-function ProxyReference:Fetch()
-    local obj = component.proxy(self.m_id)
-    self.m_obj = obj
-    return obj ~= nil
-end
-
-return class("Core.ProxyReference", ProxyReference,
-    { Inherit = require("Core.References.IReference") })
-
-]==========],
 ["Core.Usage.init"] = [==========[
 return {
     Ports = require("Core.Usage.Usage_Port"),
@@ -2081,8 +2136,11 @@ local EventNameUsage = {
     FactoryControl_Feature_Update = "FactoryControl-Feature-Update",
 
     -- CallbackService
-    CallbackService = "CallbackService",
-    CallbackService_Response = "CallbackService-Response"
+    CallbackService_Request = "CallbackService-Request",
+    CallbackService_Response = "CallbackService-Response",
+
+    -- TDS (TrainDistributionSystem)
+    TDS_Heartbeat = "TrainDistributionSystem",
 }
 
 return EventNameUsage
@@ -2106,6 +2164,12 @@ local PortUsage = {
 	-- Callback
 	CallbackService = 2400,
 	CallbackService_Response = 2401,
+
+	-- TDS (TrainDistributionSystem)
+	TDS = 3200,
+	TDS_Heartbeat = 3201,
+
+
 }
 
 return PortUsage

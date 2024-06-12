@@ -21,7 +21,7 @@ return Events
 ---|"Send"
 ---|"Invoke"
 
----@class Services.Callback.Core.Entities.CallbackInfo : object, Core.Json.ISerializable
+---@class Services.Callback.Core.Entities.CallbackInfo : object, Core.Json.Serializable
 ---@field Id Core.UUID
 ---@field CallbackMethod string
 ---@field CallbackServiceName string
@@ -47,7 +47,7 @@ function CallbackInfo:Serialize()
 end
 
 return class("Services.Callback.Core.Entities.CallbackInfo", CallbackInfo,
-    { Inherit = require("Core.Json.ISerializable") })
+    { Inherit = require("Core.Json.Serializable") })
 
 ]==========],
 ["Services.Callback.Core.Extensions.NetworkContextExtensions"] = [==========[

@@ -3,16 +3,17 @@ local Path = require("Core.FileSystem.Path")
 local ProxyReference = require("Core.References.ProxyReference")
 local DbTable = require("Database.DbTable")
 
-local Request = require("TDS.Entities.Request")
+local Train = require("TDS.Core.Entities.Train")
+local Request = require("TDS.Core.Entities.Request")
 
 NEW_NAME = "NEW_TRAIN"
 
----@class TDS.DistributionSystem : object
+---@class TDS.Server.DistributionSystem : object
 ---@field m_queue TDS.Request[]
 ---@field m_trains Database.DbTable
 ---@field m_requests Database.DbTable
 ---@field m_logger Core.Logger
----@overload fun(logger: Core.Logger) : TDS.DistributionSystem
+---@overload fun(logger: Core.Logger) : TDS.Server.DistributionSystem
 local DistributionSystem = {}
 
 ---@private
@@ -40,7 +41,29 @@ end
 ---@private
 ---@param trainRef Core.Reference<Satis.Train>
 function DistributionSystem:AddTrain(trainRef)
-    
+    --//TODO: maybe works to find out if it has fluid containers but should test out
+    local lastPart = trainRef:Get():getLast()
+    local isFluid = #lastPart:getInventories() == 0
+
+    local train = Train(UUID.Static__New(), 1, isFluid)
+    trainRef:Get():setName(train.Id:ToString())
+
+    self.m_trains:Set(train.Id:ToString(), train)
+end
+
+function DistributionSystem:Check()
+    log("TODO: check for missing stations or trians")
+    log("TODO: add any stations or trains")
+end
+
+function DistributionSystem:Distribute()
+    log("TODO: implement DistributionSystem:Distribute()")
+end
+
+function DistributionSystem:Run()
+    self:Check()
+
+    self:Distribute()
 end
 
 return class("TDS.DistributionSystem", DistributionSystem)

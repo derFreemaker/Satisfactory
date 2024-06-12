@@ -1,8 +1,8 @@
 local Config = require("Core.Config")
 
 ---@generic TReference : Engine.Object
----@class Core.Reference<TReference> : { Get: fun() : TReference }
----@field protected m_obj Engine.Object?
+---@class Core.Reference<TReference> : { Get: fun() : TReference, Check: fun() : boolean }
+---@field protected m_obj Engine.Object | nil
 ---@field m_expires number
 local IReference = {}
 

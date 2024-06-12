@@ -138,44 +138,44 @@ return { EndpointUrlTemplates, EndpointUrlConstructors }
 
 ]==========],
 ["FactoryControl.Core.Entities.Controller.ConnectDto"] = [==========[
----@class FactoryControl.Core.Entities.Controller.ConnectDto : object, Core.Json.ISerializable
+---@class FactoryControl.Core.Entities.Controller.ConnectDto : object, Core.Json.Serializable
 ---@field Name string
----@field IPAddress Net.Core.IPAddress
----@overload fun(name: string, ipAddress: Net.Core.IPAddress) : FactoryControl.Core.Entities.Controller.ConnectDto
+---@field IPAddress Net.IPAddress
+---@overload fun(name: string, ipAddress: Net.IPAddress) : FactoryControl.Core.Entities.Controller.ConnectDto
 local ConnectDto = {}
 
 ---@private
 ---@param name string
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 function ConnectDto:__init(name, ipAddress)
     self.Name = name
     self.IPAddress = ipAddress
 end
 
----@return string name, Net.Core.IPAddress ipAddress
+---@return string name, Net.IPAddress ipAddress
 function ConnectDto:Serialize()
     return self.Name, self.IPAddress
 end
 
 return class("FactoryControl.Core.Entities.Controller.ConnectDto", ConnectDto,
-    { Inherit = require("Core.Json.ISerializable") })
+    { Inherit = require("Core.Json.Serializable") })
 
 ]==========],
 ["FactoryControl.Core.Entities.Controller.ControllerDto"] = [==========[
----@class FactoryControl.Core.Entities.ControllerDto : object, Core.Json.ISerializable
+---@class FactoryControl.Core.Entities.ControllerDto : object, Core.Json.Serializable
 ---@field Id Core.UUID
 ---@field Name string
----@field IPAddress Net.Core.IPAddress
+---@field IPAddress Net.IPAddress
 ---@field Features Core.UUID[]
----@overload fun(id: Core.UUID, name: string, ipAddress: Net.Core.IPAddress, features: Core.UUID[]?) : FactoryControl.Core.Entities.ControllerDto
+---@overload fun(id: Core.UUID, name: string, ipAddress: Net.IPAddress, features: Core.UUID[]?) : FactoryControl.Core.Entities.ControllerDto
 local ControllerDto = {}
 
----@alias FactoryControl.Core.Entities.ControllerDto.Constructor fun(id: Core.UUID, name: string, ipAddress: Net.Core.IPAddress, features: Core.UUID[]?) : FactoryControl.Core.Entities.ControllerDto
+---@alias FactoryControl.Core.Entities.ControllerDto.Constructor fun(id: Core.UUID, name: string, ipAddress: Net.IPAddress, features: Core.UUID[]?) : FactoryControl.Core.Entities.ControllerDto
 
 ---@private
 ---@param id Core.UUID
 ---@param name string
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 ---@param features Core.UUID[]?
 function ControllerDto:__init(id, name, ipAddress, features)
     self.Id = id
@@ -184,26 +184,26 @@ function ControllerDto:__init(id, name, ipAddress, features)
     self.Features = features or {}
 end
 
----@return Core.UUID id, string name, Net.Core.IPAddress ipAddress, Core.UUID[] features
+---@return Core.UUID id, string name, Net.IPAddress ipAddress, Core.UUID[] features
 function ControllerDto:Serialize()
     return self.Id, self.Name, self.IPAddress, self.Features
 end
 
 return class("FactoryControl.Core.Entities.ControllerDto", ControllerDto,
-    { IsAbstract = true, Inherit = require("Core.Json.ISerializable") })
+    { IsAbstract = true, Inherit = require("Core.Json.Serializable") })
 
 ]==========],
 ["FactoryControl.Core.Entities.Controller.CreateDto"] = [==========[
----@class FactoryControl.Core.Entities.Controller.CreateDto : object, Core.Json.ISerializable
+---@class FactoryControl.Core.Entities.Controller.CreateDto : object, Core.Json.Serializable
 ---@field Name string
----@field IPAddress Net.Core.IPAddress
+---@field IPAddress Net.IPAddress
 ---@field Features table<string, FactoryControl.Core.Entities.Controller.FeatureDto>
----@overload fun(name: string, ipAddress: Net.Core.IPAddress, features: table<string, FactoryControl.Core.Entities.Controller.FeatureDto>?) : FactoryControl.Core.Entities.Controller.CreateDto
+---@overload fun(name: string, ipAddress: Net.IPAddress, features: table<string, FactoryControl.Core.Entities.Controller.FeatureDto>?) : FactoryControl.Core.Entities.Controller.CreateDto
 local ControllerDto = {}
 
 ---@private
 ---@param name string
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 ---@param features table<string, FactoryControl.Core.Entities.Controller.FeatureDto>?
 function ControllerDto:__init(name, ipAddress, features)
     self.Name = name
@@ -211,26 +211,26 @@ function ControllerDto:__init(name, ipAddress, features)
     self.Features = features or {}
 end
 
----@return string name, Net.Core.IPAddress ipAddress, table<string, FactoryControl.Core.Entities.Controller.FeatureDto> features
+---@return string name, Net.IPAddress ipAddress, table<string, FactoryControl.Core.Entities.Controller.FeatureDto> features
 function ControllerDto:Serialize()
     return self.Name, self.IPAddress, self.Features
 end
 
 return class("FactoryControl.Core.Entities.Controller.CreateDto", ControllerDto,
-    { Inherit = require("Core.Json.ISerializable") })
+    { Inherit = require("Core.Json.Serializable") })
 
 ]==========],
 ["FactoryControl.Core.Entities.Controller.ModifyDto"] = [==========[
----@class FactoryControl.Core.Entities.Controller.ModifyDto : object, Core.Json.ISerializable
+---@class FactoryControl.Core.Entities.Controller.ModifyDto : object, Core.Json.Serializable
 ---@field Name string
----@field IPAddress Net.Core.IPAddress
+---@field IPAddress Net.IPAddress
 ---@field Features Core.UUID[]
----@overload fun(name: string, ipAddress: Net.Core.IPAddress, features: Core.UUID[]) : FactoryControl.Core.Entities.Controller.ModifyDto
+---@overload fun(name: string, ipAddress: Net.IPAddress, features: Core.UUID[]) : FactoryControl.Core.Entities.Controller.ModifyDto
 local ModifyDto = {}
 
 ---@private
 ---@param name string
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 ---@param features Core.UUID[]
 function ModifyDto:__init(name, ipAddress, features)
     self.Name = name
@@ -238,13 +238,13 @@ function ModifyDto:__init(name, ipAddress, features)
     self.Features = features
 end
 
----@return string name, Net.Core.IPAddress ipAddress, table<Core.UUID, FactoryControl.Core.Entities.Controller.FeatureDto> features
+---@return string name, Net.IPAddress ipAddress, table<Core.UUID, FactoryControl.Core.Entities.Controller.FeatureDto> features
 function ModifyDto:Serialize()
     return self.Name, self.IPAddress, self.Features
 end
 
 return class("FactoryControl.Core.Entities.Controller.ModifyDto", ModifyDto,
-    { Inherit = require("Core.Json.ISerializable") })
+    { Inherit = require("Core.Json.Serializable") })
 
 ]==========],
 ["FactoryControl.Core.Entities.Controller.Feature.Dto"] = [==========[
@@ -254,7 +254,7 @@ return class("FactoryControl.Core.Entities.Controller.ModifyDto", ModifyDto,
 ---|"Radial"
 ---|"Chart"
 
----@class FactoryControl.Core.Entities.Controller.FeatureDto : object, Core.Json.ISerializable
+---@class FactoryControl.Core.Entities.Controller.FeatureDto : object, Core.Json.Serializable
 ---@field Id Core.UUID
 ---@field Name string
 ---@field Type FactoryControl.Core.Entities.Controller.Feature.Type
@@ -283,11 +283,11 @@ end
 FeatureDto.OnUpdate = Utils.Class.IsAbstract
 
 return class("FactoryControl.Core.Entities.Controller.FeatureDto", FeatureDto,
-    { IsAbstract = true, Inherit = require("Core.Json.ISerializable") })
+    { IsAbstract = true, Inherit = require("Core.Json.Serializable") })
 
 ]==========],
 ["FactoryControl.Core.Entities.Controller.Feature.Update"] = [==========[
----@class FactoryControl.Core.Entities.Controller.Feature.Update : object, Core.Json.ISerializable
+---@class FactoryControl.Core.Entities.Controller.Feature.Update : object, Core.Json.Serializable
 ---@field FeatureId Core.UUID
 local Update = {}
 
@@ -300,7 +300,7 @@ function Update:__init(featureId)
 end
 
 return class("FactoryControl.Core.Entities.Controller.Feature.Update", Update,
-    { IsAbstract = true, Inherit = require("Core.Json.ISerializable") })
+    { IsAbstract = true, Inherit = require("Core.Json.Serializable") })
 
 ]==========],
 ["FactoryControl.Core.Entities.Controller.Feature.Button.ButtonDto"] = [==========[

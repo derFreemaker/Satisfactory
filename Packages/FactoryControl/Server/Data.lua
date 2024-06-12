@@ -58,8 +58,9 @@ end
 function Main:Run()
 	self.m_host:Ready()
 
+	local networkClient = self.m_host:GetNetworkClient()
 	while true do
-		self.m_host:GetNetworkClient():BroadCast(
+		networkClient:BroadCast(
 			Usage.Ports.FactoryControl_Heartbeat,
 			Usage.Events.FactoryControl_Heartbeat
 		)
@@ -90,8 +91,8 @@ local DatabaseAccessLayer = {}
 ---@private
 ---@param logger Core.Logger
 function DatabaseAccessLayer:__init(logger)
-    self.m_controllers = DbTable("Controllers", Path("/Database/Controllers/"), logger:subLogger("ControllerTable"))
-    self.m_features = DbTable("Features", Path("/Database/Features/"), logger:subLogger("FeaturesTable"))
+    self.m_controllers = DbTable(Path("/Database/Controllers/"), logger:subLogger("ControllerTable"))
+    self.m_features = DbTable(Path("/Database/Features/"), logger:subLogger("FeaturesTable"))
     self.m_logger = logger
 
     self.m_controllers:Load()
@@ -118,7 +119,6 @@ function DatabaseAccessLayer:CreateController(createController)
     end
 
     self.m_controllers:Set(controller.Id:ToString(), controller)
-    self.m_controllers:Save()
 
     return controller
 end
@@ -126,7 +126,6 @@ end
 ---@param controllerId Core.UUID
 function DatabaseAccessLayer:DeleteController(controllerId)
     self.m_controllers:Delete(controllerId:ToString())
-    self.m_controllers:Save()
 end
 
 ---@param controllerId Core.UUID
@@ -159,15 +158,14 @@ function DatabaseAccessLayer:CreateFeature(feature)
     end
 
     self.m_features:Set(feature.Id:ToString(), feature)
-    self.m_features:Save()
 
     return feature
 end
 
 ---@param featureId Core.UUID
+---@return boolean success
 function DatabaseAccessLayer:DeleteFeature(featureId)
-    self.m_features:Delete(featureId:ToString())
-    self.m_features:Save()
+    return self.m_features:Delete(featureId:ToString())
 end
 
 ---@param featureId Core.UUID
@@ -311,7 +309,7 @@ local FeatureEndpoints = {}
 ---@param apiController Net.Rest.Api.Server.Controller
 ---@param databaseAccessLayer FactoryControl.Server.DatabaseAccessLayer
 ---@param featureService FactoryControl.Server.Services.FeatureService
----@param super fun(endpointLogger: Core.Logger, apiController: Net.Rest.Api.Server.Controller)
+---@param super Net.Rest.Api.Server.EndpointBase.Constructor
 function FeatureEndpoints:__init(super, logger, apiController, databaseAccessLayer, featureService)
     super(logger, apiController)
 
@@ -327,7 +325,7 @@ function FeatureEndpoints:__init(super, logger, apiController, databaseAccessLay
 end
 
 ---@param featureId Core.UUID
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 ---@return Net.Rest.Api.Response response
 function FeatureEndpoints:Watch(featureId, ipAddress)
     self.m_featureService:Watch(featureId, ipAddress)
@@ -335,7 +333,7 @@ function FeatureEndpoints:Watch(featureId, ipAddress)
 end
 
 ---@param featureId Core.UUID
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 ---@return Net.Rest.Api.Response response
 function FeatureEndpoints:Unwatch(featureId, ipAddress)
     self.m_featureService:Unwatch(featureId, ipAddress)
@@ -376,7 +374,7 @@ local Task = require("Core.Common.Task")
 
 ---@class FactoryControl.Server.Services.FeatureService : object
 ---@field OnFeatureInvoked Core.Task<Net.Core.NetworkContext>
----@field private m_watchedFeatures table<string, Net.Core.IPAddress[]>
+---@field private m_watchedFeatures table<string, Net.IPAddress[]>
 ---@field private m_callbackService Services.Callback.Server.CallbackService
 ---@field private m_databaseAccessLayer FactoryControl.Server.DatabaseAccessLayer
 ---@field private m_networkClient Net.Core.NetworkClient
@@ -399,7 +397,7 @@ function FeatureService:__init(callbackService, databaseAccessLayer, networkClie
 end
 
 ---@param featureId Core.UUID
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 function FeatureService:Watch(featureId, ipAddress)
     local ipAddresses = self.m_watchedFeatures[featureId:ToString()]
     if not ipAddresses then
@@ -411,7 +409,7 @@ function FeatureService:Watch(featureId, ipAddress)
 end
 
 ---@param featureId Core.UUID
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 function FeatureService:Unwatch(featureId, ipAddress)
     local ipAddresses = self.m_watchedFeatures[featureId:ToString()]
     if not ipAddresses then

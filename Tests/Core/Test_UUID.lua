@@ -24,4 +24,16 @@ function TestParseUUID()
 	luaunit.assertEquals(testStr, uuidStr)
 end
 
+function TestRadomnessUUID()
+	local uuids = {}
+	for i = 1, 50000, 1 do
+		local uuid = UUID.Static__New()
+		local uuidStr = uuid:ToString()
+		if uuids[uuidStr] then
+			luaunit.fail("already generated uuid: " .. uuid:ToString())
+		end
+		uuids[uuidStr] = true
+	end
+end
+
 os.exit(luaunit.LuaUnit.run())

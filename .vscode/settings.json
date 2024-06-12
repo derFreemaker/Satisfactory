@@ -10,8 +10,7 @@
 		"**/Sim-Files",
 		"**/Freemaker/src",
 		"Tests",
-		"Benchmarks",
-		"Luaunit.lua"
+		"Benchmarks"
 	],
 	"Lua.workspace.useGitIgnore": false,
 	"Lua.workspace.ignoreSubmodules": false,
@@ -38,32 +37,32 @@
 			"letterSpacing": "1.2px"
 		},
 		{
-			"pattern": ".*\\[Trace\\]:.*",
+			"pattern": ".*\\[Trace\\] .*",
 			"foreground": "#969595",
 			"letterSpacing": "1.2px"
 		},
 		{
-			"pattern": ".*\\[Debug\\]:.*",
+			"pattern": ".*\\[Debug\\] .*",
 			"foreground": "#f8a632",
 			"letterSpacing": "1.2px"
 		},
 		{
-			"pattern": ".*\\[Info\\]:.*",
-			"foreground": "#195eff",
+			"pattern": ".*\\[Info\\] .*",
+			"foreground": "#2fdce2",
 			"letterSpacing": "1.2px"
 		},
 		{
-			"pattern": ".*\\[Warning\\]:.*",
+			"pattern": ".*\\[Warning\\] .*",
 			"foreground": "#ffe921",
 			"letterSpacing": "1.2px"
 		},
 		{
-			"pattern": ".*\\[Error\\]:.*",
+			"pattern": ".*\\[Error\\] .*",
 			"foreground": "#ff0000",
 			"letterSpacing": "1.2px"
 		},
 		{
-			"pattern": ".*\\[Fatal\\]:.*",
+			"pattern": ".*\\[Fatal\\] .*",
 			"foreground": "#c400b7",
 			"letterSpacing": "1.2px"
 		},

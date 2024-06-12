@@ -40,7 +40,7 @@ Utils.Class.Extend(NetworkContext, NetworkContextExtensions)
 
 ]==========],
 ["Net.Rest.Api.Core.Request"] = [==========[
----@class Net.Rest.Api.Request : object, Core.Json.ISerializable
+---@class Net.Rest.Api.Request : object, Core.Json.Serializable
 ---@field Method Net.Core.Method
 ---@field Endpoint Net.Rest.Uri
 ---@field Headers table<string, any>
@@ -66,14 +66,14 @@ function Request:Serialize()
 end
 
 return class("Net.Rest.Api.Request", Request,
-    { Inherit = require("Core.Json.ISerializable") })
+    { Inherit = require("Core.Json.Serializable") })
 
 ]==========],
 ["Net.Rest.Api.Core.Response"] = [==========[
 ---@class Net.Rest.Api.Response.Header : table<string, any>
 ---@field Code Net.Core.StatusCodes
 
----@class Net.Rest.Api.Response : object, Core.Json.ISerializable
+---@class Net.Rest.Api.Response : object, Core.Json.Serializable
 ---@field Headers Net.Rest.Api.Response.Header
 ---@field Body any
 ---@field WasSuccessful boolean
@@ -99,7 +99,7 @@ function Response:Serialize()
 end
 
 return class("Net.Rest.Api.Response", Response,
-    { Inherit = require("Core.Json.ISerializable") })
+    { Inherit = require("Core.Json.Serializable") })
 
 ]==========],
 }

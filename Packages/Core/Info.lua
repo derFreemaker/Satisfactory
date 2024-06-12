@@ -1,7 +1,7 @@
 return {
     Name = "Core",
     Namespace = "Core",
-    Version = "0.3.10-173",
+    Version = "0.3.10-175",
     PackageType = "Library",
     ModuleIndex={
         ["Core.Config"] = {
@@ -64,12 +64,6 @@ return {
             IsRunnable = true,
         },
 
-        ["Core.Json.ISerializable"] = {
-            Location = "Core.Json.ISerializable",
-            Namespace = "Core.Json.ISerializable",
-            IsRunnable = true,
-        },
-
         ["Core.Json.Json"] = {
             Location = "Core.Json.Json",
             Namespace = "Core.Json.Json",
@@ -82,9 +76,15 @@ return {
             IsRunnable = true,
         },
 
-        ["Core.References.IReference"] = {
-            Location = "Core.References.IReference",
-            Namespace = "Core.References.IReference",
+        ["Core.Json.Serializable"] = {
+            Location = "Core.Json.Serializable",
+            Namespace = "Core.Json.Serializable",
+            IsRunnable = true,
+        },
+
+        ["Core.References.CustomReference"] = {
+            Location = "Core.References.CustomReference",
+            Namespace = "Core.References.CustomReference",
             IsRunnable = true,
         },
 
@@ -97,6 +97,12 @@ return {
         ["Core.References.ProxyReference"] = {
             Location = "Core.References.ProxyReference",
             Namespace = "Core.References.ProxyReference",
+            IsRunnable = true,
+        },
+
+        ["Core.References.Reference"] = {
+            Location = "Core.References.Reference",
+            Namespace = "Core.References.Reference",
             IsRunnable = true,
         },
 

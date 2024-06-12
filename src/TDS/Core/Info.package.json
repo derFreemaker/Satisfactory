@@ -1,0 +1,9 @@
+{
+  "Name": "TDS.Core",
+  "Namespace": "TDS.Core",
+  "Version": "0.1.0-1",
+  "RequiredPackages": [
+    "Core"
+  ],
+  "PackageType": "Library"
+}

@@ -107,7 +107,7 @@ function CallbackService:__init(name, logger, networkClient)
     self.m_networkClient = networkClient or NetworkClient(logger:subLogger("NetworkClient"))
 
     self.m_networkClient:AddTask(
-        Usage.Events.CallbackService,
+        Usage.Events.CallbackService_Request,
         Usage.Ports.CallbackService,
         Task(function(...)
             self:onCallbackReceived(...)

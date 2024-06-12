@@ -19,9 +19,9 @@ return Events
 
 ]==========],
 ["Net.Core.IPAddress"] = [==========[
----@class Net.Core.IPAddress : object, Core.Json.ISerializable
+---@class Net.IPAddress : object, Core.Json.Serializable
 ---@field private m_address FIN.UUID
----@overload fun(address: string) : Net.Core.IPAddress
+---@overload fun(address: string) : Net.IPAddress
 local IPAddress = {}
 
 ---@private
@@ -43,7 +43,7 @@ function IPAddress:GetAddress()
     return self.m_address
 end
 
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 function IPAddress:Equals(ipAddress)
     return self:GetAddress() == ipAddress:GetAddress()
 end
@@ -68,7 +68,7 @@ end
 --#endregion
 
 return class("Net.Core.IPAddress", IPAddress,
-    { Inherit = require("Core.Json.ISerializable") })
+    { Inherit = require("Core.Json.Serializable") })
 
 ]==========],
 ["Net.Core.Method"] = [==========[
@@ -109,7 +109,7 @@ local IPAddress = require("Net.Core.IPAddress")
 ---|"*"
 
 ---@class Net.Core.NetworkClient : object
----@field private m_iPAddress Net.Core.IPAddress
+---@field private m_iPAddress Net.IPAddress
 ---@field private m_ports table<Net.Core.Port, Net.Core.NetworkPort?>
 ---@field private m_networkCard Adapter.Computer.NetworkCard
 ---@field private m_serializer Core.Json.Serializer
@@ -148,7 +148,7 @@ function NetworkClient:Dispose()
 	Utils.Class.Deconstruct(self)
 end
 
----@return Net.Core.IPAddress
+---@return Net.IPAddress
 function NetworkClient:GetIPAddress()
 	if self.m_iPAddress then
 		return self.m_iPAddress
@@ -311,7 +311,7 @@ function NetworkClient:CloseAll()
 	self.m_logger:LogTrace('closed all Ports')
 end
 
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 ---@param port integer
 ---@param eventName string
 ---@param body any
@@ -349,13 +349,13 @@ local JsonSerializer = require("Core.Json.JsonSerializer")
 local IPaddress = require("Net.Core.IPAddress")
 
 ---@class Net.Core.NetworkContext.Header : table<string, any>
----@field ReturnIPAddress Net.Core.IPAddress
+---@field ReturnIPAddress Net.IPAddress
 ---@field ReturnPort integer
 
 ---@class Net.Core.NetworkContext : object
 ---@field SignalName string
 ---@field SignalSender Engine.Object
----@field SenderIPAddress Net.Core.IPAddress
+---@field SenderIPAddress Net.IPAddress
 ---@field Port integer
 ---@field EventName string
 ---@field Header Net.Core.NetworkContext.Header
@@ -561,7 +561,7 @@ function NetworkPort:ClosePort()
 	end
 end
 
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 ---@param eventName string
 ---@param body any
 ---@param header table<string, any>?
@@ -671,7 +671,7 @@ return StatusCodes
 
 ]==========],
 ["Net.Core.Uri"] = [==========[
----@class Net.Rest.Uri : object, Core.Json.ISerializable
+---@class Net.Rest.Uri : object, Core.Json.Serializable
 ---@field private m_path string
 ---@field private m_query table<string, string>
 ---@overload fun(paht: string, query: table<string, string>) : Net.Rest.Uri
@@ -733,7 +733,7 @@ function Uri:Serialize()
 end
 
 return class("Net.Uri", Uri,
-    { Inherit = require("Core.Json.ISerializable") })
+    { Inherit = require("Core.Json.Serializable") })
 
 ]==========],
 ["Net.Core.Hosting.HostExtensions"] = [==========[

@@ -14,23 +14,37 @@ UUID.Static__GeneratedCount = 0
 
 ---@private
 ---@type string
-UUID.Static__TemplateRegex = "....%-....%-........"
+UUID.Static__Template = "xxxx-xxxx-xxxxxxxx"
+local UUID_HEAD_COUNT = 4
+local UUID_BODY_COUNT = 4
+local UUID_TAIL_COUNT = 8
 
----@param amount integer
----@return number[] char
 local function generateRandomChars(amount)
     ---@type number[]
     local chars = {}
 
     for i = 1, amount, 1 do
-        local j = math.random(0, 57)
+        local j = math.random(0, 61)
 
-        if j <= 7 then
+        if j <= 9 then
             chars[i] = j + 48
-        elseif j <= 32 then
-            chars[i] = j + 65
+        elseif j <= 35 then
+            chars[i] = j + 55
         else
-            chars[i] = j + 97
+            chars[i] = j + 61
+        end
+
+        if chars[i] < string.byte("0") then
+            error("lol1")
+        end
+        if chars[i] > string.byte("9") and chars[i] < string.byte("A") then
+            error("lol2")
+        end
+        if chars[i] > string.byte("Z") and chars[i] < string.byte("a") then
+            error("lol3")
+        end
+        if chars[i] > string.byte("z") then
+            error("lol4")
         end
     end
     return chars
@@ -39,9 +53,10 @@ end
 ---@return Core.UUID
 function UUID.Static__New()
     math.randomseed(math.floor(computer.time()) + UUID.Static__GeneratedCount)
-    local head = generateRandomChars(4)
-    local body = generateRandomChars(4)
-    local tail = generateRandomChars(8)
+    local head = generateRandomChars(UUID_HEAD_COUNT)
+    local body = generateRandomChars(UUID_BODY_COUNT)
+    local tail = generateRandomChars(UUID_TAIL_COUNT)
+    UUID.Static__GeneratedCount = UUID.Static__GeneratedCount + 1
     return UUID(head, body, tail)
 end
 
@@ -69,7 +84,7 @@ end
 ---@param str string
 ---@return Core.UUID?
 function UUID.Static__Parse(str)
-    if not str:find(UUID.Static__TemplateRegex) then
+    if not str:find(UUID.Static__Template:gsub("x", "."), 0) then
         return nil
     end
 
@@ -157,6 +172,21 @@ function UUID:__newindex()
 end
 
 ---@private
+---@param other any
+function UUID:__eq(other)
+    do
+        local selfType = typeof(self)
+        local otherType = typeof(other)
+        if not selfType or selfType.Name ~= "Core.UUID"
+            or not otherType or otherType.Name ~= "Core.UUID" then
+            return false
+        end
+    end
+
+    return self:Equals(other)
+end
+
+---@private
 function UUID:__tostring()
     return self:ToString()
 end
@@ -164,10 +194,10 @@ end
 class("Core.UUID", UUID, { Inherit = require("Core.Json.Serializable") })
 
 local empty = {}
-local splittedTemplate = Utils.String.Split(UUID.Static__TemplateRegex, "%-")
+local splittedTemplate = Utils.String.Split(UUID.Static__Template, "-")
 for index, splittedTemplatePart in pairs(splittedTemplate) do
     empty[index] = {}
-    for _ in string.gmatch(splittedTemplatePart, ".") do
+    for _ in string.gmatch(splittedTemplatePart, "x") do
         table.insert(empty[index], 48)
     end
 end

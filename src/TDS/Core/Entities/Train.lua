@@ -1,8 +1,9 @@
 ---@enum TDS.Entities.Train.State
 local Train_State = {
     None = 0,
-    Idle = 1,
-    Working = 2,
+    Traveling = 1,
+    Idle = 2,
+    Working = 3,
 }
 
 ---@class TDS.Entities.Train : object, Core.Json.Serializable

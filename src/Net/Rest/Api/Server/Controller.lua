@@ -108,7 +108,7 @@ function Controller:AddEndpoint(method, endpointUrl, task)
 
     local endpoint = methodEndpoints[tostring(endpointUrl)]
     if endpoint then
-        self.m_logger:LogWarning("Endpoint already exists: " .. tostring(endpointUrl))
+        self.m_logger:LogWarning("endpoint already exists: " .. tostring(endpointUrl))
         return
     end
 

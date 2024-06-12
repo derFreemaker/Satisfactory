@@ -48,7 +48,7 @@ function Client.Static__WaitForHeartbeat(networkClient)
 end
 
 ---@param networkClient Net.Core.NetworkClient
----@return Net.Core.IPAddress id
+---@return Net.IPAddress id
 function Client.Static__GetServerAddress(networkClient)
 	local netPort = networkClient:GetOrCreateNetworkPort(Usage.Ports.DNS)
 
@@ -67,7 +67,7 @@ function Client.Static__GetServerAddress(networkClient)
 	return IPAddress(response.Body)
 end
 
----@return Net.Core.IPAddress id
+---@return Net.IPAddress id
 function Client:GetOrRequestDNSServerIP()
 	if not self.m_apiClient then
 		local serverIPAddress = Client.Static__GetServerAddress(self.m_networkClient)
@@ -91,7 +91,7 @@ function Client:InternalRequest(method, url, body, headers)
 end
 
 ---@param url string
----@param ipAddress Net.Core.IPAddress
+---@param ipAddress Net.IPAddress
 ---@return boolean success
 function Client:CreateAddress(url, ipAddress)
 	local createAddress = CreateAddress(url, ipAddress)
@@ -173,7 +173,7 @@ function HostExtensions:GetDNSClient()
 end
 
 ---@param url string
----@param ipAddress Net.Core.IPAddress?
+---@param ipAddress Net.IPAddress?
 function HostExtensions:RegisterAddress(url, ipAddress)
     local dnsClient = self:GetDNSClient()
 

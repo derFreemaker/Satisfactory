@@ -1,7 +1,7 @@
 return {
     Name = "Adapter.Pipeline",
     Namespace = "Adapter.Pipeline",
-    Version = "0.1.0-44",
+    Version = "0.1.0-45",
     PackageType = "Library",
     RequiredPackages = {
         "Core"

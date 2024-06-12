@@ -64,15 +64,15 @@ return function(eeprom, curl)
         eeprom = code
     end
 
+    local types = {
+        [classes.InternetCard_C] = { curl }
+    }
+
     ---@generic TPCIDevice : FIN.PCIDevice
     ---@param type TPCIDevice
     ---@return TPCIDevice[]
     ---@diagnostic disable-next-line: duplicate-set-field
     function computer.getPCIDevices(type)
-        if type == classes.InternetCard_C then
-            return { curl }
-        end
-
-        return {}
+        return types[type]
     end
 end

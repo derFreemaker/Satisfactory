@@ -1,7 +1,7 @@
 return {
     Name = "Net.Rest.Api.Core",
     Namespace = "Net.Rest.Api.Core",
-    Version = "0.1.0-3",
+    Version = "0.1.0-4",
     PackageType = "Library",
     RequiredPackages = {
         "Core",
