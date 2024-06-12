@@ -2,9 +2,10 @@ local math = math
 local string = string
 
 ---@class Core.UUID : object, Core.Json.Serializable
----@field private m_head number[]
----@field private m_body number[]
----@field private m_tail number[]
+---@field m_head number[]
+---@field m_body number[]
+---@field m_tail number[]
+---@field m_str string
 ---@overload fun(head: number[] | string, body: number[] | nil, tail: number[] | nil) : Core.UUID
 local UUID = {}
 
@@ -141,6 +142,10 @@ end
 
 ---@return string str
 function UUID:ToString()
+    if self.m_str then
+        return self.m_str
+    end
+
     local str = ""
 
     for _, char in ipairs(self.m_head) do
@@ -158,6 +163,16 @@ function UUID:ToString()
     for _, char in ipairs(self.m_tail) do
         str = str .. string.char(char)
     end
+
+    self:Raw__ModifyBehavior(function(modify)
+        modify.CustomIndexing = false
+    end)
+
+    self.m_str = str
+
+    self:Raw__ModifyBehavior(function(modify)
+        modify.CustomIndexing = true
+    end)
 
     return str
 end
