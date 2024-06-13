@@ -1,6 +1,5 @@
 local UUID = require("Core.Common.UUID")
 local Path = require("Core.FileSystem.Path")
-local CustomReference = require("Core.References.CustomReference")
 local DbTable = require("Database.DbTable")
 
 local Train = require("TDS.Server.Entities.Train")
@@ -38,41 +37,11 @@ function DistributionSystem:AddRequest(requestData)
     return request
 end
 
----@private
----@param trainRef Core.Reference<Satis.Train>
-function DistributionSystem:AddTrain(trainRef)
-    --//TODO: maybe works to find out if it has fluid containers but should test out
-    local lastPart = trainRef:Get():getLast()
-    local isFluid = #lastPart:getInventories() == 0
-
-    local train = Train(UUID.Static__New(), 1, isFluid)
-    trainRef:Get():setName(train.Id:ToString())
-
-    self.m_trains:Set(train.Id:ToString(), train)
-end
-
 ---@param uuidStr string
-local function trainRefFetch(uuidStr)
-    return function()
-        ---@type Satis.TrainPlatform
-        local connectedStation = component.proxy(Config.StationId)
-        if not connectedStation then
-            error("Config.StationId is invalid or was not found")
-        end
-
-        local trains = connectedStation:getTrackGraph():getTrains()
-        for _, train in pairs(trains) do
-            if train:getName() == uuidStr then
-                return train
-            end
-        end
-    end
-end
-
----@param uuidStr string
+---@return fun() : Satis.RailroadStation | nil
 local function stationRefFetch(uuidStr)
     return function()
-        ---@type Satis.TrainPlatform
+        ---@type Satis.RailroadStation
         local connectedStation = component.proxy(Config.StationId)
         if not connectedStation then
             error("Config.StationId is invalid or was not found")
@@ -80,17 +49,15 @@ local function stationRefFetch(uuidStr)
 
         local stations = connectedStation:getTrackGraph():getStations()
         for _, station in pairs(stations) do
-            if station:getName() == uuidStr then
-                return train
+            if station.name == uuidStr then
+                return station
             end
         end
     end
 end
 
 function DistributionSystem:Check()
-    log("TODO: check for missing stations or trians")
-    log("TODO: add any stations or trains")
-
+    --//TODO: check for missing stations or trains
 
     ---@type Satis.TrainPlatform
     local connectedStation = component.proxy(Config.StationId)
@@ -106,20 +73,25 @@ function DistributionSystem:Check()
         end
 
         local uuid = UUID.Static__New()
-        local uuidStr = uuid:ToString()
-        train:setName(uuidStr)
+        train:setName(uuid:ToString())
 
-        local trainRef = CustomReference(trainRefFetch(uuidStr), train)
-        self:AddTrain(trainRef)
+        self.m_trains:Set(uuid:ToString(), Train(uuid, 1))
 
         ::continue::
     end
 
     local stations = trackGraph:getStations()
     for _, station in pairs(stations) do
-        ---@cast station Satis.RailroadStation
-        local uuidStr = 
-        station.name
+        if station.name ~= NEW_NAME then
+            goto continue
+        end
+
+        local uuid = UUID.Static__New()
+        station.name = uuid:ToString()
+
+        --//TODO: add station
+
+        ::continue::
     end
 end
 
