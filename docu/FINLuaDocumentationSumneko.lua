@@ -7634,6 +7634,9 @@ function computer.textNotification(text, playerName) end
 ---@param playerName string?
 function computer.attentionPing(position, playerName) end
 
+--- Media Subsystem
+---@type FIN.FINMediaSubsystem
+computer.media = nil
 
 --- **FicsIt-Networks Lua Lib:** `filesystem`
 ---

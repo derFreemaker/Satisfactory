@@ -1,21 +1,19 @@
 local CustomReference = require("Core.References.CustomReference")
 
----@enum TDS.Entities.Train.State
-local Train_State = {
-    None = 0,
-    Traveling = 1,
-    Idle = 2,
-    Working = 3,
-}
+---@alias TDS.Server.Entities.Train.State
+---|"None"
+---|"Traveling"
+---|"Idle"
+---|"Working"
 
----@class TDS.Entities.Train : object, Core.Json.Serializable
+---@class TDS.Server.Entities.Train : object, Core.Json.Serializable
 ---@field Id Core.UUID
----@field State TDS.Entities.Train.State
----@overload fun(id: Core.UUID, state: TDS.Entities.Train.State) : TDS.Entities.Train
+---@field State TDS.Server.Entities.Train.State
+---@overload fun(id: Core.UUID, state: TDS.Server.Entities.Train.State) : TDS.Server.Entities.Train
 local Train = {}
 
 ---@param id Core.UUID
----@param state TDS.Entities.Train.State
+---@param state TDS.Server.Entities.Train.State
 function Train:__init(id, state)
     self.Id = id
     self.State = state
