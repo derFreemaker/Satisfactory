@@ -1,7 +1,7 @@
 local Config = require("Core.Config")
 
----@generic TReference : Engine.Object
----@class Core.Reference<TReference> : { Get: fun() : TReference, Check: fun() : boolean }
+---@generic T : Engine.Object
+---@class Core.Reference<T> : { Get: (fun() : T), IsValid: (fun() : boolean) }
 ---@field protected m_obj Engine.Object | nil
 ---@field m_expires number
 local IReference = {}
@@ -25,12 +25,11 @@ end
 function IReference:Fetch()
     return false
 end
-
 IReference.Fetch = Utils.Class.IsInterface
 
 ---@return boolean isValid
-function IReference:Check()
+function IReference:IsValid()
     return self:Get() == nil
 end
 
-return interface("Core.IReference", IReference)
+return interface("Core.Reference", IReference)

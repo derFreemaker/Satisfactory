@@ -1,7 +1,9 @@
 local JsonSerializer = require("Core.Json.JsonSerializer")
 local File = require("Core.FileSystem.File")
 
----@class Database.DbTable<T> : object
+---@generic TKey : string | integer
+---@generic TValue : Core.Json.Serializable
+---@class Database.DbTable<TKey, TValue> : object, { Load: (fun(self: Database.DbTable<TKey, TValue>)), Save: (fun(self: Database.DbTable<TKey, TValue>)), Set: (fun(self: Database.DbTable<TKey, TValue>, key: TKey, value: TValue)), Delete: (fun(self: Database.DbTable<TKey, TValue>, key: TKey) : boolean), Get: (fun(self: Database.DbTable<TKey, TValue>, key: TKey) : TValue) }
 ---@field m_path Core.FileSystem.Path
 ---@field m_dataChanged table<string | number, any>
 ---@field m_logger Core.Logger
