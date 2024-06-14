@@ -1,11 +1,21 @@
 error("I don't know what your misson is. But is file is not meant to be executed in any way. It's a meta file.")
 ---@meta
 ---@diagnostic disable
+
+---@class FIN.classes
+local classes = {}
+
+---@class FIN.structs
+local structs = {}
+
 do
 
 --- The base class of every object.
 ---@class Engine.Object
 local Object
+
+---@class Engine.Object.classes : Engine.Object
+classes.Object = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -75,6 +85,9 @@ function Object:isA(parent) end
 ---@class Engine.ActorComponent : Engine.Object
 local ActorComponent
 
+---@class Engine.ActorComponent.classes : Engine.ActorComponent
+classes.ActorComponent = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -85,6 +98,9 @@ ActorComponent.owner = nil
 --- This is the base class of all things that can exist within the world by them self.
 ---@class Engine.Actor : Engine.Object
 local Actor
+
+---@class Engine.Actor.classes : Engine.Actor
+classes.Actor = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -154,6 +170,9 @@ function Actor:getComponents(componentType) end
 ---@class Satis.ItemType : Engine.Object
 local ItemType
 
+---@class Satis.ItemType.classes : Satis.ItemType
+classes.ItemType = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -221,6 +240,9 @@ ItemType.fluidColor = nil
 ---@class Satis.Buildable : Engine.Actor
 local Buildable
 
+---@class Satis.Buildable.classes : Satis.Buildable
+classes.Buildable = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -260,17 +282,29 @@ Buildable.ProductionChanged = { isVarArgs = false }
 ---@class Satis.FGBuildableConveyorAttachment : Satis.Buildable
 local FGBuildableConveyorAttachment
 
+---@class Satis.FGBuildableConveyorAttachment.classes : Satis.FGBuildableConveyorAttachment
+classes.FGBuildableConveyorAttachment = nil
+
 --- 
 ---@class Satis.FGBuildableAttachmentMerger : Satis.FGBuildableConveyorAttachment
 local FGBuildableAttachmentMerger
+
+---@class Satis.FGBuildableAttachmentMerger.classes : Satis.FGBuildableAttachmentMerger
+classes.FGBuildableAttachmentMerger = nil
 
 --- 
 ---@class Satis.FGBuildableAttachmentSplitter : Satis.FGBuildableConveyorAttachment
 local FGBuildableAttachmentSplitter
 
+---@class Satis.FGBuildableAttachmentSplitter.classes : Satis.FGBuildableAttachmentSplitter
+classes.FGBuildableAttachmentSplitter = nil
+
 --- The base class of most machines you can build.
 ---@class Satis.Factory : Satis.Buildable
 local Factory
+
+---@class Satis.Factory.classes : Satis.Factory
+classes.Factory = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -330,6 +364,9 @@ Factory.potential = nil
 ---@class Satis.Manufacturer : Satis.Factory
 local Manufacturer
 
+---@class Satis.Manufacturer.classes : Satis.Manufacturer
+classes.Manufacturer = nil
+
 --- Returns the currently set recipe of the manufacturer.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -369,37 +406,64 @@ function Manufacturer:getOutputInv() end
 ---@class Satis.FGBuildableAutomatedWorkBench : Satis.Manufacturer
 local FGBuildableAutomatedWorkBench
 
+---@class Satis.FGBuildableAutomatedWorkBench.classes : Satis.FGBuildableAutomatedWorkBench
+classes.FGBuildableAutomatedWorkBench = nil
+
 --- 
 ---@class Satis.FGBuildableFactoryBuilding : Satis.Buildable
 local FGBuildableFactoryBuilding
+
+---@class Satis.FGBuildableFactoryBuilding.classes : Satis.FGBuildableFactoryBuilding
+classes.FGBuildableFactoryBuilding = nil
 
 --- 
 ---@class Satis.FGBuildableBeam : Satis.FGBuildableFactoryBuilding
 local FGBuildableBeam
 
+---@class Satis.FGBuildableBeam.classes : Satis.FGBuildableBeam
+classes.FGBuildableBeam = nil
+
 --- 
 ---@class Satis.FGBuildableBeamLightweight : Satis.FGBuildableBeam
 local FGBuildableBeamLightweight
+
+---@class Satis.FGBuildableBeamLightweight.classes : Satis.FGBuildableBeamLightweight
+classes.FGBuildableBeamLightweight = nil
 
 --- 
 ---@class Satis.FGBuildableBlueprintDesigner : Satis.Buildable
 local FGBuildableBlueprintDesigner
 
+---@class Satis.FGBuildableBlueprintDesigner.classes : Satis.FGBuildableBlueprintDesigner
+classes.FGBuildableBlueprintDesigner = nil
+
 --- 
 ---@class Satis.FGBuildableCalendar : Satis.Buildable
 local FGBuildableCalendar
+
+---@class Satis.FGBuildableCalendar.classes : Satis.FGBuildableCalendar
+classes.FGBuildableCalendar = nil
 
 --- 
 ---@class Satis.FGBuildableCheatFluidSink : Satis.Factory
 local FGBuildableCheatFluidSink
 
+---@class Satis.FGBuildableCheatFluidSink.classes : Satis.FGBuildableCheatFluidSink
+classes.FGBuildableCheatFluidSink = nil
+
 --- 
 ---@class Satis.FGBuildableCheatFluidSpawner : Satis.Factory
 local FGBuildableCheatFluidSpawner
 
+---@class Satis.FGBuildableCheatFluidSpawner.classes : Satis.FGBuildableCheatFluidSpawner
+classes.FGBuildableCheatFluidSpawner = nil
+
 --- A building that can connect two circuit networks together.
 ---@class Satis.CircuitBridge : Satis.Buildable
 local CircuitBridge
+
+---@class Satis.CircuitBridge.classes : Satis.CircuitBridge
+classes.CircuitBridge = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -419,6 +483,9 @@ CircuitBridge.isBridgeActive = nil
 ---@class Satis.CircuitSwitch : Satis.CircuitBridge
 local CircuitSwitch
 
+---@class Satis.CircuitSwitch.classes : Satis.CircuitSwitch
+classes.CircuitSwitch = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Read Only - The value of this property can not be changed by code.
@@ -435,33 +502,57 @@ function CircuitSwitch:setIsSwitchOn(state) end
 ---@class Satis.FGBuildableControlPanelHost : Satis.CircuitBridge
 local FGBuildableControlPanelHost
 
+---@class Satis.FGBuildableControlPanelHost.classes : Satis.FGBuildableControlPanelHost
+classes.FGBuildableControlPanelHost = nil
+
 --- 
 ---@class Satis.FGBuildableConveyorAttachmentLightweight : Satis.FGBuildableConveyorAttachment
 local FGBuildableConveyorAttachmentLightweight
+
+---@class Satis.FGBuildableConveyorAttachmentLightweight.classes : Satis.FGBuildableConveyorAttachmentLightweight
+classes.FGBuildableConveyorAttachmentLightweight = nil
 
 --- 
 ---@class Satis.FGBuildableConveyorBase : Satis.Buildable
 local FGBuildableConveyorBase
 
+---@class Satis.FGBuildableConveyorBase.classes : Satis.FGBuildableConveyorBase
+classes.FGBuildableConveyorBase = nil
+
 --- 
 ---@class Satis.FGBuildableConveyorBelt : Satis.FGBuildableConveyorBase
 local FGBuildableConveyorBelt
+
+---@class Satis.FGBuildableConveyorBelt.classes : Satis.FGBuildableConveyorBelt
+classes.FGBuildableConveyorBelt = nil
 
 --- 
 ---@class Satis.FGBuildableConveyorLift : Satis.FGBuildableConveyorBase
 local FGBuildableConveyorLift
 
+---@class Satis.FGBuildableConveyorLift.classes : Satis.FGBuildableConveyorLift
+classes.FGBuildableConveyorLift = nil
+
 --- 
 ---@class Satis.FGBuildableCornerWall : Satis.FGBuildableFactoryBuilding
 local FGBuildableCornerWall
+
+---@class Satis.FGBuildableCornerWall.classes : Satis.FGBuildableCornerWall
+classes.FGBuildableCornerWall = nil
 
 --- 
 ---@class Satis.FGBuildableDecor : Satis.Buildable
 local FGBuildableDecor
 
+---@class Satis.FGBuildableDecor.classes : Satis.FGBuildableDecor
+classes.FGBuildableDecor = nil
+
 --- A docking station for wheeled vehicles to transfer cargo.
 ---@class Satis.DockingStation : Satis.Factory
 local DockingStation
+
+---@class Satis.DockingStation.classes : Satis.DockingStation
+classes.DockingStation = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -507,9 +598,15 @@ function DockingStation:undock() end
 ---@class Satis.FGBuildableWall : Satis.FGBuildableFactoryBuilding
 local FGBuildableWall
 
+---@class Satis.FGBuildableWall.classes : Satis.FGBuildableWall
+classes.FGBuildableWall = nil
+
 --- The base class of all doors.
 ---@class Satis.Door : Satis.FGBuildableWall
 local Door
+
+---@class Satis.Door.classes : Satis.Door
+classes.Door = nil
 
 --- Returns the Door Mode/Configuration.<br>
 --- 0 = Automatic<br>
@@ -534,17 +631,29 @@ function Door:setConfiguration(configuration) end
 ---@class Satis.FGBuildableDroneStation : Satis.Factory
 local FGBuildableDroneStation
 
+---@class Satis.FGBuildableDroneStation.classes : Satis.FGBuildableDroneStation
+classes.FGBuildableDroneStation = nil
+
 --- 
 ---@class Satis.FGBuildableFactoryBuildingLightweight : Satis.FGBuildableFactoryBuilding
 local FGBuildableFactoryBuildingLightweight
+
+---@class Satis.FGBuildableFactoryBuildingLightweight.classes : Satis.FGBuildableFactoryBuildingLightweight
+classes.FGBuildableFactoryBuildingLightweight = nil
 
 --- 
 ---@class Satis.FGBuildableFactorySimpleProducer : Satis.Factory
 local FGBuildableFactorySimpleProducer
 
+---@class Satis.FGBuildableFactorySimpleProducer.classes : Satis.FGBuildableFactorySimpleProducer
+classes.FGBuildableFactorySimpleProducer = nil
+
 --- The base class for all light you can build.
 ---@class Satis.LightSource : Satis.Buildable
 local LightSource
+
+---@class Satis.LightSource.classes : Satis.LightSource
+classes.LightSource = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -589,61 +698,106 @@ function LightSource:setColorFromSlot(slot, color) end
 ---@class Satis.FGBuildableFloodlight : Satis.LightSource
 local FGBuildableFloodlight
 
+---@class Satis.FGBuildableFloodlight.classes : Satis.FGBuildableFloodlight
+classes.FGBuildableFloodlight = nil
+
 --- 
 ---@class Satis.FGBuildableFoundation : Satis.FGBuildableFactoryBuilding
 local FGBuildableFoundation
+
+---@class Satis.FGBuildableFoundation.classes : Satis.FGBuildableFoundation
+classes.FGBuildableFoundation = nil
 
 --- 
 ---@class Satis.FGBuildableFoundationLightweight : Satis.FGBuildableFoundation
 local FGBuildableFoundationLightweight
 
+---@class Satis.FGBuildableFoundationLightweight.classes : Satis.FGBuildableFoundationLightweight
+classes.FGBuildableFoundationLightweight = nil
+
 --- 
 ---@class Satis.FGBuildableResourceExtractorBase : Satis.Factory
 local FGBuildableResourceExtractorBase
+
+---@class Satis.FGBuildableResourceExtractorBase.classes : Satis.FGBuildableResourceExtractorBase
+classes.FGBuildableResourceExtractorBase = nil
 
 --- 
 ---@class Satis.FGBuildableFrackingActivator : Satis.FGBuildableResourceExtractorBase
 local FGBuildableFrackingActivator
 
+---@class Satis.FGBuildableFrackingActivator.classes : Satis.FGBuildableFrackingActivator
+classes.FGBuildableFrackingActivator = nil
+
 --- 
 ---@class Satis.FGBuildableResourceExtractor : Satis.FGBuildableResourceExtractorBase
 local FGBuildableResourceExtractor
+
+---@class Satis.FGBuildableResourceExtractor.classes : Satis.FGBuildableResourceExtractor
+classes.FGBuildableResourceExtractor = nil
 
 --- 
 ---@class Satis.FGBuildableFrackingExtractor : Satis.FGBuildableResourceExtractor
 local FGBuildableFrackingExtractor
 
+---@class Satis.FGBuildableFrackingExtractor.classes : Satis.FGBuildableFrackingExtractor
+classes.FGBuildableFrackingExtractor = nil
+
 --- 
 ---@class Satis.FGBuildableGenerator : Satis.Factory
 local FGBuildableGenerator
+
+---@class Satis.FGBuildableGenerator.classes : Satis.FGBuildableGenerator
+classes.FGBuildableGenerator = nil
 
 --- 
 ---@class Satis.FGBuildableGeneratorFuel : Satis.FGBuildableGenerator
 local FGBuildableGeneratorFuel
 
+---@class Satis.FGBuildableGeneratorFuel.classes : Satis.FGBuildableGeneratorFuel
+classes.FGBuildableGeneratorFuel = nil
+
 --- 
 ---@class Satis.FGBuildableGeneratorGeoThermal : Satis.FGBuildableGenerator
 local FGBuildableGeneratorGeoThermal
+
+---@class Satis.FGBuildableGeneratorGeoThermal.classes : Satis.FGBuildableGeneratorGeoThermal
+classes.FGBuildableGeneratorGeoThermal = nil
 
 --- 
 ---@class Satis.FGBuildableGeneratorNuclear : Satis.FGBuildableGeneratorFuel
 local FGBuildableGeneratorNuclear
 
+---@class Satis.FGBuildableGeneratorNuclear.classes : Satis.FGBuildableGeneratorNuclear
+classes.FGBuildableGeneratorNuclear = nil
+
 --- 
 ---@class Satis.FGBuildableHubTerminal : Satis.Buildable
 local FGBuildableHubTerminal
+
+---@class Satis.FGBuildableHubTerminal.classes : Satis.FGBuildableHubTerminal
+classes.FGBuildableHubTerminal = nil
 
 --- 
 ---@class Satis.FGBuildableJumppad : Satis.Factory
 local FGBuildableJumppad
 
+---@class Satis.FGBuildableJumppad.classes : Satis.FGBuildableJumppad
+classes.FGBuildableJumppad = nil
+
 --- 
 ---@class Satis.FGBuildableLadder : Satis.Buildable
 local FGBuildableLadder
 
+---@class Satis.FGBuildableLadder.classes : Satis.FGBuildableLadder
+classes.FGBuildableLadder = nil
+
 --- A control panel to configure multiple lights at once.
 ---@class Satis.LightsControlPanel : Satis.FGBuildableControlPanelHost
 local LightsControlPanel
+
+---@class Satis.LightsControlPanel.classes : Satis.LightsControlPanel
+classes.LightsControlPanel = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -680,69 +834,120 @@ function LightsControlPanel:setColorFromSlot(slot, color) end
 ---@class Satis.FGBuildableMAM : Satis.Buildable
 local FGBuildableMAM
 
+---@class Satis.FGBuildableMAM.classes : Satis.FGBuildableMAM
+classes.FGBuildableMAM = nil
+
 --- 
 ---@class Satis.FGBuildableManufacturerVariablePower : Satis.Manufacturer
 local FGBuildableManufacturerVariablePower
+
+---@class Satis.FGBuildableManufacturerVariablePower.classes : Satis.FGBuildableManufacturerVariablePower
+classes.FGBuildableManufacturerVariablePower = nil
 
 --- 
 ---@class Satis.FGBuildablePassthroughBase : Satis.Buildable
 local FGBuildablePassthroughBase
 
+---@class Satis.FGBuildablePassthroughBase.classes : Satis.FGBuildablePassthroughBase
+classes.FGBuildablePassthroughBase = nil
+
 --- 
 ---@class Satis.FGBuildablePassthrough : Satis.FGBuildablePassthroughBase
 local FGBuildablePassthrough
+
+---@class Satis.FGBuildablePassthrough.classes : Satis.FGBuildablePassthrough
+classes.FGBuildablePassthrough = nil
 
 --- 
 ---@class Satis.FGBuildablePassthroughPipeHyper : Satis.FGBuildablePassthroughBase
 local FGBuildablePassthroughPipeHyper
 
+---@class Satis.FGBuildablePassthroughPipeHyper.classes : Satis.FGBuildablePassthroughPipeHyper
+classes.FGBuildablePassthroughPipeHyper = nil
+
 --- 
 ---@class Satis.FGBuildablePillar : Satis.FGBuildableFactoryBuilding
 local FGBuildablePillar
+
+---@class Satis.FGBuildablePillar.classes : Satis.FGBuildablePillar
+classes.FGBuildablePillar = nil
 
 --- 
 ---@class Satis.FGBuildablePillarLightweight : Satis.FGBuildablePillar
 local FGBuildablePillarLightweight
 
+---@class Satis.FGBuildablePillarLightweight.classes : Satis.FGBuildablePillarLightweight
+classes.FGBuildablePillarLightweight = nil
+
 --- 
 ---@class Satis.FGBuildablePipeBase : Satis.Buildable
 local FGBuildablePipeBase
+
+---@class Satis.FGBuildablePipeBase.classes : Satis.FGBuildablePipeBase
+classes.FGBuildablePipeBase = nil
 
 --- A hypertube pipe
 ---@class Satis.BuildablePipeHyper : Satis.FGBuildablePipeBase
 local BuildablePipeHyper
 
+---@class Satis.BuildablePipeHyper.classes : Satis.BuildablePipeHyper
+classes.BuildablePipeHyper = nil
+
 --- 
 ---@class Satis.FGBuildablePipeHyperAttachment : Satis.Factory
 local FGBuildablePipeHyperAttachment
+
+---@class Satis.FGBuildablePipeHyperAttachment.classes : Satis.FGBuildablePipeHyperAttachment
+classes.FGBuildablePipeHyperAttachment = nil
 
 --- 
 ---@class Satis.FGBuildablePipeHyperBooster : Satis.FGBuildablePipeHyperAttachment
 local FGBuildablePipeHyperBooster
 
+---@class Satis.FGBuildablePipeHyperBooster.classes : Satis.FGBuildablePipeHyperBooster
+classes.FGBuildablePipeHyperBooster = nil
+
 --- 
 ---@class Satis.FGBuildablePipeHyperJunction : Satis.FGBuildablePipeHyperAttachment
 local FGBuildablePipeHyperJunction
+
+---@class Satis.FGBuildablePipeHyperJunction.classes : Satis.FGBuildablePipeHyperJunction
+classes.FGBuildablePipeHyperJunction = nil
 
 --- 
 ---@class Satis.FGBuildablePipeline : Satis.FGBuildablePipeBase
 local FGBuildablePipeline
 
+---@class Satis.FGBuildablePipeline.classes : Satis.FGBuildablePipeline
+classes.FGBuildablePipeline = nil
+
 --- 
 ---@class Satis.FGBuildablePipelineAttachment : Satis.Factory
 local FGBuildablePipelineAttachment
+
+---@class Satis.FGBuildablePipelineAttachment.classes : Satis.FGBuildablePipelineAttachment
+classes.FGBuildablePipelineAttachment = nil
 
 --- 
 ---@class Satis.FGBuildablePipelineFlowIndicator : Satis.Buildable
 local FGBuildablePipelineFlowIndicator
 
+---@class Satis.FGBuildablePipelineFlowIndicator.classes : Satis.FGBuildablePipelineFlowIndicator
+classes.FGBuildablePipelineFlowIndicator = nil
+
 --- 
 ---@class Satis.FGBuildablePipelineJunction : Satis.FGBuildablePipelineAttachment
 local FGBuildablePipelineJunction
 
+---@class Satis.FGBuildablePipelineJunction.classes : Satis.FGBuildablePipelineJunction
+classes.FGBuildablePipelineJunction = nil
+
 --- A building that can pump fluids to a higher level within a pipeline.
 ---@class Satis.PipelinePump : Satis.FGBuildablePipelineAttachment
 local PipelinePump
+
+---@class Satis.PipelinePump.classes : Satis.PipelinePump
+classes.PipelinePump = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -810,21 +1015,36 @@ PipelinePump.flowPct = nil
 ---@class Satis.FGBuildablePoleBase : Satis.Buildable
 local FGBuildablePoleBase
 
+---@class Satis.FGBuildablePoleBase.classes : Satis.FGBuildablePoleBase
+classes.FGBuildablePoleBase = nil
+
 --- 
 ---@class Satis.FGBuildablePipelineSupport : Satis.FGBuildablePoleBase
 local FGBuildablePipelineSupport
+
+---@class Satis.FGBuildablePipelineSupport.classes : Satis.FGBuildablePipelineSupport
+classes.FGBuildablePipelineSupport = nil
 
 --- 
 ---@class Satis.FGBuildablePipePart : Satis.Factory
 local FGBuildablePipePart
 
+---@class Satis.FGBuildablePipePart.classes : Satis.FGBuildablePipePart
+classes.FGBuildablePipePart = nil
+
 --- 
 ---@class Satis.FGBuildablePipeHyperPart : Satis.FGBuildablePipePart
 local FGBuildablePipeHyperPart
 
+---@class Satis.FGBuildablePipeHyperPart.classes : Satis.FGBuildablePipeHyperPart
+classes.FGBuildablePipeHyperPart = nil
+
 --- The base class for all fluid tanks.
 ---@class Satis.PipeReservoir : Satis.Factory
 local PipeReservoir
+
+---@class Satis.PipeReservoir.classes : Satis.PipeReservoir
+classes.PipeReservoir = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -878,6 +1098,9 @@ function PipeReservoir:getFluidType() end
 ---@class Satis.SignBase : Satis.Buildable
 local SignBase
 
+---@class Satis.SignBase.classes : Satis.SignBase
+classes.SignBase = nil
+
 --- Returns the sign type descriptor
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -889,21 +1112,36 @@ function SignBase:getSignType() end
 ---@class Satis.FGBuildablePixelSign : Satis.SignBase
 local FGBuildablePixelSign
 
+---@class Satis.FGBuildablePixelSign.classes : Satis.FGBuildablePixelSign
+classes.FGBuildablePixelSign = nil
+
 --- 
 ---@class Satis.FGBuildablePole : Satis.FGBuildablePoleBase
 local FGBuildablePole
+
+---@class Satis.FGBuildablePole.classes : Satis.FGBuildablePole
+classes.FGBuildablePole = nil
 
 --- 
 ---@class Satis.FGBuildablePoleLightweight : Satis.FGBuildablePole
 local FGBuildablePoleLightweight
 
+---@class Satis.FGBuildablePoleLightweight.classes : Satis.FGBuildablePoleLightweight
+classes.FGBuildablePoleLightweight = nil
+
 --- 
 ---@class Satis.FGBuildablePowerPole : Satis.Buildable
 local FGBuildablePowerPole
 
+---@class Satis.FGBuildablePowerPole.classes : Satis.FGBuildablePowerPole
+classes.FGBuildablePowerPole = nil
+
 --- A building that can store power for later usage.
 ---@class Satis.PowerStorage : Satis.Factory
 local PowerStorage
+
+---@class Satis.PowerStorage.classes : Satis.PowerStorage
+classes.PowerStorage = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -972,9 +1210,15 @@ PowerStorage.batteryMaxIndicatorLevel = nil
 ---@class Satis.FGBuildablePowerTower : Satis.Buildable
 local FGBuildablePowerTower
 
+---@class Satis.FGBuildablePowerTower.classes : Satis.FGBuildablePowerTower
+classes.FGBuildablePowerTower = nil
+
 --- A circuit power switch that can be activated and deactivated based on a priority to prevent a full factory power shutdown.
 ---@class Satis.CircuitSwitchPriority : Satis.CircuitSwitch
 local CircuitSwitchPriority
+
+---@class Satis.CircuitSwitchPriority.classes : Satis.CircuitSwitchPriority
+classes.CircuitSwitchPriority = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -986,13 +1230,22 @@ CircuitSwitchPriority.priority = nil
 ---@class Satis.FGBuildableRadarTower : Satis.Factory
 local FGBuildableRadarTower
 
+---@class Satis.FGBuildableRadarTower.classes : Satis.FGBuildableRadarTower
+classes.FGBuildableRadarTower = nil
+
 --- 
 ---@class Satis.FGBuildableRailroadBridge : Satis.Buildable
 local FGBuildableRailroadBridge
 
+---@class Satis.FGBuildableRailroadBridge.classes : Satis.FGBuildableRailroadBridge
+classes.FGBuildableRailroadBridge = nil
+
 --- A train signal to control trains on a track.
 ---@class Satis.RailroadSignal : Satis.Buildable
 local RailroadSignal
+
+---@class Satis.RailroadSignal.classes : Satis.RailroadSignal
+classes.RailroadSignal = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -1082,6 +1335,9 @@ RailroadSignal.ValidationChanged = { isVarArgs = false }
 ---@class Satis.TrainPlatform : Satis.Factory
 local TrainPlatform
 
+---@class Satis.TrainPlatform.classes : Satis.TrainPlatform
+classes.TrainPlatform = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -1145,6 +1401,9 @@ function TrainPlatform:getDockedLocomotive() end
 ---@class Satis.RailroadStation : Satis.TrainPlatform
 local RailroadStation
 
+---@class Satis.RailroadStation.classes : Satis.RailroadStation
+classes.RailroadStation = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -1200,6 +1459,9 @@ RailroadStation.CancelDocking = { isVarArgs = false }
 ---@class Satis.RailroadSwitchControl : Satis.Factory
 local RailroadSwitchControl
 
+---@class Satis.RailroadSwitchControl.classes : Satis.RailroadSwitchControl
+classes.RailroadSwitchControl = nil
+
 --- Toggles the railroad switch like if you interact with it.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -1223,6 +1485,9 @@ function RailroadSwitchControl:getControlledConnection() end
 --- A peice of railroad track over which trains can drive.
 ---@class Satis.RailroadTrack : Satis.Buildable
 local RailroadTrack
+
+---@class Satis.RailroadTrack.classes : Satis.RailroadTrack
+classes.RailroadTrack = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -1313,9 +1578,15 @@ RailroadTrack.VehicleExit = { isVarArgs = false }
 ---@class Satis.FGBuildableRamp : Satis.FGBuildableFoundation
 local FGBuildableRamp
 
+---@class Satis.FGBuildableRamp.classes : Satis.FGBuildableRamp
+classes.FGBuildableRamp = nil
+
 --- The resource sink, also known a A.W.E.S.O.M.E Sink
 ---@class Satis.ResourceSink : Satis.Factory
 local ResourceSink
+
+---@class Satis.ResourceSink.classes : Satis.ResourceSink
+classes.ResourceSink = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -1349,45 +1620,78 @@ ResourceSink.couponProgress = nil
 ---@class Satis.FGBuildableResourceSinkShop : Satis.Factory
 local FGBuildableResourceSinkShop
 
+---@class Satis.FGBuildableResourceSinkShop.classes : Satis.FGBuildableResourceSinkShop
+classes.FGBuildableResourceSinkShop = nil
+
 --- 
 ---@class Satis.FGBuildableRoad : Satis.Buildable
 local FGBuildableRoad
+
+---@class Satis.FGBuildableRoad.classes : Satis.FGBuildableRoad
+classes.FGBuildableRoad = nil
 
 --- 
 ---@class Satis.FGBuildableSignSupport : Satis.FGBuildablePoleBase
 local FGBuildableSignSupport
 
+---@class Satis.FGBuildableSignSupport.classes : Satis.FGBuildableSignSupport
+classes.FGBuildableSignSupport = nil
+
 --- 
 ---@class Satis.FGBuildableSnowDispenser : Satis.Buildable
 local FGBuildableSnowDispenser
+
+---@class Satis.FGBuildableSnowDispenser.classes : Satis.FGBuildableSnowDispenser
+classes.FGBuildableSnowDispenser = nil
 
 --- 
 ---@class Satis.FGBuildableSpaceElevator : Satis.Factory
 local FGBuildableSpaceElevator
 
+---@class Satis.FGBuildableSpaceElevator.classes : Satis.FGBuildableSpaceElevator
+classes.FGBuildableSpaceElevator = nil
+
 --- 
 ---@class Satis.FGBuildableSpeedSign : Satis.Buildable
 local FGBuildableSpeedSign
+
+---@class Satis.FGBuildableSpeedSign.classes : Satis.FGBuildableSpeedSign
+classes.FGBuildableSpeedSign = nil
 
 --- 
 ---@class Satis.FGBuildableSplitterSmart : Satis.FGBuildableConveyorAttachment
 local FGBuildableSplitterSmart
 
+---@class Satis.FGBuildableSplitterSmart.classes : Satis.FGBuildableSplitterSmart
+classes.FGBuildableSplitterSmart = nil
+
 --- 
 ---@class Satis.FGBuildableStair : Satis.FGBuildableFactoryBuilding
 local FGBuildableStair
+
+---@class Satis.FGBuildableStair.classes : Satis.FGBuildableStair
+classes.FGBuildableStair = nil
 
 --- 
 ---@class Satis.FGBuildableStorage : Satis.Factory
 local FGBuildableStorage
 
+---@class Satis.FGBuildableStorage.classes : Satis.FGBuildableStorage
+classes.FGBuildableStorage = nil
+
 --- 
 ---@class Satis.FGBuildableTradingPost : Satis.Factory
 local FGBuildableTradingPost
 
+---@class Satis.FGBuildableTradingPost.classes : Satis.FGBuildableTradingPost
+classes.FGBuildableTradingPost = nil
+
 --- A train platform that allows for loading and unloading cargo cars.
 ---@class Satis.TrainPlatformCargo : Satis.TrainPlatform
 local TrainPlatformCargo
+
+---@class Satis.TrainPlatformCargo.classes : Satis.TrainPlatformCargo
+classes.TrainPlatformCargo = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -1441,25 +1745,43 @@ TrainPlatformCargo.fullUnload = nil
 ---@class Satis.FGBuildableTrainPlatformEmpty : Satis.TrainPlatform
 local FGBuildableTrainPlatformEmpty
 
+---@class Satis.FGBuildableTrainPlatformEmpty.classes : Satis.FGBuildableTrainPlatformEmpty
+classes.FGBuildableTrainPlatformEmpty = nil
+
 --- 
 ---@class Satis.FGBuildableWalkway : Satis.FGBuildableFactoryBuilding
 local FGBuildableWalkway
+
+---@class Satis.FGBuildableWalkway.classes : Satis.FGBuildableWalkway
+classes.FGBuildableWalkway = nil
 
 --- 
 ---@class Satis.FGBuildableWalkwayLightweight : Satis.FGBuildableWalkway
 local FGBuildableWalkwayLightweight
 
+---@class Satis.FGBuildableWalkwayLightweight.classes : Satis.FGBuildableWalkwayLightweight
+classes.FGBuildableWalkwayLightweight = nil
+
 --- 
 ---@class Satis.FGBuildableWallLightweight : Satis.FGBuildableWall
 local FGBuildableWallLightweight
+
+---@class Satis.FGBuildableWallLightweight.classes : Satis.FGBuildableWallLightweight
+classes.FGBuildableWallLightweight = nil
 
 --- 
 ---@class Satis.FGBuildableWaterPump : Satis.FGBuildableResourceExtractor
 local FGBuildableWaterPump
 
+---@class Satis.FGBuildableWaterPump.classes : Satis.FGBuildableWaterPump
+classes.FGBuildableWaterPump = nil
+
 --- The type of sign that allows you to define layouts, images, texts and colors manually.
 ---@class Satis.WidgetSign : Satis.SignBase
 local WidgetSign
+
+---@class Satis.WidgetSign.classes : Satis.WidgetSign
+classes.WidgetSign = nil
 
 --- Sets the prefabg sign data e.g. the user settings like colo and more to define the signs content.
 --- ### Flags:
@@ -1478,21 +1800,36 @@ function WidgetSign:getPrefabSignData() end
 ---@class Satis.FGBuildableWindTurbine : Satis.Factory
 local FGBuildableWindTurbine
 
+---@class Satis.FGBuildableWindTurbine.classes : Satis.FGBuildableWindTurbine
+classes.FGBuildableWindTurbine = nil
+
 --- 
 ---@class Satis.FGBuildableWire : Satis.Buildable
 local FGBuildableWire
+
+---@class Satis.FGBuildableWire.classes : Satis.FGBuildableWire
+classes.FGBuildableWire = nil
 
 --- 
 ---@class Satis.FGCentralStorageContainer : Satis.FGBuildableStorage
 local FGCentralStorageContainer
 
+---@class Satis.FGCentralStorageContainer.classes : Satis.FGCentralStorageContainer
+classes.FGCentralStorageContainer = nil
+
 --- 
 ---@class Satis.FGConveyorPoleStackable : Satis.FGBuildablePole
 local FGConveyorPoleStackable
 
+---@class Satis.FGConveyorPoleStackable.classes : Satis.FGConveyorPoleStackable
+classes.FGConveyorPoleStackable = nil
+
 --- A struct that holds information about a recipe in its class. Means don't use it as object, use it as class type!
 ---@class Satis.Recipe : Engine.Object
 local Recipe
+
+---@class Satis.Recipe.classes : Satis.Recipe
+classes.Recipe = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -1511,6 +1848,9 @@ Recipe.duration = nil
 --- A base class for all vehciles.
 ---@class Satis.Vehicle : Engine.Actor
 local Vehicle
+
+---@class Satis.Vehicle.classes : Satis.Vehicle
+classes.Vehicle = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -1535,6 +1875,9 @@ Vehicle.isSelfDriving = nil
 --- A actor component that is a connection point to which a conveyor or pipe can get attached to.
 ---@class Satis.FactoryConnection : Engine.ActorComponent
 local FactoryConnection
+
+---@class Satis.FactoryConnection.classes : Satis.FactoryConnection
+classes.FactoryConnection = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -1616,6 +1959,9 @@ FactoryConnection.ItemTransfer = { isVarArgs = false }
 ---@class Satis.RailroadVehicle : Satis.Vehicle
 local RailroadVehicle
 
+---@class Satis.RailroadVehicle.classes : Satis.RailroadVehicle
+classes.RailroadVehicle = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -1688,6 +2034,9 @@ function RailroadVehicle:getMovement() end
 ---@class Satis.Inventory : Engine.ActorComponent
 local Inventory
 
+---@class Satis.Inventory.classes : Satis.Inventory
+classes.Inventory = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -1734,6 +2083,9 @@ function Inventory:flush() end
 ---@class Satis.ItemCategory : Engine.Object
 local ItemCategory
 
+---@class Satis.ItemCategory.classes : Satis.ItemCategory
+classes.ItemCategory = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -1744,6 +2096,9 @@ ItemCategory.name = nil
 --- This actor component contains all the infomation about the movement of a railroad vehicle.
 ---@class Satis.RailroadVehicleMovement : Engine.ActorComponent
 local RailroadVehicleMovement
+
+---@class Satis.RailroadVehicleMovement.classes : Satis.RailroadVehicleMovement
+classes.RailroadVehicleMovement = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -1974,6 +2329,9 @@ function RailroadVehicleMovement:getCouplerRotationAndExtention(coupler) end
 ---@class Satis.PipeConnectionBase : Engine.ActorComponent
 local PipeConnectionBase
 
+---@class Satis.PipeConnectionBase.classes : Satis.PipeConnectionBase
+classes.PipeConnectionBase = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -1991,6 +2349,9 @@ function PipeConnectionBase:getConnection() end
 --- A actor component that is a connection point to which a fluid pipe can get attached to.
 ---@class Satis.PipeConnection : Satis.PipeConnectionBase
 local PipeConnection
+
+---@class Satis.PipeConnection.classes : Satis.PipeConnection
+classes.PipeConnection = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -2065,6 +2426,9 @@ function PipeConnection:flushPipeNetwork() end
 ---@class Satis.PipeHyperStart : Satis.FGBuildablePipeHyperPart
 local PipeHyperStart
 
+---@class Satis.PipeHyperStart.classes : Satis.PipeHyperStart
+classes.PipeHyperStart = nil
+
 --- Triggers when a players enters into this hypertube entrance.<br>
 --- 
 --- ### returns from event.pull:<br>
@@ -2094,6 +2458,9 @@ PipeHyperStart.PlayerExited = { isVarArgs = false }
 --- A Object that represents a whole power circuit.
 ---@class Satis.PowerCircuit : Engine.Object
 local PowerCircuit
+
+---@class Satis.PowerCircuit.classes : Satis.PowerCircuit
+classes.PowerCircuit = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -2209,6 +2576,9 @@ PowerCircuit.PowerFuseChanged = { isVarArgs = false }
 ---@class Satis.PowerConnection : Engine.ActorComponent
 local PowerConnection
 
+---@class Satis.PowerConnection.classes : Satis.PowerConnection
+classes.PowerConnection = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -2240,6 +2610,9 @@ function PowerConnection:getCircuit() end
 --- A actor component that provides information and mainly statistics about the power connection it is attached to.
 ---@class Satis.PowerInfo : Engine.ActorComponent
 local PowerInfo
+
+---@class Satis.PowerInfo.classes : Satis.PowerInfo
+classes.PowerInfo = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -2293,6 +2666,9 @@ function PowerInfo:getCircuit() end
 --- Contains the time table information of train.
 ---@class Satis.TimeTable : Engine.Actor
 local TimeTable
+
+---@class Satis.TimeTable.classes : Satis.TimeTable
+classes.TimeTable = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -2380,6 +2756,9 @@ function TimeTable:getCurrentStop() end
 --- This is a actor component for railroad tracks that allows to connecto to other track connections and so to connection multiple tracks with each eather so you can build a train network.
 ---@class Satis.RailroadTrackConnection : Engine.ActorComponent
 local RailroadTrackConnection
+
+---@class Satis.RailroadTrackConnection.classes : Satis.RailroadTrackConnection
+classes.RailroadTrackConnection = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -2520,6 +2899,9 @@ function RailroadTrackConnection:forceSwitchPosition(index) end
 ---@class Satis.SignType : Engine.Object
 local SignType
 
+---@class Satis.SignType.classes : Satis.SignType
+classes.SignType = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -2531,9 +2913,15 @@ SignType.dimensions = nil
 ---@class Satis.SignPrefab : Engine.Object
 local SignPrefab
 
+---@class Satis.SignPrefab.classes : Satis.SignPrefab
+classes.SignPrefab = nil
+
 --- The list of targets/path-waypoints a autonomous vehicle can drive
 ---@class Satis.TargetList : Engine.Actor
 local TargetList
+
+---@class Satis.TargetList.classes : Satis.TargetList
+classes.TargetList = nil
 
 --- Returns the target struct at with the given index in the target list.
 --- ### Flags:
@@ -2580,6 +2968,9 @@ function TargetList:setTargets(targets) end
 --- This class holds information and references about a trains (a collection of multiple railroad vehicles) and its timetable f.e.
 ---@class Satis.Train : Engine.Actor
 local Train
+
+---@class Satis.Train.classes : Satis.Train
+classes.Train = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -2716,6 +3107,9 @@ Train.SelfDrvingUpdate = { isVarArgs = false }
 ---@class Satis.WheeledVehicle : Satis.Vehicle
 local WheeledVehicle
 
+---@class Satis.WheeledVehicle.classes : Satis.WheeledVehicle
+classes.WheeledVehicle = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -2790,6 +3184,9 @@ function WheeledVehicle:getTargetList() end
 ---@class FIN.FINAdvancedNetworkConnectionComponent : Engine.ActorComponent
 local FINAdvancedNetworkConnectionComponent
 
+---@class FIN.FINAdvancedNetworkConnectionComponent.classes : FIN.FINAdvancedNetworkConnectionComponent
+classes.FINAdvancedNetworkConnectionComponent = nil
+
 --- <br>
 --- 
 --- ### returns from event.pull:<br>
@@ -2809,6 +3206,9 @@ FINAdvancedNetworkConnectionComponent.NetworkUpdate = { isVarArgs = false }
 --- The base class for all things of the reflection system.
 ---@class FIN.ReflectionBase : Engine.Object
 local ReflectionBase
+
+---@class FIN.ReflectionBase.classes : FIN.ReflectionBase
+classes.ReflectionBase = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -2835,6 +3235,9 @@ ReflectionBase.description = nil
 ---@class FIN.Property : FIN.ReflectionBase
 local Property
 
+---@class FIN.Property.classes : FIN.Property
+classes.Property = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -2853,6 +3256,9 @@ Property.flags = nil
 ---@class FIN.ArrayProperty : FIN.Property
 local ArrayProperty
 
+---@class FIN.ArrayProperty.classes : FIN.ArrayProperty
+classes.ArrayProperty = nil
+
 --- Returns the inner type of this array.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -2863,6 +3269,9 @@ function ArrayProperty:getInner() end
 --- Reflection Object that holds information about structures.
 ---@class FIN.Struct : FIN.ReflectionBase
 local Struct
+
+---@class FIN.Struct.classes : FIN.Struct
+classes.Struct = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -2917,6 +3326,9 @@ function Struct:isChildOf(parent) end
 ---@class FIN.Class : FIN.Struct
 local Class
 
+---@class FIN.Class.classes : FIN.Class
+classes.Class = nil
+
 --- Returns all the signals of this type.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -2935,6 +3347,9 @@ function Class:getAllSignals() end
 ---@class FIN.ClassProperty : FIN.Property
 local ClassProperty
 
+---@class FIN.ClassProperty.classes : FIN.ClassProperty
+classes.ClassProperty = nil
+
 --- Returns the subclass type of this class. Meaning, the stored classes need to be of this type.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -2945,6 +3360,9 @@ function ClassProperty:getSubclass() end
 --- 
 ---@class FIN.CodeableMerger : Satis.FGBuildableConveyorAttachment
 local CodeableMerger
+
+---@class FIN.CodeableMerger.classes : FIN.CodeableMerger
+classes.CodeableMerger = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -3003,6 +3421,9 @@ CodeableMerger.ItemOutputted = { isVarArgs = false }
 ---@class FIN.CodeableSplitter : Satis.FGBuildableConveyorAttachment
 local CodeableSplitter
 
+---@class FIN.CodeableSplitter.classes : FIN.CodeableSplitter
+classes.CodeableSplitter = nil
+
 --- Allows to transfer an item from the input queue to the given output queue if possible.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -3058,6 +3479,9 @@ CodeableSplitter.ItemOutputted = { isVarArgs = false }
 --- 
 ---@class FIN.ComputerCase : Satis.Buildable
 local ComputerCase
+
+---@class FIN.ComputerCase.classes : FIN.ComputerCase
+classes.ComputerCase = nil
 
 --- Stops the Computer (Processor).
 --- ### Flags:
@@ -3123,13 +3547,22 @@ ComputerCase.ComputerStateChanged = { isVarArgs = false }
 ---@class FIN.FINComputerModule : Satis.Buildable
 local FINComputerModule
 
+---@class FIN.FINComputerModule.classes : FIN.FINComputerModule
+classes.FINComputerModule = nil
+
 --- 
 ---@class FIN.FINComputerDriveHolder : FIN.FINComputerModule
 local FINComputerDriveHolder
 
+---@class FIN.FINComputerDriveHolder.classes : FIN.FINComputerDriveHolder
+classes.FINComputerDriveHolder = nil
+
 --- 
 ---@class FIN.FINComputerGPU : FIN.FINComputerModule
 local FINComputerGPU
+
+---@class FIN.FINComputerGPU.classes : FIN.FINComputerGPU
+classes.FINComputerGPU = nil
 
 --- 
 --- ### Flags:
@@ -3161,6 +3594,9 @@ FINComputerGPU.ScreenBound = { isVarArgs = false }
 --- 
 ---@class FIN.GPUT1 : FIN.FINComputerGPU
 local GPUT1
+
+---@class FIN.GPUT1.classes : FIN.GPUT1
+classes.GPUT1 = nil
 
 --- Draws the given text at the given position to the hidden screen buffer.
 --- ### Flags:
@@ -3418,6 +3854,9 @@ GPUT1.OnKeyChar = { isVarArgs = false }
 --- 
 ---@class FIN.FINComputerGPUT2 : FIN.FINComputerGPU
 local FINComputerGPUT2
+
+---@class FIN.FINComputerGPUT2.classes : FIN.FINComputerGPUT2
+classes.FINComputerGPUT2 = nil
 
 --- Pushes a transformation to the geometry stack. All subsequent drawcalls will be transformed through all previously pushed geometries and this one. Be aware, only all draw calls till, this geometry gets pop'ed are transformed, previous draw calls (and draw calls after the pop) are unaffected by this.
 --- ### Flags:
@@ -3773,9 +4212,15 @@ FINComputerGPUT2.OnKeyChar = { isVarArgs = false }
 ---@class FIN.FINComputerMemory : FIN.FINComputerModule
 local FINComputerMemory
 
+---@class FIN.FINComputerMemory.classes : FIN.FINComputerMemory
+classes.FINComputerMemory = nil
+
 --- 
 ---@class FIN.NetworkCard : FIN.FINComputerModule
 local NetworkCard
+
+---@class FIN.NetworkCard.classes : FIN.NetworkCard
+classes.NetworkCard = nil
 
 --- Sends a network message to the receiver with the given address on the given port. The data you want to add can be passed as additional parameters. Max amount of such parameters is 7 and they can only be nil, booleans, numbers and strings.
 --- ### Flags:
@@ -3834,13 +4279,22 @@ NetworkCard.NetworkMessage = { isVarArgs = true }
 ---@class FIN.FINComputerProcessor : FIN.FINComputerModule
 local FINComputerProcessor
 
+---@class FIN.FINComputerProcessor.classes : FIN.FINComputerProcessor
+classes.FINComputerProcessor = nil
+
 --- 
 ---@class FIN.FINComputerScreen : FIN.FINComputerModule
 local FINComputerScreen
 
+---@class FIN.FINComputerScreen.classes : FIN.FINComputerScreen
+classes.FINComputerScreen = nil
+
 --- A reflection object representing a function.
 ---@class FIN.Function : FIN.ReflectionBase
 local Function
+
+---@class FIN.Function.classes : FIN.Function
+classes.Function = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -3859,6 +4313,9 @@ function Function:getParameters() end
 --- 
 ---@class FIN.IndicatorPole : Satis.Buildable
 local IndicatorPole
+
+---@class FIN.IndicatorPole.classes : FIN.IndicatorPole
+classes.IndicatorPole = nil
 
 --- Allows to change the color and light intensity of the indicator lamp.
 --- ### Flags:
@@ -3919,6 +4376,9 @@ IndicatorPole.ColorChanged = { isVarArgs = false }
 ---@class FIN.FINInternetCard : FIN.FINComputerModule
 local FINInternetCard
 
+---@class FIN.FINInternetCard.classes : FIN.FINInternetCard
+classes.FINInternetCard = nil
+
 --- Does an HTTP-Request. If a payload is given, the Content-Type header has to be set. All additional parameters have to be strings and in pairs of two for defining the http headers and values.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -3934,9 +4394,15 @@ function FINInternetCard:request(url, method, data, ...) end
 ---@class FIN.FINMCPAdvConnector : FIN.FINAdvancedNetworkConnectionComponent
 local FINMCPAdvConnector
 
+---@class FIN.FINMCPAdvConnector.classes : FIN.FINMCPAdvConnector
+classes.FINMCPAdvConnector = nil
+
 --- 
 ---@class FIN.FINMediaSubsystem : Engine.Actor
 local FINMediaSubsystem
+
+---@class FIN.FINMediaSubsystem.classes : FIN.FINMediaSubsystem
+classes.FINMediaSubsystem = nil
 
 --- 
 --- ### Flags:
@@ -3982,6 +4448,9 @@ function FINMediaSubsystem:findGameIcon(IconName) end
 ---@class FIN.ModularIndicatorPole : Satis.Buildable
 local ModularIndicatorPole
 
+---@class FIN.ModularIndicatorPole.classes : FIN.ModularIndicatorPole
+classes.ModularIndicatorPole = nil
+
 --- Returns the next pole module if any.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -4001,6 +4470,9 @@ function ModularIndicatorPole:getModule(module) end
 ---@class FIN.FINModularIndicatorPoleModule : Satis.Buildable
 local FINModularIndicatorPoleModule
 
+---@class FIN.FINModularIndicatorPoleModule.classes : FIN.FINModularIndicatorPoleModule
+classes.FINModularIndicatorPoleModule = nil
+
 --- Gets the previous module or the base mount if this called from the last module.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -4019,21 +4491,36 @@ function FINModularIndicatorPoleModule:getNext() end
 ---@class FIN.FINModuleBase : Satis.Buildable
 local FINModuleBase
 
+---@class FIN.FINModuleBase.classes : FIN.FINModuleBase
+classes.FINModuleBase = nil
+
 --- 
 ---@class FIN.FINModuleScreen : FIN.FINModuleBase
 local FINModuleScreen
+
+---@class FIN.FINModuleScreen.classes : FIN.FINModuleScreen
+classes.FINModuleScreen = nil
 
 --- 
 ---@class FIN.FINNetworkAdapter : Satis.Buildable
 local FINNetworkAdapter
 
+---@class FIN.FINNetworkAdapter.classes : FIN.FINNetworkAdapter
+classes.FINNetworkAdapter = nil
+
 --- 
 ---@class FIN.FINNetworkCable : Satis.Buildable
 local FINNetworkCable
 
+---@class FIN.FINNetworkCable.classes : FIN.FINNetworkCable
+classes.FINNetworkCable = nil
+
 --- 
 ---@class FIN.NetworkRouter : Satis.Buildable
 local NetworkRouter
+
+---@class FIN.NetworkRouter.classes : FIN.NetworkRouter
+classes.NetworkRouter = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -4107,6 +4594,9 @@ function NetworkRouter:addAddrList(addr) end
 ---@class FIN.ObjectProperty : FIN.Property
 local ObjectProperty
 
+---@class FIN.ObjectProperty.classes : FIN.ObjectProperty
+classes.ObjectProperty = nil
+
 --- Returns the subclass type of this object. Meaning, the stored objects need to be of this type.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -4117,6 +4607,9 @@ function ObjectProperty:getSubclass() end
 --- 
 ---@class FIN.Screen : Satis.Buildable
 local Screen
+
+---@class FIN.Screen.classes : FIN.Screen
+classes.Screen = nil
 
 --- Returns the size of the screen in 'panels'.
 --- ### Flags:
@@ -4130,6 +4623,9 @@ function Screen:getSize() end
 --- A reflection object representing a signal.
 ---@class FIN.Signal : FIN.ReflectionBase
 local Signal
+
+---@class FIN.Signal.classes : FIN.Signal
+classes.Signal = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -4149,9 +4645,15 @@ function Signal:getParameters() end
 ---@class FIN.FINSizeablePanel : Satis.Buildable
 local FINSizeablePanel
 
+---@class FIN.FINSizeablePanel.classes : FIN.FINSizeablePanel
+classes.FINSizeablePanel = nil
+
 --- This speaker pole allows to play custom sound files, In-Game
 ---@class FIN.SpeakerPole : Satis.Buildable
 local SpeakerPole
+
+---@class FIN.SpeakerPole.classes : FIN.SpeakerPole
+classes.SpeakerPole = nil
 
 --- Stops the currently playing sound file.
 --- ### Flags:
@@ -4185,6 +4687,9 @@ SpeakerPole.SpeakerSound = { isVarArgs = false }
 ---@class FIN.StructProperty : FIN.Property
 local StructProperty
 
+---@class FIN.StructProperty.classes : FIN.StructProperty
+classes.StructProperty = nil
+
 --- Returns the subclass type of this struct. Meaning, the stored structs need to be of this type.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -4196,6 +4701,9 @@ function StructProperty:getSubclass() end
 ---@class FIN.TraceProperty : FIN.Property
 local TraceProperty
 
+---@class FIN.TraceProperty.classes : FIN.TraceProperty
+classes.TraceProperty = nil
+
 --- Returns the subclass type of this trace. Meaning, the stored traces need to be of this type.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -4206,6 +4714,9 @@ function TraceProperty:getSubclass() end
 --- 
 ---@class FIN.VehicleScanner : Satis.Buildable
 local VehicleScanner
+
+---@class FIN.VehicleScanner.classes : FIN.VehicleScanner
+classes.VehicleScanner = nil
 
 --- Allows to change the color and light intensity of the scanner.
 --- ### Flags:
@@ -4267,17 +4778,29 @@ VehicleScanner.OnVehicleEnter = { isVarArgs = false }
 ---@class FIN.FINWirelessAccessPoint : Satis.Buildable
 local FINWirelessAccessPoint
 
+---@class FIN.FINWirelessAccessPoint.classes : FIN.FINWirelessAccessPoint
+classes.FINWirelessAccessPoint = nil
+
 --- 
 ---@class FIN.FINComputerProcessorLua : FIN.FINComputerProcessor
 local FINComputerProcessorLua
+
+---@class FIN.FINComputerProcessorLua.classes : FIN.FINComputerProcessorLua
+classes.FINComputerProcessorLua = nil
 
 --- See Display Name
 ---@class Satis.Build_Blueprint_C : Satis.Buildable
 local Build_Blueprint_C
 
+---@class Satis.Build_Blueprint_C.classes : Satis.Build_Blueprint_C
+classes.Build_Blueprint_C = nil
+
 --- 
 ---@class Satis.Build_DoorMiddle_C : Satis.FGBuildableWall
 local Build_DoorMiddle_C
+
+---@class Satis.Build_DoorMiddle_C.classes : Satis.Build_DoorMiddle_C
+classes.Build_DoorMiddle_C = nil
 
 --- Drone Ports can have one other Port assigned as their transport destination.<br>
 --- Each Drone Port can contain a single Drone, which transports available input back and forth between its home and destination Ports.<br>
@@ -4286,11 +4809,17 @@ local Build_DoorMiddle_C
 ---@class Satis.Build_DroneStation_C : Satis.FGBuildableDroneStation
 local Build_DroneStation_C
 
+---@class Satis.Build_DroneStation_C.classes : Satis.Build_DroneStation_C
+classes.Build_DroneStation_C = nil
+
 --- Blueprint Storage that parts are returned to when the Blueprint Designer is cleared.<br>
 --- <br>
 --- 40 slots.
 ---@class Satis.Build_StorageBlueprint_C : Satis.FGBuildableStorage
 local Build_StorageBlueprint_C
+
+---@class Satis.Build_StorageBlueprint_C.classes : Satis.Build_StorageBlueprint_C
+classes.Build_StorageBlueprint_C = nil
 
 --- The Blueprint Designer is used to create custom factory designs and save them as Blueprints.<br>
 --- Blueprints can be accessed from the Build Menu - Blueprint tab.<br>
@@ -4301,12 +4830,18 @@ local Build_StorageBlueprint_C
 ---@class Satis.Build_BlueprintDesigner_C : Satis.FGBuildableBlueprintDesigner
 local Build_BlueprintDesigner_C
 
+---@class Satis.Build_BlueprintDesigner_C.classes : Satis.Build_BlueprintDesigner_C
+classes.Build_BlueprintDesigner_C = nil
+
 --- Snaps to Foundations and other Walls.<br>
 --- The windows allow Pioneers to see through the wall.<br>
 --- <br>
 --- Size: 8m x 4m
 ---@class Satis.Build_Wall_Window_8x4_03_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Window_8x4_03_C
+
+---@class Satis.Build_Wall_Window_8x4_03_C.classes : Satis.Build_Wall_Window_8x4_03_C
+classes.Build_Wall_Window_8x4_03_C = nil
 
 --- Has 1 Conveyor Belt connection.<br>
 --- Snaps to Foundations and other Walls.<br>
@@ -4315,12 +4850,18 @@ local Build_Wall_Window_8x4_03_C
 ---@class Satis.Build_Wall_Conveyor_8x4_03_C : Satis.FGBuildableWall
 local Build_Wall_Conveyor_8x4_03_C
 
+---@class Satis.Build_Wall_Conveyor_8x4_03_C.classes : Satis.Build_Wall_Conveyor_8x4_03_C
+classes.Build_Wall_Conveyor_8x4_03_C = nil
+
 --- Has 2 Conveyor Belt connections.<br>
 --- Snaps to Foundations and other Walls.<br>
 --- <br>
 --- Size: 8m x 4m
 ---@class Satis.Build_Wall_Conveyor_8x4_02_C : Satis.FGBuildableWall
 local Build_Wall_Conveyor_8x4_02_C
+
+---@class Satis.Build_Wall_Conveyor_8x4_02_C.classes : Satis.Build_Wall_Conveyor_8x4_02_C
+classes.Build_Wall_Conveyor_8x4_02_C = nil
 
 --- Has 3 Conveyor Belt connections.<br>
 --- Snaps to Foundations and other Walls.<br>
@@ -4329,19 +4870,18 @@ local Build_Wall_Conveyor_8x4_02_C
 ---@class Satis.Build_Wall_Conveyor_8x4_01_C : Satis.FGBuildableWall
 local Build_Wall_Conveyor_8x4_01_C
 
+---@class Satis.Build_Wall_Conveyor_8x4_01_C.classes : Satis.Build_Wall_Conveyor_8x4_01_C
+classes.Build_Wall_Conveyor_8x4_01_C = nil
+
 --- 
 ---@class Satis.BUILD_SingleDoor_Base_01_C : Satis.Door
 local BUILD_SingleDoor_Base_01_C
 
+---@class Satis.BUILD_SingleDoor_Base_01_C.classes : Satis.BUILD_SingleDoor_Base_01_C
+classes.BUILD_SingleDoor_Base_01_C = nil
+
 end
 do
-
---- Snaps to foundations and other walls.<br>
---- Useful for building multi-floor structures.<br>
---- <br>
---- Size: 8m x 1m
----@class Satis.Build_Wall_Orange_Tris_8x1_C : Satis.FGBuildableWallLightweight
-local Build_Wall_Orange_Tris_8x1_C
 
 --- Allows Pioneers to pass through the wall.<br>
 --- Door settings can be configured.<br>
@@ -4351,6 +4891,9 @@ local Build_Wall_Orange_Tris_8x1_C
 ---@class Satis.Build_Wall_Door_8x4_03_C : Satis.BUILD_SingleDoor_Base_01_C
 local Build_Wall_Door_8x4_03_C
 
+---@class Satis.Build_Wall_Door_8x4_03_C.classes : Satis.Build_Wall_Door_8x4_03_C
+classes.Build_Wall_Door_8x4_03_C = nil
+
 --- Allows Pioneers to pass through the wall.<br>
 --- Door settings can be configured.<br>
 --- Snaps to Foundations and other Walls.<br>
@@ -4359,12 +4902,18 @@ local Build_Wall_Door_8x4_03_C
 ---@class Satis.Build_Wall_Door_8x4_01_C : Satis.BUILD_SingleDoor_Base_01_C
 local Build_Wall_Door_8x4_01_C
 
+---@class Satis.Build_Wall_Door_8x4_01_C.classes : Satis.Build_Wall_Door_8x4_01_C
+classes.Build_Wall_Door_8x4_01_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 8m
 ---@class Satis.Build_Wall_Orange_Tris_8x8_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Orange_Tris_8x8_C
+
+---@class Satis.Build_Wall_Orange_Tris_8x8_C.classes : Satis.Build_Wall_Orange_Tris_8x8_C
+classes.Build_Wall_Orange_Tris_8x8_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -4373,12 +4922,28 @@ local Build_Wall_Orange_Tris_8x8_C
 ---@class Satis.Build_Wall_Orange_Tris_8x4_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Orange_Tris_8x4_C
 
+---@class Satis.Build_Wall_Orange_Tris_8x4_C.classes : Satis.Build_Wall_Orange_Tris_8x4_C
+classes.Build_Wall_Orange_Tris_8x4_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 2m
 ---@class Satis.Build_Wall_Orange_Tris_8x2_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Orange_Tris_8x2_C
+
+---@class Satis.Build_Wall_Orange_Tris_8x2_C.classes : Satis.Build_Wall_Orange_Tris_8x2_C
+classes.Build_Wall_Orange_Tris_8x2_C = nil
+
+--- Snaps to foundations and other walls.<br>
+--- Useful for building multi-floor structures.<br>
+--- <br>
+--- Size: 8m x 1m
+---@class Satis.Build_Wall_Orange_Tris_8x1_C : Satis.FGBuildableWallLightweight
+local Build_Wall_Orange_Tris_8x1_C
+
+---@class Satis.Build_Wall_Orange_Tris_8x1_C.classes : Satis.Build_Wall_Orange_Tris_8x1_C
+classes.Build_Wall_Orange_Tris_8x1_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -4387,12 +4952,18 @@ local Build_Wall_Orange_Tris_8x2_C
 ---@class Satis.Build_Wall_Orange_FlipTris_8x8_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Orange_FlipTris_8x8_C
 
+---@class Satis.Build_Wall_Orange_FlipTris_8x8_C.classes : Satis.Build_Wall_Orange_FlipTris_8x8_C
+classes.Build_Wall_Orange_FlipTris_8x8_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 4m
 ---@class Satis.Build_Wall_Orange_FlipTris_8x4_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Orange_FlipTris_8x4_C
+
+---@class Satis.Build_Wall_Orange_FlipTris_8x4_C.classes : Satis.Build_Wall_Orange_FlipTris_8x4_C
+classes.Build_Wall_Orange_FlipTris_8x4_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -4401,12 +4972,18 @@ local Build_Wall_Orange_FlipTris_8x4_C
 ---@class Satis.Build_Wall_Orange_FlipTris_8x2_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Orange_FlipTris_8x2_C
 
+---@class Satis.Build_Wall_Orange_FlipTris_8x2_C.classes : Satis.Build_Wall_Orange_FlipTris_8x2_C
+classes.Build_Wall_Orange_FlipTris_8x2_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 1m
 ---@class Satis.Build_Wall_Orange_FlipTris_8x1_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Orange_FlipTris_8x1_C
+
+---@class Satis.Build_Wall_Orange_FlipTris_8x1_C.classes : Satis.Build_Wall_Orange_FlipTris_8x1_C
+classes.Build_Wall_Orange_FlipTris_8x1_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -4415,12 +4992,18 @@ local Build_Wall_Orange_FlipTris_8x1_C
 ---@class Satis.Build_Wall_Orange_8x8_Corner_01_C : Satis.FGBuildableCornerWall
 local Build_Wall_Orange_8x8_Corner_01_C
 
+---@class Satis.Build_Wall_Orange_8x8_Corner_01_C.classes : Satis.Build_Wall_Orange_8x8_Corner_01_C
+classes.Build_Wall_Orange_8x8_Corner_01_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 4m
 ---@class Satis.Build_Wall_Orange_8x4_Corner_01_C : Satis.FGBuildableCornerWall
 local Build_Wall_Orange_8x4_Corner_01_C
+
+---@class Satis.Build_Wall_Orange_8x4_Corner_01_C.classes : Satis.Build_Wall_Orange_8x4_Corner_01_C
+classes.Build_Wall_Orange_8x4_Corner_01_C = nil
 
 --- Allows Pioneers to pass through walls.<br>
 --- Snaps to Foundations and other Walls.<br>
@@ -4429,12 +5012,18 @@ local Build_Wall_Orange_8x4_Corner_01_C
 ---@class Satis.Build_Wall_Gate_8x4_01_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Gate_8x4_01_C
 
+---@class Satis.Build_Wall_Gate_8x4_01_C.classes : Satis.Build_Wall_Gate_8x4_01_C
+classes.Build_Wall_Gate_8x4_01_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 4m
 ---@class Satis.Build_Wall_Orange_8x4_Corner_02_C : Satis.FGBuildableCornerWall
 local Build_Wall_Orange_8x4_Corner_02_C
+
+---@class Satis.Build_Wall_Orange_8x4_Corner_02_C.classes : Satis.Build_Wall_Orange_8x4_Corner_02_C
+classes.Build_Wall_Orange_8x4_Corner_02_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -4443,6 +5032,9 @@ local Build_Wall_Orange_8x4_Corner_02_C
 ---@class Satis.Build_Wall_Orange_8x8_Corner_02_C : Satis.FGBuildableCornerWall
 local Build_Wall_Orange_8x8_Corner_02_C
 
+---@class Satis.Build_Wall_Orange_8x8_Corner_02_C.classes : Satis.Build_Wall_Orange_8x8_Corner_02_C
+classes.Build_Wall_Orange_8x8_Corner_02_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
@@ -4450,12 +5042,8 @@ local Build_Wall_Orange_8x8_Corner_02_C
 ---@class Satis.Build_Wall_Orange_Angular_8x4_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Orange_Angular_8x4_C
 
---- Snaps to foundations and other walls.<br>
---- Useful for building multi-floor structures.<br>
---- <br>
---- Size: 8m x 8m
----@class Satis.Build_Wall_Orange_Angular_8x8_C : Satis.FGBuildableWallLightweight
-local Build_Wall_Orange_Angular_8x8_C
+---@class Satis.Build_Wall_Orange_Angular_8x4_C.classes : Satis.Build_Wall_Orange_Angular_8x4_C
+classes.Build_Wall_Orange_Angular_8x4_C = nil
 
 --- Snaps to Foundations and other Walls.<br>
 --- The windows allow Pioneers to see through the wall.<br>
@@ -4464,6 +5052,9 @@ local Build_Wall_Orange_Angular_8x8_C
 ---@class Satis.Build_Wall_Window_8x4_02_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Window_8x4_02_C
 
+---@class Satis.Build_Wall_Window_8x4_02_C.classes : Satis.Build_Wall_Window_8x4_02_C
+classes.Build_Wall_Window_8x4_02_C = nil
+
 --- Snaps to Foundations and other Walls.<br>
 --- The windows allow Pioneers to see through the wall.<br>
 --- <br>
@@ -4471,19 +5062,18 @@ local Build_Wall_Window_8x4_02_C
 ---@class Satis.Build_Wall_Window_8x4_01_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Window_8x4_01_C
 
---- Snaps to Foundations and other Walls.<br>
---- The windows allow Pioneers to see through the wall.<br>
---- <br>
---- Size: 8m x 4m
----@class Satis.Build_Wall_Window_8x4_04_C : Satis.FGBuildableWallLightweight
-local Build_Wall_Window_8x4_04_C
+---@class Satis.Build_Wall_Window_8x4_01_C.classes : Satis.Build_Wall_Window_8x4_01_C
+classes.Build_Wall_Window_8x4_01_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
---- Size: 8m x 1m
----@class Satis.Build_Wall_Orange_8x1_C : Satis.FGBuildableWallLightweight
-local Build_Wall_Orange_8x1_C
+--- Size: 8m x 8m
+---@class Satis.Build_Wall_Orange_Angular_8x8_C : Satis.FGBuildableWallLightweight
+local Build_Wall_Orange_Angular_8x8_C
+
+---@class Satis.Build_Wall_Orange_Angular_8x8_C.classes : Satis.Build_Wall_Orange_Angular_8x8_C
+classes.Build_Wall_Orange_Angular_8x8_C = nil
 
 --- Has 1 Conveyor Belt connection.<br>
 --- Snaps to Foundations and other Walls.<br>
@@ -4492,12 +5082,18 @@ local Build_Wall_Orange_8x1_C
 ---@class Satis.Build_Wall_Conveyor_8x4_03_Steel_C : Satis.FGBuildableWall
 local Build_Wall_Conveyor_8x4_03_Steel_C
 
+---@class Satis.Build_Wall_Conveyor_8x4_03_Steel_C.classes : Satis.Build_Wall_Conveyor_8x4_03_Steel_C
+classes.Build_Wall_Conveyor_8x4_03_Steel_C = nil
+
 --- Has 2 Conveyor Belt connections.<br>
 --- Snaps to Foundations and other Walls.<br>
 --- <br>
 --- Size: 8m x 4m
 ---@class Satis.Build_Wall_Conveyor_8x4_02_Steel_C : Satis.FGBuildableWall
 local Build_Wall_Conveyor_8x4_02_Steel_C
+
+---@class Satis.Build_Wall_Conveyor_8x4_02_Steel_C.classes : Satis.Build_Wall_Conveyor_8x4_02_Steel_C
+classes.Build_Wall_Conveyor_8x4_02_Steel_C = nil
 
 --- Has 3 Conveyor Belt connections.<br>
 --- Snaps to Foundations and other Walls.<br>
@@ -4506,12 +5102,38 @@ local Build_Wall_Conveyor_8x4_02_Steel_C
 ---@class Satis.Build_Wall_Conveyor_8x4_01_Steel_C : Satis.FGBuildableWall
 local Build_Wall_Conveyor_8x4_01_Steel_C
 
+---@class Satis.Build_Wall_Conveyor_8x4_01_Steel_C.classes : Satis.Build_Wall_Conveyor_8x4_01_Steel_C
+classes.Build_Wall_Conveyor_8x4_01_Steel_C = nil
+
+--- Snaps to Foundations and other Walls.<br>
+--- The windows allow Pioneers to see through the wall.<br>
+--- <br>
+--- Size: 8m x 4m
+---@class Satis.Build_Wall_Window_8x4_04_C : Satis.FGBuildableWallLightweight
+local Build_Wall_Window_8x4_04_C
+
+---@class Satis.Build_Wall_Window_8x4_04_C.classes : Satis.Build_Wall_Window_8x4_04_C
+classes.Build_Wall_Window_8x4_04_C = nil
+
+--- Snaps to foundations and other walls.<br>
+--- Useful for building multi-floor structures.<br>
+--- <br>
+--- Size: 8m x 1m
+---@class Satis.Build_Wall_Orange_8x1_C : Satis.FGBuildableWallLightweight
+local Build_Wall_Orange_8x1_C
+
+---@class Satis.Build_Wall_Orange_8x1_C.classes : Satis.Build_Wall_Orange_8x1_C
+classes.Build_Wall_Orange_8x1_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 1m
 ---@class Satis.Build_Wall_Concrete_8x1_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Concrete_8x1_C
+
+---@class Satis.Build_Wall_Concrete_8x1_C.classes : Satis.Build_Wall_Concrete_8x1_C
+classes.Build_Wall_Concrete_8x1_C = nil
 
 --- Has 3 Conveyor Belt connections.<br>
 --- Snaps to Foundations and other Walls.<br>
@@ -4520,12 +5142,18 @@ local Build_Wall_Concrete_8x1_C
 ---@class Satis.Build_Wall_Concrete_8x4_ConveyorHole_03_C : Satis.FGBuildableWall
 local Build_Wall_Concrete_8x4_ConveyorHole_03_C
 
+---@class Satis.Build_Wall_Concrete_8x4_ConveyorHole_03_C.classes : Satis.Build_Wall_Concrete_8x4_ConveyorHole_03_C
+classes.Build_Wall_Concrete_8x4_ConveyorHole_03_C = nil
+
 --- Has 2 Conveyor Belt connections.<br>
 --- Snaps to Foundations and other Walls.<br>
 --- <br>
 --- Size: 8m x 4m
 ---@class Satis.Build_Wall_Concrete_8x4_ConveyorHole_02_C : Satis.FGBuildableWall
 local Build_Wall_Concrete_8x4_ConveyorHole_02_C
+
+---@class Satis.Build_Wall_Concrete_8x4_ConveyorHole_02_C.classes : Satis.Build_Wall_Concrete_8x4_ConveyorHole_02_C
+classes.Build_Wall_Concrete_8x4_ConveyorHole_02_C = nil
 
 --- Has 1 Conveyor Belt connection.<br>
 --- Snaps to Foundations and other Walls.<br>
@@ -4534,12 +5162,18 @@ local Build_Wall_Concrete_8x4_ConveyorHole_02_C
 ---@class Satis.Build_Wall_Concrete_8x4_ConveyorHole_01_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Concrete_8x4_ConveyorHole_01_C
 
+---@class Satis.Build_Wall_Concrete_8x4_ConveyorHole_01_C.classes : Satis.Build_Wall_Concrete_8x4_ConveyorHole_01_C
+classes.Build_Wall_Concrete_8x4_ConveyorHole_01_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 4m
 ---@class Satis.Build_Wall_Concrete_8x4_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Concrete_8x4_C
+
+---@class Satis.Build_Wall_Concrete_8x4_C.classes : Satis.Build_Wall_Concrete_8x4_C
+classes.Build_Wall_Concrete_8x4_C = nil
 
 --- Allows Pioneers to pass through the wall.<br>
 --- Door settings can be configured.<br>
@@ -4549,12 +5183,18 @@ local Build_Wall_Concrete_8x4_C
 ---@class Satis.Build_Wall_Concrete_CDoor_8x4_C : Satis.BUILD_SingleDoor_Base_01_C
 local Build_Wall_Concrete_CDoor_8x4_C
 
+---@class Satis.Build_Wall_Concrete_CDoor_8x4_C.classes : Satis.Build_Wall_Concrete_CDoor_8x4_C
+classes.Build_Wall_Concrete_CDoor_8x4_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 8m
 ---@class Satis.Build_Wall_Concrete_Angular_8x8_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Concrete_Angular_8x8_C
+
+---@class Satis.Build_Wall_Concrete_Angular_8x8_C.classes : Satis.Build_Wall_Concrete_Angular_8x8_C
+classes.Build_Wall_Concrete_Angular_8x8_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -4563,12 +5203,18 @@ local Build_Wall_Concrete_Angular_8x8_C
 ---@class Satis.Build_Wall_Concrete_8x8_Corner_01_C : Satis.FGBuildableCornerWall
 local Build_Wall_Concrete_8x8_Corner_01_C
 
+---@class Satis.Build_Wall_Concrete_8x8_Corner_01_C.classes : Satis.Build_Wall_Concrete_8x8_Corner_01_C
+classes.Build_Wall_Concrete_8x8_Corner_01_C = nil
+
 --- Snaps to Foundations and other Walls.<br>
 --- The windows allow Pioneers to see through the wall.<br>
 --- <br>
 --- Size: 8m x 4m
 ---@class Satis.Build_Wall_Concrete_8x4_Window_04_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Concrete_8x4_Window_04_C
+
+---@class Satis.Build_Wall_Concrete_8x4_Window_04_C.classes : Satis.Build_Wall_Concrete_8x4_Window_04_C
+classes.Build_Wall_Concrete_8x4_Window_04_C = nil
 
 --- Snaps to Foundations and other Walls.<br>
 --- The windows allow Pioneers to see through the wall.<br>
@@ -4577,12 +5223,18 @@ local Build_Wall_Concrete_8x4_Window_04_C
 ---@class Satis.Build_Wall_Concrete_8x4_Window_03_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Concrete_8x4_Window_03_C
 
+---@class Satis.Build_Wall_Concrete_8x4_Window_03_C.classes : Satis.Build_Wall_Concrete_8x4_Window_03_C
+classes.Build_Wall_Concrete_8x4_Window_03_C = nil
+
 --- Snaps to Foundations and other Walls.<br>
 --- The windows allow Pioneers to see through the wall.<br>
 --- <br>
 --- Size: 8m x 4m
 ---@class Satis.Build_Wall_Concrete_8x4_Window_02_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Concrete_8x4_Window_02_C
+
+---@class Satis.Build_Wall_Concrete_8x4_Window_02_C.classes : Satis.Build_Wall_Concrete_8x4_Window_02_C
+classes.Build_Wall_Concrete_8x4_Window_02_C = nil
 
 --- Snaps to Foundations and other Walls.<br>
 --- The windows allow Pioneers to see through the wall.<br>
@@ -4591,6 +5243,9 @@ local Build_Wall_Concrete_8x4_Window_02_C
 ---@class Satis.Build_Wall_Concrete_8x4_Window_01_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Concrete_8x4_Window_01_C
 
+---@class Satis.Build_Wall_Concrete_8x4_Window_01_C.classes : Satis.Build_Wall_Concrete_8x4_Window_01_C
+classes.Build_Wall_Concrete_8x4_Window_01_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
@@ -4598,12 +5253,8 @@ local Build_Wall_Concrete_8x4_Window_01_C
 ---@class Satis.Build_Wall_Concrete_8x4_Corner_01_C : Satis.FGBuildableCornerWall
 local Build_Wall_Concrete_8x4_Corner_01_C
 
---- Snaps to foundations and other walls.<br>
---- Useful for building multi-floor structures.<br>
---- <br>
---- Size: 8m x 4m
----@class Satis.Build_WallSet_Steel_Angular_8x4_C : Satis.FGBuildableWallLightweight
-local Build_WallSet_Steel_Angular_8x4_C
+---@class Satis.Build_Wall_Concrete_8x4_Corner_01_C.classes : Satis.Build_Wall_Concrete_8x4_Corner_01_C
+classes.Build_Wall_Concrete_8x4_Corner_01_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -4612,12 +5263,18 @@ local Build_WallSet_Steel_Angular_8x4_C
 ---@class Satis.Build_SteelWall_Tris_8x8_C : Satis.FGBuildableWallLightweight
 local Build_SteelWall_Tris_8x8_C
 
+---@class Satis.Build_SteelWall_Tris_8x8_C.classes : Satis.Build_SteelWall_Tris_8x8_C
+classes.Build_SteelWall_Tris_8x8_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 4m
 ---@class Satis.Build_SteelWall_Tris_8x4_C : Satis.FGBuildableWallLightweight
 local Build_SteelWall_Tris_8x4_C
+
+---@class Satis.Build_SteelWall_Tris_8x4_C.classes : Satis.Build_SteelWall_Tris_8x4_C
+classes.Build_SteelWall_Tris_8x4_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -4626,12 +5283,18 @@ local Build_SteelWall_Tris_8x4_C
 ---@class Satis.Build_SteelWall_Tris_8x2_C : Satis.FGBuildableWallLightweight
 local Build_SteelWall_Tris_8x2_C
 
+---@class Satis.Build_SteelWall_Tris_8x2_C.classes : Satis.Build_SteelWall_Tris_8x2_C
+classes.Build_SteelWall_Tris_8x2_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 1m
 ---@class Satis.Build_SteelWall_Tris_8x1_C : Satis.FGBuildableWallLightweight
 local Build_SteelWall_Tris_8x1_C
+
+---@class Satis.Build_SteelWall_Tris_8x1_C.classes : Satis.Build_SteelWall_Tris_8x1_C
+classes.Build_SteelWall_Tris_8x1_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -4640,12 +5303,18 @@ local Build_SteelWall_Tris_8x1_C
 ---@class Satis.Build_SteelWall_FlipTris_8x8_C : Satis.FGBuildableWall
 local Build_SteelWall_FlipTris_8x8_C
 
+---@class Satis.Build_SteelWall_FlipTris_8x8_C.classes : Satis.Build_SteelWall_FlipTris_8x8_C
+classes.Build_SteelWall_FlipTris_8x8_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 4m
 ---@class Satis.Build_SteelWall_FlipTris_8x4_C : Satis.FGBuildableWallLightweight
 local Build_SteelWall_FlipTris_8x4_C
+
+---@class Satis.Build_SteelWall_FlipTris_8x4_C.classes : Satis.Build_SteelWall_FlipTris_8x4_C
+classes.Build_SteelWall_FlipTris_8x4_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -4654,12 +5323,18 @@ local Build_SteelWall_FlipTris_8x4_C
 ---@class Satis.Build_SteelWall_FlipTris_8x2_C : Satis.FGBuildableWallLightweight
 local Build_SteelWall_FlipTris_8x2_C
 
+---@class Satis.Build_SteelWall_FlipTris_8x2_C.classes : Satis.Build_SteelWall_FlipTris_8x2_C
+classes.Build_SteelWall_FlipTris_8x2_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 1m
 ---@class Satis.Build_SteelWall_FlipTris_8x1_C : Satis.FGBuildableWallLightweight
 local Build_SteelWall_FlipTris_8x1_C
+
+---@class Satis.Build_SteelWall_FlipTris_8x1_C.classes : Satis.Build_SteelWall_FlipTris_8x1_C
+classes.Build_SteelWall_FlipTris_8x1_C = nil
 
 --- Snaps to Foundations and other Walls.<br>
 --- The windows allow Pioneers to see through the wall.<br>
@@ -4668,12 +5343,18 @@ local Build_SteelWall_FlipTris_8x1_C
 ---@class Satis.Build_SteelWall_8x4_Window_04_C : Satis.FGBuildableWallLightweight
 local Build_SteelWall_8x4_Window_04_C
 
+---@class Satis.Build_SteelWall_8x4_Window_04_C.classes : Satis.Build_SteelWall_8x4_Window_04_C
+classes.Build_SteelWall_8x4_Window_04_C = nil
+
 --- Snaps to Foundations and other Walls.<br>
 --- The windows allow Pioneers to see through the wall.<br>
 --- <br>
 --- Size: 8m x 4m
 ---@class Satis.Build_SteelWall_8x4_Window_03_C : Satis.FGBuildableWallLightweight
 local Build_SteelWall_8x4_Window_03_C
+
+---@class Satis.Build_SteelWall_8x4_Window_03_C.classes : Satis.Build_SteelWall_8x4_Window_03_C
+classes.Build_SteelWall_8x4_Window_03_C = nil
 
 --- Snaps to Foundations and other Walls.<br>
 --- The windows allow Pioneers to see through the wall.<br>
@@ -4682,12 +5363,18 @@ local Build_SteelWall_8x4_Window_03_C
 ---@class Satis.Build_SteelWall_8x4_Window_02_C : Satis.FGBuildableWallLightweight
 local Build_SteelWall_8x4_Window_02_C
 
+---@class Satis.Build_SteelWall_8x4_Window_02_C.classes : Satis.Build_SteelWall_8x4_Window_02_C
+classes.Build_SteelWall_8x4_Window_02_C = nil
+
 --- Snaps to Foundations and other Walls.<br>
 --- The windows allow Pioneers to see through the wall.<br>
 --- <br>
 --- Size: 8m x 4m
 ---@class Satis.Build_SteelWall_8x4_Window_01_C : Satis.FGBuildableWallLightweight
 local Build_SteelWall_8x4_Window_01_C
+
+---@class Satis.Build_SteelWall_8x4_Window_01_C.classes : Satis.Build_SteelWall_8x4_Window_01_C
+classes.Build_SteelWall_8x4_Window_01_C = nil
 
 --- The gate allows Pioneers to pass through the wall.<br>
 --- Snaps to foundations and other walls.<br>
@@ -4696,12 +5383,18 @@ local Build_SteelWall_8x4_Window_01_C
 ---@class Satis.Build_SteelWall_8x4_Gate_01_C : Satis.FGBuildableWallLightweight
 local Build_SteelWall_8x4_Gate_01_C
 
+---@class Satis.Build_SteelWall_8x4_Gate_01_C.classes : Satis.Build_SteelWall_8x4_Gate_01_C
+classes.Build_SteelWall_8x4_Gate_01_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 1m
 ---@class Satis.Build_SteelWall_8x1_C : Satis.FGBuildableWallLightweight
 local Build_SteelWall_8x1_C
+
+---@class Satis.Build_SteelWall_8x1_C.classes : Satis.Build_SteelWall_8x1_C
+classes.Build_SteelWall_8x1_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -4710,12 +5403,18 @@ local Build_SteelWall_8x1_C
 ---@class Satis.Build_Wall_Concrete_Tris_8x8_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Concrete_Tris_8x8_C
 
+---@class Satis.Build_Wall_Concrete_Tris_8x8_C.classes : Satis.Build_Wall_Concrete_Tris_8x8_C
+classes.Build_Wall_Concrete_Tris_8x8_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 4m
 ---@class Satis.Build_Wall_Concrete_Tris_8x4_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Concrete_Tris_8x4_C
+
+---@class Satis.Build_Wall_Concrete_Tris_8x4_C.classes : Satis.Build_Wall_Concrete_Tris_8x4_C
+classes.Build_Wall_Concrete_Tris_8x4_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -4724,12 +5423,18 @@ local Build_Wall_Concrete_Tris_8x4_C
 ---@class Satis.Build_Wall_Concrete_Tris_8x2_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Concrete_Tris_8x2_C
 
+---@class Satis.Build_Wall_Concrete_Tris_8x2_C.classes : Satis.Build_Wall_Concrete_Tris_8x2_C
+classes.Build_Wall_Concrete_Tris_8x2_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 1m
 ---@class Satis.Build_Wall_Concrete_Tris_8x1_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Concrete_Tris_8x1_C
+
+---@class Satis.Build_Wall_Concrete_Tris_8x1_C.classes : Satis.Build_Wall_Concrete_Tris_8x1_C
+classes.Build_Wall_Concrete_Tris_8x1_C = nil
 
 --- The gate allows Pioneers to pass through walls.<br>
 --- Snaps to Foundations and other Walls.<br>
@@ -4738,12 +5443,18 @@ local Build_Wall_Concrete_Tris_8x1_C
 ---@class Satis.Build_Wall_Concrete_Gate_8x4_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Concrete_Gate_8x4_C
 
+---@class Satis.Build_Wall_Concrete_Gate_8x4_C.classes : Satis.Build_Wall_Concrete_Gate_8x4_C
+classes.Build_Wall_Concrete_Gate_8x4_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 8m
 ---@class Satis.Build_Wall_Concrete_FlipTris_8x8_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Concrete_FlipTris_8x8_C
+
+---@class Satis.Build_Wall_Concrete_FlipTris_8x8_C.classes : Satis.Build_Wall_Concrete_FlipTris_8x8_C
+classes.Build_Wall_Concrete_FlipTris_8x8_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -4752,6 +5463,9 @@ local Build_Wall_Concrete_FlipTris_8x8_C
 ---@class Satis.Build_Wall_Concrete_FlipTris_8x4_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Concrete_FlipTris_8x4_C
 
+---@class Satis.Build_Wall_Concrete_FlipTris_8x4_C.classes : Satis.Build_Wall_Concrete_FlipTris_8x4_C
+classes.Build_Wall_Concrete_FlipTris_8x4_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
@@ -4759,12 +5473,18 @@ local Build_Wall_Concrete_FlipTris_8x4_C
 ---@class Satis.Build_Wall_Concrete_FlipTris_8x2_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Concrete_FlipTris_8x2_C
 
+---@class Satis.Build_Wall_Concrete_FlipTris_8x2_C.classes : Satis.Build_Wall_Concrete_FlipTris_8x2_C
+classes.Build_Wall_Concrete_FlipTris_8x2_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 1m
 ---@class Satis.Build_Wall_Concrete_FlipTris_8x1_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Concrete_FlipTris_8x1_C
+
+---@class Satis.Build_Wall_Concrete_FlipTris_8x1_C.classes : Satis.Build_Wall_Concrete_FlipTris_8x1_C
+classes.Build_Wall_Concrete_FlipTris_8x1_C = nil
 
 --- Allows Pioneers to pass through the wall.<br>
 --- Door settings can be configured.<br>
@@ -4774,15 +5494,24 @@ local Build_Wall_Concrete_FlipTris_8x1_C
 ---@class Satis.Build_Wall_Concrete_SDoor_8x4_C : Satis.BUILD_SingleDoor_Base_01_C
 local Build_Wall_Concrete_SDoor_8x4_C
 
+---@class Satis.Build_Wall_Concrete_SDoor_8x4_C.classes : Satis.Build_Wall_Concrete_SDoor_8x4_C
+classes.Build_Wall_Concrete_SDoor_8x4_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.
 ---@class Satis.Build_SteelWall_8x4_DoorC_01_C : Satis.BUILD_SingleDoor_Base_01_C
 local Build_SteelWall_8x4_DoorC_01_C
 
+---@class Satis.Build_SteelWall_8x4_DoorC_01_C.classes : Satis.Build_SteelWall_8x4_DoorC_01_C
+classes.Build_SteelWall_8x4_DoorC_01_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.
 ---@class Satis.Build_SteelWall_8x4_DoorS_01_C : Satis.BUILD_SingleDoor_Base_01_C
 local Build_SteelWall_8x4_DoorS_01_C
+
+---@class Satis.Build_SteelWall_8x4_DoorS_01_C.classes : Satis.Build_SteelWall_8x4_DoorS_01_C
+classes.Build_SteelWall_8x4_DoorS_01_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -4790,6 +5519,19 @@ local Build_SteelWall_8x4_DoorS_01_C
 --- Size: 8m x 8m
 ---@class Satis.Build_WallSet_Steel_Angular_8x8_C : Satis.FGBuildableWallLightweight
 local Build_WallSet_Steel_Angular_8x8_C
+
+---@class Satis.Build_WallSet_Steel_Angular_8x8_C.classes : Satis.Build_WallSet_Steel_Angular_8x8_C
+classes.Build_WallSet_Steel_Angular_8x8_C = nil
+
+--- Snaps to foundations and other walls.<br>
+--- Useful for building multi-floor structures.<br>
+--- <br>
+--- Size: 8m x 4m
+---@class Satis.Build_WallSet_Steel_Angular_8x4_C : Satis.FGBuildableWallLightweight
+local Build_WallSet_Steel_Angular_8x4_C
+
+---@class Satis.Build_WallSet_Steel_Angular_8x4_C.classes : Satis.Build_WallSet_Steel_Angular_8x4_C
+classes.Build_WallSet_Steel_Angular_8x4_C = nil
 
 --- Allows Pioneers to pass through the wall.<br>
 --- Door settings can be configured.<br>
@@ -4799,6 +5541,9 @@ local Build_WallSet_Steel_Angular_8x8_C
 ---@class Satis.Build_Wall_Door_8x4_03_Steel_C : Satis.Build_SteelWall_8x4_DoorS_01_C
 local Build_Wall_Door_8x4_03_Steel_C
 
+---@class Satis.Build_Wall_Door_8x4_03_Steel_C.classes : Satis.Build_Wall_Door_8x4_03_Steel_C
+classes.Build_Wall_Door_8x4_03_Steel_C = nil
+
 --- Allows Pioneers to pass through the wall.<br>
 --- Door settings can be configured.<br>
 --- Snaps to Foundations and other Walls.<br>
@@ -4807,12 +5552,18 @@ local Build_Wall_Door_8x4_03_Steel_C
 ---@class Satis.Build_Wall_Door_8x4_01_Steel_C : Satis.Build_SteelWall_8x4_DoorC_01_C
 local Build_Wall_Door_8x4_01_Steel_C
 
+---@class Satis.Build_Wall_Door_8x4_01_Steel_C.classes : Satis.Build_Wall_Door_8x4_01_Steel_C
+classes.Build_Wall_Door_8x4_01_Steel_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 4m
 ---@class Satis.Build_Wall_Steel_8x4_Corner_2_C : Satis.FGBuildableCornerWall
 local Build_Wall_Steel_8x4_Corner_2_C
+
+---@class Satis.Build_Wall_Steel_8x4_Corner_2_C.classes : Satis.Build_Wall_Steel_8x4_Corner_2_C
+classes.Build_Wall_Steel_8x4_Corner_2_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -4821,12 +5572,18 @@ local Build_Wall_Steel_8x4_Corner_2_C
 ---@class Satis.Build_Wall_8x4_02_C : Satis.FGBuildableWallLightweight
 local Build_Wall_8x4_02_C
 
+---@class Satis.Build_Wall_8x4_02_C.classes : Satis.Build_Wall_8x4_02_C
+classes.Build_Wall_8x4_02_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 4m
 ---@class Satis.Build_Wall_Concrete_Angular_8x4_C : Satis.FGBuildableWallLightweight
 local Build_Wall_Concrete_Angular_8x4_C
+
+---@class Satis.Build_Wall_Concrete_Angular_8x4_C.classes : Satis.Build_Wall_Concrete_Angular_8x4_C
+classes.Build_Wall_Concrete_Angular_8x4_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -4835,12 +5592,18 @@ local Build_Wall_Concrete_Angular_8x4_C
 ---@class Satis.Build_Wall_Concrete_8x8_Corner_2_C : Satis.FGBuildableCornerWall
 local Build_Wall_Concrete_8x8_Corner_2_C
 
+---@class Satis.Build_Wall_Concrete_8x8_Corner_2_C.classes : Satis.Build_Wall_Concrete_8x8_Corner_2_C
+classes.Build_Wall_Concrete_8x8_Corner_2_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 4m
 ---@class Satis.Build_Wall_Concrete_8x4_Corner_2_C : Satis.FGBuildableCornerWall
 local Build_Wall_Concrete_8x4_Corner_2_C
+
+---@class Satis.Build_Wall_Concrete_8x4_Corner_2_C.classes : Satis.Build_Wall_Concrete_8x4_Corner_2_C
+classes.Build_Wall_Concrete_8x4_Corner_2_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -4849,12 +5612,18 @@ local Build_Wall_Concrete_8x4_Corner_2_C
 ---@class Satis.Build_Wall_8x4_01_C : Satis.FGBuildableWallLightweight
 local Build_Wall_8x4_01_C
 
+---@class Satis.Build_Wall_8x4_01_C.classes : Satis.Build_Wall_8x4_01_C
+classes.Build_Wall_8x4_01_C = nil
+
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 8m
 ---@class Satis.Build_Wall_Steel_8x8_Corner_2_C : Satis.FGBuildableCornerWall
 local Build_Wall_Steel_8x8_Corner_2_C
+
+---@class Satis.Build_Wall_Steel_8x8_Corner_2_C.classes : Satis.Build_Wall_Steel_8x8_Corner_2_C
+classes.Build_Wall_Steel_8x8_Corner_2_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -4863,12 +5632,8 @@ local Build_Wall_Steel_8x8_Corner_2_C
 ---@class Satis.Build_Wall_Steel_8x8_Corner_01_C : Satis.FGBuildableCornerWall
 local Build_Wall_Steel_8x8_Corner_01_C
 
---- Snaps to foundations and other walls.<br>
---- Useful for building multi-floor structures.<br>
---- <br>
---- Size: 8m x 4m
----@class Satis.Build_SteelWall_8x4_C : Satis.FGBuildableWallLightweight
-local Build_SteelWall_8x4_C
+---@class Satis.Build_Wall_Steel_8x8_Corner_01_C.classes : Satis.Build_Wall_Steel_8x8_Corner_01_C
+classes.Build_Wall_Steel_8x8_Corner_01_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -4877,9 +5642,25 @@ local Build_SteelWall_8x4_C
 ---@class Satis.Build_Wall_Steel_8x4_Corner_01_C : Satis.FGBuildableCornerWall
 local Build_Wall_Steel_8x4_Corner_01_C
 
+---@class Satis.Build_Wall_Steel_8x4_Corner_01_C.classes : Satis.Build_Wall_Steel_8x4_Corner_01_C
+classes.Build_Wall_Steel_8x4_Corner_01_C = nil
+
+--- Snaps to foundations and other walls.<br>
+--- Useful for building multi-floor structures.<br>
+--- <br>
+--- Size: 8m x 4m
+---@class Satis.Build_SteelWall_8x4_C : Satis.FGBuildableWallLightweight
+local Build_SteelWall_8x4_C
+
+---@class Satis.Build_SteelWall_8x4_C.classes : Satis.Build_SteelWall_8x4_C
+classes.Build_SteelWall_8x4_C = nil
+
 --- This FicsIt-Networks Wall Plug allows you to distribute a network circuit more easily near buildings and indoors.
 ---@class FIN.NetworkWallPlug_C : Satis.Buildable
 local NetworkWallPlug_C
+
+---@class FIN.NetworkWallPlug_C.classes : FIN.NetworkWallPlug_C
+classes.NetworkWallPlug_C = nil
 
 --- The FicsIt-Networks Network Cable allows you to connect your network components wich each other.<br>
 --- <br>
@@ -4889,11 +5670,17 @@ local NetworkWallPlug_C
 ---@class FIN.NetworkCable_C : FIN.FINNetworkCable
 local NetworkCable_C
 
+---@class FIN.NetworkCable_C.classes : FIN.NetworkCable_C
+classes.NetworkCable_C = nil
+
 --- This FicsIt-Networks Small Wall Plug allows you to connect the thin network cable only usable with MCH panels and other small components.<br>
 --- <br>
 --- You can then connect Normal/Large Network Cables to those Small Network Plugs to be able to connect your MCP Panels and such to a computer.
 ---@class FIN.Item_SmallNetworkWallPlug_C : Satis.Buildable
 local Item_SmallNetworkWallPlug_C
+
+---@class FIN.Item_SmallNetworkWallPlug_C.classes : FIN.Item_SmallNetworkWallPlug_C
+classes.Item_SmallNetworkWallPlug_C = nil
 
 --- The FicsIt-Networks Thin Network Cable allows you to connect your network panels wich each other more gracefully.<br>
 --- <br>
@@ -4903,9 +5690,15 @@ local Item_SmallNetworkWallPlug_C
 ---@class FIN.ThinNetworkCable_C : FIN.FINNetworkCable
 local ThinNetworkCable_C
 
+---@class FIN.ThinNetworkCable_C.classes : FIN.ThinNetworkCable_C
+classes.ThinNetworkCable_C = nil
+
 --- 
 ---@class FIN.BP_NetworkAdapter_C : FIN.FINNetworkAdapter
 local BP_NetworkAdapter_C
+
+---@class FIN.BP_NetworkAdapter_C.classes : FIN.BP_NetworkAdapter_C
+classes.BP_NetworkAdapter_C = nil
 
 --- This Pole allows you to connect multiple network components to it via the network cables.<br>
 --- <br>
@@ -4915,15 +5708,15 @@ local BP_NetworkAdapter_C
 ---@class FIN.NetworkPole_C : Satis.Buildable
 local NetworkPole_C
 
+---@class FIN.NetworkPole_C.classes : FIN.NetworkPole_C
+classes.NetworkPole_C = nil
+
 --- Used to connect Power Poles, Power Generators and Factory buildings.
 ---@class Satis.Build_PowerLine_C : Satis.FGBuildableWire
 local Build_PowerLine_C
 
---- Can handle up to 4 Power Line connections.<br>
---- <br>
---- Connect Power Poles, Power Generators and factory buildings together with Power Lines to create a power grid. The power grid supplies the connected buildings with power.
----@class Satis.Build_PowerPoleMk1_C : Satis.FGBuildablePowerPole
-local Build_PowerPoleMk1_C
+---@class Satis.Build_PowerLine_C.classes : Satis.Build_PowerLine_C
+classes.Build_PowerLine_C = nil
 
 --- Power Pole that attaches to a wall.<br>
 --- <br>
@@ -4933,96 +5726,141 @@ local Build_PowerPoleMk1_C
 ---@class Satis.Build_PowerPoleWall_C : Satis.FGBuildablePowerPole
 local Build_PowerPoleWall_C
 
---- 
----@class Satis.Build_RailroadTrackIntegrated_C : Satis.RailroadTrack
-local Build_RailroadTrackIntegrated_C
-
---- Used to transport trains in a reliable and fast manner.<br>
---- Has a wide turn angle so make sure to plan it out properly.
----@class Satis.Build_RailroadTrack_C : Satis.RailroadTrack
-local Build_RailroadTrack_C
-
---- Transports up to 60 resources per minute. Used to move resources between buildings.
----@class Satis.Build_ConveyorBeltMk1_C : Satis.FGBuildableConveyorBelt
-local Build_ConveyorBeltMk1_C
+---@class Satis.Build_PowerPoleWall_C.classes : Satis.Build_PowerPoleWall_C
+classes.Build_PowerPoleWall_C = nil
 
 --- Can be used as a connection for conveyor belts. The height of the pole can be adjusted.<br>
 --- Useful to route conveyor belts in a more controlled manner and over long distances.
 ---@class Satis.Build_ConveyorPole_C : Satis.FGBuildablePoleLightweight
 local Build_ConveyorPole_C
 
+---@class Satis.Build_ConveyorPole_C.classes : Satis.Build_ConveyorPole_C
+classes.Build_ConveyorPole_C = nil
+
+--- Can handle up to 4 Power Line connections.<br>
+--- <br>
+--- Connect Power Poles, Power Generators and factory buildings together with Power Lines to create a power grid. The power grid supplies the connected buildings with power.
+---@class Satis.Build_PowerPoleMk1_C : Satis.FGBuildablePowerPole
+local Build_PowerPoleMk1_C
+
+---@class Satis.Build_PowerPoleMk1_C.classes : Satis.Build_PowerPoleMk1_C
+classes.Build_PowerPoleMk1_C = nil
+
 --- 
 ---@class Satis.Build_RailroadSwitchControl_C : Satis.RailroadSwitchControl
 local Build_RailroadSwitchControl_C
 
---- Example building that counts items and has an interaction GUI
----@class ExampleMod.Build_ExampleBuilding_C : Satis.Buildable
-local Build_ExampleBuilding_C
+---@class Satis.Build_RailroadSwitchControl_C.classes : Satis.Build_RailroadSwitchControl_C
+classes.Build_RailroadSwitchControl_C = nil
 
 --- Can be attached to walls.<br>
 --- Useful to route conveyor belts in a more controlled manner and over long distances.
 ---@class Satis.Build_ConveyorPoleWall_C : Satis.Buildable
 local Build_ConveyorPoleWall_C
 
---- Can be attached to ceilings and other ceiling mounts.<br>
---- Useful to route conveyor belts in a more controlled manner and over long distances.
----@class Satis.Build_ConveyorCeilingAttachment_C : Satis.Buildable
-local Build_ConveyorCeilingAttachment_C
+---@class Satis.Build_ConveyorPoleWall_C.classes : Satis.Build_ConveyorPoleWall_C
+classes.Build_ConveyorPoleWall_C = nil
 
---- This building is set up to properly handle multiple players editing a saved text value. Check out its code and watch the logs to see how it works.
----@class ExampleMod.Build_MultiplayerDemoBuilding_C : Satis.Buildable
-local Build_MultiplayerDemoBuilding_C
+--- Transports up to 60 resources per minute. Used to move resources between buildings.
+---@class Satis.Build_ConveyorBeltMk1_C : Satis.FGBuildableConveyorBelt
+local Build_ConveyorBeltMk1_C
 
---- Only generates power during the day. Test this out with time-changing console commands (check the docs)
----@class ExampleMod.Build_GeneratorSolar_C : Satis.FGBuildableGenerator
-local Build_GeneratorSolar_C
+---@class Satis.Build_ConveyorBeltMk1_C.classes : Satis.Build_ConveyorBeltMk1_C
+classes.Build_ConveyorBeltMk1_C = nil
+
+--- 
+---@class Satis.Build_RailroadTrackIntegrated_C : Satis.RailroadTrack
+local Build_RailroadTrackIntegrated_C
+
+---@class Satis.Build_RailroadTrackIntegrated_C.classes : Satis.Build_RailroadTrackIntegrated_C
+classes.Build_RailroadTrackIntegrated_C = nil
+
+--- Used to transport trains in a reliable and fast manner.<br>
+--- Has a wide turn angle so make sure to plan it out properly.
+---@class Satis.Build_RailroadTrack_C : Satis.RailroadTrack
+local Build_RailroadTrack_C
+
+---@class Satis.Build_RailroadTrack_C.classes : Satis.Build_RailroadTrack_C
+classes.Build_RailroadTrack_C = nil
 
 --- The heart of your factory. This is where you complete FICSIT milestones to unlock additional blueprints of buildings, vehicles, parts, equipment etc.
 ---@class Satis.Build_TradingPost_C : Satis.FGBuildableTradingPost
 local Build_TradingPost_C
 
---- Can be connected to Beams to hide seams and generally make connections look more appealing.
----@class Satis.Build_Beam_Connector_C : Satis.FGBuildableFactoryBuilding
-local Build_Beam_Connector_C
+---@class Satis.Build_TradingPost_C.classes : Satis.Build_TradingPost_C
+classes.Build_TradingPost_C = nil
 
---- Can be connected to Beams to hide seams and generally make connections look more appealing.
----@class Satis.Build_Beam_Connector_Double_C : Satis.FGBuildableFactoryBuilding
-local Build_Beam_Connector_Double_C
+--- Can be attached to ceilings and other ceiling mounts.<br>
+--- Useful to route conveyor belts in a more controlled manner and over long distances.
+---@class Satis.Build_ConveyorCeilingAttachment_C : Satis.Buildable
+local Build_ConveyorCeilingAttachment_C
 
---- 
----@class Satis.Build_HubTerminal_C : Satis.FGBuildableHubTerminal
-local Build_HubTerminal_C
+---@class Satis.Build_ConveyorCeilingAttachment_C.classes : Satis.Build_ConveyorCeilingAttachment_C
+classes.Build_ConveyorCeilingAttachment_C = nil
+
+--- Example building that counts items and has an interaction GUI
+---@class ExampleMod.Build_ExampleBuilding_C : Satis.Buildable
+local Build_ExampleBuilding_C
+
+---@class ExampleMod.Build_ExampleBuilding_C.classes : ExampleMod.Build_ExampleBuilding_C
+classes.Build_ExampleBuilding_C = nil
+
+--- This building is set up to properly handle multiple players editing a saved text value. Check out its code and watch the logs to see how it works.
+---@class ExampleMod.Build_MultiplayerDemoBuilding_C : Satis.Buildable
+local Build_MultiplayerDemoBuilding_C
+
+---@class ExampleMod.Build_MultiplayerDemoBuilding_C.classes : ExampleMod.Build_MultiplayerDemoBuilding_C
+classes.Build_MultiplayerDemoBuilding_C = nil
+
+--- Only generates power during the day. Test this out with time-changing console commands (check the docs)
+---@class ExampleMod.Build_GeneratorSolar_C : Satis.FGBuildableGenerator
+local Build_GeneratorSolar_C
+
+---@class ExampleMod.Build_GeneratorSolar_C.classes : ExampleMod.Build_GeneratorSolar_C
+classes.Build_GeneratorSolar_C = nil
 
 --- A box you can put things in.<br>
 --- Has 25 inventory slots.
 ---@class Satis.Build_StorageIntegrated_C : Satis.FGBuildableStorage
 local Build_StorageIntegrated_C
 
+---@class Satis.Build_StorageIntegrated_C.classes : Satis.Build_StorageIntegrated_C
+classes.Build_StorageIntegrated_C = nil
+
 --- The Craft Bench allows you to manually produce parts to use in constructing buildings.
 ---@class Satis.Build_WorkBenchIntegrated_C : Satis.Buildable
 local Build_WorkBenchIntegrated_C
 
---- Snaps to other Beams and various other structural buildings.<br>
---- <br>
---- Beams support multiple build modes for different use cases.
----@class Satis.Build_Beam_C : Satis.FGBuildableBeamLightweight
-local Build_Beam_C
-
---- Snaps to other Beams and various other structural buildings.<br>
---- <br>
---- Beams support multiple build modes for different use cases.
----@class Satis.Build_Beam_Painted_C : Satis.FGBuildableBeamLightweight
-local Build_Beam_Painted_C
+---@class Satis.Build_WorkBenchIntegrated_C.classes : Satis.Build_WorkBenchIntegrated_C
+classes.Build_WorkBenchIntegrated_C = nil
 
 --- Burns Biomass to produce power. Biomass must be loaded manually and is obtained by picking up flora in the world. Produces up to 20 MW of power while operating.
 ---@class Satis.Build_GeneratorIntegratedBiomass_C : Satis.FGBuildableGeneratorFuel
 local Build_GeneratorIntegratedBiomass_C
 
---- Smelts two resources into alloy ingots.<br>
---- <br>
---- Can be automated by feeding ore into it with a conveyor belt connected to the inputs. The produced ingots can be automatically extracted by connecting a conveyor belt to the output.
----@class Satis.Build_FoundryMk1_C : Satis.Manufacturer
-local Build_FoundryMk1_C
+---@class Satis.Build_GeneratorIntegratedBiomass_C.classes : Satis.Build_GeneratorIntegratedBiomass_C
+classes.Build_GeneratorIntegratedBiomass_C = nil
+
+--- 
+---@class Satis.Build_HubTerminal_C : Satis.FGBuildableHubTerminal
+local Build_HubTerminal_C
+
+---@class Satis.Build_HubTerminal_C.classes : Satis.Build_HubTerminal_C
+classes.Build_HubTerminal_C = nil
+
+--- Can be connected to Beams to hide seams and generally make connections look more appealing.
+---@class Satis.Build_Beam_Connector_C : Satis.FGBuildableFactoryBuilding
+local Build_Beam_Connector_C
+
+---@class Satis.Build_Beam_Connector_C.classes : Satis.Build_Beam_Connector_C
+classes.Build_Beam_Connector_C = nil
+
+--- Can be connected to Beams to hide seams and generally make connections look more appealing.
+---@class Satis.Build_Beam_Connector_Double_C : Satis.FGBuildableFactoryBuilding
+local Build_Beam_Connector_Double_C
+
+---@class Satis.Build_Beam_Connector_Double_C.classes : Satis.Build_Beam_Connector_Double_C
+classes.Build_Beam_Connector_Double_C = nil
 
 --- Snaps to Beams and various other structural buildings.<br>
 --- <br>
@@ -5030,9 +5868,42 @@ local Build_FoundryMk1_C
 ---@class Satis.Build_Beam_Support_C : Satis.FGBuildableFactoryBuilding
 local Build_Beam_Support_C
 
+---@class Satis.Build_Beam_Support_C.classes : Satis.Build_Beam_Support_C
+classes.Build_Beam_Support_C = nil
+
+--- Snaps to other Beams and various other structural buildings.<br>
+--- <br>
+--- Beams support multiple build modes for different use cases.
+---@class Satis.Build_Beam_C : Satis.FGBuildableBeamLightweight
+local Build_Beam_C
+
+---@class Satis.Build_Beam_C.classes : Satis.Build_Beam_C
+classes.Build_Beam_C = nil
+
+--- Snaps to other Beams and various other structural buildings.<br>
+--- <br>
+--- Beams support multiple build modes for different use cases.
+---@class Satis.Build_Beam_Painted_C : Satis.FGBuildableBeamLightweight
+local Build_Beam_Painted_C
+
+---@class Satis.Build_Beam_Painted_C.classes : Satis.Build_Beam_Painted_C
+classes.Build_Beam_Painted_C = nil
+
+--- Smelts two resources into alloy ingots.<br>
+--- <br>
+--- Can be automated by feeding ore into it with a conveyor belt connected to the inputs. The produced ingots can be automatically extracted by connecting a conveyor belt to the output.
+---@class Satis.Build_FoundryMk1_C : Satis.Manufacturer
+local Build_FoundryMk1_C
+
+---@class Satis.Build_FoundryMk1_C.classes : Satis.Build_FoundryMk1_C
+classes.Build_FoundryMk1_C = nil
+
 --- The Lever Module for the modular I/O Panel is used to switch a programm state between two different value (on or off).
 ---@class FIN.ModuleSwitch : FIN.FINModuleBase
 local ModuleSwitch
+
+---@class FIN.ModuleSwitch.classes : FIN.ModuleSwitch
+classes.ModuleSwitch = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -5058,6 +5929,9 @@ ModuleSwitch.ChangeState = { isVarArgs = false }
 ---@class FIN.ModuleStopButton : FIN.FINModuleBase
 local ModuleStopButton
 
+---@class FIN.ModuleStopButton.classes : FIN.ModuleStopButton
+classes.ModuleStopButton = nil
+
 --- Triggers a button press by code.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -5081,6 +5955,9 @@ ModuleStopButton.Trigger = { isVarArgs = false }
 --- You can rotate it indefinetly into any direction where every rotation triggers a computer network signal.
 ---@class FIN.ModulePotentiometer : FIN.FINModuleBase
 local ModulePotentiometer
+
+---@class FIN.ModulePotentiometer.classes : FIN.ModulePotentiometer
+classes.ModulePotentiometer = nil
 
 --- Rotates the potentiometer into the given direction.
 --- ### Flags:
@@ -5106,6 +5983,9 @@ ModulePotentiometer.PotRotate = { isVarArgs = false }
 --- This Button Module for modular I/O Panels can have different knob color and brightnesses and you can use them to trigger specific programmed events.
 ---@class FIN.ModuleButton : FIN.FINModuleBase
 local ModuleButton
+
+---@class FIN.ModuleButton.classes : FIN.ModuleButton
+classes.ModuleButton = nil
 
 --- 
 --- ### Flags:
@@ -5138,6 +6018,9 @@ ModuleButton.Trigger = { isVarArgs = false }
 --- This Button Module for modular I/O Panels can have different knob color and brightnesses and you can use them to trigger specific programmed events.
 ---@class FIN.PushbuttonModule : FIN.FINModuleBase
 local PushbuttonModule
+
+---@class FIN.PushbuttonModule.classes : FIN.PushbuttonModule
+classes.PushbuttonModule = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -5176,6 +6059,9 @@ PushbuttonModule.Trigger = { isVarArgs = false }
 --- This Potentiometer Module allows for input of a fixed value range and fires a signal with the new value each time the internal counter changes. This version has a readout display on it.
 ---@class FIN.PotWDisplayModule : FIN.FINModuleBase
 local PotWDisplayModule
+
+---@class FIN.PotWDisplayModule.classes : FIN.PotWDisplayModule
+classes.PotWDisplayModule = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -5242,6 +6128,9 @@ PotWDisplayModule.value = { isVarArgs = false }
 ---@class FIN.PotentiometerModule : FIN.FINModuleBase
 local PotentiometerModule
 
+---@class FIN.PotentiometerModule.classes : FIN.PotentiometerModule
+classes.PotentiometerModule = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -5294,6 +6183,9 @@ PotentiometerModule.valueChanged = { isVarArgs = false }
 ---@class FIN.MushroomPushbuttonModule : FIN.FINModuleBase
 local MushroomPushbuttonModule
 
+---@class FIN.MushroomPushbuttonModule.classes : FIN.MushroomPushbuttonModule
+classes.MushroomPushbuttonModule = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -5332,6 +6224,9 @@ MushroomPushbuttonModule.Trigger = { isVarArgs = false }
 ---@class FIN.EncoderModule : FIN.FINModuleBase
 local EncoderModule
 
+---@class FIN.EncoderModule.classes : FIN.EncoderModule
+classes.EncoderModule = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -5365,6 +6260,9 @@ EncoderModule.valueChanged = { isVarArgs = false }
 --- This Switch Module for modular I/O Panels is used to toggle between three different settings. It has an illuminable spot on the knob and you can use them to trigger specific programmed events.
 ---@class FIN.SwitchModule3Position : FIN.FINModuleBase
 local SwitchModule3Position
+
+---@class FIN.SwitchModule3Position.classes : FIN.SwitchModule3Position
+classes.SwitchModule3Position = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -5406,6 +6304,9 @@ SwitchModule3Position.ChangeState = { isVarArgs = false }
 ---@class FIN.SwitchModule2Position : FIN.FINModuleBase
 local SwitchModule2Position
 
+---@class FIN.SwitchModule2Position.classes : FIN.SwitchModule2Position
+classes.SwitchModule2Position = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -5443,262 +6344,26 @@ function SwitchModule2Position:setColor(red, green, blue, Emit) end
 ---@type FIN.Signal
 SwitchModule2Position.ChangeState = { isVarArgs = false }
 
---- The FicsIt-Networks Drive holder allows you to add any hard drive to the computer system.<br>
---- <br>
---- The drive will then be able to get mounted as root FS or to get added as device file to the FS, after that you wil be able to manually mount the drive to your desired location.
----@class FIN.DriveHolder_C : FIN.FINComputerDriveHolder
-local DriveHolder_C
-
---- This Button Module for modular I/O Panels can have different knob color and brightnesses and you can use them to trigger specific programmed events.
----@class FIN.MCP_Mod_Plug_C : FIN.FINModuleBase
-local MCP_Mod_Plug_C
-
---- The FicsIt-Networks Network Card allows yout to send network messages to other network cards in the same computer network.<br>
---- <br>
---- You can use unicast and broadcast messages to share information between multiple different computers in the same network.<br>
---- <br>
---- This is the best and easiest way for you to communicate between multiple computers.<br>
---- <br>
---- If you want to recieve network messages, make sure you also open the according port, since every message is asscociated with a port allowing for better filtering.
----@class FIN.NetworkCard_C : FIN.NetworkCard
-local NetworkCard_C
-
---- The Ficsit Networks Wireless Access Point allows you to connect a circuit to the Ficsit Wireless Area Network (FWAN), which uses Radio Towers frequencies to create a messaging network over the planet.<br>
----  <br>
---- It should be connected to a Radio Tower, then all network messages received will be broadcasted to all other Wireless Access Points across the map.
----@class FIN.WirelessAccessPoint_C : FIN.FINWirelessAccessPoint
-local WirelessAccessPoint_C
-
---- The FicsIt-Networks Network Router allows you to sepperate two different component network from each other.<br>
---- But it still lets network messages sent by network cards through.<br>
---- This allows for better networking capabilities, faster networking (can reduce game lag) and makes working with larger networks and multiple computer more easy.<br>
---- <br>
---- The router also provides a couple of functions which allow you to create filters for ports and message senders.
----@class FIN.NetworkRouter_C : FIN.NetworkRouter
-local NetworkRouter_C
-
---- The FicsIt-Network computer case is the most important thing you will know of. This case already holds the essentials of a computer for you. Like a network connector, keyboard, mouse and screen. But most important of all, it already has a motherboard were you can place and configure the computer just like you want.
----@class FIN.Computer_C : FIN.ComputerCase
-local Computer_C
-
---- The FicsIt-Networks large screen allows you to display anything a GPU can render onto a huge plane.<br>
---- <br>
---- You can also interact with the monitor by locking at it and also by clicking on it.
----@class FIN.Build_Screen_C : FIN.Screen
-local Build_Screen_C
-
---- This CPU is from the FicsIt-Lua series and allows you to program the PC with Lua.<br>
---- <br>
---- You can only place one CPU per PC.<br>
---- <br>
---- You are required to have at least one CPU per PC to run it. FicsIt does not allow unused PC Cases to get build.
----@class FIN.CPU_Lua_C : FIN.FINComputerProcessorLua
-local CPU_Lua_C
-
---- The FicsIt-Networks indicator light allows yout to determine by the looks of from far away the state of a machine or program.<br>
---- <br>
---- It has dynamic height, is stack able and you can control the color of it via accessing it from the computer network.
----@class FIN.IndicatorPole_C : FIN.IndicatorPole
-local IndicatorPole_C
-
---- The FicsIt-Networks Codeable Splitter is able to get connected to the component network and provides functions and signals for custom splitter behaviour defenition.<br>
---- <br>
---- This allows you to change the splitting behaviour in runtime by connected computers so it can f.e. depend on the amount of items in a storage container.
----@class FIN.CodeableSplitter_C : FIN.CodeableSplitter
-local CodeableSplitter_C
-
---- The FicsIt-Networks Codeable Merger  is able to get connected to the component network and provides functions and signals for custom merger behaviour defenition.<br>
---- <br>
---- This allows you to change the merging behaviour in runtime by connected computers so it can f.e. depend on the amount of items in a storage container.
----@class FIN.CodeableMerger_C : FIN.CodeableMerger
-local CodeableMerger_C
-
---- Enclosure for 1 command points
----@class FIN.ModulePanel : Satis.Buildable
-local ModulePanel
-
---- 
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@param Y number 
----@return Engine.Actor Module 
-function ModulePanel:getYModule(Y) end
-
---- 
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@param X number 
----@return Engine.Actor Module 
-function ModulePanel:getXModule(X) end
-
---- Returns all modules placed on the panel.
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@return Engine.Object[] modules All the modules placed on the panel.
-function ModulePanel:getModules() end
-
---- Returns the module placed at the given location on the panel.
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@param x number The x position of the command point, starting from the non-cable end. Indexing starts at 0.
----@param y number The y position  of the command point, starting from the non-cable end. Indexing starts at 0.
----@return Engine.Actor module The module you want to get. Null if no module was placed.
-function ModulePanel:getModule(x, y) end
-
---- Enclosure for 2 command points.<br>
---- <br>
---- These Micro Control Panels can be used through out your factory and allow you to have an easier look on the state of your factory and they allow you to control your factory more easily.<br>
---- <br>
---- You can fully customize the control panels with buttons lights etc.
----@class FIN.MCP_2Point_C : FIN.ModulePanel
-local MCP_2Point_C
-
---- Micro Control Panel for 1 command point, center placement.<br>
---- <br>
---- These Micro Control Panels can be used through out your factory and allow you to have an easier look on the state of your factory and they allow you to control your factory more easily.<br>
---- <br>
---- You can fully customize the control panels with buttons lights etc.
----@class FIN.MCP_1Point_Center_C : FIN.ModulePanel
-local MCP_1Point_Center_C
-
---- Enclosure for 1 command points.<br>
---- <br>
---- These Micro Control Panels can be used through out your factory and allow you to have an easier look on the state of your factory and they allow you to control your factory more easily.<br>
---- <br>
---- You can fully customize the control panels with buttons lights etc.
----@class FIN.MCP_1Point_C : FIN.ModulePanel
-local MCP_1Point_C
-
---- Enclosure for 3 command points.<br>
---- <br>
---- These Micro Control Panels can be used through out your factory and allow you to have an easier look on the state of your factory and they allow you to control your factory more easily.<br>
---- <br>
---- You can fully customize the control panels with buttons lights etc.
----@class FIN.MCP_3Point_C : FIN.ModulePanel
-local MCP_3Point_C
-
---- The Graphical Processing Unit T2 allows for 2D Drawing on a screen.<br>
---- <br>
---- You are able to draw with lines, boxes, text, images & more.<br>
---- <br>
---- And through the use of transformation stack and clipping stack, you can more easily create more complex drawings!<br>
---- <br>
---- The GPU also implemnts some signals allowing you to interact with the graphics more easily via keyboard, mouse and even touch.
----@class FIN.GPU_T2_C : FIN.FINComputerGPUT2
-local GPU_T2_C
-
---- The FicsIt-Networks GPU T1 allows you to render a character grid onto any kind of screen.<br>
---- <br>
---- Each character of this grid can be colored as you want as well as the background of each character.<br>
---- <br>
---- You can also change the resolution to up to 150x50 characters.<br>
---- <br>
---- The GPU also implemnts some signals allowing you to interact with the graphics more easily via keyboard, mouse and even touch.
----@class FIN.GPU_T1_C : FIN.GPUT1
-local GPU_T1_C
-
---- This Screen Module for modular I/O Panels allows you to show graphics a GPU renders and to interact with it.<br>
---- <br>
---- You can use the instance of the module to bind it to a GPU. The screen will then display the graphics the GPU renders. If you just look at the screen with the crosshair you will trigger the GPUs OnMouseMove events or if you event click with the right of left mouse button while doing so, you can also trigger the MouseDown and MouseUp events.
----@class FIN.ModuleScreen_C : FIN.FINModuleScreen
-local ModuleScreen_C
-
---- This FicsIt-Networks Wall Plug allows you to pass a network circuit through a wall, allowing for more ease of use of the network cables.
----@class FIN.NetworkWallPlug_Double_C : Satis.Buildable
-local NetworkWallPlug_Double_C
-
---- The FicsIt-Networks speaker pole is a network component which allows you to use one more sense of the pioneers to give commands to them or to just make ambient better.<br>
---- <br>
---- The speaker pole can play sound files located in the Computer Folder "/Sounds" in your Satisfactory Save-Games-Folder. The FicsIt-Networks speaker pole is only able to play .ogg files cause FicsIt Inc. has the opinion other file formates are useless.
----@class FIN.Speakers_C : FIN.SpeakerPole
-local Speakers_C
-
---- 
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@param Volume number 
-function Speakers_C:setVolume(Volume) end
-
---- 
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@param Range number 
-function Speakers_C:setRange(Range) end
-
---- 
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@return number Volume 
-function Speakers_C:getVolume() end
-
---- 
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@return number Range 
-function Speakers_C:getRange() end
-
---- <br>
---- 
---- ### returns from event.pull:<br>
---- ```
---- local signalName, component, setting, New, Old = event.pull()
---- ```
---- - `signalName: "SpeakerSetting"`
---- - `component: Speakers_C`
---- - `setting: number` <br>
---- 
---- - `New: number` <br>
---- 
---- - `Old: number` <br>
---- 
----@deprecated
----@type FIN.Signal
-Speakers_C.SpeakerSetting = { isVarArgs = false }
-
---- The Modular FicsIt Indicator Pole allows busy pioneers to check on the status of machines, factories and much more from a long distance far away. To express the status you can stack individual modules. FicsIt invested more money to make the indicator pole suitable for every situation by allowing it to be placed on walls, floors and beams with a dynamic orientation and even dynamic height.
----@class FIN.Build_ModularIndicatorPole_C : FIN.ModularIndicatorPole
-local Build_ModularIndicatorPole_C
-
---- FicsIt Indicator Module for FicsIt Modular Indicator Poles provides pioneers with the most fundamental indicator. The new and improved incandecent RGB bulb provides versatility to the industrious. Each modules color and intensity can be set via the network by a computer.
----@class FIN.ModularIndicatorPoleModule : FIN.FINModularIndicatorPoleModule
-local ModularIndicatorPoleModule
-
---- 
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@return Engine.Color FLinearColor 
-function ModularIndicatorPoleModule:getColor() end
-
---- Sets the color of this module
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@param r number The red part of the color in which the light glows. (0.0 - 1.0)
----@param g number The green part of the color in which the light glows. (0.0 - 1.0)
----@param b number The blue part of the color in which the light glows. (0.0 - 1.0)
----@param e number The light intensity of the pole. (>=0.0)
-function ModularIndicatorPoleModule:setColor(r, g, b, e) end
-
 --- Label is just a module for placing a label onto the panel
 ---@class FIN.Label2x1Module : FIN.FINModuleBase
 local Label2x1Module
+
+---@class FIN.Label2x1Module.classes : FIN.Label2x1Module
+classes.Label2x1Module = nil
 
 --- Label is just a module for placing a label onto the panel
 ---@class FIN.Label1x1Module : FIN.FINModuleBase
 local Label1x1Module
 
+---@class FIN.Label1x1Module.classes : FIN.Label1x1Module
+classes.Label1x1Module = nil
+
 --- A medium analogue Gauge for use on Large Panels. The red portion and needle position can be changed through FIN
 ---@class FIN.BigGaugeModule : FIN.FINModuleBase
 local BigGaugeModule
+
+---@class FIN.BigGaugeModule.classes : FIN.BigGaugeModule
+classes.BigGaugeModule = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -5737,6 +6402,9 @@ function BigGaugeModule:setColor(red, green, blue, Emit) end
 ---@class FIN.SquareMicroDisplayModule : FIN.FINModuleBase
 local SquareMicroDisplayModule
 
+---@class FIN.SquareMicroDisplayModule.classes : FIN.SquareMicroDisplayModule
+classes.SquareMicroDisplayModule = nil
+
 --- Sets the text to be displayed on this micro display
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -5758,6 +6426,9 @@ function SquareMicroDisplayModule:setColor(red, green, blue, Emit) end
 --- Can display up to 3 digits, One additional dot may be used.
 ---@class FIN.MicroDisplayModule : FIN.FINModuleBase
 local MicroDisplayModule
+
+---@class FIN.MicroDisplayModule.classes : FIN.MicroDisplayModule
+classes.MicroDisplayModule = nil
 
 --- Sets the text to be displayed on this micro display
 --- ### Flags:
@@ -5781,6 +6452,9 @@ function MicroDisplayModule:setColor(red, green, blue, Emit) end
 ---@class FIN.LargeMicroDisplayModule : FIN.FINModuleBase
 local LargeMicroDisplayModule
 
+---@class FIN.LargeMicroDisplayModule.classes : FIN.LargeMicroDisplayModule
+classes.LargeMicroDisplayModule = nil
+
 --- Sets the text to be displayed on this micro display
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -5802,6 +6476,9 @@ function LargeMicroDisplayModule:setColor(red, green, blue, Emit) end
 ---@class FIN.IndicatorModule : FIN.FINModuleBase
 local IndicatorModule
 
+---@class FIN.IndicatorModule.classes : FIN.IndicatorModule
+classes.IndicatorModule = nil
+
 --- 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -5812,9 +6489,68 @@ local IndicatorModule
 ---@param Emit number 
 function IndicatorModule:setColor(red, green, blue, Emit) end
 
+--- This Button Module for modular I/O Panels can have different knob color and brightnesses and you can use them to trigger specific programmed events.
+---@class FIN.MCP_Mod_Plug_C : FIN.FINModuleBase
+local MCP_Mod_Plug_C
+
+---@class FIN.MCP_Mod_Plug_C.classes : FIN.MCP_Mod_Plug_C
+classes.MCP_Mod_Plug_C = nil
+
+--- The FicsIt-Networks Drive holder allows you to add any hard drive to the computer system.<br>
+--- <br>
+--- The drive will then be able to get mounted as root FS or to get added as device file to the FS, after that you wil be able to manually mount the drive to your desired location.
+---@class FIN.DriveHolder_C : FIN.FINComputerDriveHolder
+local DriveHolder_C
+
+---@class FIN.DriveHolder_C.classes : FIN.DriveHolder_C
+classes.DriveHolder_C = nil
+
+--- The FicsIt-Networks large screen allows you to display anything a GPU can render onto a huge plane.<br>
+--- <br>
+--- You can also interact with the monitor by locking at it and also by clicking on it.
+---@class FIN.Build_Screen_C : FIN.Screen
+local Build_Screen_C
+
+---@class FIN.Build_Screen_C.classes : FIN.Build_Screen_C
+classes.Build_Screen_C = nil
+
+--- The Modular FicsIt Indicator Pole allows busy pioneers to check on the status of machines, factories and much more from a long distance far away. To express the status you can stack individual modules. FicsIt invested more money to make the indicator pole suitable for every situation by allowing it to be placed on walls, floors and beams with a dynamic orientation and even dynamic height.
+---@class FIN.Build_ModularIndicatorPole_C : FIN.ModularIndicatorPole
+local Build_ModularIndicatorPole_C
+
+---@class FIN.Build_ModularIndicatorPole_C.classes : FIN.Build_ModularIndicatorPole_C
+classes.Build_ModularIndicatorPole_C = nil
+
+--- FicsIt Indicator Module for FicsIt Modular Indicator Poles provides pioneers with the most fundamental indicator. The new and improved incandecent RGB bulb provides versatility to the industrious. Each modules color and intensity can be set via the network by a computer.
+---@class FIN.ModularIndicatorPoleModule : FIN.FINModularIndicatorPoleModule
+local ModularIndicatorPoleModule
+
+---@class FIN.ModularIndicatorPoleModule.classes : FIN.ModularIndicatorPoleModule
+classes.ModularIndicatorPoleModule = nil
+
+--- 
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@return Engine.Color FLinearColor 
+function ModularIndicatorPoleModule:getColor() end
+
+--- Sets the color of this module
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@param r number The red part of the color in which the light glows. (0.0 - 1.0)
+---@param g number The green part of the color in which the light glows. (0.0 - 1.0)
+---@param b number The blue part of the color in which the light glows. (0.0 - 1.0)
+---@param e number The light intensity of the pole. (>=0.0)
+function ModularIndicatorPoleModule:setColor(r, g, b, e) end
+
 --- A small buzzer for panel mounting capable of playing single frequency beeps
 ---@class FIN.BuzzerModule : FIN.FINModuleBase
 local BuzzerModule
+
+---@class FIN.BuzzerModule.classes : FIN.BuzzerModule
+classes.BuzzerModule = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -5873,6 +6609,9 @@ function BuzzerModule:beep() end
 ---@class FIN.SizeableModulePanel : FIN.FINSizeablePanel
 local SizeableModulePanel
 
+---@class FIN.SizeableModulePanel.classes : FIN.SizeableModulePanel
+classes.SizeableModulePanel = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -5903,6 +6642,42 @@ function SizeableModulePanel:getModules() end
 ---@return Engine.Actor module The module you want to get. Null if no module was placed.
 function SizeableModulePanel:getModule(x, y) end
 
+--- The FicsIt-Networks indicator light allows yout to determine by the looks of from far away the state of a machine or program.<br>
+--- <br>
+--- It has dynamic height, is stack able and you can control the color of it via accessing it from the computer network.
+---@class FIN.IndicatorPole_C : FIN.IndicatorPole
+local IndicatorPole_C
+
+---@class FIN.IndicatorPole_C.classes : FIN.IndicatorPole_C
+classes.IndicatorPole_C = nil
+
+--- The FicsIt-Networks Codeable Merger  is able to get connected to the component network and provides functions and signals for custom merger behaviour defenition.<br>
+--- <br>
+--- This allows you to change the merging behaviour in runtime by connected computers so it can f.e. depend on the amount of items in a storage container.
+---@class FIN.CodeableMerger_C : FIN.CodeableMerger
+local CodeableMerger_C
+
+---@class FIN.CodeableMerger_C.classes : FIN.CodeableMerger_C
+classes.CodeableMerger_C = nil
+
+--- The FicsIt-Networks Codeable Splitter is able to get connected to the component network and provides functions and signals for custom splitter behaviour defenition.<br>
+--- <br>
+--- This allows you to change the splitting behaviour in runtime by connected computers so it can f.e. depend on the amount of items in a storage container.
+---@class FIN.CodeableSplitter_C : FIN.CodeableSplitter
+local CodeableSplitter_C
+
+---@class FIN.CodeableSplitter_C.classes : FIN.CodeableSplitter_C
+classes.CodeableSplitter_C = nil
+
+--- This Screen Module for modular I/O Panels allows you to show graphics a GPU renders and to interact with it.<br>
+--- <br>
+--- You can use the instance of the module to bind it to a GPU. The screen will then display the graphics the GPU renders. If you just look at the screen with the crosshair you will trigger the GPUs OnMouseMove events or if you event click with the right of left mouse button while doing so, you can also trigger the MouseDown and MouseUp events.
+---@class FIN.ModuleScreen_C : FIN.FINModuleScreen
+local ModuleScreen_C
+
+---@class FIN.ModuleScreen_C.classes : FIN.ModuleScreen_C
+classes.ModuleScreen_C = nil
+
 --- The FicsIt-Networks Text-Display Module for the Modular Control Panel is a simple GPU and Screen combined!<br>
 --- <br>
 --- It allows you to display any kind of text with differnt font sizes and you can even switch between two fonts!<br>
@@ -5910,6 +6685,9 @@ function SizeableModulePanel:getModule(x, y) end
 --- But you can't interact with it, nor change the background/foreground color as you can do with a GPU.
 ---@class FIN.ModuleTextDisplay : FIN.FINModuleBase
 local ModuleTextDisplay
+
+---@class FIN.ModuleTextDisplay.classes : FIN.ModuleTextDisplay
+classes.ModuleTextDisplay = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -5940,6 +6718,9 @@ ModuleTextDisplay.text = nil
 ---@class FIN.LargeControlPanel : Satis.Buildable
 local LargeControlPanel
 
+---@class FIN.LargeControlPanel.classes : FIN.LargeControlPanel
+classes.LargeControlPanel = nil
+
 --- Returns all modules placed on the panel.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -5956,6 +6737,45 @@ function LargeControlPanel:getModules() end
 ---@return Engine.Actor module The module you want to get. Null if no module was placed.
 function LargeControlPanel:getModule(x, y) end
 
+--- Enclosure for 1 command points
+---@class FIN.ModulePanel : Satis.Buildable
+local ModulePanel
+
+---@class FIN.ModulePanel.classes : FIN.ModulePanel
+classes.ModulePanel = nil
+
+--- 
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@param Y number 
+---@return Engine.Actor Module 
+function ModulePanel:getYModule(Y) end
+
+--- 
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@param X number 
+---@return Engine.Actor Module 
+function ModulePanel:getXModule(X) end
+
+--- Returns all modules placed on the panel.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@return Engine.Object[] modules All the modules placed on the panel.
+function ModulePanel:getModules() end
+
+--- Returns the module placed at the given location on the panel.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@param x number The x position of the command point, starting from the non-cable end. Indexing starts at 0.
+---@param y number The y position  of the command point, starting from the non-cable end. Indexing starts at 0.
+---@return Engine.Actor module The module you want to get. Null if no module was placed.
+function ModulePanel:getModule(x, y) end
+
 --- Enclosure for 6 command points.<br>
 --- <br>
 --- These Micro Control Panels can be used through out your factory and allow you to have an easier look on the state of your factory and they allow you to control your factory more easily.<br>
@@ -5964,34 +6784,59 @@ function LargeControlPanel:getModule(x, y) end
 ---@class FIN.MCP_6Point_C : FIN.ModulePanel
 local MCP_6Point_C
 
---- This large verical modular I/O control panel allows you to attach multiple different modules on to it and use them as I/O to control you programms.<br>
---- <br>
---- You can connect it to the FicsIt-Network.<br>
---- <br>
---- Important to note is that every module is it's own component, that means if you want to listen to the signals, you will need to listen to each of them individually.
----@class FIN.LargeVerticalControlPanel : Satis.Buildable
-local LargeVerticalControlPanel
+---@class FIN.MCP_6Point_C.classes : FIN.MCP_6Point_C
+classes.MCP_6Point_C = nil
 
---- Returns all modules placed on the panels.
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@return Engine.Object[] modules All the modules placed on the panels.
-function LargeVerticalControlPanel:getModules() end
+--- Enclosure for 2 command points.<br>
+--- <br>
+--- These Micro Control Panels can be used through out your factory and allow you to have an easier look on the state of your factory and they allow you to control your factory more easily.<br>
+--- <br>
+--- You can fully customize the control panels with buttons lights etc.
+---@class FIN.MCP_2Point_C : FIN.ModulePanel
+local MCP_2Point_C
 
---- Returns the module placed at the given location on the given panel.
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@param x number The x location of the module on the panel. (0 = left)
----@param y number The y location of the module on the panel. (0 = bottom)
----@param panel number The panel you want to get the module from.
----@return Engine.Actor module The module you want to get. Null if no module was placed.
-function LargeVerticalControlPanel:getModule(x, y, panel) end
+---@class FIN.MCP_2Point_C.classes : FIN.MCP_2Point_C
+classes.MCP_2Point_C = nil
+
+--- Micro Control Panel for 1 command point, center placement.<br>
+--- <br>
+--- These Micro Control Panels can be used through out your factory and allow you to have an easier look on the state of your factory and they allow you to control your factory more easily.<br>
+--- <br>
+--- You can fully customize the control panels with buttons lights etc.
+---@class FIN.MCP_1Point_Center_C : FIN.ModulePanel
+local MCP_1Point_Center_C
+
+---@class FIN.MCP_1Point_Center_C.classes : FIN.MCP_1Point_Center_C
+classes.MCP_1Point_Center_C = nil
+
+--- Enclosure for 1 command points.<br>
+--- <br>
+--- These Micro Control Panels can be used through out your factory and allow you to have an easier look on the state of your factory and they allow you to control your factory more easily.<br>
+--- <br>
+--- You can fully customize the control panels with buttons lights etc.
+---@class FIN.MCP_1Point_C : FIN.ModulePanel
+local MCP_1Point_C
+
+---@class FIN.MCP_1Point_C.classes : FIN.MCP_1Point_C
+classes.MCP_1Point_C = nil
+
+--- Enclosure for 3 command points.<br>
+--- <br>
+--- These Micro Control Panels can be used through out your factory and allow you to have an easier look on the state of your factory and they allow you to control your factory more easily.<br>
+--- <br>
+--- You can fully customize the control panels with buttons lights etc.
+---@class FIN.MCP_3Point_C : FIN.ModulePanel
+local MCP_3Point_C
+
+---@class FIN.MCP_3Point_C.classes : FIN.MCP_3Point_C
+classes.MCP_3Point_C = nil
 
 --- A small analogue Gauge for use on Micro Enclosures. The red portion and needle position can be changed through FIN
 ---@class FIN.GaugeModule : FIN.FINModuleBase
 local GaugeModule
+
+---@class FIN.GaugeModule.classes : FIN.GaugeModule
+classes.GaugeModule = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -6024,17 +6869,190 @@ function GaugeModule:setBackgroundColor(r, g, b) end
 ---@param Emit number 
 function GaugeModule:setColor(red, green, blue, Emit) end
 
+--- This large verical modular I/O control panel allows you to attach multiple different modules on to it and use them as I/O to control you programms.<br>
+--- <br>
+--- You can connect it to the FicsIt-Network.<br>
+--- <br>
+--- Important to note is that every module is it's own component, that means if you want to listen to the signals, you will need to listen to each of them individually.
+---@class FIN.LargeVerticalControlPanel : Satis.Buildable
+local LargeVerticalControlPanel
+
+---@class FIN.LargeVerticalControlPanel.classes : FIN.LargeVerticalControlPanel
+classes.LargeVerticalControlPanel = nil
+
+--- Returns all modules placed on the panels.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@return Engine.Object[] modules All the modules placed on the panels.
+function LargeVerticalControlPanel:getModules() end
+
+--- Returns the module placed at the given location on the given panel.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@param x number The x location of the module on the panel. (0 = left)
+---@param y number The y location of the module on the panel. (0 = bottom)
+---@param panel number The panel you want to get the module from.
+---@return Engine.Actor module The module you want to get. Null if no module was placed.
+function LargeVerticalControlPanel:getModule(x, y, panel) end
+
 --- The FicsIt-Networks Vehicle Scanner allows you to communicate with vehicles driving over the scanner.<br>
 --- <br>
 --- You can also get notfied when a vehicle enters or leaves the scanner.
 ---@class FIN.VehicleScanner_C : FIN.VehicleScanner
 local VehicleScanner_C
 
+---@class FIN.VehicleScanner_C.classes : FIN.VehicleScanner_C
+classes.VehicleScanner_C = nil
+
+--- This CPU is from the FicsIt-Lua series and allows you to program the PC with Lua.<br>
+--- <br>
+--- You can only place one CPU per PC.<br>
+--- <br>
+--- You are required to have at least one CPU per PC to run it. FicsIt does not allow unused PC Cases to get build.
+---@class FIN.CPU_Lua_C : FIN.FINComputerProcessorLua
+local CPU_Lua_C
+
+---@class FIN.CPU_Lua_C.classes : FIN.CPU_Lua_C
+classes.CPU_Lua_C = nil
+
+--- The Ficsit Networks Wireless Access Point allows you to connect a circuit to the Ficsit Wireless Area Network (FWAN), which uses Radio Towers frequencies to create a messaging network over the planet.<br>
+---  <br>
+--- It should be connected to a Radio Tower, then all network messages received will be broadcasted to all other Wireless Access Points across the map.
+---@class FIN.WirelessAccessPoint_C : FIN.FINWirelessAccessPoint
+local WirelessAccessPoint_C
+
+---@class FIN.WirelessAccessPoint_C.classes : FIN.WirelessAccessPoint_C
+classes.WirelessAccessPoint_C = nil
+
+--- The FicsIt-Networks Network Router allows you to sepperate two different component network from each other.<br>
+--- But it still lets network messages sent by network cards through.<br>
+--- This allows for better networking capabilities, faster networking (can reduce game lag) and makes working with larger networks and multiple computer more easy.<br>
+--- <br>
+--- The router also provides a couple of functions which allow you to create filters for ports and message senders.
+---@class FIN.NetworkRouter_C : FIN.NetworkRouter
+local NetworkRouter_C
+
+---@class FIN.NetworkRouter_C.classes : FIN.NetworkRouter_C
+classes.NetworkRouter_C = nil
+
+--- The FicsIt-Networks speaker pole is a network component which allows you to use one more sense of the pioneers to give commands to them or to just make ambient better.<br>
+--- <br>
+--- The speaker pole can play sound files located in the Computer Folder "/Sounds" in your Satisfactory Save-Games-Folder. The FicsIt-Networks speaker pole is only able to play .ogg files cause FicsIt Inc. has the opinion other file formates are useless.
+---@class FIN.Speakers_C : FIN.SpeakerPole
+local Speakers_C
+
+---@class FIN.Speakers_C.classes : FIN.Speakers_C
+classes.Speakers_C = nil
+
+--- 
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@param Volume number 
+function Speakers_C:setVolume(Volume) end
+
+--- 
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@param Range number 
+function Speakers_C:setRange(Range) end
+
+--- 
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@return number Volume 
+function Speakers_C:getVolume() end
+
+--- 
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@return number Range 
+function Speakers_C:getRange() end
+
+--- <br>
+--- 
+--- ### returns from event.pull:<br>
+--- ```
+--- local signalName, component, setting, New, Old = event.pull()
+--- ```
+--- - `signalName: "SpeakerSetting"`
+--- - `component: Speakers_C`
+--- - `setting: number` <br>
+--- 
+--- - `New: number` <br>
+--- 
+--- - `Old: number` <br>
+--- 
+---@deprecated
+---@type FIN.Signal
+Speakers_C.SpeakerSetting = { isVarArgs = false }
+
+--- The Graphical Processing Unit T2 allows for 2D Drawing on a screen.<br>
+--- <br>
+--- You are able to draw with lines, boxes, text, images & more.<br>
+--- <br>
+--- And through the use of transformation stack and clipping stack, you can more easily create more complex drawings!<br>
+--- <br>
+--- The GPU also implemnts some signals allowing you to interact with the graphics more easily via keyboard, mouse and even touch.
+---@class FIN.GPU_T2_C : FIN.FINComputerGPUT2
+local GPU_T2_C
+
+---@class FIN.GPU_T2_C.classes : FIN.GPU_T2_C
+classes.GPU_T2_C = nil
+
+--- The FicsIt-Networks GPU T1 allows you to render a character grid onto any kind of screen.<br>
+--- <br>
+--- Each character of this grid can be colored as you want as well as the background of each character.<br>
+--- <br>
+--- You can also change the resolution to up to 150x50 characters.<br>
+--- <br>
+--- The GPU also implemnts some signals allowing you to interact with the graphics more easily via keyboard, mouse and even touch.
+---@class FIN.GPU_T1_C : FIN.GPUT1
+local GPU_T1_C
+
+---@class FIN.GPU_T1_C.classes : FIN.GPU_T1_C
+classes.GPU_T1_C = nil
+
+--- A Internet Card!
+---@class FIN.InternetCard_C : FIN.FINInternetCard
+local InternetCard_C
+
+---@class FIN.InternetCard_C.classes : FIN.InternetCard_C
+classes.InternetCard_C = nil
+
+--- The FicsIt-Networks Network Card allows yout to send network messages to other network cards in the same computer network.<br>
+--- <br>
+--- You can use unicast and broadcast messages to share information between multiple different computers in the same network.<br>
+--- <br>
+--- This is the best and easiest way for you to communicate between multiple computers.<br>
+--- <br>
+--- If you want to recieve network messages, make sure you also open the according port, since every message is asscociated with a port allowing for better filtering.
+---@class FIN.NetworkCard_C : FIN.NetworkCard
+local NetworkCard_C
+
+---@class FIN.NetworkCard_C.classes : FIN.NetworkCard_C
+classes.NetworkCard_C = nil
+
+--- The FicsIt-Network computer case is the most important thing you will know of. This case already holds the essentials of a computer for you. Like a network connector, keyboard, mouse and screen. But most important of all, it already has a motherboard were you can place and configure the computer just like you want.
+---@class FIN.Computer_C : FIN.ComputerCase
+local Computer_C
+
+---@class FIN.Computer_C.classes : FIN.Computer_C
+classes.Computer_C = nil
+
 --- The FicsIt-Networks Screen Driver allows you to add a screen display to the UI of the computer case you build this module intol.<br>
 --- <br>
 --- You can then use the computer API to get a reference to the screen and so you can bind the screen to a GPU.
 ---@class FIN.ScreenDriver_C : FIN.FINComputerScreen
 local ScreenDriver_C
+
+---@class FIN.ScreenDriver_C.classes : FIN.ScreenDriver_C
+classes.ScreenDriver_C = nil
 
 --- This is 100kB of amazing FicsIt-Networks Memory.<br>
 --- <br>
@@ -6044,29 +7062,47 @@ local ScreenDriver_C
 ---@class FIN.RAM_T1_C : FIN.FINComputerMemory
 local RAM_T1_C
 
---- A Internet Card!
----@class FIN.InternetCard_C : FIN.FINInternetCard
-local InternetCard_C
+---@class FIN.RAM_T1_C.classes : FIN.RAM_T1_C
+classes.RAM_T1_C = nil
+
+--- This FicsIt-Networks Wall Plug allows you to pass a network circuit through a wall, allowing for more ease of use of the network cables.
+---@class FIN.NetworkWallPlug_Double_C : Satis.Buildable
+local NetworkWallPlug_Double_C
+
+---@class FIN.NetworkWallPlug_Double_C.classes : FIN.NetworkWallPlug_Double_C
+classes.NetworkWallPlug_Double_C = nil
 
 --- Contains 24 slots for storing large amounts of items.<br>
 --- Has an input and output for conveyor belts.
 ---@class Satis.Build_StorageContainerMk1_C : Satis.FGBuildableStorage
 local Build_StorageContainerMk1_C
 
+---@class Satis.Build_StorageContainerMk1_C.classes : Satis.Build_StorageContainerMk1_C
+classes.Build_StorageContainerMk1_C = nil
+
 --- Contains 48 slots for storing large amounts of items.<br>
 --- Has two inputs and outputs for conveyor belts.
 ---@class Satis.Build_StorageContainerMk2_C : Satis.FGBuildableStorage
 local Build_StorageContainerMk2_C
+
+---@class Satis.Build_StorageContainerMk2_C.classes : Satis.Build_StorageContainerMk2_C
+classes.Build_StorageContainerMk2_C = nil
 
 --- Can contain up to 2400m³ of fluid.<br>
 --- Has an input and output for pipes.
 ---@class Satis.Build_IndustrialTank_C : Satis.PipeReservoir
 local Build_IndustrialTank_C
 
+---@class Satis.Build_IndustrialTank_C.classes : Satis.Build_IndustrialTank_C
+classes.Build_IndustrialTank_C = nil
+
 --- Can contain up to 400m³ of fluid.<br>
 --- Has an input and output for pipes.
 ---@class Satis.Build_PipeStorageTank_C : Satis.PipeReservoir
 local Build_PipeStorageTank_C
+
+---@class Satis.Build_PipeStorageTank_C.classes : Satis.Build_PipeStorageTank_C
+classes.Build_PipeStorageTank_C = nil
 
 --- Used to limit Pipeline flow rates.<br>
 --- Can be attached to a Pipeline.<br>
@@ -6074,6 +7110,9 @@ local Build_PipeStorageTank_C
 --- NOTE: Has an in- and output direction.
 ---@class Satis.Build_Valve_C : Satis.PipelinePump
 local Build_Valve_C
+
+---@class Satis.Build_Valve_C.classes : Satis.Build_Valve_C
+classes.Build_Valve_C = nil
 
 --- Train Signals are used to direct the movement of Trains to avoid collisions and bottlenecks.<br>
 --- <br>
@@ -6083,6 +7122,9 @@ local Build_Valve_C
 ---@class Satis.Build_RailroadBlockSignal_C : Satis.RailroadSignal
 local Build_RailroadBlockSignal_C
 
+---@class Satis.Build_RailroadBlockSignal_C.classes : Satis.Build_RailroadBlockSignal_C
+classes.Build_RailroadBlockSignal_C = nil
+
 --- Train Signals are used to direct the movement of Trains to avoid collisions and bottlenecks.<br>
 --- <br>
 --- Path Signals are advanced signals that are especially useful for bi-directional Railways and complex intersections. They function similarly to Block Signals but rather than occupying the entire Block, Trains can reserve a specific path through it and will only enter the Block if their path allows them to fully pass through it.<br>
@@ -6091,9 +7133,15 @@ local Build_RailroadBlockSignal_C
 ---@class Satis.Build_RailroadPathSignal_C : Satis.RailroadSignal
 local Build_RailroadPathSignal_C
 
+---@class Satis.Build_RailroadPathSignal_C.classes : Satis.Build_RailroadPathSignal_C
+classes.Build_RailroadPathSignal_C = nil
+
 --- 
 ---@class Satis.Build_SignPole_C : Satis.FGBuildableSignSupport
 local Build_SignPole_C
+
+---@class Satis.Build_SignPole_C.classes : Satis.Build_SignPole_C
+classes.Build_SignPole_C = nil
 
 --- Signs can be customized with different elements, such as icons and text, to improve factory organization.<br>
 --- <br>
@@ -6103,6 +7151,9 @@ local Build_SignPole_C
 ---@class Satis.Build_StandaloneWidgetSign_Huge_C : Satis.WidgetSign
 local Build_StandaloneWidgetSign_Huge_C
 
+---@class Satis.Build_StandaloneWidgetSign_Huge_C.classes : Satis.Build_StandaloneWidgetSign_Huge_C
+classes.Build_StandaloneWidgetSign_Huge_C = nil
+
 --- Signs can be customized with different elements, such as icons and text, to improve factory organization.<br>
 --- <br>
 --- Can be placed freely, on Walls, or attached to a variety of buildings, such as Storage Containers.<br>
@@ -6110,6 +7161,9 @@ local Build_StandaloneWidgetSign_Huge_C
 --- Size: 8m x 4m
 ---@class Satis.Build_StandaloneWidgetSign_Large_C : Satis.WidgetSign
 local Build_StandaloneWidgetSign_Large_C
+
+---@class Satis.Build_StandaloneWidgetSign_Large_C.classes : Satis.Build_StandaloneWidgetSign_Large_C
+classes.Build_StandaloneWidgetSign_Large_C = nil
 
 --- Signs can be customized with different elements, such as icons and text, to improve factory organization.<br>
 --- <br>
@@ -6119,6 +7173,9 @@ local Build_StandaloneWidgetSign_Large_C
 ---@class Satis.Build_StandaloneWidgetSign_Medium_C : Satis.WidgetSign
 local Build_StandaloneWidgetSign_Medium_C
 
+---@class Satis.Build_StandaloneWidgetSign_Medium_C.classes : Satis.Build_StandaloneWidgetSign_Medium_C
+classes.Build_StandaloneWidgetSign_Medium_C = nil
+
 --- Signs can be customized with different elements, such as icons and text, to improve factory organization.<br>
 --- <br>
 --- Can be placed freely, on Walls, or attached to a variety of buildings, such as Storage Containers.<br>
@@ -6126,6 +7183,9 @@ local Build_StandaloneWidgetSign_Medium_C
 --- Size: 2m x 3m
 ---@class Satis.Build_StandaloneWidgetSign_Portrait_C : Satis.WidgetSign
 local Build_StandaloneWidgetSign_Portrait_C
+
+---@class Satis.Build_StandaloneWidgetSign_Portrait_C.classes : Satis.Build_StandaloneWidgetSign_Portrait_C
+classes.Build_StandaloneWidgetSign_Portrait_C = nil
 
 --- Signs can be customized with different elements, such as icons and text, to improve factory organization.<br>
 --- <br>
@@ -6135,6 +7195,9 @@ local Build_StandaloneWidgetSign_Portrait_C
 ---@class Satis.Build_StandaloneWidgetSign_Small_C : Satis.WidgetSign
 local Build_StandaloneWidgetSign_Small_C
 
+---@class Satis.Build_StandaloneWidgetSign_Small_C.classes : Satis.Build_StandaloneWidgetSign_Small_C
+classes.Build_StandaloneWidgetSign_Small_C = nil
+
 --- Signs can be customized with different elements, such as icons and text, to improve factory organization.<br>
 --- <br>
 --- Can be placed freely, on Walls, or attached to a variety of buildings, such as Storage Containers.<br>
@@ -6142,6 +7205,9 @@ local Build_StandaloneWidgetSign_Small_C
 --- Size: 4m x 0.5m
 ---@class Satis.Build_StandaloneWidgetSign_SmallVeryWide_C : Satis.WidgetSign
 local Build_StandaloneWidgetSign_SmallVeryWide_C
+
+---@class Satis.Build_StandaloneWidgetSign_SmallVeryWide_C.classes : Satis.Build_StandaloneWidgetSign_SmallVeryWide_C
+classes.Build_StandaloneWidgetSign_SmallVeryWide_C = nil
 
 --- Signs can be customized with different elements, such as icons and text, to improve factory organization.<br>
 --- <br>
@@ -6151,6 +7217,9 @@ local Build_StandaloneWidgetSign_SmallVeryWide_C
 ---@class Satis.Build_StandaloneWidgetSign_SmallWide_C : Satis.WidgetSign
 local Build_StandaloneWidgetSign_SmallWide_C
 
+---@class Satis.Build_StandaloneWidgetSign_SmallWide_C.classes : Satis.Build_StandaloneWidgetSign_SmallWide_C
+classes.Build_StandaloneWidgetSign_SmallWide_C = nil
+
 --- Signs can be customized with different elements, such as icons and text, to improve factory organization.<br>
 --- <br>
 --- Can be placed freely, on Walls, or attached to a variety of buildings, such as Storage Containers.<br>
@@ -6158,6 +7227,9 @@ local Build_StandaloneWidgetSign_SmallWide_C
 --- Size: 2m x 2m
 ---@class Satis.Build_StandaloneWidgetSign_Square_C : Satis.WidgetSign
 local Build_StandaloneWidgetSign_Square_C
+
+---@class Satis.Build_StandaloneWidgetSign_Square_C.classes : Satis.Build_StandaloneWidgetSign_Square_C
+classes.Build_StandaloneWidgetSign_Square_C = nil
 
 --- Signs can be customized with different elements, such as icons and text, to improve factory organization.<br>
 --- <br>
@@ -6167,6 +7239,9 @@ local Build_StandaloneWidgetSign_Square_C
 ---@class Satis.Build_StandaloneWidgetSign_Square_Small_C : Satis.WidgetSign
 local Build_StandaloneWidgetSign_Square_Small_C
 
+---@class Satis.Build_StandaloneWidgetSign_Square_Small_C.classes : Satis.Build_StandaloneWidgetSign_Square_Small_C
+classes.Build_StandaloneWidgetSign_Square_Small_C = nil
+
 --- Signs can be customized with different elements, such as icons and text, to improve factory organization.<br>
 --- <br>
 --- Can be placed freely, on Walls, or attached to a variety of buildings, such as Storage Containers.<br>
@@ -6174,6 +7249,9 @@ local Build_StandaloneWidgetSign_Square_Small_C
 --- Size: 0.5m x 0.5m
 ---@class Satis.Build_StandaloneWidgetSign_Square_Tiny_C : Satis.WidgetSign
 local Build_StandaloneWidgetSign_Square_Tiny_C
+
+---@class Satis.Build_StandaloneWidgetSign_Square_Tiny_C.classes : Satis.Build_StandaloneWidgetSign_Square_Tiny_C
+classes.Build_StandaloneWidgetSign_Square_Tiny_C = nil
 
 --- Automatically opens when living beings or vehicles approach it.<br>
 --- Gate settings can be configured.<br>
@@ -6183,6 +7261,9 @@ local Build_StandaloneWidgetSign_Square_Tiny_C
 ---@class Satis.Build_Gate_Automated_8x4_C : Satis.Door
 local Build_Gate_Automated_8x4_C
 
+---@class Satis.Build_Gate_Automated_8x4_C.classes : Satis.Build_Gate_Automated_8x4_C
+classes.Build_Gate_Automated_8x4_C = nil
+
 --- Contains three cordinates (X, Y, Z) to describe a position or movement vector in 3D Space
 ---@class Engine.Vector
 ---@operator add(Engine.Vector) : Engine.Vector
@@ -6191,6 +7272,10 @@ local Build_Gate_Automated_8x4_C
 ---@operator mul(Engine.Vector) : number
 ---@operator mul(number) : Engine.Vector
 local Vector
+
+---@class Engine.Vector.structs : Engine.Vector
+---@overload fun(Engine.Vector) : { [1]: number, [2]: number, [3]: number }
+structs.Vector = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -6219,6 +7304,10 @@ Vector.z = nil
 ---@operator mul(number) : Engine.Vector2D
 local Vector2D
 
+---@class Engine.Vector2D.structs : Engine.Vector2D
+---@overload fun(Engine.Vector2D) : { [1]: number, [2]: number }
+structs.Vector2D = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -6242,6 +7331,10 @@ do
 ---@operator mul(number) : Engine.Vector
 ---@operator div(number) : Engine.Vector
 local Color
+
+---@class Engine.Color.structs : Engine.Color
+---@overload fun(Engine.Color) : { [1]: number, [2]: number, [3]: number, [4]: number }
+structs.Color = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -6273,6 +7366,10 @@ Color.a = nil
 ---@operator sub(Engine.Rotator) : Engine.Rotator
 local Rotator
 
+---@class Engine.Rotator.structs : Engine.Rotator
+---@overload fun(Engine.Rotator) : { [1]: number, [2]: number, [3]: number }
+structs.Rotator = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -6294,6 +7391,10 @@ Rotator.roll = nil
 --- A Vector containing four values.
 ---@class Engine.Vector4
 local Vector4
+
+---@class Engine.Vector4.structs : Engine.Vector4
+---@overload fun(Engine.Vector4) : { [1]: number, [2]: number, [3]: number, [4]: number }
+structs.Vector4 = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -6323,6 +7424,10 @@ Vector4.w = nil
 ---@class SlateCore.Margin
 local Margin
 
+---@class SlateCore.Margin.structs : SlateCore.Margin
+---@overload fun(SlateCore.Margin) : { [1]: number, [2]: number, [3]: number, [4]: number }
+structs.Margin = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -6351,6 +7456,10 @@ Margin.bottom = nil
 ---@class Satis.Item
 local Item
 
+---@class Satis.Item.structs : Satis.Item
+---@overload fun(Satis.Item) : { [1]: Satis.ItemType }
+structs.Item = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -6360,6 +7469,10 @@ Item.type = nil
 --- A structure that holds item information and item amount to represent an item stack.
 ---@class Satis.ItemStack
 local ItemStack
+
+---@class Satis.ItemStack.structs : Satis.ItemStack
+---@overload fun(Satis.ItemStack) : { [1]: number, [2]: Satis.Item }
+structs.ItemStack = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -6377,6 +7490,10 @@ ItemStack.item = nil
 ---@class Satis.ItemAmount
 local ItemAmount
 
+---@class Satis.ItemAmount.structs : Satis.ItemAmount
+---@overload fun(Satis.ItemAmount) : { [1]: number, [2]: Satis.ItemType }
+structs.ItemAmount = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -6392,6 +7509,9 @@ ItemAmount.type = nil
 --- A struct containing information about a game icon (used in f.e. signs).
 ---@class Satis.IconData
 local IconData
+
+---@class Satis.IconData.structs : Satis.IconData
+structs.IconData = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -6453,6 +7573,10 @@ IconData.searchOnly = nil
 ---@class Satis.TrainDockingRuleSet
 local TrainDockingRuleSet
 
+---@class Satis.TrainDockingRuleSet.structs : Satis.TrainDockingRuleSet
+---@overload fun(Satis.TrainDockingRuleSet) : { [1]: number, [2]: number, [3]: boolean }
+structs.TrainDockingRuleSet = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -6502,6 +7626,10 @@ function TrainDockingRuleSet:setUnloadFilters(filters) end
 --- This structure stores all data that defines what a sign displays.
 ---@class Satis.PrefabSignData
 local PrefabSignData
+
+---@class Satis.PrefabSignData.structs : Satis.PrefabSignData
+---@overload fun(Satis.PrefabSignData) : { [1]: Engine.Object, [2]: Engine.Color, [3]: Engine.Color, [4]: Engine.Color, [5]: Satis.SignType }
+structs.PrefabSignData = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -6600,6 +7728,10 @@ function PrefabSignData:getIconElement(elementName) end
 --- A structure that can hold a buffer of characters and colors that can be displayed with a gpu
 ---@class FIN.GPUT1Buffer
 local GPUT1Buffer
+
+---@class FIN.GPUT1Buffer.structs : FIN.GPUT1Buffer
+---@overload fun(FIN.GPUT1Buffer) : { }
+structs.GPUT1Buffer = nil
 
 --- Allows to get the dimensions of the buffer.
 --- ### Flags:
@@ -6705,6 +7837,10 @@ function GPUT1Buffer:clone() end
 ---@class FIN.GPUT2DrawCallBox
 local GPUT2DrawCallBox
 
+---@class FIN.GPUT2DrawCallBox.structs : FIN.GPUT2DrawCallBox
+---@overload fun(FIN.GPUT2DrawCallBox) : { [1]: Engine.Vector2D, [2]: Engine.Vector2D, [3]: number, [4]: Engine.Color, [5]: string, [6]: Engine.Vector2D, [7]: boolean, [8]: boolean, [9]: boolean, [10]: boolean, [11]: SlateCore.Margin, [12]: boolean, [13]: Engine.Vector4, [14]: boolean, [15]: number, [16]: Engine.Color }
+structs.GPUT2DrawCallBox = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -6805,9 +7941,15 @@ GPUT2DrawCallBox.outlineColor = nil
 ---@class FIN.Future
 local Future
 
+---@class FIN.Future.structs : FIN.Future
+structs.Future = nil
+
 --- A track section that combines the area between multiple signals.
 ---@class FIN.RailroadSignalBlock
 local RailroadSignalBlock
+
+---@class FIN.RailroadSignalBlock.structs : FIN.RailroadSignalBlock
+structs.RailroadSignalBlock = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -6876,6 +8018,10 @@ function RailroadSignalBlock:getApprovedReservations() end
 ---@class FIN.TargetPoint
 local TargetPoint
 
+---@class FIN.TargetPoint.structs : FIN.TargetPoint
+---@overload fun(FIN.TargetPoint) : { [1]: Engine.Vector, [2]: Engine.Rotator, [3]: number, [4]: number }
+structs.TargetPoint = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -6904,6 +8050,10 @@ TargetPoint.wait = nil
 ---@class FIN.TimeTableStop
 local TimeTableStop
 
+---@class FIN.TimeTableStop.structs : FIN.TimeTableStop
+---@overload fun(FIN.TimeTableStop) : { [1]: Satis.RailroadStation }
+structs.TimeTableStop = nil
+
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
@@ -6928,6 +8078,9 @@ function TimeTableStop:setRuleSet(ruleset) end
 ---@class FIN.TrackGraph
 local TrackGraph
 
+---@class FIN.TrackGraph.structs : FIN.TrackGraph
+structs.TrackGraph = nil
+
 --- Returns a list of all trains in the network.
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -6945,6 +8098,9 @@ function TrackGraph:getStations() end
 --- An entry in the Computer Log.
 ---@class FIN.LogEntry
 local LogEntry
+
+---@class FIN.LogEntry.structs : FIN.LogEntry
+structs.LogEntry = nil
 
 --- ### Flags:
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
@@ -6975,390 +8131,6 @@ LogEntry.verbosity = nil
 function LogEntry:format() end
 
 end
-
----@class FIN.classes
----@field Object Engine.Object
----@field ActorComponent Engine.ActorComponent
----@field Actor Engine.Actor
----@field ItemType Satis.ItemType
----@field Buildable Satis.Buildable
----@field FGBuildableConveyorAttachment Satis.FGBuildableConveyorAttachment
----@field FGBuildableAttachmentMerger Satis.FGBuildableAttachmentMerger
----@field FGBuildableAttachmentSplitter Satis.FGBuildableAttachmentSplitter
----@field Factory Satis.Factory
----@field Manufacturer Satis.Manufacturer
----@field FGBuildableAutomatedWorkBench Satis.FGBuildableAutomatedWorkBench
----@field FGBuildableFactoryBuilding Satis.FGBuildableFactoryBuilding
----@field FGBuildableBeam Satis.FGBuildableBeam
----@field FGBuildableBeamLightweight Satis.FGBuildableBeamLightweight
----@field FGBuildableBlueprintDesigner Satis.FGBuildableBlueprintDesigner
----@field FGBuildableCalendar Satis.FGBuildableCalendar
----@field FGBuildableCheatFluidSink Satis.FGBuildableCheatFluidSink
----@field FGBuildableCheatFluidSpawner Satis.FGBuildableCheatFluidSpawner
----@field CircuitBridge Satis.CircuitBridge
----@field CircuitSwitch Satis.CircuitSwitch
----@field FGBuildableControlPanelHost Satis.FGBuildableControlPanelHost
----@field FGBuildableConveyorAttachmentLightweight Satis.FGBuildableConveyorAttachmentLightweight
----@field FGBuildableConveyorBase Satis.FGBuildableConveyorBase
----@field FGBuildableConveyorBelt Satis.FGBuildableConveyorBelt
----@field FGBuildableConveyorLift Satis.FGBuildableConveyorLift
----@field FGBuildableCornerWall Satis.FGBuildableCornerWall
----@field FGBuildableDecor Satis.FGBuildableDecor
----@field DockingStation Satis.DockingStation
----@field FGBuildableWall Satis.FGBuildableWall
----@field Door Satis.Door
----@field FGBuildableDroneStation Satis.FGBuildableDroneStation
----@field FGBuildableFactoryBuildingLightweight Satis.FGBuildableFactoryBuildingLightweight
----@field FGBuildableFactorySimpleProducer Satis.FGBuildableFactorySimpleProducer
----@field LightSource Satis.LightSource
----@field FGBuildableFloodlight Satis.FGBuildableFloodlight
----@field FGBuildableFoundation Satis.FGBuildableFoundation
----@field FGBuildableFoundationLightweight Satis.FGBuildableFoundationLightweight
----@field FGBuildableResourceExtractorBase Satis.FGBuildableResourceExtractorBase
----@field FGBuildableFrackingActivator Satis.FGBuildableFrackingActivator
----@field FGBuildableResourceExtractor Satis.FGBuildableResourceExtractor
----@field FGBuildableFrackingExtractor Satis.FGBuildableFrackingExtractor
----@field FGBuildableGenerator Satis.FGBuildableGenerator
----@field FGBuildableGeneratorFuel Satis.FGBuildableGeneratorFuel
----@field FGBuildableGeneratorGeoThermal Satis.FGBuildableGeneratorGeoThermal
----@field FGBuildableGeneratorNuclear Satis.FGBuildableGeneratorNuclear
----@field FGBuildableHubTerminal Satis.FGBuildableHubTerminal
----@field FGBuildableJumppad Satis.FGBuildableJumppad
----@field FGBuildableLadder Satis.FGBuildableLadder
----@field LightsControlPanel Satis.LightsControlPanel
----@field FGBuildableMAM Satis.FGBuildableMAM
----@field FGBuildableManufacturerVariablePower Satis.FGBuildableManufacturerVariablePower
----@field FGBuildablePassthroughBase Satis.FGBuildablePassthroughBase
----@field FGBuildablePassthrough Satis.FGBuildablePassthrough
----@field FGBuildablePassthroughPipeHyper Satis.FGBuildablePassthroughPipeHyper
----@field FGBuildablePillar Satis.FGBuildablePillar
----@field FGBuildablePillarLightweight Satis.FGBuildablePillarLightweight
----@field FGBuildablePipeBase Satis.FGBuildablePipeBase
----@field BuildablePipeHyper Satis.BuildablePipeHyper
----@field FGBuildablePipeHyperAttachment Satis.FGBuildablePipeHyperAttachment
----@field FGBuildablePipeHyperBooster Satis.FGBuildablePipeHyperBooster
----@field FGBuildablePipeHyperJunction Satis.FGBuildablePipeHyperJunction
----@field FGBuildablePipeline Satis.FGBuildablePipeline
----@field FGBuildablePipelineAttachment Satis.FGBuildablePipelineAttachment
----@field FGBuildablePipelineFlowIndicator Satis.FGBuildablePipelineFlowIndicator
----@field FGBuildablePipelineJunction Satis.FGBuildablePipelineJunction
----@field PipelinePump Satis.PipelinePump
----@field FGBuildablePoleBase Satis.FGBuildablePoleBase
----@field FGBuildablePipelineSupport Satis.FGBuildablePipelineSupport
----@field FGBuildablePipePart Satis.FGBuildablePipePart
----@field FGBuildablePipeHyperPart Satis.FGBuildablePipeHyperPart
----@field PipeReservoir Satis.PipeReservoir
----@field SignBase Satis.SignBase
----@field FGBuildablePixelSign Satis.FGBuildablePixelSign
----@field FGBuildablePole Satis.FGBuildablePole
----@field FGBuildablePoleLightweight Satis.FGBuildablePoleLightweight
----@field FGBuildablePowerPole Satis.FGBuildablePowerPole
----@field PowerStorage Satis.PowerStorage
----@field FGBuildablePowerTower Satis.FGBuildablePowerTower
----@field CircuitSwitchPriority Satis.CircuitSwitchPriority
----@field FGBuildableRadarTower Satis.FGBuildableRadarTower
----@field FGBuildableRailroadBridge Satis.FGBuildableRailroadBridge
----@field RailroadSignal Satis.RailroadSignal
----@field TrainPlatform Satis.TrainPlatform
----@field RailroadStation Satis.RailroadStation
----@field RailroadSwitchControl Satis.RailroadSwitchControl
----@field RailroadTrack Satis.RailroadTrack
----@field FGBuildableRamp Satis.FGBuildableRamp
----@field ResourceSink Satis.ResourceSink
----@field FGBuildableResourceSinkShop Satis.FGBuildableResourceSinkShop
----@field FGBuildableRoad Satis.FGBuildableRoad
----@field FGBuildableSignSupport Satis.FGBuildableSignSupport
----@field FGBuildableSnowDispenser Satis.FGBuildableSnowDispenser
----@field FGBuildableSpaceElevator Satis.FGBuildableSpaceElevator
----@field FGBuildableSpeedSign Satis.FGBuildableSpeedSign
----@field FGBuildableSplitterSmart Satis.FGBuildableSplitterSmart
----@field FGBuildableStair Satis.FGBuildableStair
----@field FGBuildableStorage Satis.FGBuildableStorage
----@field FGBuildableTradingPost Satis.FGBuildableTradingPost
----@field TrainPlatformCargo Satis.TrainPlatformCargo
----@field FGBuildableTrainPlatformEmpty Satis.FGBuildableTrainPlatformEmpty
----@field FGBuildableWalkway Satis.FGBuildableWalkway
----@field FGBuildableWalkwayLightweight Satis.FGBuildableWalkwayLightweight
----@field FGBuildableWallLightweight Satis.FGBuildableWallLightweight
----@field FGBuildableWaterPump Satis.FGBuildableWaterPump
----@field WidgetSign Satis.WidgetSign
----@field FGBuildableWindTurbine Satis.FGBuildableWindTurbine
----@field FGBuildableWire Satis.FGBuildableWire
----@field FGCentralStorageContainer Satis.FGCentralStorageContainer
----@field FGConveyorPoleStackable Satis.FGConveyorPoleStackable
----@field Recipe Satis.Recipe
----@field Vehicle Satis.Vehicle
----@field FactoryConnection Satis.FactoryConnection
----@field RailroadVehicle Satis.RailroadVehicle
----@field Inventory Satis.Inventory
----@field ItemCategory Satis.ItemCategory
----@field RailroadVehicleMovement Satis.RailroadVehicleMovement
----@field PipeConnectionBase Satis.PipeConnectionBase
----@field PipeConnection Satis.PipeConnection
----@field PipeHyperStart Satis.PipeHyperStart
----@field PowerCircuit Satis.PowerCircuit
----@field PowerConnection Satis.PowerConnection
----@field PowerInfo Satis.PowerInfo
----@field TimeTable Satis.TimeTable
----@field RailroadTrackConnection Satis.RailroadTrackConnection
----@field SignType Satis.SignType
----@field SignPrefab Satis.SignPrefab
----@field TargetList Satis.TargetList
----@field Train Satis.Train
----@field WheeledVehicle Satis.WheeledVehicle
----@field FINAdvancedNetworkConnectionComponent FIN.FINAdvancedNetworkConnectionComponent
----@field ReflectionBase FIN.ReflectionBase
----@field Property FIN.Property
----@field ArrayProperty FIN.ArrayProperty
----@field Struct FIN.Struct
----@field Class FIN.Class
----@field ClassProperty FIN.ClassProperty
----@field CodeableMerger FIN.CodeableMerger
----@field CodeableSplitter FIN.CodeableSplitter
----@field ComputerCase FIN.ComputerCase
----@field FINComputerModule FIN.FINComputerModule
----@field FINComputerDriveHolder FIN.FINComputerDriveHolder
----@field FINComputerGPU FIN.FINComputerGPU
----@field GPUT1 FIN.GPUT1
----@field FINComputerGPUT2 FIN.FINComputerGPUT2
----@field FINComputerMemory FIN.FINComputerMemory
----@field NetworkCard FIN.NetworkCard
----@field FINComputerProcessor FIN.FINComputerProcessor
----@field FINComputerScreen FIN.FINComputerScreen
----@field Function FIN.Function
----@field IndicatorPole FIN.IndicatorPole
----@field FINInternetCard FIN.FINInternetCard
----@field FINMCPAdvConnector FIN.FINMCPAdvConnector
----@field FINMediaSubsystem FIN.FINMediaSubsystem
----@field ModularIndicatorPole FIN.ModularIndicatorPole
----@field FINModularIndicatorPoleModule FIN.FINModularIndicatorPoleModule
----@field FINModuleBase FIN.FINModuleBase
----@field FINModuleScreen FIN.FINModuleScreen
----@field FINNetworkAdapter FIN.FINNetworkAdapter
----@field FINNetworkCable FIN.FINNetworkCable
----@field NetworkRouter FIN.NetworkRouter
----@field ObjectProperty FIN.ObjectProperty
----@field Screen FIN.Screen
----@field Signal FIN.Signal
----@field FINSizeablePanel FIN.FINSizeablePanel
----@field SpeakerPole FIN.SpeakerPole
----@field StructProperty FIN.StructProperty
----@field TraceProperty FIN.TraceProperty
----@field VehicleScanner FIN.VehicleScanner
----@field FINWirelessAccessPoint FIN.FINWirelessAccessPoint
----@field FINComputerProcessorLua FIN.FINComputerProcessorLua
----@field Build_Blueprint_C Satis.Build_Blueprint_C
----@field Build_DoorMiddle_C Satis.Build_DoorMiddle_C
----@field Build_DroneStation_C Satis.Build_DroneStation_C
----@field Build_StorageBlueprint_C Satis.Build_StorageBlueprint_C
----@field Build_BlueprintDesigner_C Satis.Build_BlueprintDesigner_C
----@field Build_Wall_Window_8x4_03_C Satis.Build_Wall_Window_8x4_03_C
----@field Build_Wall_Conveyor_8x4_03_C Satis.Build_Wall_Conveyor_8x4_03_C
----@field Build_Wall_Conveyor_8x4_02_C Satis.Build_Wall_Conveyor_8x4_02_C
----@field Build_Wall_Conveyor_8x4_01_C Satis.Build_Wall_Conveyor_8x4_01_C
----@field BUILD_SingleDoor_Base_01_C Satis.BUILD_SingleDoor_Base_01_C
----@field Build_Wall_Orange_Tris_8x1_C Satis.Build_Wall_Orange_Tris_8x1_C
----@field Build_Wall_Door_8x4_03_C Satis.Build_Wall_Door_8x4_03_C
----@field Build_Wall_Door_8x4_01_C Satis.Build_Wall_Door_8x4_01_C
----@field Build_Wall_Orange_Tris_8x8_C Satis.Build_Wall_Orange_Tris_8x8_C
----@field Build_Wall_Orange_Tris_8x4_C Satis.Build_Wall_Orange_Tris_8x4_C
----@field Build_Wall_Orange_Tris_8x2_C Satis.Build_Wall_Orange_Tris_8x2_C
----@field Build_Wall_Orange_FlipTris_8x8_C Satis.Build_Wall_Orange_FlipTris_8x8_C
----@field Build_Wall_Orange_FlipTris_8x4_C Satis.Build_Wall_Orange_FlipTris_8x4_C
----@field Build_Wall_Orange_FlipTris_8x2_C Satis.Build_Wall_Orange_FlipTris_8x2_C
----@field Build_Wall_Orange_FlipTris_8x1_C Satis.Build_Wall_Orange_FlipTris_8x1_C
----@field Build_Wall_Orange_8x8_Corner_01_C Satis.Build_Wall_Orange_8x8_Corner_01_C
----@field Build_Wall_Orange_8x4_Corner_01_C Satis.Build_Wall_Orange_8x4_Corner_01_C
----@field Build_Wall_Gate_8x4_01_C Satis.Build_Wall_Gate_8x4_01_C
----@field Build_Wall_Orange_8x4_Corner_02_C Satis.Build_Wall_Orange_8x4_Corner_02_C
----@field Build_Wall_Orange_8x8_Corner_02_C Satis.Build_Wall_Orange_8x8_Corner_02_C
----@field Build_Wall_Orange_Angular_8x4_C Satis.Build_Wall_Orange_Angular_8x4_C
----@field Build_Wall_Orange_Angular_8x8_C Satis.Build_Wall_Orange_Angular_8x8_C
----@field Build_Wall_Window_8x4_02_C Satis.Build_Wall_Window_8x4_02_C
----@field Build_Wall_Window_8x4_01_C Satis.Build_Wall_Window_8x4_01_C
----@field Build_Wall_Window_8x4_04_C Satis.Build_Wall_Window_8x4_04_C
----@field Build_Wall_Orange_8x1_C Satis.Build_Wall_Orange_8x1_C
----@field Build_Wall_Conveyor_8x4_03_Steel_C Satis.Build_Wall_Conveyor_8x4_03_Steel_C
----@field Build_Wall_Conveyor_8x4_02_Steel_C Satis.Build_Wall_Conveyor_8x4_02_Steel_C
----@field Build_Wall_Conveyor_8x4_01_Steel_C Satis.Build_Wall_Conveyor_8x4_01_Steel_C
----@field Build_Wall_Concrete_8x1_C Satis.Build_Wall_Concrete_8x1_C
----@field Build_Wall_Concrete_8x4_ConveyorHole_03_C Satis.Build_Wall_Concrete_8x4_ConveyorHole_03_C
----@field Build_Wall_Concrete_8x4_ConveyorHole_02_C Satis.Build_Wall_Concrete_8x4_ConveyorHole_02_C
----@field Build_Wall_Concrete_8x4_ConveyorHole_01_C Satis.Build_Wall_Concrete_8x4_ConveyorHole_01_C
----@field Build_Wall_Concrete_8x4_C Satis.Build_Wall_Concrete_8x4_C
----@field Build_Wall_Concrete_CDoor_8x4_C Satis.Build_Wall_Concrete_CDoor_8x4_C
----@field Build_Wall_Concrete_Angular_8x8_C Satis.Build_Wall_Concrete_Angular_8x8_C
----@field Build_Wall_Concrete_8x8_Corner_01_C Satis.Build_Wall_Concrete_8x8_Corner_01_C
----@field Build_Wall_Concrete_8x4_Window_04_C Satis.Build_Wall_Concrete_8x4_Window_04_C
----@field Build_Wall_Concrete_8x4_Window_03_C Satis.Build_Wall_Concrete_8x4_Window_03_C
----@field Build_Wall_Concrete_8x4_Window_02_C Satis.Build_Wall_Concrete_8x4_Window_02_C
----@field Build_Wall_Concrete_8x4_Window_01_C Satis.Build_Wall_Concrete_8x4_Window_01_C
----@field Build_Wall_Concrete_8x4_Corner_01_C Satis.Build_Wall_Concrete_8x4_Corner_01_C
----@field Build_WallSet_Steel_Angular_8x4_C Satis.Build_WallSet_Steel_Angular_8x4_C
----@field Build_SteelWall_Tris_8x8_C Satis.Build_SteelWall_Tris_8x8_C
----@field Build_SteelWall_Tris_8x4_C Satis.Build_SteelWall_Tris_8x4_C
----@field Build_SteelWall_Tris_8x2_C Satis.Build_SteelWall_Tris_8x2_C
----@field Build_SteelWall_Tris_8x1_C Satis.Build_SteelWall_Tris_8x1_C
----@field Build_SteelWall_FlipTris_8x8_C Satis.Build_SteelWall_FlipTris_8x8_C
----@field Build_SteelWall_FlipTris_8x4_C Satis.Build_SteelWall_FlipTris_8x4_C
----@field Build_SteelWall_FlipTris_8x2_C Satis.Build_SteelWall_FlipTris_8x2_C
----@field Build_SteelWall_FlipTris_8x1_C Satis.Build_SteelWall_FlipTris_8x1_C
----@field Build_SteelWall_8x4_Window_04_C Satis.Build_SteelWall_8x4_Window_04_C
----@field Build_SteelWall_8x4_Window_03_C Satis.Build_SteelWall_8x4_Window_03_C
----@field Build_SteelWall_8x4_Window_02_C Satis.Build_SteelWall_8x4_Window_02_C
----@field Build_SteelWall_8x4_Window_01_C Satis.Build_SteelWall_8x4_Window_01_C
----@field Build_SteelWall_8x4_Gate_01_C Satis.Build_SteelWall_8x4_Gate_01_C
----@field Build_SteelWall_8x1_C Satis.Build_SteelWall_8x1_C
----@field Build_Wall_Concrete_Tris_8x8_C Satis.Build_Wall_Concrete_Tris_8x8_C
----@field Build_Wall_Concrete_Tris_8x4_C Satis.Build_Wall_Concrete_Tris_8x4_C
----@field Build_Wall_Concrete_Tris_8x2_C Satis.Build_Wall_Concrete_Tris_8x2_C
----@field Build_Wall_Concrete_Tris_8x1_C Satis.Build_Wall_Concrete_Tris_8x1_C
----@field Build_Wall_Concrete_Gate_8x4_C Satis.Build_Wall_Concrete_Gate_8x4_C
----@field Build_Wall_Concrete_FlipTris_8x8_C Satis.Build_Wall_Concrete_FlipTris_8x8_C
----@field Build_Wall_Concrete_FlipTris_8x4_C Satis.Build_Wall_Concrete_FlipTris_8x4_C
----@field Build_Wall_Concrete_FlipTris_8x2_C Satis.Build_Wall_Concrete_FlipTris_8x2_C
----@field Build_Wall_Concrete_FlipTris_8x1_C Satis.Build_Wall_Concrete_FlipTris_8x1_C
----@field Build_Wall_Concrete_SDoor_8x4_C Satis.Build_Wall_Concrete_SDoor_8x4_C
----@field Build_SteelWall_8x4_DoorC_01_C Satis.Build_SteelWall_8x4_DoorC_01_C
----@field Build_SteelWall_8x4_DoorS_01_C Satis.Build_SteelWall_8x4_DoorS_01_C
----@field Build_WallSet_Steel_Angular_8x8_C Satis.Build_WallSet_Steel_Angular_8x8_C
----@field Build_Wall_Door_8x4_03_Steel_C Satis.Build_Wall_Door_8x4_03_Steel_C
----@field Build_Wall_Door_8x4_01_Steel_C Satis.Build_Wall_Door_8x4_01_Steel_C
----@field Build_Wall_Steel_8x4_Corner_2_C Satis.Build_Wall_Steel_8x4_Corner_2_C
----@field Build_Wall_8x4_02_C Satis.Build_Wall_8x4_02_C
----@field Build_Wall_Concrete_Angular_8x4_C Satis.Build_Wall_Concrete_Angular_8x4_C
----@field Build_Wall_Concrete_8x8_Corner_2_C Satis.Build_Wall_Concrete_8x8_Corner_2_C
----@field Build_Wall_Concrete_8x4_Corner_2_C Satis.Build_Wall_Concrete_8x4_Corner_2_C
----@field Build_Wall_8x4_01_C Satis.Build_Wall_8x4_01_C
----@field Build_Wall_Steel_8x8_Corner_2_C Satis.Build_Wall_Steel_8x8_Corner_2_C
----@field Build_Wall_Steel_8x8_Corner_01_C Satis.Build_Wall_Steel_8x8_Corner_01_C
----@field Build_SteelWall_8x4_C Satis.Build_SteelWall_8x4_C
----@field Build_Wall_Steel_8x4_Corner_01_C Satis.Build_Wall_Steel_8x4_Corner_01_C
----@field NetworkWallPlug_C FIN.NetworkWallPlug_C
----@field NetworkCable_C FIN.NetworkCable_C
----@field Item_SmallNetworkWallPlug_C FIN.Item_SmallNetworkWallPlug_C
----@field ThinNetworkCable_C FIN.ThinNetworkCable_C
----@field BP_NetworkAdapter_C FIN.BP_NetworkAdapter_C
----@field NetworkPole_C FIN.NetworkPole_C
----@field Build_PowerLine_C Satis.Build_PowerLine_C
----@field Build_PowerPoleMk1_C Satis.Build_PowerPoleMk1_C
----@field Build_PowerPoleWall_C Satis.Build_PowerPoleWall_C
----@field Build_RailroadTrackIntegrated_C Satis.Build_RailroadTrackIntegrated_C
----@field Build_RailroadTrack_C Satis.Build_RailroadTrack_C
----@field Build_ConveyorBeltMk1_C Satis.Build_ConveyorBeltMk1_C
----@field Build_ConveyorPole_C Satis.Build_ConveyorPole_C
----@field Build_RailroadSwitchControl_C Satis.Build_RailroadSwitchControl_C
----@field Build_ExampleBuilding_C ExampleMod.Build_ExampleBuilding_C
----@field Build_ConveyorPoleWall_C Satis.Build_ConveyorPoleWall_C
----@field Build_ConveyorCeilingAttachment_C Satis.Build_ConveyorCeilingAttachment_C
----@field Build_MultiplayerDemoBuilding_C ExampleMod.Build_MultiplayerDemoBuilding_C
----@field Build_GeneratorSolar_C ExampleMod.Build_GeneratorSolar_C
----@field Build_TradingPost_C Satis.Build_TradingPost_C
----@field Build_Beam_Connector_C Satis.Build_Beam_Connector_C
----@field Build_Beam_Connector_Double_C Satis.Build_Beam_Connector_Double_C
----@field Build_HubTerminal_C Satis.Build_HubTerminal_C
----@field Build_StorageIntegrated_C Satis.Build_StorageIntegrated_C
----@field Build_WorkBenchIntegrated_C Satis.Build_WorkBenchIntegrated_C
----@field Build_Beam_C Satis.Build_Beam_C
----@field Build_Beam_Painted_C Satis.Build_Beam_Painted_C
----@field Build_GeneratorIntegratedBiomass_C Satis.Build_GeneratorIntegratedBiomass_C
----@field Build_FoundryMk1_C Satis.Build_FoundryMk1_C
----@field Build_Beam_Support_C Satis.Build_Beam_Support_C
----@field ModuleSwitch FIN.ModuleSwitch
----@field ModuleStopButton FIN.ModuleStopButton
----@field ModulePotentiometer FIN.ModulePotentiometer
----@field ModuleButton FIN.ModuleButton
----@field PushbuttonModule FIN.PushbuttonModule
----@field PotWDisplayModule FIN.PotWDisplayModule
----@field PotentiometerModule FIN.PotentiometerModule
----@field MushroomPushbuttonModule FIN.MushroomPushbuttonModule
----@field EncoderModule FIN.EncoderModule
----@field SwitchModule3Position FIN.SwitchModule3Position
----@field SwitchModule2Position FIN.SwitchModule2Position
----@field DriveHolder_C FIN.DriveHolder_C
----@field MCP_Mod_Plug_C FIN.MCP_Mod_Plug_C
----@field NetworkCard_C FIN.NetworkCard_C
----@field WirelessAccessPoint_C FIN.WirelessAccessPoint_C
----@field NetworkRouter_C FIN.NetworkRouter_C
----@field Computer_C FIN.Computer_C
----@field Build_Screen_C FIN.Build_Screen_C
----@field CPU_Lua_C FIN.CPU_Lua_C
----@field IndicatorPole_C FIN.IndicatorPole_C
----@field CodeableSplitter_C FIN.CodeableSplitter_C
----@field CodeableMerger_C FIN.CodeableMerger_C
----@field ModulePanel FIN.ModulePanel
----@field MCP_2Point_C FIN.MCP_2Point_C
----@field MCP_1Point_Center_C FIN.MCP_1Point_Center_C
----@field MCP_1Point_C FIN.MCP_1Point_C
----@field MCP_3Point_C FIN.MCP_3Point_C
----@field GPU_T2_C FIN.GPU_T2_C
----@field GPU_T1_C FIN.GPU_T1_C
----@field ModuleScreen_C FIN.ModuleScreen_C
----@field NetworkWallPlug_Double_C FIN.NetworkWallPlug_Double_C
----@field Speakers_C FIN.Speakers_C
----@field Build_ModularIndicatorPole_C FIN.Build_ModularIndicatorPole_C
----@field ModularIndicatorPoleModule FIN.ModularIndicatorPoleModule
----@field Label2x1Module FIN.Label2x1Module
----@field Label1x1Module FIN.Label1x1Module
----@field BigGaugeModule FIN.BigGaugeModule
----@field SquareMicroDisplayModule FIN.SquareMicroDisplayModule
----@field MicroDisplayModule FIN.MicroDisplayModule
----@field LargeMicroDisplayModule FIN.LargeMicroDisplayModule
----@field IndicatorModule FIN.IndicatorModule
----@field BuzzerModule FIN.BuzzerModule
----@field SizeableModulePanel FIN.SizeableModulePanel
----@field ModuleTextDisplay FIN.ModuleTextDisplay
----@field LargeControlPanel FIN.LargeControlPanel
----@field MCP_6Point_C FIN.MCP_6Point_C
----@field LargeVerticalControlPanel FIN.LargeVerticalControlPanel
----@field GaugeModule FIN.GaugeModule
----@field VehicleScanner_C FIN.VehicleScanner_C
----@field ScreenDriver_C FIN.ScreenDriver_C
----@field RAM_T1_C FIN.RAM_T1_C
----@field InternetCard_C FIN.InternetCard_C
----@field Build_StorageContainerMk1_C Satis.Build_StorageContainerMk1_C
----@field Build_StorageContainerMk2_C Satis.Build_StorageContainerMk2_C
----@field Build_IndustrialTank_C Satis.Build_IndustrialTank_C
----@field Build_PipeStorageTank_C Satis.Build_PipeStorageTank_C
----@field Build_Valve_C Satis.Build_Valve_C
----@field Build_RailroadBlockSignal_C Satis.Build_RailroadBlockSignal_C
----@field Build_RailroadPathSignal_C Satis.Build_RailroadPathSignal_C
----@field Build_SignPole_C Satis.Build_SignPole_C
----@field Build_StandaloneWidgetSign_Huge_C Satis.Build_StandaloneWidgetSign_Huge_C
----@field Build_StandaloneWidgetSign_Large_C Satis.Build_StandaloneWidgetSign_Large_C
----@field Build_StandaloneWidgetSign_Medium_C Satis.Build_StandaloneWidgetSign_Medium_C
----@field Build_StandaloneWidgetSign_Portrait_C Satis.Build_StandaloneWidgetSign_Portrait_C
----@field Build_StandaloneWidgetSign_Small_C Satis.Build_StandaloneWidgetSign_Small_C
----@field Build_StandaloneWidgetSign_SmallVeryWide_C Satis.Build_StandaloneWidgetSign_SmallVeryWide_C
----@field Build_StandaloneWidgetSign_SmallWide_C Satis.Build_StandaloneWidgetSign_SmallWide_C
----@field Build_StandaloneWidgetSign_Square_C Satis.Build_StandaloneWidgetSign_Square_C
----@field Build_StandaloneWidgetSign_Square_Small_C Satis.Build_StandaloneWidgetSign_Square_Small_C
----@field Build_StandaloneWidgetSign_Square_Tiny_C Satis.Build_StandaloneWidgetSign_Square_Tiny_C
----@field Build_Gate_Automated_8x4_C Satis.Build_Gate_Automated_8x4_C
-classes = {}
-
----@class FIN.structs
----@field Vector Engine.Vector
----@field Vector2D Engine.Vector2D
----@field Color Engine.Color
----@field Rotator Engine.Rotator
----@field Vector4 Engine.Vector4
----@field Margin SlateCore.Margin
----@field Item Satis.Item
----@field ItemStack Satis.ItemStack
----@field ItemAmount Satis.ItemAmount
----@field IconData Satis.IconData
----@field TrainDockingRuleSet Satis.TrainDockingRuleSet
----@field PrefabSignData Satis.PrefabSignData
----@field GPUT1Buffer FIN.GPUT1Buffer
----@field GPUT2DrawCallBox FIN.GPUT2DrawCallBox
----@field Future FIN.Future
----@field RailroadSignalBlock FIN.RailroadSignalBlock
----@field TargetPoint FIN.TargetPoint
----@field TimeTableStop FIN.TimeTableStop
----@field TrackGraph FIN.TrackGraph
----@field LogEntry FIN.LogEntry
-structs = {}
 
 -- some more FicsIt-Networks things to support more type specific things and also adds documentation for `computer`, `component`, `event` and `filesystem` libraries in FicsIt-Networks (keep in mind this is all written by hand and can maybe not represent all features available)
 
@@ -7549,6 +8321,10 @@ function component.findComponent(...) end
 --- The Computer API provides a interface to the computer owns functionalities.
 ---@class FIN.Computer.Api
 computer = {}
+
+--- Media Subsystem
+---@type FIN.FINMediaSubsystem
+computer.media = nil
 
 --- Returns the current memory usage
 ---@return integer usage
