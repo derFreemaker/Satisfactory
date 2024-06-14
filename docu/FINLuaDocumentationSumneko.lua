@@ -3,10 +3,10 @@ error("I don't know what your misson is. But is file is not meant to be executed
 ---@diagnostic disable
 
 ---@class FIN.classes
-local classes = {}
+classes = {}
 
 ---@class FIN.structs
-local structs = {}
+structs = {}
 
 do
 
