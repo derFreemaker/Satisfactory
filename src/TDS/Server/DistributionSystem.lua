@@ -1,15 +1,14 @@
 local UUID = require("Core.Common.UUID")
 
 local Train = require("TDS.Server.Entities.Train")
-local Request = require("TDS.Core.Entities.Request")
 
 NEW_NAME = "__NEW_TRAIN__"
 
 ---@class TDS.Server.DistributionSystem : object
----@field m_queue TDS.Request[]
----@field m_trains Database.DbTable
----@field m_stations Database.DbTable
----@field m_requests Database.DbTable
+---@field m_queue TDS.Entities.Request[]
+---@field m_trains Database.DbTable<string, TDS.Server.Entities.Train>
+---@field m_stations Database.DbTable<string, TDS.Server.Entities.Station>
+---@field m_requests Database.DbTable<string, TDS.Entities.Request>
 ---@field m_logger Core.Logger
 ---@overload fun(logger: Core.Logger) : TDS.Server.DistributionSystem
 local DistributionSystem = {}
@@ -32,6 +31,7 @@ function DistributionSystem:SendToBase(train)
     local trainRef = train:GetRef()
 
     --//TODO: send train to base
+    --//TODO: figure out how to stack trains
 end
 
 ---@private
@@ -65,7 +65,7 @@ end
 function DistributionSystem:Distribute()
     --//TODO: implement DistributionSystem:Distribute()
     --//TODO: check if station and train still exists when used
-    --//TODO: check if train is useable and not unrailed, ...
+    --//TODO: check if train is useable and not unrailed or ...
 end
 
 function DistributionSystem:Run()
@@ -74,4 +74,4 @@ function DistributionSystem:Run()
     self:Distribute()
 end
 
-return class("TDS.DistributionSystem", DistributionSystem)
+return class("TDS.Server.DistributionSystem", DistributionSystem)

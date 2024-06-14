@@ -4,8 +4,7 @@
   "Version": "0.1.0-1",
   "RequiredPackages": [
     "Core",
-    "Database",
-    "TDS.Core"
+    "Database"
   ],
   "PackageType": "Application"
 }
