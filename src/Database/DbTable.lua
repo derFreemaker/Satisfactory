@@ -1,10 +1,50 @@
 local JsonSerializer = require("Core.Json.JsonSerializer")
 local File = require("Core.FileSystem.File")
 
+---@class Database.Iterator<TKey, TValue> : object
+---@field m_dbTable Database.DbTable
+---@field m_childs string[]
+---@field m_current string | integer
+---@field m_length integer
+---@overload fun(dbTable: Database.DbTable) : Database.Iterator
+local Iterator = {}
+
+---@private
+---@param dbTable Database.DbTable
+function Iterator:__init(dbTable)
+    self.m_dbTable = dbTable
+    self.m_childs = filesystem.childs(dbTable.m_path:GetPath())
+    self.m_length = #self.m_childs
+end
+
+---@return string | integer | nil key, any value
+function Iterator:Next()
+    if self.m_current > self.m_length then
+        return nil, nil
+    end
+    self.m_current = self.m_current + 1
+
+    local nextKey = self.m_childs[self.m_current]
+    local nextValue = self.m_dbTable:Get(nextKey)
+    self.m_dbTable:ObjectChanged(nextKey, nextValue)
+
+    return nextKey, nextValue
+end
+
+---@private
+---@return fun() : key: string | integer | nil, value: any
+function Iterator:__pairs()
+    return function()
+        return self:Next()
+    end
+end
+
+class("Database.Iterator", Iterator)
+
 ---@generic TKey : string | integer
 ---@generic TValue : Core.Json.Serializable
----@class Database.DbTable<TKey, TValue> : object, { Load: (fun(self: Database.DbTable<TKey, TValue>)), Save: (fun(self: Database.DbTable<TKey, TValue>)), Set: (fun(self: Database.DbTable<TKey, TValue>, key: TKey, value: TValue)), Delete: (fun(self: Database.DbTable<TKey, TValue>, key: TKey) : boolean), Get: (fun(self: Database.DbTable<TKey, TValue>, key: TKey) : TValue) }
----@field m_path Core.FileSystem.Path
+---@class Database.DbTable<TKey, TValue> : object, { Load: (fun(self: Database.DbTable<TKey, TValue>)), Save: (fun(self: Database.DbTable<TKey, TValue>)), Set: (fun(self: Database.DbTable<TKey, TValue>, key: TKey, value: TValue)), Delete: (fun(self: Database.DbTable<TKey, TValue>, key: TKey) : boolean), Get: (fun(self: Database.DbTable<TKey, TValue>, key: TKey) : TValue), Iterator: (fun(self: Database.DbTable<TKey, TValue>) : Database.Iterator) }
+---@field package m_path Core.FileSystem.Path
 ---@field m_dataChanged table<string | number, any>
 ---@field m_logger Core.Logger
 ---@field m_serializer Core.Json.Serializer
@@ -107,29 +147,9 @@ function DbTable:Get(key)
     end
 end
 
----@private
----@return (fun(t: table, key: any) : key: any, value: any), table t, any startKey
-function DbTable:__pairs()
-    local childs = filesystem.childs(self.m_path:GetPath())
-
-    local function iterator(tbl, key)
-        local nextFile
-        if key == nil then
-            nextFile = next(tbl, key)
-        else
-            nextFile = next(tbl, key .. ".dto.json")
-        end
-        if nextFile == nil then
-            return nil, nil
-        end
-
-        local nextKey = nextFile:match("^(.+)%.dto%.json$")
-        local nextValue = self:Get(nextKey)
-        self:ObjectChanged(nextKey, nextValue)
-        return nextKey, nextValue
-    end
-
-    return iterator, Utils.Table.Invert(childs), nil
+---@return Database.Iterator
+function DbTable:Iterator()
+    return Iterator(self)
 end
 
 return class("Database.DbTable", DbTable)
