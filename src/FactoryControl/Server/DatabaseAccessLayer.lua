@@ -60,7 +60,7 @@ end
 ---@param controllerName string
 ---@return FactoryControl.Core.Entities.ControllerDto? controller
 function DatabaseAccessLayer:GetControllerByName(controllerName)
-    for _, controller in pairs(self.m_controllers) do
+    for _, controller in pairs(self.m_controllers:Iterator()) do
         ---@cast controller FactoryControl.Core.Entities.ControllerDto
 
         if controller.Name == controllerName then

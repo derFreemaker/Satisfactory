@@ -56,7 +56,7 @@ end
 ---@param addressId Core.UUID
 ---@return DNS.Core.Entities.Address? address
 function AddressDatabase:GetWithId(addressId)
-    for id, address in pairs(self.m_dbTable) do
+    for id, address in pairs(self.m_dbTable:Iterator()) do
         if id == addressId:ToString() then
             return address
         end
@@ -66,7 +66,7 @@ end
 ---@param addressAddress string
 ---@return DNS.Core.Entities.Address? createAddress
 function AddressDatabase:GetWithDomain(addressAddress)
-    for _, address in pairs(self.m_dbTable) do
+    for _, address in pairs(self.m_dbTable:Iterator()) do
         if address.Domain == addressAddress then
             return address
         end
