@@ -56,6 +56,8 @@ function DistributionSystem:Check()
 
     local trains = trackGraph:getTrains()
     for _, train in pairs(trains) do
+        local timeTable = train:newTimeTable()
+
         if train:getName() == NEW_NAME then
             self:AddTrain(train)
         end
