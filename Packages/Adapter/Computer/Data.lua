@@ -7,11 +7,11 @@ local Cache = require("Core.Common.Cache")()
 
 ---@class Adapter.Computer.InternetCard : object
 ---@field m_refInternetCard Core.Reference<FIN.InternetCard_C>
----@overload fun(index: integer) : Adapter.Computer.InternetCard
+---@overload fun(index: integer?) : Adapter.Computer.InternetCard
 local InternetCard = {}
 
 ---@private
----@param index integer
+---@param index integer?
 function InternetCard:__init(index)
     if not index then
         index = 1

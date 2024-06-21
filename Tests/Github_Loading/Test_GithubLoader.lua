@@ -1,4 +1,4 @@
-local luaunit = require('tools.Testing.Luaunit')
+local luaunit = require('Tools.Testing.Luaunit')
 
 ---@type Freemaker.FileSystem
 local FileSystem = require("Tools.Freemaker.bin.filesystem")
@@ -12,7 +12,7 @@ end
 local eeprom = eepromFile:read("a")
 eepromFile:close()
 
-local FileSystemPath = currentPath .. "/Sim-Files/Test_LoaderLoad"
+local FileSystemPath = currentPath .. "/Sim-Files/Test_GithubLoader"
 
 ---@type Test.Simulator
 local Sim = require('Tools.Testing.Simulator.init')
@@ -24,7 +24,8 @@ function computer.stop()
 end
 
 function Test()
-    dofile(eepromFilePath)
+    local success, error = pcall(dofile, eepromFilePath)
+    luaunit.assertIsTrue(success, "failed test: " .. error)
 end
 
 os.exit(luaunit.LuaUnit.run())

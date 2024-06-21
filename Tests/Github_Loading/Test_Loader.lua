@@ -1,7 +1,7 @@
 local luaunit = require('Tools.Testing.Luaunit')
 
 local FileSystem = require("Tools.Freemaker.bin.filesystem")
-local FileSystemPath = FileSystem:GetCurrentDirectory() .. "/Sim-Files/Test_LoaderLoad"
+local FileSystemPath = FileSystem:GetCurrentDirectory() .. "/Sim-Files/Test_Loader"
 local Sim, Loader = require('Tools.Testing.Simulator.init')
     :InitializeWithLoader(1, FileSystemPath, nil, true)
 

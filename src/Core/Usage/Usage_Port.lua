@@ -2,6 +2,9 @@
 
 ---@enum Core.PortUsage
 local PortUsage = {
+	-- HotReload
+	HotReload = 1,
+
 	-- DNS
 	DNS_Heartbeat = 10,
 	DNS = 53,
@@ -19,8 +22,6 @@ local PortUsage = {
 	-- TDS (TrainDistributionSystem)
 	TDS = 3200,
 	TDS_Heartbeat = 3201,
-
-
 }
 
 return PortUsage

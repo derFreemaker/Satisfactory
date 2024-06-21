@@ -12,7 +12,7 @@ function Events:OnLoaded()
     })
 
     -- Loading Host Extensions
-    require("Net.Core.Hosting.HostExtensions")
+    require("Net.Core.Extensions.HostExtensions")
 end
 
 return Events
@@ -736,7 +736,7 @@ return class("Net.Uri", Uri,
     { Inherit = require("Core.Json.Serializable") })
 
 ]==========],
-["Net.Core.Hosting.HostExtensions"] = [==========[
+["Net.Core.Extensions.HostExtensions"] = [==========[
 ---@type Out<Github_Loading.Module>
 local Host = {}
 if not PackageLoader:TryGetModule("Hosting.Host", Host) then
@@ -797,23 +797,23 @@ function HostExtensions:GetNetworkPort(port)
     return self:CreateNetworkPort(port)
 end
 
----@param eventName Net.Core.EventName
 ---@param port Net.Core.Port
+---@param eventName Net.Core.EventName
 ---@param task Core.Task
 ---@return Net.Core.NetworkPort netPort,  number eventTaskIndex
-function HostExtensions:AddCallableEventTask(eventName, port, task)
+function HostExtensions:AddCallableEventTask(port, eventName, task)
     local netPort = self:CreateNetworkPort(port)
     local taskIndex = netPort:AddTask(eventName, task)
     netPort:OpenPort()
     return netPort, taskIndex
 end
 
----@param eventName Net.Core.EventName
 ---@param port Net.Core.Port
+---@param eventName Net.Core.EventName
 ---@param listener fun(context: Net.Core.NetworkContext)
 ---@return Net.Core.NetworkPort netPort,  number eventTaskIndex
-function HostExtensions:AddCallableEventListener(eventName, port, listener)
-    return self:AddCallableEventTask(eventName, port, Task(listener))
+function HostExtensions:AddCallableEventListener(port, eventName, listener)
+    return self:AddCallableEventTask(port, eventName, Task(listener))
 end
 
 ---@param eventName string

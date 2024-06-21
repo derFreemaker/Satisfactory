@@ -19,6 +19,9 @@ local EventNameUsage = {
 
     -- TDS (TrainDistributionSystem)
     TDS_Heartbeat = "TrainDistributionSystem",
+
+    -- HotReload
+    HotReload = "HotReload"
 }
 
 return EventNameUsage

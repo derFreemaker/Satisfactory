@@ -1,7 +1,7 @@
 {
   "Name": "TDS.Server",
   "Namespace": "TDS.Server",
-  "Version": "0.1.0-1",
+  "Version": "0.1.0-2",
   "RequiredPackages": [
     "Core",
     "Database"

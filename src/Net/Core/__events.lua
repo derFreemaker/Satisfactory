@@ -10,7 +10,7 @@ function Events:OnLoaded()
     })
 
     -- Loading Host Extensions
-    require("Net.Core.Hosting.HostExtensions")
+    require("Net.Core.Extensions.HostExtensions")
 end
 
 return Events

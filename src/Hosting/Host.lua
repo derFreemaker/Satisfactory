@@ -1,10 +1,7 @@
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local JsonSerializer = require("Core.Json.JsonSerializer")
 
-local ServiceCollection = require("Hosting.ServiceCollection")
-
 ---@class Hosting.Host : object
----@field Services Hosting.ServiceCollection
 ---@field package m_name string
 ---@field package m_ready boolean
 ---@field package m_jsonSerializer Core.Json.Serializer
@@ -20,12 +17,10 @@ Host.Static__ReadyTasks = {}
 ---@param name string?
 ---@param jsonSerializer Core.Json.Serializer?
 function Host:__init(logger, name, jsonSerializer)
+    self.m_name = name or "Host"
     self.m_jsonSerializer = jsonSerializer or JsonSerializer.Static__Serializer
     self.m_logger = logger
-    self.m_name = name or "Host"
     self.m_ready = false
-
-    self.Services = ServiceCollection()
 
     EventPullAdapter:Initialize(logger:subLogger("EventPullAdapter"))
 

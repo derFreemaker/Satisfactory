@@ -447,14 +447,67 @@ end
 return class("Core.Task", Task)
 
 ]==========],
+["Core.Common.Url"] = [==========[
+---@class Core.Url : object
+---@overload fun(urlOrParts: string | string[] | nil) : Core.Url
+local Url = {}
+
+---@private
+---@param urlOrParts string | string[] | nil
+function Url:__init(urlOrParts)
+    if type(urlOrParts) == "table" then
+        self.m_parts = urlOrParts
+        return
+    end
+
+    self.m_parts = Utils.String.Split(urlOrParts, "/")
+end
+
+---@return string url
+function Url:GetUrl()
+    return Utils.String.Join(self.m_parts, "/")
+end
+
+Url.ToString = Url.GetUrl
+---@private
+Url.__tostring = Url.GetUrl
+
+---@param url string
+---@return Core.Url
+function Url:Append(url)
+    local newParts = Utils.String.Split(url, "/")
+    for _, part in ipairs(newParts) do
+        table.insert(self.m_parts, part)
+    end
+    return self
+end
+
+---@param url string
+---@return Core.Url
+function Url:Extend(url)
+    local copy = self:Copy()
+    copy:Append(url)
+    return copy
+end
+
+---@return Core.Url
+function Url:Copy()
+    local copy = Utils.Table.Copy(self.m_parts)
+    return Url(copy)
+end
+
+return class("Core.Url", Url)
+
+]==========],
 ["Core.Common.UUID"] = [==========[
 local math = math
 local string = string
 
 ---@class Core.UUID : object, Core.Json.Serializable
----@field private m_head number[]
----@field private m_body number[]
----@field private m_tail number[]
+---@field m_head number[]
+---@field m_body number[]
+---@field m_tail number[]
+---@field m_str string
 ---@overload fun(head: number[] | string, body: number[] | nil, tail: number[] | nil) : Core.UUID
 local UUID = {}
 
@@ -591,6 +644,10 @@ end
 
 ---@return string str
 function UUID:ToString()
+    if self.m_str then
+        return self.m_str
+    end
+
     local str = ""
 
     for _, char in ipairs(self.m_head) do
@@ -608,6 +665,16 @@ function UUID:ToString()
     for _, char in ipairs(self.m_tail) do
         str = str .. string.char(char)
     end
+
+    self:Raw__ModifyBehavior(function(modify)
+        modify.CustomIndexing = false
+    end)
+
+    self.m_str = str
+
+    self:Raw__ModifyBehavior(function(modify)
+        modify.CustomIndexing = true
+    end)
 
     return str
 end
@@ -1206,6 +1273,8 @@ end
 function Path:GetPath()
     return Utils.String.Join(self.m_nodes, "/")
 end
+
+Path.ToString = Path.GetPath
 
 ---@private
 Path.__tostring = Path.GetPath
@@ -2006,13 +2075,15 @@ return interface("Core.Json.Serializable", Serializable)
 ["Core.References.CustomReference"] = [==========[
 ---@class Core.CustomReference<T> : object, Core.Reference<T>
 ---@field m_fetchFunc fun() : Engine.Object | nil
----@overload fun() : Core.CustomReference
+---@overload fun(fetchFunc: (fun() : Engine.Object | nil), obj: Engine.Object | nil) : Core.CustomReference
 local CustomReference = {}
 
 ---@private
 ---@param fetchFunc fun() : Engine.Object | nil
-function CustomReference:__init(fetchFunc)
+---@param obj Engine.Object | nil
+function CustomReference:__init(fetchFunc, obj)
     self.m_fetchFunc = fetchFunc
+    self.m_obj = obj
 end
 
 ---@return boolean success
@@ -2029,7 +2100,7 @@ return class("Core.CustomReference", CustomReference,
 ---@class Core.PCIDeviceReference<T> : object, Core.Reference<T>
 ---@field m_class FIN.PCIDevice
 ---@field m_index integer
----@overload fun(class: FIN.Class, index: integer) : Core.PCIDeviceReference
+---@overload fun(class: FIN.PCIDevice, index: integer) : Core.PCIDeviceReference
 local PCIDeviceReference = {}
 
 ---@private
@@ -2042,9 +2113,14 @@ end
 
 ---@return boolean found
 function PCIDeviceReference:Fetch()
-    local obj = computer.getPCIDevices(self.m_class)[self.m_index]
-    self.m_obj = obj
-    return obj ~= nil
+    local pciDevices = computer.getPCIDevices(self.m_class)
+    if #pciDevices == 0 then
+        return false
+    end
+
+    local pciDevice = pciDevices[self.m_index]
+    self.m_obj = pciDevice
+    return pciDevice ~= nil
 end
 
 return class("Core.PCIDeviceReference", PCIDeviceReference,
@@ -2076,8 +2152,8 @@ return class("Core.ProxyReference", ProxyReference,
 ["Core.References.Reference"] = [==========[
 local Config = require("Core.Config")
 
----@generic TReference : Engine.Object
----@class Core.Reference<TReference> : { Get: fun() : TReference, Check: fun() : boolean }
+---@generic T : Engine.Object
+---@class Core.Reference<T> : { Get: (fun() : T), IsValid: (fun() : boolean) }
 ---@field protected m_obj Engine.Object | nil
 ---@field m_expires number
 local IReference = {}
@@ -2087,6 +2163,7 @@ IReference.m_expires = 0
 ---@return any
 function IReference:Get()
     if self.m_expires < computer.millis() then
+        self.m_obj = nil
         if not self:Fetch() then
             return nil
         end
@@ -2101,15 +2178,14 @@ end
 function IReference:Fetch()
     return false
 end
-
 IReference.Fetch = Utils.Class.IsInterface
 
 ---@return boolean isValid
-function IReference:Check()
+function IReference:IsValid()
     return self:Get() == nil
 end
 
-return interface("Core.IReference", IReference)
+return interface("Core.Reference", IReference)
 
 ]==========],
 ["Core.Usage.init"] = [==========[
@@ -2141,6 +2217,9 @@ local EventNameUsage = {
 
     -- TDS (TrainDistributionSystem)
     TDS_Heartbeat = "TrainDistributionSystem",
+
+    -- HotReload
+    HotReload = "HotReload"
 }
 
 return EventNameUsage
@@ -2151,6 +2230,9 @@ return EventNameUsage
 
 ---@enum Core.PortUsage
 local PortUsage = {
+	-- HotReload
+	HotReload = 1,
+
 	-- DNS
 	DNS_Heartbeat = 10,
 	DNS = 53,
@@ -2168,8 +2250,6 @@ local PortUsage = {
 	-- TDS (TrainDistributionSystem)
 	TDS = 3200,
 	TDS_Heartbeat = 3201,
-
-
 }
 
 return PortUsage

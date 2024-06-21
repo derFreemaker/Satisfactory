@@ -1,7 +1,7 @@
 return {
     Name = "Net.Core",
     Namespace = "Net.Core",
-    Version = "0.1.0-106",
+    Version = "0.1.0-107",
     PackageType = "Library",
     RequiredPackages = {
         "Adapter.Computer",
@@ -62,9 +62,9 @@ return {
             IsRunnable = true,
         },
 
-        ["Net.Core.Hosting.HostExtensions"] = {
-            Location = "Net.Core.Hosting.HostExtensions",
-            Namespace = "Net.Core.Hosting.HostExtensions",
+        ["Net.Core.Extensions.HostExtensions"] = {
+            Location = "Net.Core.Extensions.HostExtensions",
+            Namespace = "Net.Core.Extensions.HostExtensions",
             IsRunnable = true,
         },
     },

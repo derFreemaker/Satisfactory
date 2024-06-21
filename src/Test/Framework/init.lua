@@ -34,9 +34,9 @@ function Framework:Run(logger)
     end
 
     logger:LogInfo(
-        "Tests finished with "
-        .. successful .. " successful tests and "
-        .. failed .. " failed tests"
+        "finished with "
+        .. successful .. " successful test(s) and "
+        .. failed .. " failed test(s)"
     )
 end
 

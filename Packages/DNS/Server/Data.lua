@@ -1,11 +1,7 @@
 local Data={
 ["DNS.Server.__main"] = [==========[
 local Usage = require("Core.Usage.init")
-
-local Task = require("Core.Common.Task")
-
 local Host = require("Hosting.Host")
-
 local DNSEndpoints = require("DNS.Server.Endpoints")
 
 ---@class DNS.Main : Github_Loading.Entities.Main
@@ -24,8 +20,8 @@ function Main:Configure()
 	self.m_host = Host(self.Logger:subLogger("Host"), "DNS Server")
 
 	self.m_host:AddCallableEventListener(
-		Usage.Events.DNS_GetServerAddress,
 		Usage.Ports.DNS,
+		Usage.Events.DNS_GetServerAddress,
 		function(context)
 			self:GetDNSServerAddress(context)
 		end
@@ -108,7 +104,7 @@ end
 ---@param addressId Core.UUID
 ---@return DNS.Core.Entities.Address? address
 function AddressDatabase:GetWithId(addressId)
-    for id, address in pairs(self.m_dbTable) do
+    for id, address in pairs(self.m_dbTable:Iterator()) do
         if id == addressId:ToString() then
             return address
         end
@@ -118,7 +114,7 @@ end
 ---@param addressAddress string
 ---@return DNS.Core.Entities.Address? createAddress
 function AddressDatabase:GetWithDomain(addressAddress)
-    for _, address in pairs(self.m_dbTable) do
+    for _, address in pairs(self.m_dbTable:Iterator()) do
         if address.Domain == addressAddress then
             return address
         end

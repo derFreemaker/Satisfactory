@@ -61,7 +61,7 @@
 				"panel": "shared",
 				"showReuseMessage": true,
 				"clear": true,
-				"close": false
+				"close": true
 			},
 			"runOptions": {
 				"runOn": "folderOpen",
@@ -85,7 +85,7 @@
 				"owner": "lua-bundler",
 				"fileLocation": [
 					"autoDetect",
-					"$(workspaceFolder)/src"
+					"${workspaceFolder}/src"
 				],
 				"pattern": {
 					"regexp": "^(.*)'-'(.*)'-'(.*)'-([0-9]*):([0-9]*):([0-9]*)$",
@@ -111,6 +111,25 @@
 			"label": "open FicsIt files",
 			"type": "shell",
 			"command": "code %localappdata%\\FactoryGame\\Saved\\SaveGames\\Computers",
+			"presentation": {
+				"echo": true,
+				"reveal": "never",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true,
+				"close": true
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "HotReload",
+			"type": "shell",
+			"command": "lua",
+			"args": [
+				"${workspaceFolder}/Tools/HotReload.lua",
+				"${workspaceFolder}"
+			],
 			"presentation": {
 				"echo": true,
 				"reveal": "never",

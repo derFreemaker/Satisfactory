@@ -11,6 +11,7 @@ IReference.m_expires = 0
 ---@return any
 function IReference:Get()
     if self.m_expires < computer.millis() then
+        self.m_obj = nil
         if not self:Fetch() then
             return nil
         end

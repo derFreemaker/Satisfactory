@@ -1,7 +1,7 @@
 return {
     Name = "Test.Framework",
     Namespace = "Test.Framework",
-    Version = "0.1.0-30",
+    Version = "0.1.0-31",
     PackageType = "Library",
     RequiredPackages = {
         "Core",

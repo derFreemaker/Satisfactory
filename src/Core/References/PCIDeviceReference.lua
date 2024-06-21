@@ -1,7 +1,7 @@
 ---@class Core.PCIDeviceReference<T> : object, Core.Reference<T>
 ---@field m_class FIN.PCIDevice
 ---@field m_index integer
----@overload fun(class: FIN.Class, index: integer) : Core.PCIDeviceReference
+---@overload fun(class: FIN.PCIDevice, index: integer) : Core.PCIDeviceReference
 local PCIDeviceReference = {}
 
 ---@private
@@ -14,9 +14,14 @@ end
 
 ---@return boolean found
 function PCIDeviceReference:Fetch()
-    local obj = computer.getPCIDevices(self.m_class)[self.m_index]
-    self.m_obj = obj
-    return obj ~= nil
+    local pciDevices = computer.getPCIDevices(self.m_class)
+    if #pciDevices == 0 then
+        return false
+    end
+
+    local pciDevice = pciDevices[self.m_index]
+    self.m_obj = pciDevice
+    return pciDevice ~= nil
 end
 
 return class("Core.PCIDeviceReference", PCIDeviceReference,

@@ -3,10 +3,7 @@ local Data={
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local JsonSerializer = require("Core.Json.JsonSerializer")
 
-local ServiceCollection = require("Hosting.ServiceCollection")
-
 ---@class Hosting.Host : object
----@field Services Hosting.ServiceCollection
 ---@field package m_name string
 ---@field package m_ready boolean
 ---@field package m_jsonSerializer Core.Json.Serializer
@@ -22,12 +19,10 @@ Host.Static__ReadyTasks = {}
 ---@param name string?
 ---@param jsonSerializer Core.Json.Serializer?
 function Host:__init(logger, name, jsonSerializer)
+    self.m_name = name or "Host"
     self.m_jsonSerializer = jsonSerializer or JsonSerializer.Static__Serializer
     self.m_logger = logger
-    self.m_name = name or "Host"
     self.m_ready = false
-
-    self.Services = ServiceCollection()
 
     EventPullAdapter:Initialize(logger:subLogger("EventPullAdapter"))
 
@@ -84,31 +79,6 @@ function Host:RunCycle(timeoutSeconds)
 end
 
 return class("Hosting.Host", Host)
-
-]==========],
-["Hosting.ServiceCollection"] = [==========[
----@class Hosting.ServiceCollection : object
----@field private m_services table<string, object>
----@overload fun() : Hosting.ServiceCollection
-local ServiceCollection = {}
-
----@private
-function ServiceCollection:__init()
-    self.m_services = {}
-end
-
----@param service object
-function ServiceCollection:AddService(service)
-    self.m_services[nameof(service)] = service
-end
-
----@param serviceTypeName string
----@return object?
-function ServiceCollection:GetService(serviceTypeName)
-    return self.m_services[serviceTypeName]
-end
-
-return class("Hosting.ServiceCollection", ServiceCollection)
 
 ]==========],
 }

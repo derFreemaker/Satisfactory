@@ -27,7 +27,7 @@
 		"**/CVS": true,
 		"**/.DS_Store": true,
 		"**/Thumbs.db": true,
-		"Code-Server": true,
+		"Code-Server": false,
 		"Packages": true
 	},
 	"logFileHighlighter.customPatterns": [
@@ -71,6 +71,8 @@
 			"foreground": "#0da00d"
 		}
 	],
+	"logFileHighlighter.enableProgressIndicator": true,
+	"logFileHighlighter.progressIndicatorUnderlineColor": "#1eafc9",
 	"Lua.diagnostics.globals": [
 		"classes",
 		"structs",

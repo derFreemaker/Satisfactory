@@ -1,7 +1,7 @@
 return {
     Name = "Core",
     Namespace = "Core",
-    Version = "0.3.10-175",
+    Version = "0.3.10-177",
     PackageType = "Library",
     ModuleIndex={
         ["Core.Config"] = {
@@ -25,6 +25,12 @@ return {
         ["Core.Common.Task"] = {
             Location = "Core.Common.Task",
             Namespace = "Core.Common.Task",
+            IsRunnable = true,
+        },
+
+        ["Core.Common.Url"] = {
+            Location = "Core.Common.Url",
+            Namespace = "Core.Common.Url",
             IsRunnable = true,
         },
 

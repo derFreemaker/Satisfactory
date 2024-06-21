@@ -49,6 +49,8 @@ function Path:GetPath()
     return Utils.String.Join(self.m_nodes, "/")
 end
 
+Path.ToString = Path.GetPath
+
 ---@private
 Path.__tostring = Path.GetPath
 
