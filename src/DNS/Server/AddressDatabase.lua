@@ -24,7 +24,7 @@ function AddressDatabase:Create(createAddress)
     end
 
     local address = Address(UUID.Static__New(), createAddress.Domain, createAddress.IPAddress)
-    self.m_dbTable:Set(address.Id:ToString(), address)
+    self.m_dbTable:Add(address.Id:ToString(), address)
 
     self.m_dbTable:Save()
     return true

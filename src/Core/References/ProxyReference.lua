@@ -1,19 +1,33 @@
----@class Core.ProxyReference<T> : object, Core.Reference<T>
----@field m_id FIN.UUID
----@overload fun(id: FIN.UUID) : Core.ProxyReference
-local ProxyReference = {}
+local Cache = require("Core.Common.Cache")
+
+---@type Core.Cache<FIN.UUID, Core.ProxyRef>
+local ProxyRefCache = Cache(nil, true)
+
+---@class Core.ProxyRef<T> : object, Core.Ref<T>
+---@field m_uuid FIN.UUID
+---@overload fun(id: FIN.UUID) : Core.ProxyRef
+local ProxyRef = {}
 
 ---@private
----@param id FIN.UUID
-function ProxyReference:__init(id)
-    self.m_id = id
+---@param uuid FIN.UUID
+---@return Core.ProxyRef | nil
+function ProxyRef:__preinit(uuid)
+    return ProxyRefCache:Get(uuid)
 end
 
-function ProxyReference:Fetch()
-    local obj = component.proxy(self.m_id)
-    self.m_obj = obj
-    return obj ~= nil
+---@private
+---@param uuid FIN.UUID
+function ProxyRef:__init(uuid)
+    self.m_uuid = uuid
+
+    ProxyRefCache:Add(uuid, self)
 end
 
-return class("Core.ProxyReference", ProxyReference,
+function ProxyRef:Fetch()
+    local ref = component.proxy(self.m_uuid)
+    self.m_ref = ref
+    return ref ~= nil
+end
+
+return class("Core.ProxyReference", ProxyRef,
     { Inherit = require("Core.References.Reference") })

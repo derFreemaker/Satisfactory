@@ -2984,6 +2984,13 @@ classes.Train = nil
 --- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
 --- * Read Only - The value of this property can not be changed by code.
 ---@type boolean
+Train.isDerailed = nil
+
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+--- * Read Only - The value of this property can not be changed by code.
+---@type boolean
 Train.isPlayerDriven = nil
 
 --- ### Flags:
@@ -4844,26 +4851,6 @@ local Build_BlueprintDesigner_C
 ---@class FIN.classes.Satis.Build_BlueprintDesigner_C : Satis.Build_BlueprintDesigner_C
 classes.Build_BlueprintDesigner_C = nil
 
---- Snaps to foundations and other walls.<br>
---- Useful for building multi-floor structures.<br>
---- <br>
---- Size: 8m x 2m
----@class Satis.Build_Wall_Orange_Tris_8x2_C : Satis.FGBuildableWallLightweight
-local Build_Wall_Orange_Tris_8x2_C
-
----@class FIN.classes.Satis.Build_Wall_Orange_Tris_8x2_C : Satis.Build_Wall_Orange_Tris_8x2_C
-classes.Build_Wall_Orange_Tris_8x2_C = nil
-
---- Snaps to foundations and other walls.<br>
---- Useful for building multi-floor structures.<br>
---- <br>
---- Size: 8m x 1m
----@class Satis.Build_Wall_Orange_Tris_8x1_C : Satis.FGBuildableWallLightweight
-local Build_Wall_Orange_Tris_8x1_C
-
----@class FIN.classes.Satis.Build_Wall_Orange_Tris_8x1_C : Satis.Build_Wall_Orange_Tris_8x1_C
-classes.Build_Wall_Orange_Tris_8x1_C = nil
-
 --- Snaps to Foundations and other Walls.<br>
 --- The windows allow Pioneers to see through the wall.<br>
 --- <br>
@@ -4873,16 +4860,6 @@ local Build_Wall_Window_8x4_03_C
 
 ---@class FIN.classes.Satis.Build_Wall_Window_8x4_03_C : Satis.Build_Wall_Window_8x4_03_C
 classes.Build_Wall_Window_8x4_03_C = nil
-
---- Has 1 Conveyor Belt connection.<br>
---- Snaps to Foundations and other Walls.<br>
---- <br>
---- Size: 8m x 4m
----@class Satis.Build_Wall_Conveyor_8x4_03_C : Satis.FGBuildableWall
-local Build_Wall_Conveyor_8x4_03_C
-
----@class FIN.classes.Satis.Build_Wall_Conveyor_8x4_03_C : Satis.Build_Wall_Conveyor_8x4_03_C
-classes.Build_Wall_Conveyor_8x4_03_C = nil
 
 --- Has 2 Conveyor Belt connections.<br>
 --- Snaps to Foundations and other Walls.<br>
@@ -4894,9 +4871,6 @@ local Build_Wall_Conveyor_8x4_02_C
 ---@class FIN.classes.Satis.Build_Wall_Conveyor_8x4_02_C : Satis.Build_Wall_Conveyor_8x4_02_C
 classes.Build_Wall_Conveyor_8x4_02_C = nil
 
-end
-do
-
 --- Has 3 Conveyor Belt connections.<br>
 --- Snaps to Foundations and other Walls.<br>
 --- <br>
@@ -4907,12 +4881,35 @@ local Build_Wall_Conveyor_8x4_01_C
 ---@class FIN.classes.Satis.Build_Wall_Conveyor_8x4_01_C : Satis.Build_Wall_Conveyor_8x4_01_C
 classes.Build_Wall_Conveyor_8x4_01_C = nil
 
+--- Has 1 Conveyor Belt connection.<br>
+--- Snaps to Foundations and other Walls.<br>
+--- <br>
+--- Size: 8m x 4m
+---@class Satis.Build_Wall_Conveyor_8x4_03_C : Satis.FGBuildableWall
+local Build_Wall_Conveyor_8x4_03_C
+
+---@class FIN.classes.Satis.Build_Wall_Conveyor_8x4_03_C : Satis.Build_Wall_Conveyor_8x4_03_C
+classes.Build_Wall_Conveyor_8x4_03_C = nil
+
 --- 
 ---@class Satis.BUILD_SingleDoor_Base_01_C : Satis.Door
 local BUILD_SingleDoor_Base_01_C
 
 ---@class FIN.classes.Satis.BUILD_SingleDoor_Base_01_C : Satis.BUILD_SingleDoor_Base_01_C
 classes.BUILD_SingleDoor_Base_01_C = nil
+
+end
+do
+
+--- Snaps to foundations and other walls.<br>
+--- Useful for building multi-floor structures.<br>
+--- <br>
+--- Size: 8m x 1m
+---@class Satis.Build_Wall_Orange_Tris_8x1_C : Satis.FGBuildableWallLightweight
+local Build_Wall_Orange_Tris_8x1_C
+
+---@class FIN.classes.Satis.Build_Wall_Orange_Tris_8x1_C : Satis.Build_Wall_Orange_Tris_8x1_C
+classes.Build_Wall_Orange_Tris_8x1_C = nil
 
 --- Allows Pioneers to pass through the wall.<br>
 --- Door settings can be configured.<br>
@@ -4955,6 +4952,16 @@ local Build_Wall_Orange_Tris_8x4_C
 
 ---@class FIN.classes.Satis.Build_Wall_Orange_Tris_8x4_C : Satis.Build_Wall_Orange_Tris_8x4_C
 classes.Build_Wall_Orange_Tris_8x4_C = nil
+
+--- Snaps to foundations and other walls.<br>
+--- Useful for building multi-floor structures.<br>
+--- <br>
+--- Size: 8m x 2m
+---@class Satis.Build_Wall_Orange_Tris_8x2_C : Satis.FGBuildableWallLightweight
+local Build_Wall_Orange_Tris_8x2_C
+
+---@class FIN.classes.Satis.Build_Wall_Orange_Tris_8x2_C : Satis.Build_Wall_Orange_Tris_8x2_C
+classes.Build_Wall_Orange_Tris_8x2_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -5136,6 +5143,16 @@ local Build_Wall_Conveyor_8x4_01_Steel_C
 ---@class FIN.classes.Satis.Build_Wall_Conveyor_8x4_01_Steel_C : Satis.Build_Wall_Conveyor_8x4_01_Steel_C
 classes.Build_Wall_Conveyor_8x4_01_Steel_C = nil
 
+--- Snaps to foundations and other walls.<br>
+--- Useful for building multi-floor structures.<br>
+--- <br>
+--- Size: 8m x 1m
+---@class Satis.Build_Wall_Concrete_8x1_C : Satis.FGBuildableWallLightweight
+local Build_Wall_Concrete_8x1_C
+
+---@class FIN.classes.Satis.Build_Wall_Concrete_8x1_C : Satis.Build_Wall_Concrete_8x1_C
+classes.Build_Wall_Concrete_8x1_C = nil
+
 --- Has 3 Conveyor Belt connections.<br>
 --- Snaps to Foundations and other Walls.<br>
 --- <br>
@@ -5175,16 +5192,6 @@ local Build_Wall_Concrete_8x4_C
 
 ---@class FIN.classes.Satis.Build_Wall_Concrete_8x4_C : Satis.Build_Wall_Concrete_8x4_C
 classes.Build_Wall_Concrete_8x4_C = nil
-
---- Snaps to foundations and other walls.<br>
---- Useful for building multi-floor structures.<br>
---- <br>
---- Size: 8m x 1m
----@class Satis.Build_Wall_Concrete_8x1_C : Satis.FGBuildableWallLightweight
-local Build_Wall_Concrete_8x1_C
-
----@class FIN.classes.Satis.Build_Wall_Concrete_8x1_C : Satis.Build_Wall_Concrete_8x1_C
-classes.Build_Wall_Concrete_8x1_C = nil
 
 --- Allows Pioneers to pass through the wall.<br>
 --- Door settings can be configured.<br>
@@ -5268,32 +5275,6 @@ local Build_Wall_Concrete_8x4_Corner_01_C
 classes.Build_Wall_Concrete_8x4_Corner_01_C = nil
 
 --- Snaps to foundations and other walls.<br>
---- Useful for building multi-floor structures.
----@class Satis.Build_SteelWall_8x4_DoorC_01_C : Satis.BUILD_SingleDoor_Base_01_C
-local Build_SteelWall_8x4_DoorC_01_C
-
----@class FIN.classes.Satis.Build_SteelWall_8x4_DoorC_01_C : Satis.Build_SteelWall_8x4_DoorC_01_C
-classes.Build_SteelWall_8x4_DoorC_01_C = nil
-
---- Snaps to foundations and other walls.<br>
---- Useful for building multi-floor structures.
----@class Satis.Build_SteelWall_8x4_DoorS_01_C : Satis.BUILD_SingleDoor_Base_01_C
-local Build_SteelWall_8x4_DoorS_01_C
-
----@class FIN.classes.Satis.Build_SteelWall_8x4_DoorS_01_C : Satis.Build_SteelWall_8x4_DoorS_01_C
-classes.Build_SteelWall_8x4_DoorS_01_C = nil
-
---- Snaps to foundations and other walls.<br>
---- Useful for building multi-floor structures.<br>
---- <br>
---- Size: 8m x 8m
----@class Satis.Build_WallSet_Steel_Angular_8x8_C : Satis.FGBuildableWallLightweight
-local Build_WallSet_Steel_Angular_8x8_C
-
----@class FIN.classes.Satis.Build_WallSet_Steel_Angular_8x8_C : Satis.Build_WallSet_Steel_Angular_8x8_C
-classes.Build_WallSet_Steel_Angular_8x8_C = nil
-
---- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
 --- Size: 8m x 4m
@@ -5322,16 +5303,6 @@ local Build_SteelWall_Tris_8x4_C
 
 ---@class FIN.classes.Satis.Build_SteelWall_Tris_8x4_C : Satis.Build_SteelWall_Tris_8x4_C
 classes.Build_SteelWall_Tris_8x4_C = nil
-
---- Snaps to foundations and other walls.<br>
---- Useful for building multi-floor structures.<br>
---- <br>
---- Size: 8m x 4m
----@class Satis.Build_Wall_Steel_8x4_Corner_2_C : Satis.FGBuildableCornerWall
-local Build_Wall_Steel_8x4_Corner_2_C
-
----@class FIN.classes.Satis.Build_Wall_Steel_8x4_Corner_2_C : Satis.Build_Wall_Steel_8x4_Corner_2_C
-classes.Build_Wall_Steel_8x4_Corner_2_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -5443,28 +5414,6 @@ local Build_SteelWall_8x4_Gate_01_C
 ---@class FIN.classes.Satis.Build_SteelWall_8x4_Gate_01_C : Satis.Build_SteelWall_8x4_Gate_01_C
 classes.Build_SteelWall_8x4_Gate_01_C = nil
 
---- Allows Pioneers to pass through the wall.<br>
---- Door settings can be configured.<br>
---- Snaps to Foundations and other Walls.<br>
---- <br>
---- Size: 8m x 4m
----@class Satis.Build_Wall_Door_8x4_03_Steel_C : Satis.Build_SteelWall_8x4_DoorS_01_C
-local Build_Wall_Door_8x4_03_Steel_C
-
----@class FIN.classes.Satis.Build_Wall_Door_8x4_03_Steel_C : Satis.Build_Wall_Door_8x4_03_Steel_C
-classes.Build_Wall_Door_8x4_03_Steel_C = nil
-
---- Allows Pioneers to pass through the wall.<br>
---- Door settings can be configured.<br>
---- Snaps to Foundations and other Walls.<br>
---- <br>
---- Size: 8m x 4m
----@class Satis.Build_Wall_Door_8x4_01_Steel_C : Satis.Build_SteelWall_8x4_DoorC_01_C
-local Build_Wall_Door_8x4_01_Steel_C
-
----@class FIN.classes.Satis.Build_Wall_Door_8x4_01_Steel_C : Satis.Build_Wall_Door_8x4_01_Steel_C
-classes.Build_Wall_Door_8x4_01_Steel_C = nil
-
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
 --- <br>
@@ -5474,16 +5423,6 @@ local Build_SteelWall_8x1_C
 
 ---@class FIN.classes.Satis.Build_SteelWall_8x1_C : Satis.Build_SteelWall_8x1_C
 classes.Build_SteelWall_8x1_C = nil
-
---- Snaps to foundations and other walls.<br>
---- Useful for building multi-floor structures.<br>
---- <br>
---- Size: 8m x 4m
----@class Satis.Build_Wall_8x4_02_C : Satis.FGBuildableWallLightweight
-local Build_Wall_8x4_02_C
-
----@class FIN.classes.Satis.Build_Wall_8x4_02_C : Satis.Build_Wall_8x4_02_C
-classes.Build_Wall_8x4_02_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -5554,6 +5493,74 @@ local Build_Wall_Concrete_FlipTris_8x4_C
 
 ---@class FIN.classes.Satis.Build_Wall_Concrete_FlipTris_8x4_C : Satis.Build_Wall_Concrete_FlipTris_8x4_C
 classes.Build_Wall_Concrete_FlipTris_8x4_C = nil
+
+--- Snaps to foundations and other walls.<br>
+--- Useful for building multi-floor structures.
+---@class Satis.Build_SteelWall_8x4_DoorC_01_C : Satis.BUILD_SingleDoor_Base_01_C
+local Build_SteelWall_8x4_DoorC_01_C
+
+---@class FIN.classes.Satis.Build_SteelWall_8x4_DoorC_01_C : Satis.Build_SteelWall_8x4_DoorC_01_C
+classes.Build_SteelWall_8x4_DoorC_01_C = nil
+
+--- Snaps to foundations and other walls.<br>
+--- Useful for building multi-floor structures.
+---@class Satis.Build_SteelWall_8x4_DoorS_01_C : Satis.BUILD_SingleDoor_Base_01_C
+local Build_SteelWall_8x4_DoorS_01_C
+
+---@class FIN.classes.Satis.Build_SteelWall_8x4_DoorS_01_C : Satis.Build_SteelWall_8x4_DoorS_01_C
+classes.Build_SteelWall_8x4_DoorS_01_C = nil
+
+--- Snaps to foundations and other walls.<br>
+--- Useful for building multi-floor structures.<br>
+--- <br>
+--- Size: 8m x 8m
+---@class Satis.Build_WallSet_Steel_Angular_8x8_C : Satis.FGBuildableWallLightweight
+local Build_WallSet_Steel_Angular_8x8_C
+
+---@class FIN.classes.Satis.Build_WallSet_Steel_Angular_8x8_C : Satis.Build_WallSet_Steel_Angular_8x8_C
+classes.Build_WallSet_Steel_Angular_8x8_C = nil
+
+--- Snaps to foundations and other walls.<br>
+--- Useful for building multi-floor structures.<br>
+--- <br>
+--- Size: 8m x 4m
+---@class Satis.Build_Wall_Steel_8x4_Corner_2_C : Satis.FGBuildableCornerWall
+local Build_Wall_Steel_8x4_Corner_2_C
+
+---@class FIN.classes.Satis.Build_Wall_Steel_8x4_Corner_2_C : Satis.Build_Wall_Steel_8x4_Corner_2_C
+classes.Build_Wall_Steel_8x4_Corner_2_C = nil
+
+--- Allows Pioneers to pass through the wall.<br>
+--- Door settings can be configured.<br>
+--- Snaps to Foundations and other Walls.<br>
+--- <br>
+--- Size: 8m x 4m
+---@class Satis.Build_Wall_Door_8x4_03_Steel_C : Satis.Build_SteelWall_8x4_DoorS_01_C
+local Build_Wall_Door_8x4_03_Steel_C
+
+---@class FIN.classes.Satis.Build_Wall_Door_8x4_03_Steel_C : Satis.Build_Wall_Door_8x4_03_Steel_C
+classes.Build_Wall_Door_8x4_03_Steel_C = nil
+
+--- Allows Pioneers to pass through the wall.<br>
+--- Door settings can be configured.<br>
+--- Snaps to Foundations and other Walls.<br>
+--- <br>
+--- Size: 8m x 4m
+---@class Satis.Build_Wall_Door_8x4_01_Steel_C : Satis.Build_SteelWall_8x4_DoorC_01_C
+local Build_Wall_Door_8x4_01_Steel_C
+
+---@class FIN.classes.Satis.Build_Wall_Door_8x4_01_Steel_C : Satis.Build_Wall_Door_8x4_01_Steel_C
+classes.Build_Wall_Door_8x4_01_Steel_C = nil
+
+--- Snaps to foundations and other walls.<br>
+--- Useful for building multi-floor structures.<br>
+--- <br>
+--- Size: 8m x 4m
+---@class Satis.Build_Wall_8x4_02_C : Satis.FGBuildableWallLightweight
+local Build_Wall_8x4_02_C
+
+---@class FIN.classes.Satis.Build_Wall_8x4_02_C : Satis.Build_Wall_8x4_02_C
+classes.Build_Wall_8x4_02_C = nil
 
 --- Snaps to foundations and other walls.<br>
 --- Useful for building multi-floor structures.<br>
@@ -6195,12 +6202,20 @@ local Build_PowerPoleWall_C
 ---@class FIN.classes.Satis.Build_PowerPoleWall_C : Satis.Build_PowerPoleWall_C
 classes.Build_PowerPoleWall_C = nil
 
---- 
----@class Satis.Build_RailroadSwitchControl_C : Satis.RailroadSwitchControl
-local Build_RailroadSwitchControl_C
+--- Can be used as a connection for conveyor belts. The height of the pole can be adjusted.<br>
+--- Useful to route conveyor belts in a more controlled manner and over long distances.
+---@class Satis.Build_ConveyorPole_C : Satis.FGBuildablePoleLightweight
+local Build_ConveyorPole_C
 
----@class FIN.classes.Satis.Build_RailroadSwitchControl_C : Satis.Build_RailroadSwitchControl_C
-classes.Build_RailroadSwitchControl_C = nil
+---@class FIN.classes.Satis.Build_ConveyorPole_C : Satis.Build_ConveyorPole_C
+classes.Build_ConveyorPole_C = nil
+
+--- The heart of your factory. This is where you complete FICSIT milestones to unlock additional blueprints of buildings, vehicles, parts, equipment etc.
+---@class Satis.Build_TradingPost_C : Satis.FGBuildableTradingPost
+local Build_TradingPost_C
+
+---@class FIN.classes.Satis.Build_TradingPost_C : Satis.Build_TradingPost_C
+classes.Build_TradingPost_C = nil
 
 --- 
 ---@class Satis.Build_RailroadTrackIntegrated_C : Satis.RailroadTrack
@@ -6217,27 +6232,12 @@ local Build_RailroadTrack_C
 ---@class FIN.classes.Satis.Build_RailroadTrack_C : Satis.Build_RailroadTrack_C
 classes.Build_RailroadTrack_C = nil
 
---- Transports up to 60 resources per minute. Used to move resources between buildings.
----@class Satis.Build_ConveyorBeltMk1_C : Satis.FGBuildableConveyorBelt
-local Build_ConveyorBeltMk1_C
+--- 
+---@class Satis.Build_RailroadSwitchControl_C : Satis.RailroadSwitchControl
+local Build_RailroadSwitchControl_C
 
----@class FIN.classes.Satis.Build_ConveyorBeltMk1_C : Satis.Build_ConveyorBeltMk1_C
-classes.Build_ConveyorBeltMk1_C = nil
-
---- Can be used as a connection for conveyor belts. The height of the pole can be adjusted.<br>
---- Useful to route conveyor belts in a more controlled manner and over long distances.
----@class Satis.Build_ConveyorPole_C : Satis.FGBuildablePoleLightweight
-local Build_ConveyorPole_C
-
----@class FIN.classes.Satis.Build_ConveyorPole_C : Satis.Build_ConveyorPole_C
-classes.Build_ConveyorPole_C = nil
-
---- The heart of your factory. This is where you complete FICSIT milestones to unlock additional blueprints of buildings, vehicles, parts, equipment etc.
----@class Satis.Build_TradingPost_C : Satis.FGBuildableTradingPost
-local Build_TradingPost_C
-
----@class FIN.classes.Satis.Build_TradingPost_C : Satis.Build_TradingPost_C
-classes.Build_TradingPost_C = nil
+---@class FIN.classes.Satis.Build_RailroadSwitchControl_C : Satis.Build_RailroadSwitchControl_C
+classes.Build_RailroadSwitchControl_C = nil
 
 --- Can be attached to ceilings and other ceiling mounts.<br>
 --- Useful to route conveyor belts in a more controlled manner and over long distances.
@@ -6247,6 +6247,13 @@ local Build_ConveyorCeilingAttachment_C
 ---@class FIN.classes.Satis.Build_ConveyorCeilingAttachment_C : Satis.Build_ConveyorCeilingAttachment_C
 classes.Build_ConveyorCeilingAttachment_C = nil
 
+--- Transports up to 60 resources per minute. Used to move resources between buildings.
+---@class Satis.Build_ConveyorBeltMk1_C : Satis.FGBuildableConveyorBelt
+local Build_ConveyorBeltMk1_C
+
+---@class FIN.classes.Satis.Build_ConveyorBeltMk1_C : Satis.Build_ConveyorBeltMk1_C
+classes.Build_ConveyorBeltMk1_C = nil
+
 --- Can be attached to walls.<br>
 --- Useful to route conveyor belts in a more controlled manner and over long distances.
 ---@class Satis.Build_ConveyorPoleWall_C : Satis.Buildable
@@ -6254,6 +6261,27 @@ local Build_ConveyorPoleWall_C
 
 ---@class FIN.classes.Satis.Build_ConveyorPoleWall_C : Satis.Build_ConveyorPoleWall_C
 classes.Build_ConveyorPoleWall_C = nil
+
+--- This Button Module for modular I/O Panels can have different knob color and brightnesses and you can use them to trigger specific programmed events.
+---@class FIN.MCP_Mod_Plug_C : FIN.FINModuleBase
+local MCP_Mod_Plug_C
+
+---@class FIN.classes.FIN.MCP_Mod_Plug_C : FIN.MCP_Mod_Plug_C
+classes.MCP_Mod_Plug_C = nil
+
+--- Burns Biomass to produce power. Biomass must be loaded manually and is obtained by picking up flora in the world. Produces up to 20 MW of power while operating.
+---@class Satis.Build_GeneratorIntegratedBiomass_C : Satis.FGBuildableGeneratorFuel
+local Build_GeneratorIntegratedBiomass_C
+
+---@class FIN.classes.Satis.Build_GeneratorIntegratedBiomass_C : Satis.Build_GeneratorIntegratedBiomass_C
+classes.Build_GeneratorIntegratedBiomass_C = nil
+
+--- 
+---@class Satis.Build_HubTerminal_C : Satis.FGBuildableHubTerminal
+local Build_HubTerminal_C
+
+---@class FIN.classes.Satis.Build_HubTerminal_C : Satis.Build_HubTerminal_C
+classes.Build_HubTerminal_C = nil
 
 --- A box you can put things in.<br>
 --- Has 25 inventory slots.
@@ -6270,26 +6298,226 @@ local Build_WorkBenchIntegrated_C
 ---@class FIN.classes.Satis.Build_WorkBenchIntegrated_C : Satis.Build_WorkBenchIntegrated_C
 classes.Build_WorkBenchIntegrated_C = nil
 
+--- This panel allows for dynamic sizeing. For placing on walls.
+---@class FIN.SizeableModulePanel : FIN.FINSizeablePanel
+local SizeableModulePanel
+
+---@class FIN.classes.FIN.SizeableModulePanel : FIN.SizeableModulePanel
+classes.SizeableModulePanel = nil
+
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+--- * Read Only - The value of this property can not be changed by code.
+---@type number
+SizeableModulePanel.height = nil
+
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+--- * Read Only - The value of this property can not be changed by code.
+---@type number
+SizeableModulePanel.width = nil
+
+--- Returns all modules placed on the panel.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@return Engine.Object[] modules All the modules placed on the panel.
+function SizeableModulePanel:getModules() end
+
+--- Returns the module placed at the given location on the panel.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@param x number The x position of the command point, starting from the non-cable end. Indexing starts at 0.
+---@param y number The y position  of the command point, starting from the non-cable end. Indexing starts at 0.
+---@return Engine.Actor module The module you want to get. Null if no module was placed.
+function SizeableModulePanel:getModule(x, y) end
+
+--- This large verical modular I/O control panel allows you to attach multiple different modules on to it and use them as I/O to control you programms.<br>
+--- <br>
+--- You can connect it to the FicsIt-Network.<br>
+--- <br>
+--- Important to note is that every module is it's own component, that means if you want to listen to the signals, you will need to listen to each of them individually.
+---@class FIN.LargeVerticalControlPanel : Satis.Buildable
+local LargeVerticalControlPanel
+
+---@class FIN.classes.FIN.LargeVerticalControlPanel : FIN.LargeVerticalControlPanel
+classes.LargeVerticalControlPanel = nil
+
+--- Returns all modules placed on the panels.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@return Engine.Object[] modules All the modules placed on the panels.
+function LargeVerticalControlPanel:getModules() end
+
+--- Returns the module placed at the given location on the given panel.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@param x number The x location of the module on the panel. (0 = left)
+---@param y number The y location of the module on the panel. (0 = bottom)
+---@param panel number The panel you want to get the module from.
+---@return Engine.Actor module The module you want to get. Null if no module was placed.
+function LargeVerticalControlPanel:getModule(x, y, panel) end
+
+--- Enclosure for 1 command points
+---@class FIN.ModulePanel : Satis.Buildable
+local ModulePanel
+
+---@class FIN.classes.FIN.ModulePanel : FIN.ModulePanel
+classes.ModulePanel = nil
+
 --- 
----@class Satis.Build_HubTerminal_C : Satis.FGBuildableHubTerminal
-local Build_HubTerminal_C
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@param Y number 
+---@return Engine.Actor Module 
+function ModulePanel:getYModule(Y) end
 
----@class FIN.classes.Satis.Build_HubTerminal_C : Satis.Build_HubTerminal_C
-classes.Build_HubTerminal_C = nil
+--- 
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@param X number 
+---@return Engine.Actor Module 
+function ModulePanel:getXModule(X) end
 
---- Burns Biomass to produce power. Biomass must be loaded manually and is obtained by picking up flora in the world. Produces up to 20 MW of power while operating.
----@class Satis.Build_GeneratorIntegratedBiomass_C : Satis.FGBuildableGeneratorFuel
-local Build_GeneratorIntegratedBiomass_C
+--- Returns all modules placed on the panel.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@return Engine.Object[] modules All the modules placed on the panel.
+function ModulePanel:getModules() end
 
----@class FIN.classes.Satis.Build_GeneratorIntegratedBiomass_C : Satis.Build_GeneratorIntegratedBiomass_C
-classes.Build_GeneratorIntegratedBiomass_C = nil
+--- Returns the module placed at the given location on the panel.
+--- ### Flags:
+--- * Runtime Synchronous - Can be called/changed in Game Tick.
+--- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
+---@param x number The x position of the command point, starting from the non-cable end. Indexing starts at 0.
+---@param y number The y position  of the command point, starting from the non-cable end. Indexing starts at 0.
+---@return Engine.Actor module The module you want to get. Null if no module was placed.
+function ModulePanel:getModule(x, y) end
 
---- This Button Module for modular I/O Panels can have different knob color and brightnesses and you can use them to trigger specific programmed events.
----@class FIN.MCP_Mod_Plug_C : FIN.FINModuleBase
-local MCP_Mod_Plug_C
+--- Enclosure for 6 command points.<br>
+--- <br>
+--- These Micro Control Panels can be used through out your factory and allow you to have an easier look on the state of your factory and they allow you to control your factory more easily.<br>
+--- <br>
+--- You can fully customize the control panels with buttons lights etc.
+---@class FIN.MCP_6Point_C : FIN.ModulePanel
+local MCP_6Point_C
 
----@class FIN.classes.FIN.MCP_Mod_Plug_C : FIN.MCP_Mod_Plug_C
-classes.MCP_Mod_Plug_C = nil
+---@class FIN.classes.FIN.MCP_6Point_C : FIN.MCP_6Point_C
+classes.MCP_6Point_C = nil
+
+--- Enclosure for 2 command points.<br>
+--- <br>
+--- These Micro Control Panels can be used through out your factory and allow you to have an easier look on the state of your factory and they allow you to control your factory more easily.<br>
+--- <br>
+--- You can fully customize the control panels with buttons lights etc.
+---@class FIN.MCP_2Point_C : FIN.ModulePanel
+local MCP_2Point_C
+
+---@class FIN.classes.FIN.MCP_2Point_C : FIN.MCP_2Point_C
+classes.MCP_2Point_C = nil
+
+--- Micro Control Panel for 1 command point, center placement.<br>
+--- <br>
+--- These Micro Control Panels can be used through out your factory and allow you to have an easier look on the state of your factory and they allow you to control your factory more easily.<br>
+--- <br>
+--- You can fully customize the control panels with buttons lights etc.
+---@class FIN.MCP_1Point_Center_C : FIN.ModulePanel
+local MCP_1Point_Center_C
+
+---@class FIN.classes.FIN.MCP_1Point_Center_C : FIN.MCP_1Point_Center_C
+classes.MCP_1Point_Center_C = nil
+
+--- Enclosure for 1 command points.<br>
+--- <br>
+--- These Micro Control Panels can be used through out your factory and allow you to have an easier look on the state of your factory and they allow you to control your factory more easily.<br>
+--- <br>
+--- You can fully customize the control panels with buttons lights etc.
+---@class FIN.MCP_1Point_C : FIN.ModulePanel
+local MCP_1Point_C
+
+---@class FIN.classes.FIN.MCP_1Point_C : FIN.MCP_1Point_C
+classes.MCP_1Point_C = nil
+
+--- Enclosure for 3 command points.<br>
+--- <br>
+--- These Micro Control Panels can be used through out your factory and allow you to have an easier look on the state of your factory and they allow you to control your factory more easily.<br>
+--- <br>
+--- You can fully customize the control panels with buttons lights etc.
+---@class FIN.MCP_3Point_C : FIN.ModulePanel
+local MCP_3Point_C
+
+---@class FIN.classes.FIN.MCP_3Point_C : FIN.MCP_3Point_C
+classes.MCP_3Point_C = nil
+
+--- The FicsIt-Networks large screen allows you to display anything a GPU can render onto a huge plane.<br>
+--- <br>
+--- You can also interact with the monitor by locking at it and also by clicking on it.
+---@class FIN.Build_Screen_C : FIN.Screen
+local Build_Screen_C
+
+---@class FIN.classes.FIN.Build_Screen_C : FIN.Build_Screen_C
+classes.Build_Screen_C = nil
+
+--- The FicsIt-Networks Screen Driver allows you to add a screen display to the UI of the computer case you build this module intol.<br>
+--- <br>
+--- You can then use the computer API to get a reference to the screen and so you can bind the screen to a GPU.
+---@class FIN.ScreenDriver_C : FIN.FINComputerScreen
+local ScreenDriver_C
+
+---@class FIN.classes.FIN.ScreenDriver_C : FIN.ScreenDriver_C
+classes.ScreenDriver_C = nil
+
+--- This is 100kB of amazing FicsIt-Networks Memory.<br>
+--- <br>
+--- You can add multiple of the memory bars to your PC and so you can extend the memory of your PC.<br>
+--- <br>
+--- You always need to hove enough memory because FicsIt doesn't allow out of memory exceptions and if you bring a computer to throw one, you will loose one month of payment.
+---@class FIN.RAM_T1_C : FIN.FINComputerMemory
+local RAM_T1_C
+
+---@class FIN.classes.FIN.RAM_T1_C : FIN.RAM_T1_C
+classes.RAM_T1_C = nil
+
+--- The FicsIt-Networks Network Card allows yout to send network messages to other network cards in the same computer network.<br>
+--- <br>
+--- You can use unicast and broadcast messages to share information between multiple different computers in the same network.<br>
+--- <br>
+--- This is the best and easiest way for you to communicate between multiple computers.<br>
+--- <br>
+--- If you want to recieve network messages, make sure you also open the according port, since every message is asscociated with a port allowing for better filtering.
+---@class FIN.NetworkCard_C : FIN.NetworkCard
+local NetworkCard_C
+
+---@class FIN.classes.FIN.NetworkCard_C : FIN.NetworkCard_C
+classes.NetworkCard_C = nil
+
+--- The Ficsit Networks Wireless Access Point allows you to connect a circuit to the Ficsit Wireless Area Network (FWAN), which uses Radio Towers frequencies to create a messaging network over the planet.<br>
+---  <br>
+--- It should be connected to a Radio Tower, then all network messages received will be broadcasted to all other Wireless Access Points across the map.
+---@class FIN.WirelessAccessPoint_C : FIN.FINWirelessAccessPoint
+local WirelessAccessPoint_C
+
+---@class FIN.classes.FIN.WirelessAccessPoint_C : FIN.WirelessAccessPoint_C
+classes.WirelessAccessPoint_C = nil
+
+--- The FicsIt-Networks Network Router allows you to sepperate two different component network from each other.<br>
+--- But it still lets network messages sent by network cards through.<br>
+--- This allows for better networking capabilities, faster networking (can reduce game lag) and makes working with larger networks and multiple computer more easy.<br>
+--- <br>
+--- The router also provides a couple of functions which allow you to create filters for ports and message senders.
+---@class FIN.NetworkRouter_C : FIN.NetworkRouter
+local NetworkRouter_C
+
+---@class FIN.classes.FIN.NetworkRouter_C : FIN.NetworkRouter_C
+classes.NetworkRouter_C = nil
 
 --- The FicsIt-Network computer case is the most important thing you will know of. This case already holds the essentials of a computer for you. Like a network connector, keyboard, mouse and screen. But most important of all, it already has a motherboard were you can place and configure the computer just like you want.
 ---@class FIN.Computer_C : FIN.ComputerCase
@@ -6662,43 +6890,6 @@ function BuzzerModule:stop() end
 --- * Runtime Synchronous - Can be called/changed in Game Tick.
 function BuzzerModule:beep() end
 
---- This panel allows for dynamic sizeing. For placing on walls.
----@class FIN.SizeableModulePanel : FIN.FINSizeablePanel
-local SizeableModulePanel
-
----@class FIN.classes.FIN.SizeableModulePanel : FIN.SizeableModulePanel
-classes.SizeableModulePanel = nil
-
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
---- * Read Only - The value of this property can not be changed by code.
----@type number
-SizeableModulePanel.height = nil
-
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
---- * Read Only - The value of this property can not be changed by code.
----@type number
-SizeableModulePanel.width = nil
-
---- Returns all modules placed on the panel.
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@return Engine.Object[] modules All the modules placed on the panel.
-function SizeableModulePanel:getModules() end
-
---- Returns the module placed at the given location on the panel.
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@param x number The x position of the command point, starting from the non-cable end. Indexing starts at 0.
----@param y number The y position  of the command point, starting from the non-cable end. Indexing starts at 0.
----@return Engine.Actor module The module you want to get. Null if no module was placed.
-function SizeableModulePanel:getModule(x, y) end
-
 --- The FicsIt-Networks Text-Display Module for the Modular Control Panel is a simple GPU and Screen combined!<br>
 --- <br>
 --- It allows you to display any kind of text with differnt font sizes and you can even switch between two fonts!<br>
@@ -6774,128 +6965,6 @@ local DriveHolder_C
 ---@class FIN.classes.FIN.DriveHolder_C : FIN.DriveHolder_C
 classes.DriveHolder_C = nil
 
---- This large verical modular I/O control panel allows you to attach multiple different modules on to it and use them as I/O to control you programms.<br>
---- <br>
---- You can connect it to the FicsIt-Network.<br>
---- <br>
---- Important to note is that every module is it's own component, that means if you want to listen to the signals, you will need to listen to each of them individually.
----@class FIN.LargeVerticalControlPanel : Satis.Buildable
-local LargeVerticalControlPanel
-
----@class FIN.classes.FIN.LargeVerticalControlPanel : FIN.LargeVerticalControlPanel
-classes.LargeVerticalControlPanel = nil
-
---- Returns all modules placed on the panels.
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@return Engine.Object[] modules All the modules placed on the panels.
-function LargeVerticalControlPanel:getModules() end
-
---- Returns the module placed at the given location on the given panel.
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@param x number The x location of the module on the panel. (0 = left)
----@param y number The y location of the module on the panel. (0 = bottom)
----@param panel number The panel you want to get the module from.
----@return Engine.Actor module The module you want to get. Null if no module was placed.
-function LargeVerticalControlPanel:getModule(x, y, panel) end
-
---- Enclosure for 1 command points
----@class FIN.ModulePanel : Satis.Buildable
-local ModulePanel
-
----@class FIN.classes.FIN.ModulePanel : FIN.ModulePanel
-classes.ModulePanel = nil
-
---- 
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@param Y number 
----@return Engine.Actor Module 
-function ModulePanel:getYModule(Y) end
-
---- 
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@param X number 
----@return Engine.Actor Module 
-function ModulePanel:getXModule(X) end
-
---- Returns all modules placed on the panel.
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@return Engine.Object[] modules All the modules placed on the panel.
-function ModulePanel:getModules() end
-
---- Returns the module placed at the given location on the panel.
---- ### Flags:
---- * Runtime Synchronous - Can be called/changed in Game Tick.
---- * Runtime Parallel - Can be called/changed in Satisfactory Factory Tick.
----@param x number The x position of the command point, starting from the non-cable end. Indexing starts at 0.
----@param y number The y position  of the command point, starting from the non-cable end. Indexing starts at 0.
----@return Engine.Actor module The module you want to get. Null if no module was placed.
-function ModulePanel:getModule(x, y) end
-
---- Enclosure for 6 command points.<br>
---- <br>
---- These Micro Control Panels can be used through out your factory and allow you to have an easier look on the state of your factory and they allow you to control your factory more easily.<br>
---- <br>
---- You can fully customize the control panels with buttons lights etc.
----@class FIN.MCP_6Point_C : FIN.ModulePanel
-local MCP_6Point_C
-
----@class FIN.classes.FIN.MCP_6Point_C : FIN.MCP_6Point_C
-classes.MCP_6Point_C = nil
-
---- Enclosure for 2 command points.<br>
---- <br>
---- These Micro Control Panels can be used through out your factory and allow you to have an easier look on the state of your factory and they allow you to control your factory more easily.<br>
---- <br>
---- You can fully customize the control panels with buttons lights etc.
----@class FIN.MCP_2Point_C : FIN.ModulePanel
-local MCP_2Point_C
-
----@class FIN.classes.FIN.MCP_2Point_C : FIN.MCP_2Point_C
-classes.MCP_2Point_C = nil
-
---- Micro Control Panel for 1 command point, center placement.<br>
---- <br>
---- These Micro Control Panels can be used through out your factory and allow you to have an easier look on the state of your factory and they allow you to control your factory more easily.<br>
---- <br>
---- You can fully customize the control panels with buttons lights etc.
----@class FIN.MCP_1Point_Center_C : FIN.ModulePanel
-local MCP_1Point_Center_C
-
----@class FIN.classes.FIN.MCP_1Point_Center_C : FIN.MCP_1Point_Center_C
-classes.MCP_1Point_Center_C = nil
-
---- Enclosure for 1 command points.<br>
---- <br>
---- These Micro Control Panels can be used through out your factory and allow you to have an easier look on the state of your factory and they allow you to control your factory more easily.<br>
---- <br>
---- You can fully customize the control panels with buttons lights etc.
----@class FIN.MCP_1Point_C : FIN.ModulePanel
-local MCP_1Point_C
-
----@class FIN.classes.FIN.MCP_1Point_C : FIN.MCP_1Point_C
-classes.MCP_1Point_C = nil
-
---- Enclosure for 3 command points.<br>
---- <br>
---- These Micro Control Panels can be used through out your factory and allow you to have an easier look on the state of your factory and they allow you to control your factory more easily.<br>
---- <br>
---- You can fully customize the control panels with buttons lights etc.
----@class FIN.MCP_3Point_C : FIN.ModulePanel
-local MCP_3Point_C
-
----@class FIN.classes.FIN.MCP_3Point_C : FIN.MCP_3Point_C
-classes.MCP_3Point_C = nil
-
 --- A small analogue Gauge for use on Micro Enclosures. The red portion and needle position can be changed through FIN
 ---@class FIN.GaugeModule : FIN.FINModuleBase
 local GaugeModule
@@ -6942,68 +7011,6 @@ local VehicleScanner_C
 
 ---@class FIN.classes.FIN.VehicleScanner_C : FIN.VehicleScanner_C
 classes.VehicleScanner_C = nil
-
---- The FicsIt-Networks large screen allows you to display anything a GPU can render onto a huge plane.<br>
---- <br>
---- You can also interact with the monitor by locking at it and also by clicking on it.
----@class FIN.Build_Screen_C : FIN.Screen
-local Build_Screen_C
-
----@class FIN.classes.FIN.Build_Screen_C : FIN.Build_Screen_C
-classes.Build_Screen_C = nil
-
---- The FicsIt-Networks Screen Driver allows you to add a screen display to the UI of the computer case you build this module intol.<br>
---- <br>
---- You can then use the computer API to get a reference to the screen and so you can bind the screen to a GPU.
----@class FIN.ScreenDriver_C : FIN.FINComputerScreen
-local ScreenDriver_C
-
----@class FIN.classes.FIN.ScreenDriver_C : FIN.ScreenDriver_C
-classes.ScreenDriver_C = nil
-
---- This is 100kB of amazing FicsIt-Networks Memory.<br>
---- <br>
---- You can add multiple of the memory bars to your PC and so you can extend the memory of your PC.<br>
---- <br>
---- You always need to hove enough memory because FicsIt doesn't allow out of memory exceptions and if you bring a computer to throw one, you will loose one month of payment.
----@class FIN.RAM_T1_C : FIN.FINComputerMemory
-local RAM_T1_C
-
----@class FIN.classes.FIN.RAM_T1_C : FIN.RAM_T1_C
-classes.RAM_T1_C = nil
-
---- The FicsIt-Networks Network Card allows yout to send network messages to other network cards in the same computer network.<br>
---- <br>
---- You can use unicast and broadcast messages to share information between multiple different computers in the same network.<br>
---- <br>
---- This is the best and easiest way for you to communicate between multiple computers.<br>
---- <br>
---- If you want to recieve network messages, make sure you also open the according port, since every message is asscociated with a port allowing for better filtering.
----@class FIN.NetworkCard_C : FIN.NetworkCard
-local NetworkCard_C
-
----@class FIN.classes.FIN.NetworkCard_C : FIN.NetworkCard_C
-classes.NetworkCard_C = nil
-
---- The FicsIt-Networks Network Router allows you to sepperate two different component network from each other.<br>
---- But it still lets network messages sent by network cards through.<br>
---- This allows for better networking capabilities, faster networking (can reduce game lag) and makes working with larger networks and multiple computer more easy.<br>
---- <br>
---- The router also provides a couple of functions which allow you to create filters for ports and message senders.
----@class FIN.NetworkRouter_C : FIN.NetworkRouter
-local NetworkRouter_C
-
----@class FIN.classes.FIN.NetworkRouter_C : FIN.NetworkRouter_C
-classes.NetworkRouter_C = nil
-
---- The Ficsit Networks Wireless Access Point allows you to connect a circuit to the Ficsit Wireless Area Network (FWAN), which uses Radio Towers frequencies to create a messaging network over the planet.<br>
----  <br>
---- It should be connected to a Radio Tower, then all network messages received will be broadcasted to all other Wireless Access Points across the map.
----@class FIN.WirelessAccessPoint_C : FIN.FINWirelessAccessPoint
-local WirelessAccessPoint_C
-
----@class FIN.classes.FIN.WirelessAccessPoint_C : FIN.WirelessAccessPoint_C
-classes.WirelessAccessPoint_C = nil
 
 --- A Internet Card!
 ---@class FIN.InternetCard_C : FIN.FINInternetCard

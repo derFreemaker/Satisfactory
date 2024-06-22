@@ -1,11 +1,8 @@
 local ProxyReference = require("Core.References.ProxyReference")
 
----@type Core.Cache<(string | integer), Adapter.Pipeline.Valve>
-local Cache = require("Core.Common.Cache")()
-
 ---@class Adapter.Pipeline.Valve : object
 ---@field private m_iPAddress Net.IPAddress
----@field private m_valve Core.Reference<Satis.Build_Valve_C>
+---@field private m_valve Core.Ref<Satis.Build_Valve_C>
 ---@overload fun(id: FIN.UUID) : Adapter.Pipeline.Valve
 local Valve = {}
 
@@ -38,19 +35,12 @@ end
 ---@private
 ---@param id FIN.UUID
 function Valve:__init(id)
-	---@type Out<Adapter.Pipeline.Valve>
-	local valveAdapater = {}
-	if Cache:TryGet(id, valveAdapater) then
-		return valveAdapater.Value
-	end
-
 	local valve = ProxyReference(id)
 	if not valve:Fetch() then
 		error("was not found")
 	end
 
 	self.m_valve = valve
-	Cache:Add(id, self)
 end
 
 ---@return FIN.UUID

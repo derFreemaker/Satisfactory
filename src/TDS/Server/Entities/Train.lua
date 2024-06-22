@@ -9,6 +9,7 @@ local CustomReference = require("Core.References.CustomReference")
 ---@class TDS.Server.Entities.Train : object, Core.Json.Serializable
 ---@field Id Core.UUID
 ---@field State TDS.Server.Entities.Train.State
+---@field m_ref Core.Ref<Satis.Train>
 ---@overload fun(id: Core.UUID, state: TDS.Server.Entities.Train.State) : TDS.Server.Entities.Train
 local Train = {}
 
@@ -38,9 +39,20 @@ local function trainRefFetch(uuidStr)
     end
 end
 
----@return Core.Reference<Satis.Train>
+---@return Core.Ref<Satis.Train>
 function Train:GetRef()
-    return CustomReference(trainRefFetch(self.Id:ToString()))
+    if self.m_ref then
+        return self.m_ref
+    end
+
+    self.m_ref = CustomReference(trainRefFetch(self.Id:ToString()))
+    return self.m_ref
+end
+
+---@return boolean
+function Train:IsValid()
+    --//TODO: find better solution maybe
+    return self:GetRef():IsValid()
 end
 
 function Train:Serialize()

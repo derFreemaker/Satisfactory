@@ -19,16 +19,20 @@ end
 
 ---@return string | integer | nil key, any value
 function Iterator:Next()
-    if self.m_current > self.m_length then
-        return nil, nil
+    while true do
+        if self.m_current == self.m_length then
+            return nil, nil
+        end
+
+        self.m_current = self.m_current + 1
+        local nextKey = self.m_childs[self.m_current]
+
+        if filesystem.exists(nextKey) then
+            local nextValue = self.m_dbTable:Get(nextKey)
+            self.m_dbTable:ObjectChanged(nextKey, nextValue)
+            return nextKey, nextValue
+        end
     end
-    self.m_current = self.m_current + 1
-
-    local nextKey = self.m_childs[self.m_current]
-    local nextValue = self.m_dbTable:Get(nextKey)
-    self.m_dbTable:ObjectChanged(nextKey, nextValue)
-
-    return nextKey, nextValue
 end
 
 ---@private
@@ -43,11 +47,13 @@ class("Database.Iterator", Iterator)
 
 ---@generic TKey : string | integer
 ---@generic TValue : Core.Json.Serializable
----@class Database.DbTable<TKey, TValue> : object, { Load: (fun(self: Database.DbTable<TKey, TValue>)), Save: (fun(self: Database.DbTable<TKey, TValue>)), Set: (fun(self: Database.DbTable<TKey, TValue>, key: TKey, value: TValue)), Delete: (fun(self: Database.DbTable<TKey, TValue>, key: TKey) : boolean), Get: (fun(self: Database.DbTable<TKey, TValue>, key: TKey) : TValue), Iterator: (fun(self: Database.DbTable<TKey, TValue>) : Database.Iterator) }
+---@class Database.DbTable<TKey, TValue> : object, { Load: (fun(self: Database.DbTable<TKey, TValue>)), Save: (fun(self: Database.DbTable<TKey, TValue>)), Add: (fun(self: Database.DbTable<TKey, TValue>, key: TKey, value: TValue)), Remove: (fun(self: Database.DbTable<TKey, TValue>, key: TKey) : boolean), Get: (fun(self: Database.DbTable<TKey, TValue>, key: TKey) : TValue), Iterator: (fun(self: Database.DbTable<TKey, TValue>) : Database.Iterator), Count: (fun() : integer) }
 ---@field package m_path Core.FileSystem.Path
----@field m_dataChanged table<string | number, any>
----@field m_logger Core.Logger
+---@field m_dataChanged table<string, any>
+---@field m_keys table<string, true>
+---@field m_count integer
 ---@field m_serializer Core.Json.Serializer
+---@field m_logger Core.Logger 
 ---@overload fun(path: Core.FileSystem.Path, logger: Core.Logger, serializer: Core.Json.Serializer?) : Database.DbTable
 local DbTable = {}
 
@@ -66,6 +72,8 @@ function DbTable:__init(path, logger, serializer)
 
     self.m_path = path
     self.m_dataChanged = {}
+    self.m_keys = {}
+    self.m_count = 0
     self.m_logger = logger
 
     self.m_serializer = serializer or JsonSerializer.Static__Serializer
@@ -78,6 +86,11 @@ function DbTable:Load()
     if not filesystem.exists(parentFolder:GetPath()) then
         filesystem.createDir(parentFolder:GetPath(), true)
     end
+
+    for _, value in pairs(filesystem.childs(parentFolder:GetPath())) do
+        self.m_keys[value:match("^(.+)%.dto%.json$")] = true
+    end
+    self.m_count = #self.m_keys
 
     self.m_logger:LogTrace("loaded Database Table")
 end
@@ -110,20 +123,22 @@ end
 
 ---@param key string | integer
 ---@param value any
-function DbTable:Set(key, value)
+function DbTable:Add(key, value)
     local path = self.m_path:Extend(tostring(key) .. ".dto.json")
 
-    if not value then
-        filesystem.remove(path:GetPath())
-    else
-        File.Static__WriteAll(path, self.m_serializer:Serialize(value))
-    end
+    File.Static__WriteAll(path, self.m_serializer:Serialize(value))
+
+    self.m_keys[key] = true
+    self.m_count = self.m_count + 1
 end
 
 ---@param key string | integer
 ---@return boolean success
-function DbTable:Delete(key)
+function DbTable:Remove(key)
     local path = self.m_path:Extend(tostring(key) .. ".dto.json")
+
+    self.m_keys[key] = nil
+    self.m_count = self.m_count - 1
 
     return filesystem.remove(path:GetPath())
 end
@@ -131,25 +146,29 @@ end
 ---@param key string | integer
 ---@return any value
 function DbTable:Get(key)
-    local value = nil
-    for _, fileName in ipairs(filesystem.childs(self.m_path:GetPath())) do
-        local path = self.m_path:Extend(fileName)
-
-        if path:IsFile() then
-            local fileKey = fileName:match("^(.+)%.dto%.json$")
-            if key == fileKey then
-                local data = File.Static__ReadAll(path)
-                value = self.m_serializer:Deserialize(data)
-                self:ObjectChanged(key, value)
-                return value
-            end
-        end
+    if not self.m_keys[key] then
+        return nil
     end
+
+    local path = self.m_path:Extend(key .. ".dto.json")
+    if path:IsFile() and path:Exists() then
+        local data = File.Static__ReadAll(path)
+        local value = self.m_serializer:Deserialize(data)
+        self:ObjectChanged(key, value)
+        return value
+    end
+
+    self:Remove(key)
+    return nil
 end
 
 ---@return Database.Iterator
 function DbTable:Iterator()
     return Iterator(self)
+end
+
+function DbTable:Count()
+    return self.m_count
 end
 
 return class("Database.DbTable", DbTable)

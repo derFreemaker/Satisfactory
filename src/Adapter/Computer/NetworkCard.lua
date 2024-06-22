@@ -1,11 +1,8 @@
 local ProxyReference = require("Core.References.ProxyReference")
 local PCIDeviceReference = require("Core.References.PCIDeviceReference")
 
----@type Core.Cache<(string | integer), Adapter.Computer.NetworkCard>
-local Cache = require("Core.Common.Cache")()
-
 ---@class Adapter.Computer.NetworkCard : object
----@field private m_refNetworkCard Core.Reference<FIN.NetworkCard_C>
+---@field private m_refNetworkCard Core.Ref<FIN.NetworkCard_C>
 ---@field private m_openPorts table<integer, true>
 ---@overload fun(idOrIndexOrNetworkCard: (FIN.UUID | integer) | nil) : Adapter.Computer.NetworkCard
 local NetworkCard = {}
@@ -16,12 +13,6 @@ function NetworkCard:__init(idOrIndex)
 	self.m_openPorts = {}
 	if not idOrIndex then
 		idOrIndex = 1
-	end
-
-	---@type Out<Adapter.Computer.NetworkCard>
-	local networkCardAdapter = {}
-	if Cache:TryGet(idOrIndex, networkCardAdapter) then
-		return networkCardAdapter.Value
 	end
 
 	local networkCard
@@ -37,7 +28,6 @@ function NetworkCard:__init(idOrIndex)
 	end
 
 	self.m_refNetworkCard = networkCard
-	Cache:Add(idOrIndex, self)
 
 	self:CloseAllPorts()
 end

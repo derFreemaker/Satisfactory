@@ -1,6 +1,6 @@
----@class Core.CustomReference<T> : object, Core.Reference<T>
+---@class Core.CustomRef<T> : object, Core.Ref<T>
 ---@field m_fetchFunc fun() : Engine.Object | nil
----@overload fun(fetchFunc: (fun() : Engine.Object | nil), obj: Engine.Object | nil) : Core.CustomReference
+---@overload fun(fetchFunc: (fun() : Engine.Object | nil), obj: Engine.Object | nil) : Core.CustomRef
 local CustomReference = {}
 
 ---@private

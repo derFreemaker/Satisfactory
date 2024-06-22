@@ -1,8 +1,10 @@
 local EventPullAdapter = require("Core.Event.EventPullAdapter")
+local Host = require("Hosting.Host")
 
 local DistributionSystem = require("TDS.Server.DistributionSystem")
 
 ---@class TDS.Server.Main : Github_Loading.Entities.Main
+---@field m_host Hosting.Host
 ---@field m_distibutionSystem TDS.Server.DistributionSystem
 local Main = {}
 
@@ -12,15 +14,18 @@ function Main:Configure()
     end
 
     -- add host to host endpoints
+    self.m_host = Host(self.Logger:subLogger("Host"))
+    ---@using HotReload.Client
+    self.m_host:AddHotReload()
 
     self.m_distibutionSystem = DistributionSystem(self.Logger:subLogger("TrainDistributionSystem"))
 end
 
 function Main:Run()
 	while true do
-        EventPullAdapter:Wait(2)
+        self.m_host:RunCycle(2)
 
-        self.m_distibutionSystem:Run()
+        self.m_distibutionSystem:Cycle()
 	end
 end
 

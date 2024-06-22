@@ -3,6 +3,7 @@ local CustomReference = require("Core.References.CustomReference")
 ---@class TDS.Server.Entities.Station : object, Core.Json.Serializable
 ---@field Id Core.UUID
 ---@field ItemName string
+---@field m_ref Core.Ref<Satis.RailroadStation>
 ---@overload fun(id: Core.UUID) : TDS.Server.Entities.Station
 local Station = {}
 
@@ -25,9 +26,20 @@ local function stationRefFetch(uuidStr)
     end
 end
 
----@return Core.Reference<Satis.RailroadStation>
+---@return Core.Ref<Satis.RailroadStation>
 function Station:GetRef()
-    return CustomReference(stationRefFetch(self.Id:ToString()))
+    if self.m_ref then
+        return self.m_ref
+    end
+
+    self.m_ref = CustomReference(stationRefFetch(self.Id:ToString()))
+    return self.m_ref
+end
+
+---@return boolean
+function Station:IsValid()
+    --//TODO: find better solution maybe
+    return self:GetRef():IsValid()
 end
 
 return class("TDS.Server.Entities.Station", Station,

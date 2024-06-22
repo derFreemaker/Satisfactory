@@ -14,6 +14,8 @@
 
 	--- All meta methods that should be added as meta method to the class.
 	Configs.AllMetaMethods = {
+	    --- Before Constructor
+	    __preinit = true,
 	    --- Constructor
 	    __init = true,
 	    --- Garbage Collection
@@ -65,6 +67,7 @@
 
 	--- Meta methods that should not be set to the classes metatable, but remain in the type.MetaMethods.
 	Configs.IndirectMetaMethods = {
+	    __preinit = true,
 	    __gc = true,
 	    __index = true,
 	    __newindex = true
@@ -93,7 +96,8 @@ __fileFuncs__["src.Meta"] = function()
 	----------------------------------------------------------------
 
 	---@class Freemaker.ClassSystem.ObjectMetaMethods
-	---@field protected __init (fun(self: object, ...)) | nil self(...) before construction
+	---@field protected __preinit (fun(...) : any) | nil self(...) before contructor
+	---@field protected __init (fun(self: object, ...)) | nil self(...) constructor
 	---@field protected __call (fun(self: object, ...) : ...) | nil self(...) after construction
 	---@field protected __close (fun(self: object, errObj: any) : any) | nil invoked when the object gets out of scope
 	---@field protected __gc fun(self: object) | nil Freemaker.ClassSystem.Deconstruct(self) or garbageCollection
@@ -123,6 +127,7 @@ __fileFuncs__["src.Meta"] = function()
 	---@field protected __newindex fun(class, key, value) | nil self.xxx = xxx | self[xxx] = xxx
 
 	---@class object : Freemaker.ClassSystem.ObjectMetaMethods, function
+	---@class interface : Freemaker.ClassSystem.ObjectMetaMethods
 
 	---@class Freemaker.ClassSystem.MetaMethods
 	---@field __gc fun(self: object) | nil Class.Deconstruct(self) or garbageCollection
@@ -154,7 +159,8 @@ __fileFuncs__["src.Meta"] = function()
 	---@field __ipairs (fun(self: object) : ((fun(t: table, key: number) : key: number, value: any), t: table, startKey: number)) | nil ipairs(self)
 
 	---@class Freemaker.ClassSystem.TypeMetaMethods : Freemaker.ClassSystem.MetaMethods
-	---@field __init (fun(self: object, ...)) | nil self(...) before construction
+	---@field __preinit (fun(...) : any) | nil self(...) before constructor
+	---@field __init (fun(self: object, ...)) | nil self(...) constructor
 
 	----------------------------------------------------------------
 	-- Type
@@ -1300,6 +1306,13 @@ __fileFuncs__["src.Construction"] = function()
 	        error("cannot construct interface class: " .. typeInfo.Name)
 	    end
 
+	    if typeInfo.MetaMethods.__preinit then
+	        local result = typeInfo.MetaMethods.__preinit(...)
+	        if result ~= nil then
+	            return result
+	        end
+	    end
+
 	    local classInstance, classMetatable = {}, {}
 	    ---@cast classInstance Freemaker.ClassSystem.Instance
 	    ---@cast classMetatable Freemaker.ClassSystem.Metatable
@@ -1577,7 +1590,7 @@ __fileFuncs__["__main__"] = function()
 	    return ClassSystem.Create(table, options)
 	end
 
-	---@generic TClass
+	---@generic TClass : interface
 	---@param name string
 	---@param table TClass
 	---@param options Freemaker.ClassSystem.Create.Options | nil

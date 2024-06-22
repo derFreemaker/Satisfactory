@@ -5,9 +5,9 @@ local UUID = require("Core.Common.UUID")
 local ControllerDto = require("FactoryControl.Core.Entities.Controller.ControllerDto")
 
 ---@class FactoryControl.Server.DatabaseAccessLayer : object
----@field private m_controllers Database.DbTable
----@field private m_features Database.DbTable
----@field private m_logger Core.Logger
+---@field m_controllers Database.DbTable<string, FactoryControl.Core.Entities.ControllerDto>
+---@field m_features Database.DbTable<string, FactoryControl.Core.Entities.Controller.FeatureDto>
+---@field m_logger Core.Logger
 ---@overload fun(logger: Core.Logger) : FactoryControl.Server.DatabaseAccessLayer
 local DatabaseAccessLayer = {}
 
@@ -41,7 +41,7 @@ function DatabaseAccessLayer:CreateController(createController)
         return nil
     end
 
-    self.m_controllers:Set(controller.Id:ToString(), controller)
+    self.m_controllers:Add(controller.Id:ToString(), controller)
 
     return controller
 end
@@ -80,7 +80,7 @@ function DatabaseAccessLayer:CreateFeature(feature)
         feature.Id = UUID.Static__New()
     end
 
-    self.m_features:Set(feature.Id:ToString(), feature)
+    self.m_features:Add(feature.Id:ToString(), feature)
 
     return feature
 end

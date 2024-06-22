@@ -1,14 +1,18 @@
 local UUID = require("Core.Common.UUID")
 
+local TrainStacker = require("TDS.Server.TrainStacker")
 local Train = require("TDS.Server.Entities.Train")
 
-NEW_NAME = "__NEW_TRAIN__"
+local NEW_TRAIN_NAME = "__NEW_TRAIN__"
+local TRAINS_FULL_NAME = "__TRAINS_FULL__"
 
 ---@class TDS.Server.DistributionSystem : object
 ---@field m_queue TDS.Entities.Request[]
+---@field m_maxTrains integer
 ---@field m_trains Database.DbTable<string, TDS.Server.Entities.Train>
 ---@field m_stations Database.DbTable<string, TDS.Server.Entities.Station>
 ---@field m_requests Database.DbTable<string, TDS.Entities.Request>
+---@field m_trainStacker TDS.Server.TrainStacker
 ---@field m_logger Core.Logger
 ---@overload fun(logger: Core.Logger) : TDS.Server.DistributionSystem
 local DistributionSystem = {}
@@ -16,22 +20,14 @@ local DistributionSystem = {}
 ---@private
 ---@param logger Core.Logger
 function DistributionSystem:__init(logger)
+    self.m_trainStacker = TrainStacker(Config.StationId)
     self.m_logger = logger
 
-    self.m_logger:LogInfo("you can add trains by naming them: " .. NEW_NAME)
+    self.m_logger:LogInfo("you can add trains by naming them: " .. NEW_TRAIN_NAME)
 end
 
 function DistributionSystem:Save()
     self.m_trains:Save()
-end
-
----@private
----@param train TDS.Server.Entities.Train
-function DistributionSystem:SendToBase(train)
-    local trainRef = train:GetRef()
-
-    --//TODO: send train to base
-    --//TODO: figure out how to stack trains
 end
 
 ---@private
@@ -41,39 +37,71 @@ function DistributionSystem:AddTrain(train)
     train:setName(uuid:ToString())
 
     local trainObj = Train(uuid, "Traveling")
-    self:SendToBase(trainObj)
+    self.m_trainStacker:CallbackTrain(trainObj:GetRef())
 
-    self.m_trains:Set(uuid:ToString(), trainObj)
+    self.m_trains:Add(uuid:ToString(), trainObj)
 end
 
 function DistributionSystem:Check()
-    ---@type Satis.TrainPlatform
-    local connectedStation = component.proxy(Config.StationId)
-    if not connectedStation then
-        error("Config.StationId is invalid or was not found")
-    end
-    local trackGraph = connectedStation:getTrackGraph()
+    local connectedStation = self.m_trainStacker:GetStationReference()
+    local trackGraph = connectedStation:Get():getTrackGraph()
 
     local trains = trackGraph:getTrains()
     for _, train in pairs(trains) do
-        local timeTable = train:newTimeTable()
+        if train:getName() == NEW_TRAIN_NAME then
+            if self.m_trains:Count() > self.m_maxTrains then
+                train:setName(TRAINS_FULL_NAME)
+                goto continue
+            end
 
-        if train:getName() == NEW_NAME then
             self:AddTrain(train)
         end
+
+        ::continue::
     end
 end
 
 function DistributionSystem:Distribute()
     --//TODO: implement DistributionSystem:Distribute()
     --//TODO: check if station and train still exists when used
-    --//TODO: check if train is useable and not unrailed or ...
+    --//TODO: check if train is useable and not derailed or ... ([train].isDerailed)
+
+    for key, value in pairs(self.m_requests:Iterator()) do
+        ---@cast key string
+        ---@cast value TDS.Entities.Request
+
+        
+    end
 end
 
-function DistributionSystem:Run()
+---@param itemName string
+---@return TDS.Server.Entities.Station | nil
+function DistributionSystem:GetLoadStation(itemName)
+    for uuid, station in pairs(self.m_stations:Iterator()) do
+        ---@cast uuid string
+        ---@cast station TDS.Server.Entities.Station
+
+        if not station:IsValid() then
+            self.m_stations:Remove(uuid)
+            goto continue
+        end
+
+        if station.ItemName == itemName then
+            return station
+        end
+
+        ::continue::
+    end
+end
+
+function DistributionSystem:Cycle()
     self:Check()
 
     self:Distribute()
+
+    self.m_trains:Save()
+    self.m_stations:Save()
+    self.m_requests:Save()
 end
 
 return class("TDS.Server.DistributionSystem", DistributionSystem)
