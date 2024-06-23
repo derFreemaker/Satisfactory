@@ -7,7 +7,7 @@ local HostExtensions = {}
 
 function HostExtensions:AddHotReload()
     self:AddCallableEventListener(Usage.Ports.HotReload, Usage.Events.HotReload, function(context)
-        self:GetHostLogger():LogInfo("recieved HotReload Signal")
+        self:GetLogger()():LogInfo("recieved HotReload Signal")
         computer.reset()
     end)
 end

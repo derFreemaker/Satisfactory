@@ -1,4 +1,4 @@
----@class TDS.Entities.Request.Data
+---@class TDS.Entities.Request.Create
 ---@field Item string
 
 ---@enum TDS.Request.State
@@ -12,24 +12,24 @@ local Request_State = {
 ---@field Id Core.UUID
 ---@field State TDS.Request.State
 ---@field TrainId Core.UUID | nil
----@field Data TDS.Entities.Request.Data
----@overload fun(id: Core.UUID, state: TDS.Request.State, trainId: Core.UUID | nil, data: TDS.Entities.Request.Data) : TDS.Entities.Request
+---@field ItemName string
+---@overload fun(id: Core.UUID, state: TDS.Request.State, trainId: Core.UUID | nil, itemName: string) : TDS.Entities.Request
 local Request = {}
 
 ---@private
 ---@param id Core.UUID
 ---@param state TDS.Request.State
 ---@param trainId Core.UUID | nil
----@param data TDS.Entities.Request.Data
-function Request:__init(id, state, trainId, data)
+---@param itemName string
+function Request:__init(id, state, trainId, itemName)
     self.Id = id
     self.State = state
     self.TrainId = trainId
-    self.Data = data
+    self.ItemName = itemName
 end
 
 function Request:Serialize()
-    return self.Id, self.State, self.TrainId, self.Data
+    return self.Id, self.State, self.TrainId, self.ItemName
 end
 
 return class("TDS.Request", Request,

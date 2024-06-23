@@ -41,7 +41,7 @@ function Host:GetJsonSerializer()
     return self.m_jsonSerializer
 end
 
-function Host:GetHostLogger()
+function Host:GetLogger()
     return self.m_logger
 end
 

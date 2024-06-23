@@ -39,9 +39,9 @@ function HostExtensions:RegisterAddress(url, ipAddress)
     end
 
     if dnsClient:CreateAddress(url, ipAddress) then
-        self:GetHostLogger():LogDebug("Registered address " .. url .. " on DNS server.")
+        self:GetLogger()():LogDebug("Registered address " .. url .. " on DNS server.")
     else
-        self:GetHostLogger():LogWarning("Failed to register address " .. url .. " on DNS server or already exists.")
+        self:GetLogger()():LogWarning("Failed to register address " .. url .. " on DNS server or already exists.")
     end
 end
 

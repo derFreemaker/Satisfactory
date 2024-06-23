@@ -1,5 +1,8 @@
 local CustomReference = require("Core.References.CustomReference")
 
+---@class TDS.Server.Entities.Train.Create
+---@field State TDS.Server.Entities.Train.State
+
 ---@alias TDS.Server.Entities.Train.State
 ---|"None"
 ---|"Traveling"

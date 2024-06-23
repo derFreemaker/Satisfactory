@@ -24,7 +24,7 @@ function Main:Run()
         computer.panic("Config.HotReloadUrl not set or not string")
     end
     local baseUrl = Url(Config.HotReloadUrl)
-    local logger = self.m_host:GetHostLogger():subLogger("HotReload")
+    local logger = self.m_host:GetLogger()():subLogger("HotReload")
 
 	local networkClient = self.m_host:GetNetworkClient() 
     local internetCard = InternetCard()

@@ -6,7 +6,8 @@
     "Core",
     "Database",
     "Hosting",
-    "HotReload.Client"
+    "HotReload.Client",
+    "TDS.Core"
   ],
   "PackageType": "Application"
 }

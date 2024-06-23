@@ -1,11 +1,22 @@
 local CustomReference = require("Core.References.CustomReference")
 
+---@class TDS.Server.Entities.Station.Create
+---@field ItemName string
+
 ---@class TDS.Server.Entities.Station : object, Core.Json.Serializable
 ---@field Id Core.UUID
 ---@field ItemName string
 ---@field m_ref Core.Ref<Satis.RailroadStation>
----@overload fun(id: Core.UUID) : TDS.Server.Entities.Station
+---@overload fun(id: Core.UUID, itemName: string) : TDS.Server.Entities.Station
 local Station = {}
+
+---@private
+---@param id Core.UUID
+---@param itemName string
+function Station:__init(id, itemName)
+    self.Id = id
+    self.ItemName = itemName
+end
 
 ---@param uuidStr string
 ---@return fun() : Satis.RailroadStation | nil
@@ -40,6 +51,10 @@ end
 function Station:IsValid()
     --//TODO: find better solution maybe
     return self:GetRef():IsValid()
+end
+
+function Station:Serialize()
+    return self.Id, self.ItemName
 end
 
 return class("TDS.Server.Entities.Station", Station,
