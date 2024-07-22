@@ -52,7 +52,7 @@
 					"line": 4,
 					"column": 5,
 					"endColumn": 6
-				}
+				},
 			},
 			"presentation": {
 				"echo": true,
@@ -67,7 +67,7 @@
 				"runOn": "folderOpen",
 				"instanceLimit": 1,
 				"reevaluateOnRerun": true
-			}
+			},
 		},
 		{
 			"label": "bundle All",

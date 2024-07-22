@@ -1,5 +1,5 @@
-local ProxyReference = require("Core.References.ProxyReference")
-local PCIDeviceReference = require("Core.References.PCIDeviceReference")
+local ProxyReference = require("Core.Reference.ProxyReference")
+local PCIDeviceReference = require("Core.Reference.PCIDeviceReference")
 
 ---@class Adapter.Computer.NetworkCard : object
 ---@field private m_refNetworkCard Core.Ref<FIN.NetworkCard_C>

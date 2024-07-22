@@ -177,10 +177,6 @@ function UUID:ToString()
     return str
 end
 
-function UUID:Serialize()
-    return self:ToString()
-end
-
 ---@private
 function UUID:__newindex()
     error("Core.UUID is completely read only", 3)
@@ -202,7 +198,13 @@ function UUID:__eq(other)
 end
 
 ---@private
-function UUID:__tostring()
+UUID.__tostring = UUID.ToString
+
+-------------------------
+-- Core.Json.Serializable
+-------------------------
+
+function UUID:Serialize()
     return self:ToString()
 end
 

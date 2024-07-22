@@ -1,4 +1,4 @@
-local PCIDeviceReference = require("Core.References.PCIDeviceReference")
+local PCIDeviceReference = require("Core.Reference.PCIDeviceReference")
 
 ---@class Adapter.Computer.InternetCard : object
 ---@field m_refInternetCard Core.Ref<FIN.InternetCard_C>

@@ -40,4 +40,4 @@ function PCIDeviceReference:Fetch()
 end
 
 return class("Core.PCIDeviceReference", PCIDeviceReference,
-    { Inherit = require("Core.References.Reference") })
+    { Inherit = require("Core.Reference.Reference") })

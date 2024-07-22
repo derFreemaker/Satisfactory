@@ -25,7 +25,7 @@ function File.Static__WriteAll(path, data)
         error("parent folder does not exist: " .. path:GetParentFolder())
     end
 
-    local file = filesystem.open(path:GetPath(), "w")
+    local file = filesystem.open(path:ToString(), "w")
     file:write(data)
     file:close()
 end
@@ -37,11 +37,11 @@ function File.Static__ReadAll(path)
         path = Path(path)
     end
 
-    if not filesystem.exists(path:GetPath()) then
+    if not filesystem.exists(path:ToString()) then
         error("file does not exist: " .. path:GetParentFolder())
     end
 
-    local file = filesystem.open(path:GetPath(), "r")
+    local file = filesystem.open(path:ToString(), "r")
 
     local str = ""
     while true do
@@ -69,12 +69,12 @@ end
 
 ---@return string
 function File:GetPath()
-    return self.m_path:GetPath()
+    return self.m_path:ToString()
 end
 
 ---@return boolean exists
 function File:Exists()
-    return filesystem.exists(self.m_path:GetPath())
+    return filesystem.exists(self.m_path:ToString())
 end
 
 ---@return boolean isOpen
@@ -90,7 +90,7 @@ end
 ---@private
 function File:CheckState()
     if not self:IsOpen() then
-        error("file is not open: " .. self.m_path:GetPath(), 3)
+        error("file is not open: " .. self.m_path:ToString(), 3)
     end
 end
 
@@ -100,14 +100,14 @@ end
 function File:Open(mode)
     local file
 
-    if not filesystem.exists(self.m_path:GetPath()) then
+    if not filesystem.exists(self.m_path:ToString()) then
         local parentFolder = self.m_path:GetParentFolder()
         if not filesystem.exists(parentFolder) then
             error("parent folder does not exist: " .. parentFolder)
         end
 
         if mode == "r" then
-            file = filesystem.open(self.m_path:GetPath(), "w")
+            file = filesystem.open(self.m_path:ToString(), "w")
             file:write("")
             file:close()
             file = nil
@@ -116,7 +116,7 @@ function File:Open(mode)
         return false
     end
 
-    self.m_file = filesystem.open(self.m_path:GetPath(), mode)
+    self.m_file = filesystem.open(self.m_path:ToString(), mode)
     self.m_mode = mode
 
     return true
@@ -155,18 +155,18 @@ function File:Clear()
         self:Close()
     end
 
-    if not filesystem.exists(self.m_path:GetPath()) then
+    if not filesystem.exists(self.m_path:ToString()) then
         return
     end
 
-    filesystem.remove(self.m_path:GetPath())
+    filesystem.remove(self.m_path:ToString())
 
-    local file = filesystem.open(self.m_path:GetPath(), "w")
+    local file = filesystem.open(self.m_path:ToString(), "w")
     file:write("")
     file:close()
 
     if wasOpen then
-        self.m_file = filesystem.open(self.m_path:GetPath(), self.m_mode)
+        self.m_file = filesystem.open(self.m_path:ToString(), self.m_mode)
     end
 end
 

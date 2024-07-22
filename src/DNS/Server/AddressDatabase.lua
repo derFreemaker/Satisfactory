@@ -1,11 +1,11 @@
-local DbTable = require("Database.DbTable")
+local DbTable = require("Core.Database.Table")
 local Path = require("Core.FileSystem.Path")
 local Address = require("DNS.Core.Entities.Address.Address")
 
 local UUID = require("Core.Common.UUID")
 
 ---@class DNS.Server.AddressDatabase : object
----@field private m_dbTable Database.DbTable | table<string, DNS.Core.Entities.Address>
+---@field private m_dbTable Core.Database.Table | table<string, DNS.Core.Entities.Address>
 ---@overload fun(logger: Core.Logger) : DNS.Server.AddressDatabase
 local AddressDatabase = {}
 

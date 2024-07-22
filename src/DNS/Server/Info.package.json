@@ -4,7 +4,6 @@
   "Version": "0.1.4-108",
   "RequiredPackages": [
     "Core",
-    "Database",
     "DNS.Core",
     "Hosting",
     "Net.Rest.Api.Server"

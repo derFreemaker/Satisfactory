@@ -1,23 +1,23 @@
-local CustomReference = require("Core.References.CustomReference")
+local CustomReference = require("Core.Reference.CustomReference")
 
----@class TDS.Server.Entities.Train.Create
----@field State TDS.Server.Entities.Train.State
+---@class TDS.Server.Train.Create
+---@field State TDS.Server.Train.State
 
----@alias TDS.Server.Entities.Train.State
+---@alias TDS.Server.Train.State
 ---|"None"
 ---|"Traveling"
 ---|"Idle"
 ---|"Working"
 
----@class TDS.Server.Entities.Train : object, Core.Json.Serializable
+---@class TDS.Server.Train : object, Core.Json.Serializable
 ---@field Id Core.UUID
----@field State TDS.Server.Entities.Train.State
+---@field State TDS.Server.Train.State
 ---@field m_ref Core.Ref<Satis.Train>
----@overload fun(id: Core.UUID, state: TDS.Server.Entities.Train.State) : TDS.Server.Entities.Train
+---@overload fun(id: Core.UUID, state: TDS.Server.Train.State) : TDS.Server.Train
 local Train = {}
 
 ---@param id Core.UUID
----@param state TDS.Server.Entities.Train.State
+---@param state TDS.Server.Train.State
 function Train:__init(id, state)
     self.Id = id
     self.State = state
@@ -54,7 +54,6 @@ end
 
 ---@return boolean
 function Train:IsValid()
-    --//TODO: find better solution maybe
     return self:GetRef():IsValid()
 end
 

@@ -1,7 +1,7 @@
 local Config = require("Core.Config")
 
 ---@generic T : Engine.Object
----@class Core.Ref<T> : interface, { Get: (fun() : T), IsValid: (fun() : boolean) }
+---@class Core.Ref<T> : { Get: (fun() : T), IsValid: (fun() : boolean) }
 ---@field protected m_ref Engine.Object | nil
 ---@field m_expires number
 local Ref = {}

@@ -18,4 +18,4 @@ function CustomReference:Fetch()
 end
 
 return class("Core.CustomReference", CustomReference,
-    { Inherit = require("Core.References.Reference") })
+    { Inherit = require("Core.Reference.Reference") })

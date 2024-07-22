@@ -1,4 +1,3 @@
-local EventPullAdapter = require("Core.Event.EventPullAdapter")
 local Host = require("Hosting.Host")
 
 local DatabaseAccessLayer = require("TDS.Server.DatabaseAccessLayer")

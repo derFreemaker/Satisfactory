@@ -45,14 +45,12 @@ function Path:__init(pathOrNodes)
 end
 
 ---@return string path
-function Path:GetPath()
+function Path:ToString()
     return Utils.String.Join(self.m_nodes, "/")
 end
 
-Path.ToString = Path.GetPath
-
 ---@private
-Path.__tostring = Path.GetPath
+Path.__tostring = Path.ToString
 
 ---@return boolean
 function Path:IsEmpty()
@@ -70,7 +68,7 @@ function Path:IsDir()
 end
 
 function Path:Exists()
-    local path = self:GetPath()
+    local path = self:ToString()
     return filesystem.exists(path)
 end
 
@@ -111,7 +109,7 @@ end
 ---@return string fileName
 function Path:GetFileName()
     if not self:IsFile() then
-        error("path is not a file: " .. self:GetPath())
+        error("path is not a file: " .. self:ToString())
     end
 
     return self.m_nodes[#self.m_nodes]
@@ -120,7 +118,7 @@ end
 ---@return string fileExtension
 function Path:GetFileExtension()
     if not self:IsFile() then
-        error("path is not a file: " .. self:GetPath())
+        error("path is not a file: " .. self:ToString())
     end
 
     local fileName = self.m_nodes[#self.m_nodes]
@@ -132,7 +130,7 @@ end
 ---@return string fileStem
 function Path:GetFileStem()
     if not self:IsFile() then
-        error("path is not a file: " .. self:GetPath())
+        error("path is not a file: " .. self:ToString())
     end
 
     local fileName = self.m_nodes[#self.m_nodes]

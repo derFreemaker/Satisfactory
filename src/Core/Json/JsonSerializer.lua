@@ -29,14 +29,13 @@ function JsonSerializer:AddTypesFromStatic()
     end
 end
 
----@private
 ---@param typeInfo Freemaker.ClassSystem.Type
 ---@return Core.Json.Serializer
 function JsonSerializer:AddTypeInfo(typeInfo)
     if Utils.Table.ContainsKey(self.m_typeInfos, typeInfo.Name) then
-        error("serializer already contains type: " .. typeInfo.Name)
+        return self
     end
-    
+
     self.m_typeInfos[typeInfo.Name] = typeInfo
 
     return self

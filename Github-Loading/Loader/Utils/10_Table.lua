@@ -105,4 +105,17 @@ function Table.Invert(t)
     return inverted
 end
 
+---@generic T
+---@param t T[]
+---@param func fun(x: T) : boolean
+---@return boolean
+function Table.Any(t, func)
+    for _, value in pairs(t) do
+        if func(value) then
+            return true
+        end
+    end
+    return false
+end
+
 return Table

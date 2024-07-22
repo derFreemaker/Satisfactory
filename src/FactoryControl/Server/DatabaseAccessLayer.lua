@@ -1,12 +1,12 @@
-local DbTable = require("Database.DbTable")
+local DbTable = require("Core.Database.Table")
 local Path = require("Core.FileSystem.Path")
 local UUID = require("Core.Common.UUID")
 
 local ControllerDto = require("FactoryControl.Core.Entities.Controller.ControllerDto")
 
 ---@class FactoryControl.Server.DatabaseAccessLayer : object
----@field m_controllers Database.DbTable<string, FactoryControl.Core.Entities.ControllerDto>
----@field m_features Database.DbTable<string, FactoryControl.Core.Entities.Controller.FeatureDto>
+---@field m_controllers Core.Database.Table<string, FactoryControl.Core.Entities.ControllerDto>
+---@field m_features Core.Database.Table<string, FactoryControl.Core.Entities.Controller.FeatureDto>
 ---@field m_logger Core.Logger
 ---@overload fun(logger: Core.Logger) : FactoryControl.Server.DatabaseAccessLayer
 local DatabaseAccessLayer = {}
@@ -48,7 +48,7 @@ end
 
 ---@param controllerId Core.UUID
 function DatabaseAccessLayer:DeleteController(controllerId)
-    self.m_controllers:Delete(controllerId:ToString())
+    self.m_controllers:Remove(controllerId:ToString())
 end
 
 ---@param controllerId Core.UUID
@@ -88,7 +88,7 @@ end
 ---@param featureId Core.UUID
 ---@return boolean success
 function DatabaseAccessLayer:DeleteFeature(featureId)
-    return self.m_features:Delete(featureId:ToString())
+    return self.m_features:Remove(featureId:ToString())
 end
 
 ---@param featureId Core.UUID

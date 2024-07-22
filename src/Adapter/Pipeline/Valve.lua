@@ -1,4 +1,4 @@
-local ProxyReference = require("Core.References.ProxyReference")
+local ProxyReference = require("Core.Reference.ProxyReference")
 
 ---@class Adapter.Pipeline.Valve : object
 ---@field private m_iPAddress Net.IPAddress
