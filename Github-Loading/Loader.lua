@@ -440,16 +440,19 @@ function Loader:Configure(program, package, logLevel)
 	end
 	___logger:revert()
 
-	if returns[1] == "$%not found%$" then
+	---@type Github_Loading.Entities
+	local Entities = self:Get('/Github-Loading/Loader/Entities')
+
+	if returns[1] == Entities.ConfigureNotFound then
 		self.Logger:LogTrace('no configure function found')
 	else
-		self.Logger:LogTrace('configured program')
+		self.Logger:LogTrace("configured program")
 	end
 end
 
 ---@param program Github_Loading.Entities.Main
 function Loader:Run(program)
-	self.Logger:LogTrace('running program...')
+	self.Logger:LogTrace("running program...")
 
 	___logger:setLogger(program.Logger)
 	local success, errorMsg, returns = Utils.Function.InvokeProtected(program.Run, program)
@@ -459,10 +462,13 @@ function Loader:Run(program)
 	end
 	___logger:revert()
 
-	if returns[1] == '$%not found%$' then
-		error('no main run function found')
+	---@type Github_Loading.Entities
+	local Entities = self:Get("/Github-Loading/Loader/Entities")
+
+	if returns[1] == Entities.MainNotFound then
+		error("no main run function found")
 	end
-	self.Logger:LogInfo('program stopped running: ' .. tostring(returns[1]))
+	self.Logger:LogInfo("program stopped running: " .. tostring(returns[1]))
 end
 
 function Loader:Cleanup()
@@ -470,7 +476,7 @@ function Loader:Cleanup()
 	local openFiles = self.m_loadedLoaderFiles["/Github-Loading/Loader/Utils/File"][2]
 
 	for id, file in pairs(openFiles) do
-		print("file still open: " .. id)
+		print("file was still open: " .. id)
 		file:close()
 	end
 end

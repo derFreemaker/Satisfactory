@@ -5,6 +5,9 @@ local Entities = {}
 ---@field Logger Core.Logger
 local Main = {}
 
+Entities.MainNotFound = {}
+Entities.ConfigureNotFound = {}
+
 ---@param mainModule Github_Loading.Entities.Main
 ---@return Github_Loading.Entities.Main
 function Entities.newMain(mainModule)
@@ -13,12 +16,12 @@ end
 
 ---@return string | any
 function Main:Configure()
-    return "$%not found%$"
+    return Entities.ConfigureNotFound
 end
 
 ---@return string | any
 function Main:Run()
-    return "$%not found%$"
+    return Entities.MainNotFound
 end
 
 Entities.Main = Main
