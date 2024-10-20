@@ -140,6 +140,21 @@ function UUID:Equals(other)
     return true
 end
 
+---@return integer hashcode
+function UUID:ToHashCode()
+    local hashcode = 0
+    for _, value in ipairs(self.m_head) do
+        hashcode = hashcode + value
+    end
+    for _, value in ipairs(self.m_body) do
+        hashcode = hashcode + value
+    end
+    for _, value in ipairs(self.m_tail) do
+        hashcode = hashcode + value
+    end
+    return hashcode
+end
+
 ---@return string str
 function UUID:ToString()
     if self.m_str then
