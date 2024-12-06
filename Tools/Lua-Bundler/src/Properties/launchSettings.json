@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Lua-Bundler": {
-      "commandName": "Project",
-      "commandLineArgs": "--SourcePath C:\\Coding\\Games\\Satisfactory\\src --OutputPath C:\\Coding\\Games\\Satisfactory\\Packages"
-    }
-  }
-}

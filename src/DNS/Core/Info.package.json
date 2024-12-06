@@ -1,9 +1,0 @@
-{
-  "Name": "DNS.Core",
-  "Namespace": "DNS.Core",
-  "Version": "0.1-79",
-  "RequiredPackages": [
-    "Core"
-  ],
-  "PackageType": "Library"
-}
