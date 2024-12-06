@@ -8159,7 +8159,7 @@ require = nil
 
 ---@alias FIN.PCIDevice FIN.FINComputerModule
 
----@class Engine.Object
+---@class Engine.Object : FIN.Class
 local Object = {}
 
 --- The network id of this component.

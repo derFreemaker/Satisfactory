@@ -5,6 +5,7 @@ local Path = require("Tools.Freemaker.bin.path")
 ---@return FIN.Filesystem.File
 local function newFile(file)
     ---@type FIN.Filesystem.File
+    ---@diagnostic disable-next-line: missing-fields
     local instance = {
         m_file = file
     }
@@ -138,7 +139,7 @@ return function(fileSystemPath)
     end
 
     ---@param path string
-    ---@param all boolean
+    ---@param all boolean | nil
     ---@diagnostic disable-next-line: duplicate-set-field
     function filesystem.createDir(path, all)
         initializeFileSystem()
