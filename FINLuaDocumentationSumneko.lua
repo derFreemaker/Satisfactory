@@ -542,6 +542,31 @@ function filesystem.isNode(...) end
 ---@return { type: FIN.Filesystem.Meta } ...
 function filesystem.meta(...) end
 
+--- Trys to mount the system DevDevice to the given location.
+--- The DevDevice is special Device holding DeviceNodes for all filesystems added to the system. (like TmpFS and drives). It is unmountable as well as getting mounted a seccond time.
+---@param path string path to the mountpoint were the dev device should get mounted to
+---@return boolean success if it was able to mount the DevDevice
+function filesystem.initFileSystem(path) end
+
+---@deprecated
+---## Currently unuseable till filesystem overhaul
+---
+--- Trys to create a new file system of the given type with the given name.
+--- The created filesystem will be added to the system DevDevice.
+---@param type "tmpfs" the type of the new filesystem
+---@param name string the name of the new filesystem you want to create
+---@return boolean success returns true if it was able to create the new filesystem
+function filesystem.makeFileSystem(type, name) end
+
+---@deprecated
+---## Currently unuseable till filesystem overhaul
+---
+--- Tries to remove the filesystem with the given name from the system DevDevice.
+--- All mounts of the device will run invalid.
+---@param name string the name of the new filesystem you want to remove
+---@return boolean success returns true if it was able to remove the new filesystem
+function filesystem.removeFileSystem(name) end
+
 
 ---@class FIN.Filesystem.File
 local File = {}
